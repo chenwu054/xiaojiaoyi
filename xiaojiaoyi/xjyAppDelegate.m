@@ -7,15 +7,30 @@
 //
 
 #import "xjyAppDelegate.h"
+#import <FacebookSDK/FacebookSDK.h>
+#import "LoginViewController.h"
+
 
 @implementation xjyAppDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
     // Override point for customization after application launch.
+    
     return YES;
 }
-							
+
+//- (BOOL) application:(UIApplication *)application openURL:(NSURL *)url sourceApplication:(NSString *)sourceApplication annotation:(id)annotation
+//{
+//    // Call FBAppCall's handleOpenURL:sourceApplication to handle Facebook app responses
+//    BOOL wasHandled = [FBAppCall handleOpenURL:url sourceApplication:sourceApplication];
+//    
+//    // You can add your app-specific url handling code here if needed
+//    
+//    return wasHandled;
+//}
+
+
 - (void)applicationWillResignActive:(UIApplication *)application
 {
     // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
@@ -42,5 +57,52 @@
 {
     // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
 }
+
+
+- (NSDictionary *)parametersDictionaryFromQueryString:(NSString *)queryString {
+    
+    NSMutableDictionary *md = [NSMutableDictionary dictionary];
+    
+    NSArray *queryComponents = [queryString componentsSeparatedByString:@"&"];
+    
+    for(NSString *s in queryComponents) {
+        NSArray *pair = [s componentsSeparatedByString:@"="];
+        if([pair count] != 2) continue;
+        
+        NSString *key = pair[0];
+        NSString *value = pair[1];
+        
+        md[key] = value;
+    }
+    
+    return md;
+}
+
+
+-(BOOL)application:(UIApplication *)application openURL:(NSURL *)url sourceApplication:(NSString *)sourceApplication annotation:(id)annotation
+{
+    NSLog(@"scheme is %@", [url scheme]);
+    if ([[url scheme] isEqualToString:@"http"] == NO) return NO;
+    
+    NSDictionary *d = [self parametersDictionaryFromQueryString:[url query]];
+    
+    NSString *token = d[@"oauth_token"];
+    NSString *verifier = d[@"oauth_verifier"];
+    
+    LoginViewController *lvc = (LoginViewController *)[[self window] rootViewController];
+    [lvc setOAuthToken:token oauthVerifier:verifier];
+    
+    return YES;
+}
+
+
+
+
+
+
+
+
+
+
 
 @end
