@@ -55,17 +55,12 @@ static NSString* twUserProfilePath = @"/1.1/users/show.json";
     NSURL *url = [components URL];
     return url;
 }
--(void) userAuthorize
-{
-    
-    
-    
-}
 
--(void)getUserProfileByScreenName:(NSString *)screen_name andUserId:(NSString*) user_id withCompletionTask:(void(^)(NSString *name,NSString* URLString))completionTask
+
+-(void)getUserProfileByScreenName:(NSString *)screen_name andUserId:(NSString*) user_id withCompletionTask:(void(^)(NSURLResponse *response, NSError *error,NSString *name, NSString* URLString))completionTask
 {
     NSMutableDictionary* accessTokenParams = [[NSMutableDictionary alloc] init];
-    NSLog(@"getUserProfile: _access_token is %@",_access_token);
+    //NSLog(@"getUserProfile: _access_token is %@",_access_token);
     [accessTokenParams setValue:_access_token forKey:@"oauth_token"];
     
     NSMutableDictionary* queryParams = [[NSMutableDictionary alloc] init];
@@ -73,30 +68,41 @@ static NSString* twUserProfilePath = @"/1.1/users/show.json";
     [queryParams setValue:user_id forKey:@"user_id"];
     
     OAConsumer *consumer = [[OAConsumer alloc] initWithKey:consumer_key secret:consumer_secret];
-    OAToken *token = _token?_token:nil; //[[OAToken alloc] initWithKey:nil secret:nil];
+    OAToken *token = _accessToken?_accessToken:nil; //[[OAToken alloc] initWithKey:nil secret:nil];
     
     NSURL *url = [self getURLforUserProfileWithQueryParams:queryParams];
-    NSLog(@"the user profile url is %@",url);
+    //NSLog(@"the user profile url is %@",url);
     
     TWMutableURLRequest *request = [[TWMutableURLRequest alloc] initWithURL: url consumer:consumer token:token callbackURL:nil signatureProvider:nil];
     [request setHTTPMethod:@"GET"];
     [request prepareForAccessTokenWithTokenParams:accessTokenParams andQueryParams:queryParams];
     
     //NSLog(@"the request body is %@, %@",request.HTTPMethod, request.URL);
-    //NSLog(@"the headers are %@",request.allHTTPHeaderFields);
-    NSDictionary * headers = [request allHTTPHeaderFields];
-    for(NSString * k in headers){
-        NSLog(@"%@ : %@", k, [headers valueForKey:k]);
-        
-    }
-    NSURLSessionConfiguration *config = [NSURLSessionConfiguration ephemeralSessionConfiguration];
-    NSURLSession* session = [NSURLSession sessionWithConfiguration:config];
+
+//    NSDictionary * headers = [request allHTTPHeaderFields];
+//    for(NSString * k in headers){
+//        NSLog(@"%@ : %@", k, [headers valueForKey:k]);
+//        
+//    }
+    //NSURLSessionConfiguration *config = [NSURLSessionConfiguration ephemeralSessionConfiguration];
+    //NSURLSession* session = [NSURLSession sessionWithConfiguration:config];
+    NSURLSession *session = [NSURLSession sharedSession];
+    
     NSURLSessionDataTask *task = [session dataTaskWithRequest:request completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
         NSHTTPURLResponse * httpResponse = (NSHTTPURLResponse *)response;
         NSLog(@"the status code: %ld",httpResponse.statusCode);
         if(httpResponse.statusCode==200){
-            NSString *string = [NSString stringWithUTF8String:[data bytes]];
-            NSLog(@"the user profile data is %@",string);
+            //NSString *string = [NSString stringWithUTF8String:[data bytes]];
+            
+            NSDictionary*dict = [NSJSONSerialization JSONObjectWithData:data options:0 error:NULL];
+//            for(NSString *key in dict){
+//                NSLog(@"%@ = %@", key, dict[key]);
+//            }
+            NSString * urlString = [dict valueForKey:@"profile_image_url"];
+            NSString * username = [dict valueForKey:@"name"];
+            completionTask(response,error,username,urlString);
+            
+            //NSLog(@"the user profile data is %@",string);
             //NSLog(@"the response is %@",httpResponse);
 //            NSMutableDictionary *dict = [self parseResponseData:string];
 //            _access_token = [dict valueForKey:@"oauth_token"];
@@ -104,15 +110,15 @@ static NSString* twUserProfilePath = @"/1.1/users/show.json";
 //            _user_id_str = [dict valueForKey:@"user_id"];
 //            _screen_name=[dict valueForKey:@"screen_name"];
 //            _token = [[OAToken alloc] initWithKey:_access_token secret:_access_token_secret];
-//            
-//            completionTask(_access_token,_access_token_secret);
         }
+        else
+            completionTask(response,error,nil,nil);
     }];
     [task resume];
 }
 
 // get access token
--(void) getAccessTokenWithOAuthToken:(NSString*) oauth_token andOAuthVerifier:(NSString*)oauth_verifier withCompletionTask:(void (^)(NSString* accessToken, NSString * accessTokenSecret,NSString* screen_name, NSString* user_id))completionTask
+-(void) getAccessTokenWithOAuthToken:(NSString*) oauth_token andOAuthVerifier:(NSString*)oauth_verifier withCompletionTask:(void (^)(NSURLResponse *response, NSError *error, NSString* accessToken, NSString * accessTokenSecret,NSString* screen_name, NSString* user_id))completionTask
 {
     NSMutableDictionary* tokenParams = [[NSMutableDictionary alloc] init];
     [tokenParams setValue:oauth_token forKey:@"oauth_token"];
@@ -120,46 +126,48 @@ static NSString* twUserProfilePath = @"/1.1/users/show.json";
     [bodyParams setValue:oauth_verifier forKey:@"oauth_verifier"];
     
     OAConsumer *consumer = [[OAConsumer alloc] initWithKey:consumer_key secret:consumer_secret];
-    OAToken *token = _token?_token:nil; //[[OAToken alloc] initWithKey:nil secret:nil];
+    OAToken *token = _accessToken?_accessToken:nil; //[[OAToken alloc] initWithKey:nil secret:nil];
     NSURL *url = [self getURLforAccessToken];
-    NSLog(@"the access token url is %@",url);
+    //NSLog(@"the access token url is %@",url);
     
     TWMutableURLRequest *request = [[TWMutableURLRequest alloc] initWithURL: url consumer:consumer token:token callbackURL:nil signatureProvider:nil];
     [request setHTTPMethod:@"POST"];
     [request prepareForAccessTokenWithTokenParams:tokenParams andBodyParams:bodyParams];
     //NSLog(@"the request body is %@, %@",request.HTTPMethod, request.URL);
     //NSLog(@"the headers are %@",request.allHTTPHeaderFields);
-    NSDictionary * headers = [request allHTTPHeaderFields];
-    for(NSString * k in headers){
-        NSLog(@"%@ : %@", k, [headers valueForKey:k]);
-        
-    }
-    NSURLSessionConfiguration *config = [NSURLSessionConfiguration ephemeralSessionConfiguration];
-    NSURLSession* session = [NSURLSession sessionWithConfiguration:config];
+//    NSDictionary * headers = [request allHTTPHeaderFields];
+//    for(NSString * k in headers){
+//        NSLog(@"%@ : %@", k, [headers valueForKey:k]);
+//        
+//    }
+    //NSURLSessionConfiguration *config = [NSURLSessionConfiguration ephemeralSessionConfiguration];
+    //NSURLSession* session = [NSURLSession sessionWithConfiguration:config];
+    NSURLSession *session = [NSURLSession sharedSession];
     NSURLSessionDataTask *task = [session dataTaskWithRequest:request completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
         NSHTTPURLResponse * httpResponse = (NSHTTPURLResponse *)response;
-        NSLog(@"the status code: %ld",httpResponse.statusCode);
+        //NSLog(@"getAccessToken: the status code: %ld",httpResponse.statusCode);
         if(httpResponse.statusCode==200){
-            NSString *string = [NSString stringWithUTF8String:[data bytes]];
-            NSLog(@"the data is %@",string);
+            
+            NSString *string = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+            //NSLog(@"the data is %@",string);
             //NSLog(@"the response is %@",httpResponse);
             NSMutableDictionary *dict = [self parseResponseData:string];
             _access_token = [dict valueForKey:@"oauth_token"];
             _access_token_secret = [dict valueForKey:@"oauth_token_secret"];
-            if(!_token)
-                _token = [[OAToken alloc] init];
-            _token.key = _access_token;
-            _token.secret = _access_token_secret;
+            if(!_accessToken)
+                _accessToken = [[OAToken alloc] init];
+            _accessToken.key = _access_token;
+            _accessToken.secret = _access_token_secret;
             _user_id_str = [dict valueForKey:@"user_id"];
             _screen_name=[dict valueForKey:@"screen_name"];
-            completionTask(_access_token,_access_token_secret,_screen_name,_user_id_str);
+            completionTask(response, error, _access_token,_access_token_secret,_screen_name,_user_id_str);
         }
     }];
     [task resume];
 
 }
 
--(void) getRequestTokenWithCompletionTask:(void (^)())completionTask
+-(void) getRequestTokenWithCompletionTask:(void (^)(BOOL success, NSURLResponse *response, NSError *error))completionTask
 {
     OAConsumer *consumer = [[OAConsumer alloc] initWithKey:consumer_key secret:consumer_secret];
     OAToken *token = [[OAToken alloc] initWithKey:nil secret:nil];
@@ -177,13 +185,14 @@ static NSString* twUserProfilePath = @"/1.1/users/show.json";
         if(httpResponse.statusCode==200){
             NSString *string = [NSString stringWithUTF8String:[data bytes]];
             NSMutableDictionary *dict = [self parseResponseData:string];
-            _oauth_token = [dict valueForKey:@"oauth_token"];
-            _oauth_token_secret = [dict valueForKey:@"oauth_token_secret"];
-            //NSLog(@"oauth token is %@, oauth token secret is %@",_oauth_token, _oauth_token_secret);
+            _request_token = [dict valueForKey:@"oauth_token"];
+            _request_token_secret = [dict valueForKey:@"oauth_token_secret"];
+            //NSLog(@"request token is %@, request token secret is %@",_oauth_token, _oauth_token_secret);
             //NSLog(@"the response body is %@", [NSString stringWithUTF8String:[data bytes]]);
             
-            completionTask();
+            completionTask(YES, response, error);
         }
+        //TODO: error handling
     }];
     [task resume];
 }

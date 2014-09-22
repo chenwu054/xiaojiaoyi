@@ -61,23 +61,49 @@
 {
     //NSLog(@"twitterLoginButton clicked");
     _twAccessToken = [[TWAccessToken alloc] init];
-    [_twAccessToken getRequestTokenWithCompletionTask:^{
-        _isTwitter = YES;
-        _isLinkedin = NO;
-        _redirectURL = [NSString stringWithFormat:@"https://api.twitter.com/oauth/authenticate?oauth_token=%@",_twAccessToken.oauth_token];
-        //using a block to call the twitter login
-        // should also do the UIKit thing in the main thread!
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [self performSegueWithIdentifier:@"Linkedin segue" sender:self];
-        });
+    [_twAccessToken getRequestTokenWithCompletionTask:^(BOOL success, NSURLResponse *response, NSError *error){
+        if(success){
+            _isTwitter = YES;
+            _isLinkedin = NO;
+            _redirectURL = [NSString stringWithFormat:@"https://api.twitter.com/oauth/authenticate?oauth_token=%@",_twAccessToken.request_token];
+            //using a block to call the twitter login
+            // should also do the UIKit thing in the main thread!
+            dispatch_async(dispatch_get_main_queue(),^{
+                [self performSegueWithIdentifier:@"Linkedin segue" sender:self];
+            });
+        }
+        //TODO: error handling
+        else{
+        
+        }
     }];
     //[accessToken userAuthorize];
     
     
 }
 
-
-
+-(void) updateTwitterUserInfo
+{
+    NSURLSession * session = [NSURLSession sharedSession];
+    NSURLSessionDownloadTask *task = [session downloadTaskWithURL:[NSURL URLWithString:_twAccessToken.user_image_url] completionHandler:^(NSURL *localFileLocation, NSURLResponse *response, NSError *error) {
+        if(!error){
+            CGRect buttonFrame=[_twitterLoginButton frame];
+            UIView *newView = [[UIView alloc] initWithFrame:buttonFrame];
+            [self.view addSubview:newView];
+            UIImageView *userImage = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, buttonFrame.size.height,buttonFrame.size.height)];
+            userImage.image = [UIImage imageWithData:[NSData dataWithContentsOfURL:localFileLocation]];
+            userImage.layer.cornerRadius = 5.0f;
+            [newView addSubview:userImage];
+            UILabel * nameLabel = [[UILabel alloc] initWithFrame:CGRectMake(buttonFrame.size.height+30, 0, buttonFrame.size.width-buttonFrame.size.height-10, buttonFrame.size.height)];
+            nameLabel.text = _twAccessToken.user_name;
+            NSLog(@"user name is %@",_twAccessToken.user_name);
+            [newView addSubview:nameLabel];
+            [_twitterLoginButton removeFromSuperview];
+        }
+    }];
+    
+    [task resume];
+}
 
 #pragma mark - LinkedIn & Twitter
 
@@ -103,25 +129,64 @@
     }
 }
 
+-(void) getTWAccessTokenAtTrial:(NSInteger)numberOfTrial{
+    if(numberOfTrial >= _twLoginRetryLimit){
+        NSLog(@"error did not get user profile");
+        //stop UI animation
+        return;
+    }
+    else if(_twitterOAuthToken && _twitterOAuthTokenVerifier){
+        
+        //send request for access_token
+        [_twAccessToken getAccessTokenWithOAuthToken:_twitterOAuthToken andOAuthVerifier:_twitterOAuthTokenVerifier withCompletionTask:^(NSURLResponse *response, NSError *error,NSString* accessToken, NSString * accessTokenSecret, NSString* screen_name, NSString* user_id){
+            //NSLog(@"in login view accessToken is %@, access secret is %@, screen name is %@, user_id is %@",accessToken,accessTokenSecret,screen_name,user_id);
+            //if successful
+            if(!error && user_id && screen_name){
+                _twAccessToken.access_token = accessToken;
+                _twAccessToken.access_token_secret  = accessTokenSecret;
+                
+                //trigger another task to get the user profile. Only after getting the user profile data or it reaches the maximum _twLoginRetryLimit, will the it stop requesting for the user's profile.
+                [_twAccessToken getUserProfileByScreenName:screen_name andUserId:user_id withCompletionTask:^(NSURLResponse *response, NSError *error,NSString *name, NSString *URLString) {
+                    //NSLog(@"in the last user profile completion task");
+                    NSHTTPURLResponse * httpResponse = (NSHTTPURLResponse*)response;
+                    //success
+                    if(httpResponse.statusCode == 200 && !error && name){
+                        
+                        _twAccessToken.user_name = name;
+                        _twAccessToken.user_image_url = URLString;
+                        [_spinner stopAnimating];
+                        [self showAlertViewWithTitle:@"Login" Message:@"You have successfully logged in with Twitter!"];
+                        [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
+                        [self updateTwitterUserInfo];
+                        NSLog(@"got user profile!!!");
+                    }
+                    else{
+                        NSLog(@"------------refetch access token");
+                        [self getTWAccessTokenAtTrial:numberOfTrial+1];
+                    }
+                }];
+            }
+        }];
+        
+    }
+    //TODO: error handling, did not get OAuthToken
+    else{
+        
+    }
+}
 //twitter unwind method
 -(IBAction)done:(UIStoryboardSegue *)segue
 {
+    [_spinner startAnimating];
+    [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
     
-    NSLog(@"oauth token is %@ and verifier is %@",_twitterOAuthToken,_twitterOAuthTokenVerifier);
+    [self getTWAccessTokenAtTrial:0];
+    
+    //NSLog(@"oauth token is %@ and verifier is %@",_twitterOAuthToken,_twitterOAuthTokenVerifier);
     //TODO: verify the _twitterOAuthToken is the same as oauth_token got in the step1.
+    //if successful
     
-    [_twAccessToken getAccessTokenWithOAuthToken:_twitterOAuthToken andOAuthVerifier:_twitterOAuthTokenVerifier withCompletionTask:^(NSString* accessToken, NSString * accessTokenSecret, NSString* screen_name, NSString* user_id){
-        NSLog(@"in login view accessToken is %@, access secret is %@, screen name is %@, user_id is %@",accessToken,accessTokenSecret,screen_name,user_id);
-        _twAccessToken.access_token = accessToken;
-        _twAccessToken.access_token_secret  = accessTokenSecret;
-        //trigger another task to get the user profile
-        [_twAccessToken getUserProfileByScreenName:screen_name andUserId:user_id withCompletionTask:^(NSString *name, NSString *URLString) {
-            NSLog(@"in the last user profile completion task");
-        }];
-        
-    }];
-    
-    NSLog(@"calling the unwind method");
+    //NSLog(@"calling the unwind method");
     
 }
 
@@ -219,6 +284,11 @@
     NSLog(@"forget password button clicked");
 }
 
+-(void) showAlertViewWithTitle:(NSString *)title Message:(NSString*)message{
+    
+    UIAlertView * alertView = [[UIAlertView alloc] initWithTitle:title message:message delegate:self cancelButtonTitle: @"OK"otherButtonTitles: nil];
+    [alertView show];
+}
 
 #pragma mark UI gesture recognizer methods
 - (IBAction)tapOutsideToDismissKeyboard:(id)sender
@@ -291,6 +361,12 @@
 {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
+    //UI components
+    _spinner = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
+    [_spinner setCenter:CGPointMake(self.view.frame.size.width/2.0, self.view.frame.size.height/2.0)];
+    [self.view addSubview:_spinner];
+    
+    
     /*
      login button setup
      */
@@ -324,7 +400,7 @@
     _twitterLoginButton.frame = CGRectMake(20, 370, 280, 70);
     _twitterLoginButton.layer.cornerRadius = 10.0f;
     [_twitterLoginButton addTarget:self action:@selector(twitterLoginButtonClicked:) forControlEvents:UIControlEventTouchUpInside];
-    
+    _twLoginRetryLimit = 5;
     /*
      fb login view
      */

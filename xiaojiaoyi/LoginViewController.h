@@ -10,12 +10,18 @@
 #import "FacebookSDK/FacebookSDK.h"
 #import "TWAccessToken.h"
 
-@interface LoginViewController : UIViewController <FBLoginViewDelegate>
+@interface LoginViewController : UIViewController <FBLoginViewDelegate,UIAlertViewDelegate>
 @property (nonatomic) BOOL isTwitter;
 @property (nonatomic) BOOL isLinkedin;
 @property (nonatomic) NSString *twitterOAuthToken;
 @property (nonatomic) NSString *twitterOAuthTokenVerifier;
 @property (nonatomic) TWAccessToken *twAccessToken;
+@property (nonatomic) NSInteger twLoginRetryLimit;
+@property (nonatomic) BOOL isUserLogin;
+
+@property (nonatomic) UIActivityIndicatorView *spinner;
+
+
 
 - (void)setOAuthToken:(NSString *)token oauthVerifier:(NSString *)verifier;
 

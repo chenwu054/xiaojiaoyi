@@ -103,7 +103,9 @@
         }
         if([dict valueForKey:@"oauth_verifier"]!=nil){
             LoginViewController *loginVC = (LoginViewController *)[self presentingViewController];
+            loginVC.twAccessToken.oauth_verifier_token=[dict valueForKey:@"oauth_token"];
             loginVC.twitterOAuthToken = [dict valueForKey:@"oauth_token"];
+            loginVC.twAccessToken.oauth_verifier=[dict valueForKey:@"oauth_verifier"];
             loginVC.twitterOAuthTokenVerifier = [dict valueForKey:@"oauth_verifier"];
             [self performSegueWithIdentifier:@"unwind Linkedin segue" sender:self];
             return NO;
@@ -186,6 +188,15 @@
 
 -(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
 {
+//    if([segue.identifier isEqualToString:@"unwind Linkedin segue"]){
+//        if([segue.destinationViewController isKindOfClass:[LoginViewController class]]){
+//            LoginViewController *loginVC = (LoginViewController*)segue.destinationViewController;
+//            if(_isTwitter){
+//
+//                
+//            }
+//        }
+//    }
     //NSLog(@"the identifier: %@",segue.identifier);
     //NSLog(@"destination controller: %@",segue.destinationViewController);
     

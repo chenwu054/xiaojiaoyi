@@ -12,18 +12,24 @@
 
 @interface TWAccessToken : NSObject
 @property (nonatomic) NSString *requstToken;
-@property (nonatomic) NSString* oauth_token;
-@property (nonatomic) NSString* oauth_token_secret;
+@property (nonatomic) NSString* request_token;
+@property (nonatomic) NSString* request_token_secret;
 @property (nonatomic) NSString* access_token;
 @property (nonatomic) NSString* access_token_secret;
+@property (nonatomic) NSString* oauth_verifier;
+@property (nonatomic) NSString* oauth_verifier_token; //this is the token returned back together with oauth_verifier and should be the same as request_token.
 @property (nonatomic) NSString* user_id_str;
 @property (nonatomic) NSString* screen_name;
-@property (nonatomic) OAToken* token;
+@property (nonatomic) OAToken* accessToken;
 
--(void) getRequestTokenWithCompletionTask:(void (^)())completionTask;
--(void) getAccessTokenWithOAuthToken:(NSString*) oauth_token andOAuthVerifier:(NSString*)oauth_verifier withCompletionTask:(void (^)(NSString* accessToken, NSString * accessTokenSecret,NSString* screen_name, NSString* user_id))completionTask;
--(void)getUserProfileByScreenName:(NSString *)screen_name andUserId:(NSString*) user_id withCompletionTask:(void(^)(NSString *name,NSString* URLString))completionTask;
+@property (nonatomic) NSString* user_name;
+@property (nonatomic) NSString* user_image_url;
 
--(void) userAuthorize;
+
+-(void) getRequestTokenWithCompletionTask:(void (^)(BOOL success, NSURLResponse *response, NSError *error))completionTask;
+
+-(void) getAccessTokenWithOAuthToken:(NSString*) oauth_token andOAuthVerifier:(NSString*)oauth_verifier withCompletionTask:(void (^)(NSURLResponse *response, NSError *error,NSString* accessToken, NSString * accessTokenSecret,NSString* screen_name, NSString* user_id))completionTask;
+-(void)getUserProfileByScreenName:(NSString *)screen_name andUserId:(NSString*) user_id withCompletionTask:(void(^)(NSURLResponse *response, NSError *error,NSString *name,NSString* URLString))completionTask;
+
 
 @end
