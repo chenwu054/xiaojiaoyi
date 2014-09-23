@@ -37,6 +37,10 @@
 //@property (nonatomic,weak) UITapGestureRecognizer *tapRecognizer;
 //@property (weak,nonatomic) FBLoginView *fbLoginView;
 @property  (nonatomic) IBOutlet FBLoginView *fbLoginView;
+
+@property (nonatomic) IBOutlet UIView *profileView;
+
+
 @property (nonatomic) IBOutlet UIButton *twitterLoginButton;
 @property (strong, nonatomic) STTwitterAPI * twitterAPI;
 @property (nonatomic) NSString* redirectURL;
@@ -56,7 +60,7 @@
 }
 
 
-#pragma mark - twitter button clicked
+#pragma mark - twitter login methods
 -(void)twitterLoginButtonClicked:(UIButton*)sender
 {
     //NSLog(@"twitterLoginButton clicked");
@@ -105,30 +109,6 @@
     [task resume];
 }
 
-#pragma mark - LinkedIn & Twitter
-
--(void) prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
-{
-    if([segue.identifier isEqualToString:@"Linkedin segue"]){
-        //NSLog(@"about to segue");
-        if([segue.destinationViewController isKindOfClass:[OAuthViewController class]]){
-            OAuthViewController *webViewController = (OAuthViewController*)segue.destinationViewController;
-            if(_isLinkedin){
-                webViewController.isTwitter=NO;
-                webViewController.isLinkedin=YES;
-                webViewController.requestURL = [NSString stringWithFormat:@"https://www.linkedin.com/uas/oauth2/authorization?response_type=code&client_id=%@&scope=%@&state=%@&redirect_uri=%@",LINKEDIN_API_KEY,LINKEDIN_DEFAULT_SCOPE,LINKEDIN_DEFAULT_STATE,LINKEDIN_REDIRECT_URL];
-            }
-            else if(_isTwitter){
-                webViewController.isLinkedin=NO;
-                webViewController.isTwitter=YES;
-                //NSLog(@"the redirect URL is %@",_redirectURL);
-                webViewController.requestURL=_redirectURL;
-                
-            }
-        }
-    }
-}
-
 -(void) getTWAccessTokenAtTrial:(NSInteger)numberOfTrial{
     if(numberOfTrial >= _twLoginRetryLimit){
         NSLog(@"error did not get user profile");
@@ -174,6 +154,32 @@
         
     }
 }
+
+
+#pragma mark - LinkedIn & Twitter
+
+-(void) prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
+{
+    if([segue.identifier isEqualToString:@"Linkedin segue"]){
+        //NSLog(@"about to segue");
+        if([segue.destinationViewController isKindOfClass:[OAuthViewController class]]){
+            OAuthViewController *webViewController = (OAuthViewController*)segue.destinationViewController;
+            if(_isLinkedin){
+                webViewController.isTwitter=NO;
+                webViewController.isLinkedin=YES;
+                webViewController.requestURL = [NSString stringWithFormat:@"https://www.linkedin.com/uas/oauth2/authorization?response_type=code&client_id=%@&scope=%@&state=%@&redirect_uri=%@",LINKEDIN_API_KEY,LINKEDIN_DEFAULT_SCOPE,LINKEDIN_DEFAULT_STATE,LINKEDIN_REDIRECT_URL];
+            }
+            else if(_isTwitter){
+                webViewController.isLinkedin=NO;
+                webViewController.isTwitter=YES;
+                //NSLog(@"the redirect URL is %@",_redirectURL);
+                webViewController.requestURL=_redirectURL;
+                
+            }
+        }
+    }
+}
+
 //twitter unwind method
 -(IBAction)done:(UIStoryboardSegue *)segue
 {
@@ -194,7 +200,30 @@
 
 - (void) loginViewFetchedUserInfo:(FBLoginView *)loginView user:(id<FBGraphUser>)user
 {
-    NSLog(@"the logged in user id: %@ and name: %@", [user objectID], [user name]);
+    
+    NSLog(@"login view fetched user info");
+    NSString *profileStr = user.link;
+    NSString *username = user.username;
+    NSURLSession * session = [NSURLSession sharedSession];
+    NSURLSessionDownloadTask *task = [session downloadTaskWithURL:[NSURL URLWithString:profileStr] completionHandler:^(NSURL *localFileLocation, NSURLResponse *response, NSError *error) {
+        if(!error){
+            CGRect buttonFrame=[_profileView frame];
+            //UIView *newView = [[UIView alloc] initWithFrame:buttonFrame];
+            //[_profileView addSubview:newView];
+            UIImageView *userImage = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, buttonFrame.size.height,buttonFrame.size.height)];
+            userImage.image = [UIImage imageWithData:[NSData dataWithContentsOfURL:localFileLocation]];
+            _profileView.layer.cornerRadius=5.0f;
+            userImage.layer.cornerRadius = 5.0f;
+            [_profileView addSubview:userImage];
+            UILabel * nameLabel = [[UILabel alloc] initWithFrame:CGRectMake(buttonFrame.size.height+30, 0, buttonFrame.size.width-buttonFrame.size.height-30, buttonFrame.size.height)];
+            nameLabel.text = username;
+            //NSLog(@"user name is %@",_twAccessToken.user_name);
+            [_profileView addSubview:nameLabel];
+        }
+    }];
+    
+    [task resume];
+   
     
 }
 - (void) loginViewShowingLoggedInUser:(FBLoginView *)loginView
@@ -404,7 +433,9 @@
     /*
      fb login view
      */
-    //FBLoginView *fbLoginView = [[FBLoginView alloc] init];
+    
+    _fbLoginView = [[FBLoginView alloc] init];
+    
     
 }
 

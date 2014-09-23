@@ -18,6 +18,7 @@
 		740A2E7419C29BAA00D87965 /* CollectionViewDownloadOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 740A2E7319C29BAA00D87965 /* CollectionViewDownloadOperation.m */; };
 		740A2E7819C49B4F00D87965 /* MenuTableController.m in Sources */ = {isa = PBXBuildFile; fileRef = 740A2E7719C49B4F00D87965 /* MenuTableController.m */; };
 		740A2E7E19C53E4600D87965 /* MainViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 740A2E7D19C53E4600D87965 /* MainViewController.m */; };
+		7493294A19D12D1C003A2388 /* FacebookSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7493294919D12D1C003A2388 /* FacebookSDK.framework */; };
 		749366F219CA7D9B003B3108 /* Location.m in Sources */ = {isa = PBXBuildFile; fileRef = 749366F119CA7D9B003B3108 /* Location.m */; };
 		749366F419CB3E67003B3108 /* twitter small icon.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 749366F319CB3E67003B3108 /* twitter small icon.jpg */; };
 		749366F719CDE0C5003B3108 /* TWMutableURLRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = 749366F619CDE0C5003B3108 /* TWMutableURLRequest.m */; };
@@ -38,7 +39,6 @@
 		74B9329919AAEB4E003B6594 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 74B9329719AAEB4E003B6594 /* InfoPlist.strings */; };
 		74B9329B19AAEB4E003B6594 /* xiaojiaoyiTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 74B9329A19AAEB4E003B6594 /* xiaojiaoyiTests.m */; };
 		74B932A619AAEC55003B6594 /* LoginViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 74B932A519AAEC55003B6594 /* LoginViewController.m */; };
-		74B932A819AC297F003B6594 /* FacebookSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 74B932A719AC297F003B6594 /* FacebookSDK.framework */; };
 		74B932AA19AC29CD003B6594 /* FBUserSettingsViewResources.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 74B932A919AC29CD003B6594 /* FBUserSettingsViewResources.bundle */; };
 		74B932AE19AC2AD1003B6594 /* Accounts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 74B932AB19AC2AD1003B6594 /* Accounts.framework */; };
 		74B932AF19AC2AD1003B6594 /* AdSupport.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 74B932AC19AC2AD1003B6594 /* AdSupport.framework */; };
@@ -76,7 +76,6 @@
 		74CB851819BEB80900579432 /* NSURLRequest+OAuth.m in Sources */ = {isa = PBXBuildFile; fileRef = 74CB851519BEB80900579432 /* NSURLRequest+OAuth.m */; };
 		74CB851919BEB80900579432 /* YPAPISample.m in Sources */ = {isa = PBXBuildFile; fileRef = 74CB851719BEB80900579432 /* YPAPISample.m */; };
 		74CB851D19C0193C00579432 /* YelpViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 74CB851C19C0193C00579432 /* YelpViewController.m */; };
-		74CB852019C1276500579432 /* apple image.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 74CB851F19C1276500579432 /* apple image.jpg */; };
 		74FE265719CA721400801CA1 /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 74FE265619CA721400801CA1 /* MapKit.framework */; };
 		74FE265A19CA72A300801CA1 /* MapViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 74FE265919CA72A300801CA1 /* MapViewController.m */; };
 /* End PBXBuildFile section */
@@ -110,6 +109,7 @@
 		740A2E7719C49B4F00D87965 /* MenuTableController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MenuTableController.m; sourceTree = "<group>"; };
 		740A2E7C19C53E4600D87965 /* MainViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MainViewController.h; sourceTree = "<group>"; };
 		740A2E7D19C53E4600D87965 /* MainViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MainViewController.m; sourceTree = "<group>"; };
+		7493294919D12D1C003A2388 /* FacebookSDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FacebookSDK.framework; path = ../../../../Documents/FacebookSDK/FacebookSDK.framework; sourceTree = "<group>"; };
 		749366F019CA7D9B003B3108 /* Location.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Location.h; sourceTree = "<group>"; };
 		749366F119CA7D9B003B3108 /* Location.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Location.m; sourceTree = "<group>"; };
 		749366F319CB3E67003B3108 /* twitter small icon.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = "twitter small icon.jpg"; path = "images/twitter small icon.jpg"; sourceTree = SOURCE_ROOT; };
@@ -139,7 +139,6 @@
 		74B9329A19AAEB4E003B6594 /* xiaojiaoyiTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = xiaojiaoyiTests.m; sourceTree = "<group>"; };
 		74B932A419AAEC55003B6594 /* LoginViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LoginViewController.h; sourceTree = "<group>"; };
 		74B932A519AAEC55003B6594 /* LoginViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LoginViewController.m; sourceTree = "<group>"; };
-		74B932A719AC297F003B6594 /* FacebookSDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = FacebookSDK.framework; sourceTree = "<group>"; };
 		74B932A919AC29CD003B6594 /* FBUserSettingsViewResources.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = FBUserSettingsViewResources.bundle; sourceTree = "<group>"; };
 		74B932AB19AC2AD1003B6594 /* Accounts.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accounts.framework; path = System/Library/Frameworks/Accounts.framework; sourceTree = SDKROOT; };
 		74B932AC19AC2AD1003B6594 /* AdSupport.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AdSupport.framework; path = System/Library/Frameworks/AdSupport.framework; sourceTree = SDKROOT; };
@@ -212,7 +211,6 @@
 		74CB851719BEB80900579432 /* YPAPISample.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YPAPISample.m; sourceTree = "<group>"; };
 		74CB851B19C0193C00579432 /* YelpViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YelpViewController.h; sourceTree = "<group>"; };
 		74CB851C19C0193C00579432 /* YelpViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YelpViewController.m; sourceTree = "<group>"; };
-		74CB851F19C1276500579432 /* apple image.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = "apple image.jpg"; sourceTree = "<group>"; };
 		74FE265619CA721400801CA1 /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
 		74FE265819CA72A300801CA1 /* MapViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MapViewController.h; sourceTree = "<group>"; };
 		74FE265919CA72A300801CA1 /* MapViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MapViewController.m; sourceTree = "<group>"; };
@@ -230,7 +228,7 @@
 				74B932AF19AC2AD1003B6594 /* AdSupport.framework in Frameworks */,
 				74B932B019AC2AD2003B6594 /* Social.framework in Frameworks */,
 				74B9326F19AAEB4E003B6594 /* CoreGraphics.framework in Frameworks */,
-				74B932A819AC297F003B6594 /* FacebookSDK.framework in Frameworks */,
+				7493294A19D12D1C003A2388 /* FacebookSDK.framework in Frameworks */,
 				74B9327119AAEB4E003B6594 /* UIKit.framework in Frameworks */,
 				74B9326D19AAEB4E003B6594 /* Foundation.framework in Frameworks */,
 			);
@@ -306,6 +304,7 @@
 		74B9326B19AAEB4E003B6594 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				7493294919D12D1C003A2388 /* FacebookSDK.framework */,
 				74FE265619CA721400801CA1 /* MapKit.framework */,
 				74065AEC19C940490033DA71 /* CoreLocation.framework */,
 				74B932B419AD7B5C003B6594 /* Twitter.framework */,
@@ -313,7 +312,6 @@
 				74B932AC19AC2AD1003B6594 /* AdSupport.framework */,
 				74B932AD19AC2AD1003B6594 /* Social.framework */,
 				74B932A919AC29CD003B6594 /* FBUserSettingsViewResources.bundle */,
-				74B932A719AC297F003B6594 /* FacebookSDK.framework */,
 				74B9326C19AAEB4E003B6594 /* Foundation.framework */,
 				74B9326E19AAEB4E003B6594 /* CoreGraphics.framework */,
 				74B9327019AAEB4E003B6594 /* UIKit.framework */,
@@ -326,7 +324,6 @@
 			isa = PBXGroup;
 			children = (
 				740A2E6E19C299D200D87965 /* collectionView */,
-				74CB851E19C1273800579432 /* images */,
 				74CB84D919BA15FA00579432 /* OAuth */,
 				749366FB19CE75F1003B3108 /* Login */,
 				74065ADD19C747D30033DA71 /* DetailPageViewController.h */,
@@ -508,14 +505,6 @@
 			name = objects;
 			sourceTree = "<group>";
 		};
-		74CB851E19C1273800579432 /* images */ = {
-			isa = PBXGroup;
-			children = (
-				74CB851F19C1276500579432 /* apple image.jpg */,
-			);
-			name = images;
-			sourceTree = "<group>";
-		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -597,7 +586,6 @@
 				74B9328319AAEB4E003B6594 /* Main_iPad.storyboard in Resources */,
 				74B9328819AAEB4E003B6594 /* Images.xcassets in Resources */,
 				74B9328019AAEB4E003B6594 /* Main_iPhone.storyboard in Resources */,
-				74CB852019C1276500579432 /* apple image.jpg in Resources */,
 				74065AE819C7E2DD0033DA71 /* facebook.jpg in Resources */,
 				74065AE919C7E2DD0033DA71 /* google.jpg in Resources */,
 				749366F419CB3E67003B3108 /* twitter small icon.jpg in Resources */,
@@ -805,6 +793,7 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",
+					/Users/chen/Documents/FacebookSDK,
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "xiaojiaoyi/xiaojiaoyi-Prefix.pch";
@@ -826,6 +815,7 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",
+					/Users/chen/Documents/FacebookSDK,
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "xiaojiaoyi/xiaojiaoyi-Prefix.pch";

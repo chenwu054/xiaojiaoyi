@@ -16,9 +16,13 @@
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
     // Override point for customization after application launch.
+    if(FBSession.activeSession.state == FBSessionStateOpen || FBSession.activeSession.state == FBSessionStateOpenTokenExtended){
+        NSLog(@"state session");
+    }
     
     return YES;
 }
+
 
 //- (BOOL) application:(UIApplication *)application openURL:(NSURL *)url sourceApplication:(NSString *)sourceApplication annotation:(id)annotation
 //{
@@ -78,7 +82,7 @@
     return md;
 }
 
-
+//has the required method from facebook
 -(BOOL)application:(UIApplication *)application openURL:(NSURL *)url sourceApplication:(NSString *)sourceApplication annotation:(id)annotation
 {
     NSLog(@"scheme is %@", [url scheme]);
@@ -92,15 +96,8 @@
     LoginViewController *lvc = (LoginViewController *)[[self window] rootViewController];
     [lvc setOAuthToken:token oauthVerifier:verifier];
     
-    return YES;
+    return [FBAppCall handleOpenURL:url sourceApplication:sourceApplication];
 }
-
-
-
-
-
-
-
 
 
 

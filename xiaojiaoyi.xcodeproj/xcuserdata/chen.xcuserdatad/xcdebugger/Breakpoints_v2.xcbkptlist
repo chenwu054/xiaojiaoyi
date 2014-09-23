@@ -10,11 +10,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "xiaojiaoyi/LoginViewController.m"
-            timestampString = "433035980.84574"
+            timestampString = "433140624.787817"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "234"
-            endingLineNumber = "234"
+            startingLineNumber = "263"
+            endingLineNumber = "263"
             landmarkName = "-loginView:handleError:"
             landmarkType = "5">
          </BreakpointContent>
