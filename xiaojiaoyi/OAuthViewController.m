@@ -61,11 +61,14 @@
 #pragma mark - business logic methods
 -(void) requestForAuthToken
 {
+    //NSLog(@"request is: %@",_requestURL);
     NSURLRequest * request = [NSURLRequest requestWithURL:[NSURL URLWithString:_requestURL]];
     /*
      this method sends a request to the URL
      and load the response to the webview for user authentication.
      */
+    
+    
     [self.webView loadRequest:request];
 }
 
@@ -95,7 +98,16 @@
      Upon successful authorization by the user, the url will be redirected by Twitter to the callback URL with oauth_token and oauth_verifier included in the request.
      This url is intercepted and segue back to LoginViewController for further steps with oauth_token and verifer passed
      */
-    if(_isTwitter){
+    if(_isFacebook){
+        NSArray *arr = [url componentsSeparatedByString:@"?"];
+        if(arr.count > 1){
+            NSDictionary* dict = [self parseResponseData:arr[1]];
+            NSString * code = [dict valueForKeyPath:@"code"];
+            NSLog(@"FB the code is: %@",code);
+            
+        }
+    }
+    else if(_isTwitter){
         NSArray *arr = [url componentsSeparatedByString:@"?"];
         NSMutableDictionary *dict = nil;
         if(arr.count>1){

@@ -19,6 +19,7 @@
 		740A2E7819C49B4F00D87965 /* MenuTableController.m in Sources */ = {isa = PBXBuildFile; fileRef = 740A2E7719C49B4F00D87965 /* MenuTableController.m */; };
 		740A2E7E19C53E4600D87965 /* MainViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 740A2E7D19C53E4600D87965 /* MainViewController.m */; };
 		7493294A19D12D1C003A2388 /* FacebookSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7493294919D12D1C003A2388 /* FacebookSDK.framework */; };
+		7493294D19D27622003A2388 /* MyFBSessionTokenCachingStrategy.m in Sources */ = {isa = PBXBuildFile; fileRef = 7493294C19D27622003A2388 /* MyFBSessionTokenCachingStrategy.m */; };
 		749366F219CA7D9B003B3108 /* Location.m in Sources */ = {isa = PBXBuildFile; fileRef = 749366F119CA7D9B003B3108 /* Location.m */; };
 		749366F419CB3E67003B3108 /* twitter small icon.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 749366F319CB3E67003B3108 /* twitter small icon.jpg */; };
 		749366F719CDE0C5003B3108 /* TWMutableURLRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = 749366F619CDE0C5003B3108 /* TWMutableURLRequest.m */; };
@@ -110,6 +111,8 @@
 		740A2E7C19C53E4600D87965 /* MainViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MainViewController.h; sourceTree = "<group>"; };
 		740A2E7D19C53E4600D87965 /* MainViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MainViewController.m; sourceTree = "<group>"; };
 		7493294919D12D1C003A2388 /* FacebookSDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FacebookSDK.framework; path = ../../../../Documents/FacebookSDK/FacebookSDK.framework; sourceTree = "<group>"; };
+		7493294B19D27622003A2388 /* MyFBSessionTokenCachingStrategy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MyFBSessionTokenCachingStrategy.h; sourceTree = "<group>"; };
+		7493294C19D27622003A2388 /* MyFBSessionTokenCachingStrategy.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MyFBSessionTokenCachingStrategy.m; sourceTree = "<group>"; };
 		749366F019CA7D9B003B3108 /* Location.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Location.h; sourceTree = "<group>"; };
 		749366F119CA7D9B003B3108 /* Location.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Location.m; sourceTree = "<group>"; };
 		749366F319CB3E67003B3108 /* twitter small icon.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = "twitter small icon.jpg"; path = "images/twitter small icon.jpg"; sourceTree = SOURCE_ROOT; };
@@ -274,10 +277,12 @@
 		749366FB19CE75F1003B3108 /* Login */ = {
 			isa = PBXGroup;
 			children = (
-				74B932A419AAEC55003B6594 /* LoginViewController.h */,
-				74B932A519AAEC55003B6594 /* LoginViewController.m */,
 				74CB84D219B588F700579432 /* OAuthViewController.h */,
 				74CB84D319B588F700579432 /* OAuthViewController.m */,
+				74B932A419AAEC55003B6594 /* LoginViewController.h */,
+				74B932A519AAEC55003B6594 /* LoginViewController.m */,
+				7493294B19D27622003A2388 /* MyFBSessionTokenCachingStrategy.h */,
+				7493294C19D27622003A2388 /* MyFBSessionTokenCachingStrategy.m */,
 			);
 			name = Login;
 			sourceTree = "<group>";
@@ -326,6 +331,8 @@
 				740A2E6E19C299D200D87965 /* collectionView */,
 				74CB84D919BA15FA00579432 /* OAuth */,
 				749366FB19CE75F1003B3108 /* Login */,
+				74B9327B19AAEB4E003B6594 /* xjyAppDelegate.h */,
+				74B9327C19AAEB4E003B6594 /* xjyAppDelegate.m */,
 				74065ADD19C747D30033DA71 /* DetailPageViewController.h */,
 				74065ADE19C747D30033DA71 /* DetailPageViewController.m */,
 				74FE265819CA72A300801CA1 /* MapViewController.h */,
@@ -343,8 +350,6 @@
 				74B9328419AAEB4E003B6594 /* xjyViewController.h */,
 				74B9328519AAEB4E003B6594 /* xjyViewController.m */,
 				74B9327E19AAEB4E003B6594 /* Main_iPhone.storyboard */,
-				74B9327B19AAEB4E003B6594 /* xjyAppDelegate.h */,
-				74B9327C19AAEB4E003B6594 /* xjyAppDelegate.m */,
 				74B9328719AAEB4E003B6594 /* Images.xcassets */,
 				74065AE319C7E2DD0033DA71 /* images */,
 				74B932EA19AD8695003B6594 /* STTwitter */,
@@ -621,6 +626,7 @@
 				74CB851019BC067E00579432 /* OAMutableURLRequest.m in Sources */,
 				74CB84F119BB4CA500579432 /* OAToken.m in Sources */,
 				74065ADF19C747D30033DA71 /* DetailPageViewController.m in Sources */,
+				7493294D19D27622003A2388 /* MyFBSessionTokenCachingStrategy.m in Sources */,
 				74CB851D19C0193C00579432 /* YelpViewController.m in Sources */,
 				74B9330C19AD8695003B6594 /* STTwitterAPI.m in Sources */,
 				74B9331219AD8695003B6594 /* BAVPlistNode.m in Sources */,

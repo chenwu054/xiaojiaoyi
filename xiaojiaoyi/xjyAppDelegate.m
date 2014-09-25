@@ -16,11 +16,29 @@
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
     // Override point for customization after application launch.
-    if(FBSession.activeSession.state == FBSessionStateOpen || FBSession.activeSession.state == FBSessionStateOpenTokenExtended){
-        NSLog(@"state session");
-    }
+    [FBLoginView class];
     
+    //do not check FBSession 
+    // Whenever a person opens the app, check for a cached session
+//    if (FBSession.activeSession.state == FBSessionStateCreatedTokenLoaded) {
+//        
+//        // If there's one, just open the session silently, without showing the user the login UI
+//        [FBSession openActiveSessionWithReadPermissions:@[@"public_profile"]
+//                                           allowLoginUI:NO
+//                                      completionHandler:^(FBSession *session, FBSessionState state, NSError *error) {
+//                                          // Handler for session state changes
+//                                          // This method will be called EACH time the session state changes,
+//                                          // also for intermediate states and NOT just when the session open
+//                                          [self sessionStateChanged:session state:state error:error];
+//                                      }];
+//    }
     return YES;
+}
+
+-(void) sessionStateChanged:(FBSession*) session state:(FBSessionState)state error:(NSError*) error
+{
+    NSLog(@"calling the fb session state change in the appDelegate to state: %ld",state);
+    
 }
 
 
@@ -55,20 +73,23 @@
 - (void)applicationDidBecomeActive:(UIApplication *)application
 {
     // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
+    //this will clean up the flow and eventually transtion to the closeLoginFailed
+    [FBAppCall handleDidBecomeActive];
+    
 }
 
 - (void)applicationWillTerminate:(UIApplication *)application
 {
     // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
+    
+    //good practice, transition state to closed but does NOT clear cached data or delete session
+    [FBSession.activeSession close];
+    
 }
 
-
 - (NSDictionary *)parametersDictionaryFromQueryString:(NSString *)queryString {
-    
     NSMutableDictionary *md = [NSMutableDictionary dictionary];
-    
     NSArray *queryComponents = [queryString componentsSeparatedByString:@"&"];
-    
     for(NSString *s in queryComponents) {
         NSArray *pair = [s componentsSeparatedByString:@"="];
         if([pair count] != 2) continue;
@@ -85,21 +106,22 @@
 //has the required method from facebook
 -(BOOL)application:(UIApplication *)application openURL:(NSURL *)url sourceApplication:(NSString *)sourceApplication annotation:(id)annotation
 {
-    NSLog(@"scheme is %@", [url scheme]);
-    if ([[url scheme] isEqualToString:@"http"] == NO) return NO;
+    //NSLog(@"scheme is %@", [url scheme]);
+    // this is the methods that prevents FBAppCall to handle openRUL
+    //if ([[url scheme] isEqualToString:@"http"] == NO) return NO;
+    //NSLog(@"the open URL is %@",url);
     
-    NSDictionary *d = [self parametersDictionaryFromQueryString:[url query]];
+    //NSDictionary *d = [self parametersDictionaryFromQueryString:[url query]];
     
-    NSString *token = d[@"oauth_token"];
-    NSString *verifier = d[@"oauth_verifier"];
+    //NSString *token = d[@"oauth_token"];
+    //NSString *verifier = d[@"oauth_verifier"];
     
-    LoginViewController *lvc = (LoginViewController *)[[self window] rootViewController];
-    [lvc setOAuthToken:token oauthVerifier:verifier];
+    //LoginViewController *lvc = (LoginViewController *)[[self window] rootViewController];
+    //[lvc setOAuthToken:token oauthVerifier:verifier];
     
+    //let FBAppCall handle incoming url
     return [FBAppCall handleOpenURL:url sourceApplication:sourceApplication];
 }
-
-
 
 
 @end

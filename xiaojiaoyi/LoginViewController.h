@@ -9,10 +9,13 @@
 #import <UIKit/UIKit.h>
 #import "FacebookSDK/FacebookSDK.h"
 #import "TWAccessToken.h"
+#import "xjyAppDelegate.h"
 
 @interface LoginViewController : UIViewController <FBLoginViewDelegate,UIAlertViewDelegate>
 @property (nonatomic) BOOL isTwitter;
 @property (nonatomic) BOOL isLinkedin;
+@property (nonatomic) BOOL isFacebook;
+
 @property (nonatomic) NSString *twitterOAuthToken;
 @property (nonatomic) NSString *twitterOAuthTokenVerifier;
 @property (nonatomic) TWAccessToken *twAccessToken;
