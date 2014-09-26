@@ -8,10 +8,13 @@
 
 #import <UIKit/UIKit.h>
 #import "MyFBSessionTokenCachingStrategy.h"
+#import "SessionMananger.h"
+
 @interface xjyAppDelegate : UIResponder <UIApplicationDelegate>
 
 @property (strong, nonatomic) UIWindow *window;
 @property (strong,nonatomic) MyFBSessionTokenCachingStrategy* myFBTokenCachingStrategy;
+@property (nonatomic) SessionMananger *sessionManager;
 
 
 -(void) sessionStateChanged:(FBSession*) session state:(FBSessionState)state error:(NSError*) error;

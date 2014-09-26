@@ -9,7 +9,7 @@
 #import "xjyAppDelegate.h"
 #import <FacebookSDK/FacebookSDK.h>
 #import "LoginViewController.h"
-
+#import "SessionMananger.h"
 
 @implementation xjyAppDelegate
 
@@ -34,6 +34,9 @@
 //    }
     return YES;
 }
+
+
+
 
 -(void) sessionStateChanged:(FBSession*) session state:(FBSessionState)state error:(NSError*) error
 {
@@ -74,7 +77,7 @@
 {
     // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
     //this will clean up the flow and eventually transtion to the closeLoginFailed
-    [FBAppCall handleDidBecomeActive];
+    [FBAppCall handleDidBecomeActiveWithSession:self.sessionManager.fbSession];
     
 }
 
@@ -83,7 +86,7 @@
     // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
     
     //good practice, transition state to closed but does NOT clear cached data or delete session
-    [FBSession.activeSession close];
+    [self.sessionManager.fbSession close];
     
 }
 
@@ -120,7 +123,8 @@
     //[lvc setOAuthToken:token oauthVerifier:verifier];
     
     //let FBAppCall handle incoming url
-    return [FBAppCall handleOpenURL:url sourceApplication:sourceApplication];
+    //NSLog(@"appDelegate handle openURL:%@",url);
+    return [FBAppCall handleOpenURL:url sourceApplication:sourceApplication withSession:self.sessionManager.fbSession];
 }
 
 

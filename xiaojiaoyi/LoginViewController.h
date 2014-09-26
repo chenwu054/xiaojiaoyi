@@ -10,6 +10,8 @@
 #import "FacebookSDK/FacebookSDK.h"
 #import "TWAccessToken.h"
 #import "xjyAppDelegate.h"
+#import "MyFBSessionTokenCachingStrategy.h"
+#import "SessionMananger.h"
 
 @interface LoginViewController : UIViewController <FBLoginViewDelegate,UIAlertViewDelegate>
 @property (nonatomic) BOOL isTwitter;
@@ -22,8 +24,10 @@
 @property (nonatomic) NSInteger twLoginRetryLimit;
 @property (nonatomic) BOOL isUserLogin;
 
-@property (nonatomic) UIActivityIndicatorView *spinner;
+@property (nonatomic) MyFBSessionTokenCachingStrategy *myFBTokenCachingStrategy;
 
+@property (nonatomic) UIActivityIndicatorView *spinner;
+@property (nonatomic) SessionMananger *sessionManager;
 
 
 - (void)setOAuthToken:(NSString *)token oauthVerifier:(NSString *)verifier;

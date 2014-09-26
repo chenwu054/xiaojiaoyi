@@ -15,11 +15,36 @@ static NSString* kFilename = @"TokenInfo.plist";
 {
     self = [super init];
     if (self) {
-        _tokenFilePath = [self filePath];
+        _filePath = [self filePath];
+    }
+    return self;
+}
+-(instancetype) initWithFilePath:(NSString *)filepath andFileName:(NSString*)filename
+{
+    self = [super init];
+    if(self){
+        _filename = filename;
+        _filePath = filepath;
+        NSString * dir = [self documentPath];
+        NSString *parentDir=[NSString stringWithFormat:@"%@/%@",dir,_filePath];
+        _file = [NSString stringWithFormat:@"%@/%@",parentDir,_filename];
+        
+        //if the path does not exist, create a new one
+        if (![[NSFileManager defaultManager] fileExistsAtPath:_file])
+            [[NSFileManager defaultManager] createDirectoryAtPath:parentDir withIntermediateDirectories:YES attributes:nil error:NULL];
+        
     }
     return self;
 }
 
+-(NSString *)documentPath
+{
+    NSArray *paths =
+    NSSearchPathForDirectoriesInDomains(NSDocumentDirectory,
+                                        NSUserDomainMask, YES);
+    NSString *documentsDirectory = [paths lastObject];
+    return documentsDirectory;
+}
 - (NSString *) filePath {
     NSArray *paths =
     NSSearchPathForDirectoriesInDomains(NSDocumentDirectory,
@@ -29,21 +54,36 @@ static NSString* kFilename = @"TokenInfo.plist";
 }
 
 - (void) writeData:(NSDictionary *) data {
-    NSLog(@"File = %@ and Data = %@", self.tokenFilePath, data);
-    BOOL success = [data writeToFile:self.tokenFilePath atomically:YES];
+    //NSLog(@"write File = %@ and Data = %@", _file, data);
+    BOOL success = [data writeToFile:_file atomically:YES];
     if (!success) {
         NSLog(@"Error writing to file");
     }
+    
+//    NSLog(@"-----------");
+//    NSDirectoryEnumerator * enumerator= [[NSFileManager defaultManager] enumeratorAtPath: [self documentPath]];
+//    for(NSURL * url in enumerator){
+//        NSLog(@"file is %@",url);
+//    }
 }
 
 - (NSDictionary *) readData {
-    NSDictionary *data = [[NSDictionary alloc] initWithContentsOfFile:self.tokenFilePath];
-    NSLog(@"File = %@ and data = %@", self.tokenFilePath, data);
+    NSDictionary *data = [[NSDictionary alloc] initWithContentsOfFile:_file];
+    //NSLog(@"read File = %@ and data = %@", _file, data);
     return data;
 }
 
 - (void)cacheFBAccessTokenData:(FBAccessTokenData *)accessToken {
+
     NSDictionary *tokenInformation = [accessToken dictionary];
+    //NSLog(@"about to cache FB Token data:%@",tokenInformation);
+
+    [self writeData:tokenInformation];
+}
+
+- (void)cacheTokenInformation:(NSDictionary *)tokenInformation
+{
+    //NSLog(@"calling cache Token Information");
     [self writeData:tokenInformation];
 }
 

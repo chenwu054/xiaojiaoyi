@@ -20,6 +20,15 @@
 		740A2E7E19C53E4600D87965 /* MainViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 740A2E7D19C53E4600D87965 /* MainViewController.m */; };
 		7493294A19D12D1C003A2388 /* FacebookSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7493294919D12D1C003A2388 /* FacebookSDK.framework */; };
 		7493294D19D27622003A2388 /* MyFBSessionTokenCachingStrategy.m in Sources */ = {isa = PBXBuildFile; fileRef = 7493294C19D27622003A2388 /* MyFBSessionTokenCachingStrategy.m */; };
+		7493295019D5C2DB003A2388 /* SessionMananger.m in Sources */ = {isa = PBXBuildFile; fileRef = 7493294F19D5C2DB003A2388 /* SessionMananger.m */; };
+		7493295219D60EE1003A2388 /* AddressBook.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7493295119D60EE1003A2388 /* AddressBook.framework */; };
+		7493295419D60EEB003A2388 /* AssetsLibrary.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7493295319D60EEB003A2388 /* AssetsLibrary.framework */; };
+		7493295619D60F30003A2388 /* CoreText.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7493295519D60F30003A2388 /* CoreText.framework */; };
+		7493295819D60F41003A2388 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7493295719D60F41003A2388 /* Security.framework */; };
+		7493295A19D60F4D003A2388 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7493295919D60F4D003A2388 /* SystemConfiguration.framework */; };
+		7493295D19D60FB1003A2388 /* GoogleOpenSource.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7493295B19D60FB1003A2388 /* GoogleOpenSource.framework */; };
+		7493295E19D60FB1003A2388 /* GooglePlus.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7493295C19D60FB1003A2388 /* GooglePlus.framework */; };
+		7493296019D60FD3003A2388 /* GooglePlus.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 7493295F19D60FD3003A2388 /* GooglePlus.bundle */; };
 		749366F219CA7D9B003B3108 /* Location.m in Sources */ = {isa = PBXBuildFile; fileRef = 749366F119CA7D9B003B3108 /* Location.m */; };
 		749366F419CB3E67003B3108 /* twitter small icon.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 749366F319CB3E67003B3108 /* twitter small icon.jpg */; };
 		749366F719CDE0C5003B3108 /* TWMutableURLRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = 749366F619CDE0C5003B3108 /* TWMutableURLRequest.m */; };
@@ -113,6 +122,16 @@
 		7493294919D12D1C003A2388 /* FacebookSDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FacebookSDK.framework; path = ../../../../Documents/FacebookSDK/FacebookSDK.framework; sourceTree = "<group>"; };
 		7493294B19D27622003A2388 /* MyFBSessionTokenCachingStrategy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MyFBSessionTokenCachingStrategy.h; sourceTree = "<group>"; };
 		7493294C19D27622003A2388 /* MyFBSessionTokenCachingStrategy.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MyFBSessionTokenCachingStrategy.m; sourceTree = "<group>"; };
+		7493294E19D5C2DB003A2388 /* SessionMananger.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SessionMananger.h; sourceTree = "<group>"; };
+		7493294F19D5C2DB003A2388 /* SessionMananger.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SessionMananger.m; sourceTree = "<group>"; };
+		7493295119D60EE1003A2388 /* AddressBook.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AddressBook.framework; path = System/Library/Frameworks/AddressBook.framework; sourceTree = SDKROOT; };
+		7493295319D60EEB003A2388 /* AssetsLibrary.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AssetsLibrary.framework; path = System/Library/Frameworks/AssetsLibrary.framework; sourceTree = SDKROOT; };
+		7493295519D60F30003A2388 /* CoreText.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreText.framework; path = System/Library/Frameworks/CoreText.framework; sourceTree = SDKROOT; };
+		7493295719D60F41003A2388 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
+		7493295919D60F4D003A2388 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
+		7493295B19D60FB1003A2388 /* GoogleOpenSource.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = GoogleOpenSource.framework; sourceTree = "<group>"; };
+		7493295C19D60FB1003A2388 /* GooglePlus.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = GooglePlus.framework; sourceTree = "<group>"; };
+		7493295F19D60FD3003A2388 /* GooglePlus.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = GooglePlus.bundle; sourceTree = "<group>"; };
 		749366F019CA7D9B003B3108 /* Location.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Location.h; sourceTree = "<group>"; };
 		749366F119CA7D9B003B3108 /* Location.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Location.m; sourceTree = "<group>"; };
 		749366F319CB3E67003B3108 /* twitter small icon.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = "twitter small icon.jpg"; path = "images/twitter small icon.jpg"; sourceTree = SOURCE_ROOT; };
@@ -224,8 +243,16 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				74FE265719CA721400801CA1 /* MapKit.framework in Frameworks */,
+				7493295E19D60FB1003A2388 /* GooglePlus.framework in Frameworks */,
+				7493295A19D60F4D003A2388 /* SystemConfiguration.framework in Frameworks */,
+				7493295819D60F41003A2388 /* Security.framework in Frameworks */,
+				7493295619D60F30003A2388 /* CoreText.framework in Frameworks */,
 				74065AED19C940490033DA71 /* CoreLocation.framework in Frameworks */,
+				74B9326D19AAEB4E003B6594 /* Foundation.framework in Frameworks */,
+				7493295419D60EEB003A2388 /* AssetsLibrary.framework in Frameworks */,
+				7493295D19D60FB1003A2388 /* GoogleOpenSource.framework in Frameworks */,
+				7493295219D60EE1003A2388 /* AddressBook.framework in Frameworks */,
+				74FE265719CA721400801CA1 /* MapKit.framework in Frameworks */,
 				74B932B519AD7B5C003B6594 /* Twitter.framework in Frameworks */,
 				74B932AE19AC2AD1003B6594 /* Accounts.framework in Frameworks */,
 				74B932AF19AC2AD1003B6594 /* AdSupport.framework in Frameworks */,
@@ -233,7 +260,6 @@
 				74B9326F19AAEB4E003B6594 /* CoreGraphics.framework in Frameworks */,
 				7493294A19D12D1C003A2388 /* FacebookSDK.framework in Frameworks */,
 				74B9327119AAEB4E003B6594 /* UIKit.framework in Frameworks */,
-				74B9326D19AAEB4E003B6594 /* Foundation.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -279,6 +305,8 @@
 			children = (
 				74CB84D219B588F700579432 /* OAuthViewController.h */,
 				74CB84D319B588F700579432 /* OAuthViewController.m */,
+				7493294E19D5C2DB003A2388 /* SessionMananger.h */,
+				7493294F19D5C2DB003A2388 /* SessionMananger.m */,
 				74B932A419AAEC55003B6594 /* LoginViewController.h */,
 				74B932A519AAEC55003B6594 /* LoginViewController.m */,
 				7493294B19D27622003A2388 /* MyFBSessionTokenCachingStrategy.h */,
@@ -309,6 +337,15 @@
 		74B9326B19AAEB4E003B6594 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				7493295F19D60FD3003A2388 /* GooglePlus.bundle */,
+				74B932A919AC29CD003B6594 /* FBUserSettingsViewResources.bundle */,
+				7493295B19D60FB1003A2388 /* GoogleOpenSource.framework */,
+				7493295C19D60FB1003A2388 /* GooglePlus.framework */,
+				7493295919D60F4D003A2388 /* SystemConfiguration.framework */,
+				7493295719D60F41003A2388 /* Security.framework */,
+				7493295519D60F30003A2388 /* CoreText.framework */,
+				7493295319D60EEB003A2388 /* AssetsLibrary.framework */,
+				7493295119D60EE1003A2388 /* AddressBook.framework */,
 				7493294919D12D1C003A2388 /* FacebookSDK.framework */,
 				74FE265619CA721400801CA1 /* MapKit.framework */,
 				74065AEC19C940490033DA71 /* CoreLocation.framework */,
@@ -316,7 +353,6 @@
 				74B932AB19AC2AD1003B6594 /* Accounts.framework */,
 				74B932AC19AC2AD1003B6594 /* AdSupport.framework */,
 				74B932AD19AC2AD1003B6594 /* Social.framework */,
-				74B932A919AC29CD003B6594 /* FBUserSettingsViewResources.bundle */,
 				74B9326C19AAEB4E003B6594 /* Foundation.framework */,
 				74B9326E19AAEB4E003B6594 /* CoreGraphics.framework */,
 				74B9327019AAEB4E003B6594 /* UIKit.framework */,
@@ -597,6 +633,7 @@
 				74065AEB19C923540033DA71 /* linkedin.jpg in Resources */,
 				74B9327719AAEB4E003B6594 /* InfoPlist.strings in Resources */,
 				74B932AA19AC29CD003B6594 /* FBUserSettingsViewResources.bundle in Resources */,
+				7493296019D60FD3003A2388 /* GooglePlus.bundle in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -656,6 +693,7 @@
 				74CB84FB19BBD14200579432 /* OARequestParameter.m in Sources */,
 				749366FA19CDE688003B3108 /* TWAccessToken.m in Sources */,
 				74FE265A19CA72A300801CA1 /* MapViewController.m in Sources */,
+				7493295019D5C2DB003A2388 /* SessionMananger.m in Sources */,
 				74B9331419AD8695003B6594 /* STHTTPRequest.m in Sources */,
 				74B9330E19AD8695003B6594 /* STTwitterHTML.m in Sources */,
 				74B9330F19AD8695003B6594 /* STTwitterOAuth.m in Sources */,

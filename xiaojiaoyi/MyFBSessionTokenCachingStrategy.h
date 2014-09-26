@@ -10,7 +10,14 @@
 
 @interface MyFBSessionTokenCachingStrategy : FBSessionTokenCachingStrategy
 
-@property (nonatomic, strong) NSString *tokenFilePath;
+@property (nonatomic) NSString *filePath;
+@property (nonatomic) NSString *filename;
+@property (nonatomic) NSString *file;
+
 - (NSString *) filePath;
+
+-(instancetype) initWithFilePath:(NSString *)filepath andFileName:(NSString*)filename;
+
+
 
 @end
