@@ -14,10 +14,7 @@
 @property (nonatomic) NSString *filename;
 @property (nonatomic) NSString *file;
 
-- (NSString *) filePath;
-
 -(instancetype) initWithFilePath:(NSString *)filepath andFileName:(NSString*)filename;
-
 
 
 @end

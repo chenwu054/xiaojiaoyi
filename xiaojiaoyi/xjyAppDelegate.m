@@ -9,14 +9,13 @@
 #import "xjyAppDelegate.h"
 #import <FacebookSDK/FacebookSDK.h>
 #import "LoginViewController.h"
-#import "SessionMananger.h"
 
 @implementation xjyAppDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
     // Override point for customization after application launch.
-    [FBLoginView class];
+    //[FBLoginView class];
     
     //do not check FBSession 
     // Whenever a person opens the app, check for a cached session
@@ -77,7 +76,8 @@
 {
     // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
     //this will clean up the flow and eventually transtion to the closeLoginFailed
-    [FBAppCall handleDidBecomeActiveWithSession:self.sessionManager.fbSession];
+    
+    [FBAppCall handleDidBecomeActiveWithSession:[SessionManager fbSession]];
     
 }
 
@@ -86,8 +86,7 @@
     // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
     
     //good practice, transition state to closed but does NOT clear cached data or delete session
-    [self.sessionManager.fbSession close];
-    
+    [[SessionManager fbSession] close];
 }
 
 - (NSDictionary *)parametersDictionaryFromQueryString:(NSString *)queryString {
@@ -124,7 +123,7 @@
     
     //let FBAppCall handle incoming url
     //NSLog(@"appDelegate handle openURL:%@",url);
-    return [FBAppCall handleOpenURL:url sourceApplication:sourceApplication withSession:self.sessionManager.fbSession];
+    return [FBAppCall handleOpenURL:url sourceApplication:sourceApplication withSession:[SessionManager fbSession]];
 }
 
 

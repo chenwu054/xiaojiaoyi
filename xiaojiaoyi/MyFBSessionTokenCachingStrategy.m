@@ -25,56 +25,30 @@ static NSString* kFilename = @"TokenInfo.plist";
     if(self){
         _filename = filename;
         _filePath = filepath;
-        NSString * dir = [self documentPath];
-        NSString *parentDir=[NSString stringWithFormat:@"%@/%@",dir,_filePath];
-        _file = [NSString stringWithFormat:@"%@/%@",parentDir,_filename];
-        
+        _file = [NSString stringWithFormat:@"%@/%@",_filePath,_filename];
         //if the path does not exist, create a new one
         if (![[NSFileManager defaultManager] fileExistsAtPath:_file])
-            [[NSFileManager defaultManager] createDirectoryAtPath:parentDir withIntermediateDirectories:YES attributes:nil error:NULL];
-        
+            [[NSFileManager defaultManager] createDirectoryAtPath:_filePath withIntermediateDirectories:YES attributes:nil error:NULL];
     }
     return self;
 }
 
--(NSString *)documentPath
-{
-    NSArray *paths =
-    NSSearchPathForDirectoriesInDomains(NSDocumentDirectory,
-                                        NSUserDomainMask, YES);
-    NSString *documentsDirectory = [paths lastObject];
-    return documentsDirectory;
-}
-- (NSString *) filePath {
-    NSArray *paths =
-    NSSearchPathForDirectoriesInDomains(NSDocumentDirectory,
-                                        NSUserDomainMask, YES);
-    NSString *documentsDirectory = [paths lastObject];
-    return [documentsDirectory stringByAppendingPathComponent:kFilename];
-}
 
-- (void) writeData:(NSDictionary *) data {
+- (void) writeData:(NSDictionary *)data {
     //NSLog(@"write File = %@ and Data = %@", _file, data);
     BOOL success = [data writeToFile:_file atomically:YES];
     if (!success) {
         NSLog(@"Error writing to file");
     }
-    
-//    NSLog(@"-----------");
-//    NSDirectoryEnumerator * enumerator= [[NSFileManager defaultManager] enumeratorAtPath: [self documentPath]];
-//    for(NSURL * url in enumerator){
-//        NSLog(@"file is %@",url);
-//    }
 }
 
-- (NSDictionary *) readData {
+- (NSDictionary *)readData {
     NSDictionary *data = [[NSDictionary alloc] initWithContentsOfFile:_file];
     //NSLog(@"read File = %@ and data = %@", _file, data);
     return data;
 }
 
 - (void)cacheFBAccessTokenData:(FBAccessTokenData *)accessToken {
-
     NSDictionary *tokenInformation = [accessToken dictionary];
     //NSLog(@"about to cache FB Token data:%@",tokenInformation);
 
@@ -101,6 +75,5 @@ static NSString* kFilename = @"TokenInfo.plist";
 {
     [self writeData:[NSDictionary dictionaryWithObjectsAndKeys:nil]];
 }
-
 
 @end
