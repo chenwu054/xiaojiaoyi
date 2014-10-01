@@ -16,75 +16,34 @@
 #define PROFILE_FILE_NAME "profile.plist"
 #define PROFILE_IMAGE_FILE "profile.image"
 
+#define XJY_URL_SCHEME "study.xiaojiaoyi"
+
 #define APP_ID "337462276428867"
 
+#define TW_ACCESS_TOKEN_KEY "access_token";
+#define TW_ACCESS_TOKEN_SECRET_KEY "access_token_secret";
+#define TW_REQUEST_TOKEN_KEY "request_token";
+#define TW_REQUEST_TOKEN_SECRET_KEY "request_token_secret";
+#define TW_OAUTH_VERIFIER_KEY "oauth_verifier";
+#define TW_OAUTH_VERIFIER_TOKEN_KEY "oauth_verfier_token";
+#define TW_USER_ID_KEY "user_id";
+#define TW_SCREEN_NAME_KEY "screen_name";
+#define TW_USER_NAME_KEY "user_name";
+#define TW_USER_IMAGE_URL_KEY "user_image_url";
+
+#define LK_ACCESS_TOKEN "access_token"
+#define LK_EXPIRES_IN "expires_in"
+#define LK_REQUEST_TOKEN "request_token"
+//#define LK_API_KEY @"75iapcxav6yub5";
+//#define LK_DEFAULT_SCOPE @"r_basicprofile"
+//#define LK_DEFAULT_STATE @"ThisIsARandomeState"
+//#define LK_REDIRECT_URL @"http://xiaojiaoyi_linkedin_redirectURL"
 
 @implementation SessionManager
 
-static BOOL isTwitter;
-static BOOL isLinkedin;
-static NSString* redirectURL;
-
-#pragma mark - utils
-
-//here @synchronized is not used because only main thread will use this method
-+(NSString*)documentsDir
-{
-    static NSString *documentsDir;
-    if(!documentsDir){
-        NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
-        documentsDir = [paths firstObject];
-    }
-    return documentsDir;
-}
-
-//here @synchronized is not used because only main thread will use this method
-+(NSString*)tokenCacheDir
-{
-    static NSString *tokenCacheDir;
-    
-    if(!tokenCacheDir){
-        tokenCacheDir = [NSString stringWithFormat:@"%@/%@",[self documentsDir],@LOGIN_TOKEN_DIR];
-    }
-    
-    return tokenCacheDir;
-}
-
-+(NSString*)getFileDirWithOAuthType:(MyOAuthLoginType)oauthType
-{
-    if(oauthType==FACEBOOK){
-        return [NSString stringWithFormat:@"%@/%@",[self tokenCacheDir],@FACEBOOK_DIR];
-    }
-    else if(oauthType == LINKEDIN){
-        return [NSString stringWithFormat:@"%@/%@",[self tokenCacheDir],@LINKEDIN_DIR];
-    }
-    else if(oauthType == TWITTER){
-        return [NSString stringWithFormat:@"%@/%@",[self tokenCacheDir],@TWITTER_DIR];
-    }
-    else if(oauthType == GOOGLE){
-        return [NSString stringWithFormat:@"%@/%@",[self tokenCacheDir],@GOOGLE_DIR];
-    }
-    else
-        return nil;
-}
-
-+(NSString*)getFilePathWithOAuthLoginType:(MyOAuthLoginType)oauthType withFilename:(NSString*)filename
-{
-    NSString *dir = [self getFileDirWithOAuthType:oauthType];
-    return dir?[NSString stringWithFormat:@"%@/%@",dir,filename]:nil;
-}
-+(NSArray *)getUsernameAndImageURLWithOAuthType:(MyOAuthLoginType)oauthType
-{
-    NSString *filePath = [self getFilePathWithOAuthLoginType:oauthType withFilename:@PROFILE_FILE_NAME];
-    return filePath?[NSArray arrayWithContentsOfFile:filePath]:nil;
-}
-
-+(BOOL)writeUsername:(NSString*)username imageURL:(NSString*)imageURL forOAuthType:(MyOAuthLoginType)oauthType
-{
-    NSArray * arr = [NSArray arrayWithObjects:username,imageURL, nil];
-    NSString *filePath = [self getFilePathWithOAuthLoginType:oauthType withFilename:@PROFILE_FILE_NAME];
-    return [arr writeToFile:filePath atomically:YES];
-}
+static TWSession* twSession;
+static FBSession* fbSession;
+static NSDictionary* lkSession;
 
 
 #pragma mark - login flow methods
@@ -120,37 +79,110 @@ static NSString* redirectURL;
 {
     
 }
+//============================================================================
+#pragma mark - linkedin login methods
++(BOOL)writeLKSessionCache:(NSDictionary*)session
+{
+    NSString *filePath = [self getFileDirWithOAuthType:LINKEDIN];
+    NSString *file = [self getFilePathWithOAuthLoginType:LINKEDIN withFilename:@TOKEN_FILE_NAME];
+    //NSLog(@"linkedin file is %@",file);
+    if (![[NSFileManager defaultManager] fileExistsAtPath:file])
+        [[NSFileManager defaultManager] createDirectoryAtPath:filePath withIntermediateDirectories:YES attributes:nil error:NULL];
+    
+    return [session writeToFile:file atomically:YES];
+}
++(NSDictionary*)readLKSessionCache
+{
+    NSString *file = [self getFilePathWithOAuthLoginType:LINKEDIN withFilename:@TOKEN_FILE_NAME];
+    lkSession =  [[NSDictionary alloc] initWithContentsOfFile:file];
+    
+    return lkSession;
+}
++(void)clearLKSessionCache
+{
+    NSString *file = [self getFilePathWithOAuthLoginType:LINKEDIN withFilename:@TOKEN_FILE_NAME];
+    NSDictionary * nilDict = nil;
+    [nilDict writeToFile:file atomically:YES];
+    
+}
 
+//============================================================================
 #pragma mark - twitter login methods
++(TWSession*)twSession
+{
+    if(!twSession)
+        twSession = [[TWSession alloc] init];
+    return twSession;
+}
 
-+(void)loginTwitter
++(NSDictionary*)readTWSessionCache
 {
-    
-}
-+(void)logoutTwitter
-{
-    
-}
-+(void)logoutTwitterWithCompletionHanlder:(void(^)(BOOL succes))handler
-{
-    
-}
-+(void)loginTwitterWithCompletionHandler:(void(^)(BOOL success, NSString *accessToken))handler
-{
-    
-}
-+(BOOL)writeTwitterLocalCache
-{
-    
-    return NO;
+    NSString *file = [self getFilePathWithOAuthLoginType:TWITTER withFilename:@TOKEN_FILE_NAME];
+    NSDictionary * dict = [[NSDictionary alloc] initWithContentsOfFile:file];
+    return dict;
 }
 +(BOOL)clearTwitterLocalCache
 {
-    return NO;
+    NSString *file = [self getFilePathWithOAuthLoginType:TWITTER withFilename:@TOKEN_FILE_NAME];
+    NSDictionary * nilDict = nil;
+    return [nilDict writeToFile:file atomically:YES];
 }
-+(NSDictionary*)loadTwitterAccessDataFromCache
++(BOOL)writeProfileImage:(NSData *)imageData
 {
-    return nil;
+//    NSString *filePath = [self getFileDirWithOAuthType:TWITTER];
+    NSLog(@"the data is %@",imageData);
+    NSString *file = [self getFilePathWithOAuthLoginType:TWITTER withFilename:@PROFILE_IMAGE_FILE];
+    //NSLog(@"twitter file is %@",file);
+    
+    BOOL result = [imageData writeToFile:file options:NSDataWritingAtomic error:NULL];
+    NSLog(@"the result is %d", result);
+    return result;
+}
++(void)loadTWSession
+{
+    NSDictionary* dict = [self readTWSessionCache];
+    TWSession *currentSession = [self twSession];
+    currentSession.access_token = [dict valueForKey:@"access_token"];
+    currentSession.access_token_secret = [dict valueForKey:@"access_token_secret"];
+    currentSession.request_token = [dict valueForKey:@"request_token"];
+    currentSession.request_token_secret = [dict valueForKey:@"request_token_secret"];
+    currentSession.oauth_verifier = [dict valueForKey:@"oauth_verifier"];
+    currentSession.oauth_verifier_token=[dict valueForKey:@"oauth_verfier_token"];
+    currentSession.user_id_str = [dict valueForKey:@"user_id"];
+    currentSession.screen_name = [dict valueForKey:@"screen_name"];
+    currentSession.user_name = [dict valueForKey:@"user_name"];
+    currentSession.user_image_url = [dict valueForKey:@"user_image_url"];
+}
++(BOOL) writeTWSessionCache:(NSDictionary*)dict
+{
+    NSString *filePath = [self getFileDirWithOAuthType:TWITTER];
+    NSString *file = [self getFilePathWithOAuthLoginType:TWITTER withFilename:@TOKEN_FILE_NAME];
+    NSLog(@"twitter file is %@",file);
+    
+    if (![[NSFileManager defaultManager] fileExistsAtPath:file])
+        [[NSFileManager defaultManager] createDirectoryAtPath:filePath withIntermediateDirectories:YES attributes:nil error:NULL];
+    
+    if(dict)
+        return [dict writeToFile:file atomically:YES];
+   
+    NSDictionary *data = [[NSDictionary alloc] initWithObjectsAndKeys:
+                          twSession.access_token,@"access_token",
+                          twSession.access_token_secret,@"access_token_secret",
+                          twSession.request_token,@"request_token",
+                          twSession.request_token_secret, @"request_token_secret",
+                          twSession.oauth_verifier, @"oauth_verifier",
+                          twSession.oauth_verifier_token,@"oauth_verfier_token",
+                          twSession.user_id_str,@"user_id",
+                          twSession.screen_name,@"screen_name",
+                          twSession.user_name,@"user_name",
+                          twSession.user_image_url,@"user_image_url",nil];
+    
+    return [data writeToFile:file atomically:YES];
+}
++(void)clearUpTWSession
+{
+    
+    
 }
 
 
@@ -162,12 +194,12 @@ static NSString* redirectURL;
 
 +(FBSession *)fbSessionWithRecreate:(BOOL)recreate
 {
-    static FBSession* fbSession;
-    {
+    //static FBSession* fbSession;
+    
         if(!fbSession || recreate){
             fbSession = [self createFBSession];
         }
-    }
+    
     return fbSession;
 }
 
@@ -330,6 +362,69 @@ static NSString* redirectURL;
         }
         handler(currentSession,currentSession.state,NULL);
     }
+}
+
+
+//========================================================
+#pragma mark - utils
+
+//here @synchronized is not used because only main thread will use this method
++(NSString*)documentsDir
+{
+    static NSString *documentsDir;
+    if(!documentsDir){
+        NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+        documentsDir = [paths firstObject];
+    }
+    return documentsDir;
+}
+
+//here @synchronized is not used because only main thread will use this method
++(NSString*)tokenCacheDir
+{
+    static NSString *tokenCacheDir;
+    
+    if(!tokenCacheDir){
+        tokenCacheDir = [NSString stringWithFormat:@"%@/%@",[self documentsDir],@LOGIN_TOKEN_DIR];
+    }
+    
+    return tokenCacheDir;
+}
+
++(NSString*)getFileDirWithOAuthType:(MyOAuthLoginType)oauthType
+{
+    if(oauthType==FACEBOOK){
+        return [NSString stringWithFormat:@"%@/%@",[self tokenCacheDir],@FACEBOOK_DIR];
+    }
+    else if(oauthType == LINKEDIN){
+        return [NSString stringWithFormat:@"%@/%@",[self tokenCacheDir],@LINKEDIN_DIR];
+    }
+    else if(oauthType == TWITTER){
+        return [NSString stringWithFormat:@"%@/%@",[self tokenCacheDir],@TWITTER_DIR];
+    }
+    else if(oauthType == GOOGLE){
+        return [NSString stringWithFormat:@"%@/%@",[self tokenCacheDir],@GOOGLE_DIR];
+    }
+    else
+        return nil;
+}
+
++(NSString*)getFilePathWithOAuthLoginType:(MyOAuthLoginType)oauthType withFilename:(NSString*)filename
+{
+    NSString *dir = [self getFileDirWithOAuthType:oauthType];
+    return dir?[NSString stringWithFormat:@"%@/%@",dir,filename]:nil;
+}
++(NSArray *)getUsernameAndImageURLWithOAuthType:(MyOAuthLoginType)oauthType
+{
+    NSString *filePath = [self getFilePathWithOAuthLoginType:oauthType withFilename:@PROFILE_FILE_NAME];
+    return filePath?[NSArray arrayWithContentsOfFile:filePath]:nil;
+}
+
++(BOOL)writeUsername:(NSString*)username imageURL:(NSString*)imageURL forOAuthType:(MyOAuthLoginType)oauthType
+{
+    NSArray * arr = [NSArray arrayWithObjects:username,imageURL, nil];
+    NSString *filePath = [self getFilePathWithOAuthLoginType:oauthType withFilename:@PROFILE_FILE_NAME];
+    return [arr writeToFile:filePath atomically:YES];
 }
 
 #pragma mark - debug

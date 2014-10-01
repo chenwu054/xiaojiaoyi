@@ -8,57 +8,19 @@
 
 #import "OAuthViewController.h"
 
-#define LINKEDIN_REDIRECT_URL @"http://xiaojiaoyi_linkedin_redirectURL"
+#define LINKEDIN_REDIRECT_URL @"http://localhost.xiaojiaoyi"
 #define LINKEDIN_API_KEY @"75iapcxav6yub5"
 #define LINKEDIN_SECRET @"jUcSjy0xlLY0oaJC"
 
 @interface OAuthViewController ()
 @property (weak, nonatomic) IBOutlet UIWebView *webView;
-@property (weak,nonatomic) NSURLConnection *connection;
 @property (strong,nonatomic) NSString *accessToken;
 @property (strong,nonatomic) NSNumber* expiration;
 @end
 
 @implementation OAuthViewController
 
-#pragma mark - property setup
-- (void) setWebView:(UIWebView *)webView
-{
-    if(!_webView){
-        _webView = webView;
-        _webView.delegate = self;
-        _webView.userInteractionEnabled=true;
-    }
-}
-- (void) setConnection:(NSURLConnection *)connection
-{
-    if(!_connection){
-        _connection = connection;
-    }
-}
-
-
-//-(void)connection:(NSURLConnection *)connection didReceiveResponse:(NSURLResponse *)response
-//{
-//    NSLog(@"connection:didReceiveResponse : %@",response);
-//}
-
-//-(void) requestForAccessToken:(NSString*) authCode
-//{
-//    NSString *newRequest = [NSString stringWithFormat:@"https://www.linkedin.com/uas/oauth2/accessToken?grant_type=authorization_code&code=%@&redirect_uri=%@&client_id=%@&client_secret=%@",authCode,LINKEDIN_REDIRECT_URL,LINKEDIN_API_KEY,LINKEDIN_SECRET];
-//    NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:newRequest]];
-//
-//    NSOperationQueue* q = [[NSOperationQueue alloc] init];
-//    [NSURLConnection sendAsynchronousRequest:request queue:q completionHandler:^(NSURLResponse *response, NSData *data, NSError *connectionError) {
-//        NSLog(@"%@",response);
-//        NSLog(@"------------");
-//        //NSLog(@"%@",data);
-//        //[self.webView loadRequest:request];
-//    }];
-//}
-
-
-#pragma mark - business logic methods
+#pragma mark - OAuth logic methods
 -(void) requestForAuthToken
 {
     //NSLog(@"request is: %@",_requestURL);
@@ -67,16 +29,7 @@
      this method sends a request to the URL
      and load the response to the webview for user authentication.
      */
-    
-    
     [self.webView loadRequest:request];
-}
-
--(IBAction)doneInWebview:(UIStoryboardSegue *)segue
-{
-    //TODO: verify the _twitterOAuthToken is the same as oauth_token got in the step1.
-    NSLog(@"calling the unwind method");
-    
 }
 
 #pragma mark - UIWebView delegate methods
@@ -87,8 +40,6 @@
  */
 -(BOOL) webView:(UIWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)navigationType
 {
-
-    
     NSString * requestStr = [request description];
     NSString * url = [request.URL description];
     //NSLog(@"about to send request : %@ ",requestStr);
@@ -98,103 +49,64 @@
      Upon successful authorization by the user, the url will be redirected by Twitter to the callback URL with oauth_token and oauth_verifier included in the request.
      This url is intercepted and segue back to LoginViewController for further steps with oauth_token and verifer passed
      */
-    if(_isFacebook){
-        NSArray *arr = [url componentsSeparatedByString:@"?"];
-        if(arr.count > 1){
-            NSDictionary* dict = [self parseResponseData:arr[1]];
-            NSString * code = [dict valueForKeyPath:@"code"];
-            NSLog(@"FB the code is: %@",code);
-            
-        }
-    }
-    else if(_isTwitter){
+    if(_isTwitter){
         NSArray *arr = [url componentsSeparatedByString:@"?"];
         NSMutableDictionary *dict = nil;
         if(arr.count>1){
-            dict = [self parseResponseData:arr[1]];
+            NSString *data = arr[1];
+            NSRange cancelRange = [data rangeOfString:@"Cancel"];
+            if(cancelRange.location != NSNotFound){
+                [self performSegueWithIdentifier:@"unwind Linkedin segue" sender:self];
+                return NO;
+            }
+            dict = [self parseResponseData:data];
+            if([dict valueForKey:@"oauth_verifier"]!=nil){
+                LoginViewController *loginVC = (LoginViewController *)[self presentingViewController];
+                
+                loginVC.twSession.oauth_verifier_token=[dict valueForKey:@"oauth_token"];
+                //loginVC.twitterOAuthToken = [dict valueForKey:@"oauth_token"];
+                loginVC.twSession.oauth_verifier=[dict valueForKey:@"oauth_verifier"];
+                //loginVC.twitterOAuthTokenVerifier = [dict valueForKey:@"oauth_verifier"];
+                [self performSegueWithIdentifier:@"unwind Linkedin segue" sender:self];
+                return NO;
+            }
         }
-        if([dict valueForKey:@"oauth_verifier"]!=nil){
-            LoginViewController *loginVC = (LoginViewController *)[self presentingViewController];
-            loginVC.twAccessToken.oauth_verifier_token=[dict valueForKey:@"oauth_token"];
-            loginVC.twitterOAuthToken = [dict valueForKey:@"oauth_token"];
-            loginVC.twAccessToken.oauth_verifier=[dict valueForKey:@"oauth_verifier"];
-            loginVC.twitterOAuthTokenVerifier = [dict valueForKey:@"oauth_verifier"];
-            [self performSegueWithIdentifier:@"unwind Linkedin segue" sender:self];
-            return NO;
-        }
+        return YES;
     }
     //Linkedin login
     /*
      upon successful authorization by the user, the url will be redirected by Linkedin to a new URL indicating auth code and state.
      This url is intercepted and replaced by a new url requesting for access token.
      */
-    else if(_isLinkedin && [requestStr rangeOfString:@"code="].location!= NSNotFound && [requestStr rangeOfString:@"&state="].location!= NSNotFound){
-        int start = (int)[requestStr rangeOfString:@"code="].location+5;
-        int stateStart = (int)[requestStr rangeOfString:@"&state="].location+7;
-        NSLog(@"%d, %d",start,stateStart);
-        NSString * authCode = [requestStr substringWithRange:NSMakeRange(start, stateStart-7-start)];
-        NSString * state = [requestStr substringFromIndex:stateStart];
-        NSLog(@"auth code is %@ : and state is %@", authCode, state);
-        //[self requestForAccessToken:authCode];
-        
-        /*
-         this is a new request for access token using the auth code from last redirect.
-         */
-        NSString *newRequest = [NSString stringWithFormat:@"https://www.linkedin.com/uas/oauth2/accessToken?grant_type=authorization_code&code=%@&redirect_uri=%@&client_id=%@&client_secret=%@",authCode,LINKEDIN_REDIRECT_URL,LINKEDIN_API_KEY,LINKEDIN_SECRET];
-        request = [NSURLRequest requestWithURL:[NSURL URLWithString:newRequest]];
-        
-        NSLog(@"the new request is : %@",newRequest);
-        /*
-         the request is put on a different queue.
-         */
-        NSOperationQueue* q = [[NSOperationQueue alloc] init];
-        [NSURLConnection sendAsynchronousRequest:request queue:q completionHandler:^(NSURLResponse *response, NSData *data, NSError *connectionError) {
-            NSLog(@"------------");
-
-            //NSLog(@"%@",response); response is the HTTP header
-            // data is the HTTP body, access token is in the body.
-            NSString *responseBody = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
-            if([responseBody rangeOfString:@"access_token"].location!=NSNotFound){
-                NSMutableCharacterSet * delimiters = [NSMutableCharacterSet characterSetWithCharactersInString:@"\" ,:{}"];
-                NSArray * components = [responseBody componentsSeparatedByCharactersInSet:delimiters];
-//                for(int i=0;i<components.count;i++){
-//                    NSLog(@"%d : %@",i,components[i]);
-//                }
-                self.accessToken = [NSString stringWithString:components[5]];
-                //long number = [components[10] longValue];
-                NSNumber *number = @([components[10] intValue]);
-                NSLog(@"%@  %@",number,self.accessToken);
-                
-                //self.expiration = [NSNumber numberWithLong:components[10]];
-                //int accessTokenStart =[responseBody rangeOfString:@"access_token"].location;
-                
-                /*
-                 programetically unwind the segue to its presenting segue.
-                 */
-                [[self presentingViewController] dismissViewControllerAnimated:YES completion:nil];
-                //[self dismissViewControllerAnimated:YES completion:nil];
+    else if(_isLinkedin){
+        //NSLog(@"the request str is %@",requestStr);
+        NSRange xjyRange = [requestStr rangeOfString:@"https://www.linkedin.com"];
+        if(xjyRange.location == NSNotFound){
+            NSArray *info = [requestStr componentsSeparatedByString:@"?"];
+            
+            if(info.count>1){
+                NSMutableDictionary * data = [self parseResponseData:info[1]];
+                if([data valueForKey:@"error"]){
+                    [self performSegueWithIdentifier:@"unwind Linkedin segue" sender:self];
+                    return NO;
+                }
+                else{
+                    NSString *code= [data valueForKeyPath:@"code"];
+                    NSString *state = [data valueForKeyPath:@"state"];
+                    LoginViewController *loginVC= (LoginViewController*)[self presentingViewController];
+                    loginVC.lkCallbackCode = code;
+                    loginVC.lkCallbackState = state;
+                    [self performSegueWithIdentifier:@"unwind Linkedin segue" sender:self];
+                    return NO;
+                }
                 
             }
-            //NSLog(@"response body: %@",responseBody);
-        }];
-
-        //[self.webView loadRequest:request];
+        }
     }
     return YES;
 }
 
-#pragma mark - utils methods
--(NSMutableDictionary*) parseResponseData:(NSString*)string
-{
-    NSArray *compnents = [string componentsSeparatedByString:@"&"];
-    NSMutableDictionary * dict = [[NSMutableDictionary alloc] init];
-    for(int i=0;i<compnents.count;i++){
-        NSString *subString = compnents[i];
-        NSArray * keyVal = [subString componentsSeparatedByString:@"="];
-        [dict setValue:keyVal[1] forKey:keyVal[0]];
-    }
-    return dict;
-}
+
 
 #pragma mark - view controller lifecycle methods
 
@@ -214,22 +126,35 @@
     
 }
 
+#pragma mark - utils methods
+-(NSMutableDictionary*) parseResponseData:(NSString*)string
+{
+    NSArray *compnents = [string componentsSeparatedByString:@"&"];
+    NSMutableDictionary * dict = [[NSMutableDictionary alloc] init];
+    for(int i=0;i<compnents.count;i++){
+        NSString *subString = compnents[i];
+        NSArray * keyVal = [subString componentsSeparatedByString:@"="];
+        [dict setValue:keyVal[1] forKey:keyVal[0]];
+    }
+    return dict;
+}
+
+#pragma mark - property setup
+- (void) setWebView:(UIWebView *)webView
+{
+    if(!_webView){
+        _webView = webView;
+        _webView.delegate = self;
+        _webView.userInteractionEnabled=true;
+    }
+}
+
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    // Do any additional setup after loading the view.
     [self requestForAuthToken];
-    
 }
 
-- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
-{
-    self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
-    if (self) {
-        // Custom initialization
-    }
-    return self;
-}
 
 - (void)didReceiveMemoryWarning
 {

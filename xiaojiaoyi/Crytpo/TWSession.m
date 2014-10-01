@@ -18,7 +18,7 @@ static NSString* twUserProfilePath = @"/1.1/users/show.json";
 
 @implementation TWSession
 
--(NSURL*) getURL
+-(NSURL*) getRequestTokenURL
 {
     NSURLComponents *components=[[NSURLComponents alloc] init];
     components.scheme=@"https";
@@ -147,7 +147,6 @@ static NSString* twUserProfilePath = @"/1.1/users/show.json";
         NSHTTPURLResponse * httpResponse = (NSHTTPURLResponse *)response;
         //NSLog(@"getAccessToken: the status code: %ld",httpResponse.statusCode);
         if(httpResponse.statusCode==200){
-            
             NSString *string = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
             //NSLog(@"the data is %@",string);
             //NSLog(@"the response is %@",httpResponse);
@@ -171,7 +170,7 @@ static NSString* twUserProfilePath = @"/1.1/users/show.json";
 {
     OAConsumer *consumer = [[OAConsumer alloc] initWithKey:consumer_key secret:consumer_secret];
     OAToken *token = [[OAToken alloc] initWithKey:nil secret:nil];
-    NSURL *url = [self getURL];
+    NSURL *url = [self getRequestTokenURL];
     TWMutableURLRequest *request = [[TWMutableURLRequest alloc] initWithURL: url consumer:consumer token:token callbackURL:callbackURL signatureProvider:nil];
     [request setHTTPMethod:@"POST"];
     [request prepare];
@@ -187,9 +186,8 @@ static NSString* twUserProfilePath = @"/1.1/users/show.json";
             NSMutableDictionary *dict = [self parseResponseData:string];
             _request_token = [dict valueForKey:@"oauth_token"];
             _request_token_secret = [dict valueForKey:@"oauth_token_secret"];
-            //NSLog(@"request token is %@, request token secret is %@",_oauth_token, _oauth_token_secret);
+            //NSLog(@"request token is %@, request token secret is %@",_request_token, _request_token_secret);
             //NSLog(@"the response body is %@", [NSString stringWithUTF8String:[data bytes]]);
-            
             completionTask(YES, response, error);
         }
         //TODO: error handling

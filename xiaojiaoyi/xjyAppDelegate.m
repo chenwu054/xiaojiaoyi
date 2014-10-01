@@ -123,6 +123,17 @@
     
     //let FBAppCall handle incoming url
     //NSLog(@"appDelegate handle openURL:%@",url);
+    
+    
+//    NSString * urlStr = [url description];
+//    NSLog(@"urlStr is %@",urlStr);
+//    NSRange linkedinRange = [urlStr rangeOfString:@"linkedin"];
+//    LoginViewController *loginVC = [[LoginViewController alloc] init];
+//    loginVC.linkedinCallback=urlStr;
+//    if(linkedinRange.location!=NSNotFound){
+//        //[self.window.rootViewController presentViewController:loginVC animated:YES completion:nil];
+//        return YES;
+//    }
     return [FBAppCall handleOpenURL:url sourceApplication:sourceApplication withSession:[SessionManager fbSession]];
 }
 

@@ -13,24 +13,29 @@
 #import "MyFBSessionTokenCachingStrategy.h"
 #import "SessionManager.h"
 
-@interface LoginViewController : UIViewController <FBLoginViewDelegate,UIAlertViewDelegate,UIActionSheetDelegate>
+@interface LoginViewController : UIViewController <FBLoginViewDelegate,UIAlertViewDelegate,UIActionSheetDelegate,NSXMLParserDelegate>
 
 //@property (nonatomic) MyOAuthLoginType currentLoginType;
-
+//overall properties
+@property (nonatomic) BOOL isUserLogin;
 @property (nonatomic) BOOL isTwitter;
 @property (nonatomic) BOOL isLinkedin;
 @property (nonatomic) BOOL isFacebook;
-@property (nonatomic) NSString *twitterOAuthToken;
-@property (nonatomic) NSString *twitterOAuthTokenVerifier;
-@property (nonatomic) TWSession *twAccessToken;
-@property (nonatomic) NSInteger twLoginRetryLimit;
-@property (nonatomic) BOOL isUserLogin;
 
-@property (nonatomic) MyFBSessionTokenCachingStrategy *myFBTokenCachingStrategy;
-//@property (nonatomic) SessionManager *sessionManager;
+//linkedin properties
+@property (nonatomic) NSString* linkedinCallback;
+@property (nonatomic) NSString* lkCallbackCode;
+@property (nonatomic) NSString* lkCallbackState;
+
+//twitter properties
+@property (nonatomic) TWSession *twSession;
+@property (nonatomic) NSInteger twLoginRetryLimit;
+
+//facebook properties
+
 @property (nonatomic) UIActivityIndicatorView *spinner;
 
-- (void)setOAuthToken:(NSString *)token oauthVerifier:(NSString *)verifier;
+//- (void)setOAuthToken:(NSString *)token oauthVerifier:(NSString *)verifier;
 
 
 @end

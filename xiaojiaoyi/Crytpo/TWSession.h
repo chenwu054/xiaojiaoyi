@@ -20,10 +20,12 @@
 @property (nonatomic) NSString* oauth_verifier_token; //this is the token returned back together with oauth_verifier and should be the same as request_token.
 @property (nonatomic) NSString* user_id_str;
 @property (nonatomic) NSString* screen_name;
-@property (nonatomic) OAToken* accessToken;
-
 @property (nonatomic) NSString* user_name;
 @property (nonatomic) NSString* user_image_url;
+
+@property (nonatomic) OAToken* accessToken;
+
+
 
 
 -(void) getRequestTokenWithCompletionTask:(void (^)(BOOL success, NSURLResponse *response, NSError *error))completionTask;

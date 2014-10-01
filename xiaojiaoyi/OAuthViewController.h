@@ -11,6 +11,7 @@
 
 @interface OAuthViewController : UIViewController <UIWebViewDelegate,NSURLConnectionDelegate>
 @property (strong, nonatomic) NSString * requestURL;
+
 @property (nonatomic) BOOL isTwitter;
 @property (nonatomic) BOOL isLinkedin;
 @property (nonatomic) BOOL isFacebook;

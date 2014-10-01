@@ -18,12 +18,20 @@
 #define TWITTER_CONSUMER_NAME @"xiaojiaoyi"
 #define TWITTER_CONSUMER_KEY /*@"sRtlhqgVCwIFNooYsr8X1sptO"*/ @"PdLBPYUXlhQpt4AguShUIw"
 #define TWITTER_CONSUMER_SECRET /*@"JomNUiwkkHoZ9I1jhwyUbtDBWoLrHMmBB61CoYf9t57l5z2x8h"*/ @"drdhGuKSingTbsDLtYpob4m5b5dn1abf9XXYyZKQzk"
+#define TWITTER_AUTHENTICATE_URL_FORMAT @"https://api.twitter.com/oauth/authenticate?oauth_token=%@"
+
 #define LINKEDIN_API_KEY @"75iapcxav6yub5"
 #define LINKEDIN_DEFAULT_SCOPE @"r_basicprofile"
 #define LINKEDIN_DEFAULT_STATE @"ThisIsARandomeState"
 #define LINKEDIN_REDIRECT_URL @"http://xiaojiaoyi_linkedin_redirectURL"
 #define LINKEDIN_SECRET @"jUcSjy0xlLY0oaJC"
 #define LINKEDIN_AUTHENTICATION_CODE_BASE_URL @"https://www.linkedin.com/uas/oauth2/authorization?response_type=code"
+
+#define LK_ACCESS_TOKEN @"access_token"
+#define LK_EXPIRES_IN @"expires_in"
+#define LK_REQUEST_TOKEN @"request_token"
+#define LK_CALLBACK_CODE @"callback_code"
+
 #define PROFILE_VIEW_HEIGHT 30;
 #define PROFILE_VIEW_WIDTH 130;
 #define PROFILE_SEPARATION (PROFILE_VIEW_WIDTH-4*PROFILE_VIEW_HEIGHT)/5;
@@ -44,10 +52,22 @@
 @property (nonatomic) IBOutlet UIView *profileView;
 @property (weak, nonatomic) IBOutlet UIButton *fbButton;
 @property (nonatomic) IBOutlet UIButton *twitterLoginButton;
-@property (strong, nonatomic) STTwitterAPI * twitterAPI;
+
 @property (nonatomic) NSString* redirectURL;
 @property (nonatomic) NSURLSession * session;
-@property (nonatomic) BOOL isFBLogedin;
+//linkedin private properties
+@property (nonatomic) BOOL isLKLogggedin;
+@property (nonatomic) NSString *lkAccessToken;
+@property (nonatomic) NSString *lkExpiresIn;
+@property (nonatomic) NSMutableDictionary* lkParams;
+
+//facebook properties
+@property (nonatomic) BOOL isFBLoggedin;
+@property (nonatomic) MyFBSessionTokenCachingStrategy *myFBTokenCachingStrategy;
+//twitter properties
+@property (nonatomic) BOOL isTWLoggedin;
+@property (nonatomic) NSString *twRedirectURL;
+
 
 @end
 
@@ -56,26 +76,82 @@
 //google OAuth login client ID
 //static NSString * const kClientId= @"100128444749-l3hh0v0as5n6t4rnp3maciodja4oa4nc.apps.googleusercontent.com";
 #pragma mark - login work methods
-
-
-
-//======================================
-
--(void) setOAuthToken:(NSString *)token oauthVerifier:(NSString *)verifier
+-(void)removeProfileViewOfOAuthType:(MyOAuthLoginType)oauthType
 {
-    
+    CGFloat lowerBound;
+    CGFloat width = _profileView.frame.size.height;
+    switch (oauthType) {
+        case FACEBOOK:
+            lowerBound = 0 * width;
+            break;
+        case TWITTER:
+            lowerBound = 1 * width;
+            break;
+        case LINKEDIN:
+            lowerBound = 2 * width;
+            break;
+        case GOOGLE:
+            lowerBound = 3 * width;
+            break;
+        default:
+            return;
+    }
+    NSArray *subviews = [_profileView subviews];
+    for(int i=0;i<subviews.count;i++){
+        UIView *view = subviews[i];
+        CGFloat originX = view.frame.origin.x;
+        if(originX >= lowerBound && originX - lowerBound <= width){
+            [view removeFromSuperview];
+            return;
+        }
+    }
 }
 
+//======================================
 #pragma mark - twitter login methods
 -(void)twitterLoginButtonClicked:(UIButton*)sender
 {
-    //NSLog(@"twitterLoginButton clicked");
-    _twAccessToken = [[TWSession alloc] init];
-    [_twAccessToken getRequestTokenWithCompletionTask:^(BOOL success, NSURLResponse *response, NSError *error){
+    if(!_isTWLoggedin)
+    {
+        //1. load local cache
+        [SessionManager loadTWSession];
+        TWSession *twSession = [SessionManager twSession];
+        if(twSession.access_token){
+            NSString *userImageURL = twSession.user_image_url;
+            //NSLog(@"the cached user image url is %@",userImageURL);
+            
+            [_twitterLoginButton setTitle:@"logout twitter" forState:UIControlStateNormal];
+            _isTWLoggedin=YES;
+            [self updateTwitterUserInfoWithImageURL:userImageURL withTrialNumber:0];
+        }
+        //2. startTWLoginByRequestToken
+        else
+            [self startTWLoginByRequestToken];
+        
+    }
+    else{
+        [self logoutTW];
+    }
+    
+}
+
+-(void)logoutTW
+{
+    [self removeProfileViewOfOAuthType:TWITTER];
+    [_twitterLoginButton setTitle:@"login with Twitter" forState:UIControlStateNormal];
+    _isTWLoggedin = NO;
+}
+-(void)startTWLoginByRequestToken
+{
+    if(!_twSession)
+        _twSession = [SessionManager twSession];
+    
+    [_twSession getRequestTokenWithCompletionTask:^(BOOL success, NSURLResponse *response, NSError *error){
         if(success){
             _isTwitter = YES;
             _isLinkedin = NO;
-            _redirectURL = [NSString stringWithFormat:@"https://api.twitter.com/oauth/authenticate?oauth_token=%@",_twAccessToken.request_token];
+            _twRedirectURL = [NSString stringWithFormat:TWITTER_AUTHENTICATE_URL_FORMAT,_twSession.request_token];
+            //NSLog(@"the redirect url is %@",_redirectURL);
             //using a block to call the twitter login
             // should also do the UIKit thing in the main thread!
             dispatch_async(dispatch_get_main_queue(),^{
@@ -84,65 +160,65 @@
         }
         //TODO: error handling
         else{
-        
+            
         }
     }];
-    //[accessToken userAuthorize];
-    
-    
 }
 
--(void) updateTwitterUserInfo
+//twitter unwind method
+-(IBAction)done:(UIStoryboardSegue *)segue
 {
-    NSURLSession * session = [NSURLSession sharedSession];
-    NSURLSessionDownloadTask *task = [session downloadTaskWithURL:[NSURL URLWithString:_twAccessToken.user_image_url] completionHandler:^(NSURL *localFileLocation, NSURLResponse *response, NSError *error) {
-        if(!error){
-            CGRect buttonFrame=[_twitterLoginButton frame];
-            UIView *newView = [[UIView alloc] initWithFrame:buttonFrame];
-            [self.view addSubview:newView];
-            UIImageView *userImage = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, buttonFrame.size.height,buttonFrame.size.height)];
-            userImage.image = [UIImage imageWithData:[NSData dataWithContentsOfURL:localFileLocation]];
-            userImage.layer.cornerRadius = 5.0f;
-            [newView addSubview:userImage];
-            UILabel * nameLabel = [[UILabel alloc] initWithFrame:CGRectMake(buttonFrame.size.height+30, 0, buttonFrame.size.width-buttonFrame.size.height-10, buttonFrame.size.height)];
-            nameLabel.text = _twAccessToken.user_name;
-            NSLog(@"user name is %@",_twAccessToken.user_name);
-            [newView addSubview:nameLabel];
-            [_twitterLoginButton removeFromSuperview];
-        }
-    }];
-    
-    [task resume];
+
+    //user cancelled
+    if(_isTwitter && _twSession.oauth_verifier){
+        [_spinner startAnimating];
+        [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
+        [self getTWAccessTokenAtTrial:0];
+    }
+    else if(_isLinkedin && _lkCallbackCode){
+        //
+        //NSLog(@"going to call request access_token");
+        [self getLKAccessTokenWithCode];
+        
+    }
 }
 
 -(void) getTWAccessTokenAtTrial:(NSInteger)numberOfTrial{
     if(numberOfTrial >= _twLoginRetryLimit){
-        NSLog(@"error did not get user profile");
+        NSLog(@"error: exceeded trial limit and did not get user profile");
+        [_spinner stopAnimating];
+        [[[UIAlertView alloc] initWithTitle:@"check your internet connection"
+                                    message:@"Could not obtain access token, please try again"
+                                   delegate:nil
+                          cancelButtonTitle:@"ok" otherButtonTitles: nil] show];
         //stop UI animation
         return;
     }
-    else if(_twitterOAuthToken && _twitterOAuthTokenVerifier){
+    else if(_twSession.oauth_verifier_token && _twSession.oauth_verifier){
         //send request for access_token
-        [_twAccessToken getAccessTokenWithOAuthToken:_twitterOAuthToken andOAuthVerifier:_twitterOAuthTokenVerifier withCompletionTask:^(NSURLResponse *response, NSError *error,NSString* accessToken, NSString * accessTokenSecret, NSString* screen_name, NSString* user_id){
+        [_twSession getAccessTokenWithOAuthToken:_twSession.oauth_verifier_token andOAuthVerifier:_twSession.oauth_verifier withCompletionTask:^(NSURLResponse *response, NSError *error,NSString* accessToken, NSString * accessTokenSecret, NSString* screen_name, NSString* user_id){
             //NSLog(@"in login view accessToken is %@, access secret is %@, screen name is %@, user_id is %@",accessToken,accessTokenSecret,screen_name,user_id);
             //if successful
             if(!error && user_id && screen_name){
-                _twAccessToken.access_token = accessToken;
-                _twAccessToken.access_token_secret  = accessTokenSecret;
+                _twSession.access_token = accessToken;
+                _twSession.access_token_secret  = accessTokenSecret;
                 
                 //trigger another task to get the user profile. Only after getting the user profile data or it reaches the maximum _twLoginRetryLimit, will the it stop requesting for the user's profile.
-                [_twAccessToken getUserProfileByScreenName:screen_name andUserId:user_id withCompletionTask:^(NSURLResponse *response, NSError *error,NSString *name, NSString *URLString) {
+                [_twSession getUserProfileByScreenName:screen_name andUserId:user_id withCompletionTask:^(NSURLResponse *response, NSError *error,NSString *name, NSString *URLString) {
                     //NSLog(@"in the last user profile completion task");
                     NSHTTPURLResponse * httpResponse = (NSHTTPURLResponse*)response;
                     //success
                     if(httpResponse.statusCode == 200 && !error && name){
                         
-                        _twAccessToken.user_name = name;
-                        _twAccessToken.user_image_url = URLString;
+                        _twSession.user_name = name;
+                        _twSession.user_image_url = URLString;
                         [_spinner stopAnimating];
                         [self showAlertViewWithTitle:@"Login" Message:@"You have successfully logged in with Twitter!"];
                         [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
-                        [self updateTwitterUserInfo];
+                        [self updateTwitterUserInfoWithImageURL:_twSession.user_image_url withTrialNumber:0];
+                        _isTWLoggedin=YES;
+                        [SessionManager writeTWSessionCache:nil];
+                        [_twitterLoginButton setTitle:@"logout twitter" forState:UIControlStateNormal];
                         NSLog(@"got user profile!!!");
                     }
                     else{
@@ -160,6 +236,44 @@
     }
 }
 
+-(void) updateTwitterUserInfoWithImageURL:(NSString*)imageURL withTrialNumber:(NSInteger)num
+{
+    if(num>_twLoginRetryLimit){
+        NSLog(@"ERROR: failed to download the user image");
+        [_spinner stopAnimating];
+        return;
+    }
+    NSURLSession * session = [NSURLSession sharedSession];
+    [_spinner startAnimating];
+    //may need to remove existing twitter profile picture first
+    NSURLSessionDownloadTask *task = [session downloadTaskWithURL:[NSURL URLWithString:imageURL] completionHandler:^(NSURL *localFileLocation, NSURLResponse *response, NSError *error) {
+        if(!error){
+            CGRect profileFrame=[_profileView frame];
+            NSData *imageData=[NSData dataWithContentsOfURL:localFileLocation];
+            UIImage * image = [UIImage imageWithData:imageData];
+            if(!image){
+                [self updateTwitterUserInfoWithImageURL:imageURL withTrialNumber:num+1];
+                return;
+            }
+            //NSLog(@"the image is %@ and url is %@",userImage.image,localFileLocation);
+            dispatch_async(dispatch_get_main_queue(), ^{
+                //remove current profile picture
+                //[self removeProfileViewOfOAuthType:TWITTER];
+                // add new picture
+                UIImageView *userImage = [[UIImageView alloc] initWithFrame:CGRectMake((2*2.0 + profileFrame.size.height), 0, profileFrame.size.height,profileFrame.size.height)];
+                userImage.layer.cornerRadius = 5.0f;
+                userImage.image=image;
+                [_profileView addSubview:userImage];
+                [_spinner stopAnimating];
+                
+                //!!write to local file
+                //[SessionManager writeProfileImage:imageData];
+            });
+        }
+    }];
+
+    [task resume];
+}
 
 #pragma mark - LinkedIn & Twitter
 
@@ -169,52 +283,153 @@
         //NSLog(@"about to segue");
         if([segue.destinationViewController isKindOfClass:[OAuthViewController class]]){
             OAuthViewController *webViewController = (OAuthViewController*)segue.destinationViewController;
-            if(_isLinkedin){
-                webViewController.isTwitter=NO;
-                webViewController.isLinkedin=YES;
-                webViewController.isFacebook=NO;
-                webViewController.requestURL = [NSString stringWithFormat:@"https://www.linkedin.com/uas/oauth2/authorization?response_type=code&client_id=%@&scope=%@&state=%@&redirect_uri=%@",LINKEDIN_API_KEY,LINKEDIN_DEFAULT_SCOPE,LINKEDIN_DEFAULT_STATE,LINKEDIN_REDIRECT_URL];
-            }
-            else if(_isTwitter){
+            if(_isTwitter){
                 webViewController.isLinkedin=NO;
                 webViewController.isTwitter=YES;
-                webViewController.isFacebook=NO;
                 //NSLog(@"the redirect URL is %@",_redirectURL);
-                webViewController.requestURL=_redirectURL;
+                webViewController.requestURL=_twRedirectURL;
                 
             }
-            else if(_isFacebook){
-                NSLog(@"isFacebook");
-                webViewController.isLinkedin=NO;
-                webViewController.isFacebook=YES;
-                webViewController.isTwitter=NO;
-                webViewController.requestURL=@"https://www.facebook.com/dialog/oauth?client_id=337462276428867&redirect_uri=https://www.facebook.com/connect/login_success.html&scope=public_profile,email";
-                
+            else{
+                if(!_isLKLogggedin){
+                    _isLinkedin=YES;
+                    _isTwitter = NO;
+                    webViewController.isTwitter=NO;
+                    webViewController.isLinkedin=YES;
+                    webViewController.requestURL = [NSString stringWithFormat:@"https://www.linkedin.com/uas/oauth2/authorization?response_type=code&client_id=%@&scope=%@&state=%@&redirect_uri=%@",LINKEDIN_API_KEY,LINKEDIN_DEFAULT_SCOPE,LINKEDIN_DEFAULT_STATE,LINKEDIN_REDIRECT_URL];
+                }
             }
+
         }
     }
 }
 
-//twitter unwind method
--(IBAction)done:(UIStoryboardSegue *)segue
+
+//==============================================================
+#pragma mark - linkedin methods
+-(void)getLKAccessTokenWithCode
 {
-    [_spinner startAnimating];
-    [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
+    //NSLog(@"calling the lk request access token");
+    NSString *accessTokenRequest = [NSString stringWithFormat:@"https://www.linkedin.com/uas/oauth2/accessToken?grant_type=authorization_code&code=%@&redirect_uri=%@&client_id=%@&client_secret=%@",_lkCallbackCode,LINKEDIN_REDIRECT_URL,LINKEDIN_API_KEY,LINKEDIN_SECRET];
+    NSURLSession * session = [NSURLSession sharedSession];
+    NSURLSessionDataTask * task = [session dataTaskWithURL:[NSURL URLWithString:accessTokenRequest] completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
+        NSDictionary * result = [NSJSONSerialization JSONObjectWithData:data options:0 error:NULL];
+        _lkExpiresIn =[result valueForKeyPath:@"expires_in"];
+        _lkAccessToken =[result valueForKeyPath:@"access_token"];
+        //NSLog(@"expires_in is %@, access_token is %@",_lkExpiresIn,_lkAccessToken);
+        _lkParams = [[NSMutableDictionary alloc] initWithObjectsAndKeys:_lkExpiresIn,LK_EXPIRES_IN,
+                                _lkAccessToken,LK_ACCESS_TOKEN,
+                                _lkCallbackCode,LK_CALLBACK_CODE,
+                                nil];
+        [self getLKUserProfile];
+        [self getLKUserProfilePicture];
+        
+    }];
+    [task resume];
+}
+-(void)getLKUserProfile
+{
+    NSString *urlStr =[NSString stringWithFormat:@"https://api.linkedin.com/v1/people/~?format=json&oauth2_access_token=%@",_lkAccessToken];
+    //NSLog(@"the url is %@",urlStr);
+    NSURLSession * session = [NSURLSession sharedSession];
+    NSURLSessionDataTask * task = [session dataTaskWithURL:[NSURL URLWithString:urlStr] completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
+        if(!error){
+            //NSString * result = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+            //NSLog(@"the result is %@",result);
+            NSDictionary *userData = [NSJSONSerialization JSONObjectWithData:data options:0 error:NULL];
+            NSLog(@"user data is %@",userData);
+            [_lkParams addEntriesFromDictionary:userData];
+            
+        }
+        
+    }];
+    [task resume];
+}
+
+-(void)getLKUserProfilePicture
+{
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [_spinner startAnimating];
+    });
+    //NSString *userURL = [userData valueForKey:@"siteStandardProfileRequest"];
+    NSString *urlStr=[NSString stringWithFormat:@"https://api.linkedin.com/v1/people/~:(%@)?format=json&oauth2_access_token=%@",@"picture-url",_lkAccessToken];
+    //NSLog(@"the url string for profile picture is %@",urlStr);
+    NSURLSession * session = [NSURLSession sharedSession];
+    NSURLSessionDataTask *task = [session dataTaskWithURL:[NSURL URLWithString:urlStr] completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
+        if(!error){
+            NSDictionary * result = [NSJSONSerialization JSONObjectWithData:data options:0 error:NULL];
+            [_lkParams addEntriesFromDictionary:result];
+            NSString *userPicURL = [result valueForKey:@"pictureUrl"];
+            [self downloadUserProfilePicture:userPicURL];
+            //NSLog(@"result is %@",result);
+        }
+        else{
+            NSLog(@"error is %@",error);
+        }
+        
+    }];
+    [task resume];
+}
+-(void)downloadUserProfilePicture:(NSString *)userPicURL
+{
+    NSString *urlStr=userPicURL;
+    //NSLog(@"the url string for profile picture is %@",urlStr);
+    //[_spinner startAnimating];
+    NSURLSession * session = [NSURLSession sharedSession];
+    NSURLSessionDataTask *task = [session dataTaskWithURL:[NSURL URLWithString:urlStr] completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
+        
+        if(!error){
+            CGFloat height = _profileView.frame.size.height;
+            dispatch_async(dispatch_get_main_queue(), ^{
+                UIImage *image = [UIImage imageWithData:data];
+                
+                UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(2*2.0 + 2*height, 0, height, height)];
+                imageView.image = image;
+                [_profileView addSubview:imageView];
+                [_spinner stopAnimating];
+            });
+        }
+        else{
+            NSLog(@"error is %@",error);
+        }
+        
+        [SessionManager writeLKSessionCache:_lkParams];
+        [_spinner stopAnimating];
+        
+    }];
+    [task resume];
+}
+
+-(void)linkedinLoginTask
+{
+    [_loginLinkedinButton setTitle:@"logout" forState:UIControlStateNormal];
+    _isLKLogggedin = YES;
     
-    [self getTWAccessTokenAtTrial:0];
+}
+-(void)refreshLKAccessToken
+{
     
-    //NSLog(@"oauth token is %@ and verifier is %@",_twitterOAuthToken,_twitterOAuthTokenVerifier);
-    //TODO: verify the _twitterOAuthToken is the same as oauth_token got in the step1.
-    //if successful
-    
-    //NSLog(@"calling the unwind method");
+}
+- (IBAction)linkedinButtonClicked:(id)sender
+{
+    if(_isLKLogggedin){
+        [_loginLinkedinButton setTitle:@"login Linkedin" forState:UIControlStateNormal];
+        _isLKLogggedin = NO;
+    }
+    else{
+        _isLinkedin=YES;
+        _isTwitter = NO;
+    }
     
 }
 
+
+
+//====================================================================
 #pragma mark - FB login methods
 - (IBAction)fbLoginButtonClicked:(id)sender {
     //NSLog(@"fb button clicked");
-    if(!_isFBLogedin){
+    if(!_isFBLoggedin){
         [self testFBLogin];
     }
     else{
@@ -224,7 +439,6 @@
 
 -(void) testFBLogin
 {
-    
     [SessionManager loginFacebookWithCompletionHandler:^(FBSession *session, FBSessionState status, NSError *error) {
         //NSLog(@"session state is %@",session);
         if(status != FBSessionStateOpen && status != FBSessionStateOpenTokenExtended){
@@ -233,7 +447,7 @@
         else{
             [_fbButton setTitle:@"logout" forState:UIControlStateNormal];
             [_fbButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
-            _isFBLogedin = YES;
+            _isFBLoggedin = YES;
             
             [_spinner startAnimating];
             //FB request to get the profile information.
@@ -273,7 +487,7 @@
     if(session.state != FBSessionStateOpen && session.state != FBSessionStateOpenTokenExtended){
         [_fbButton setTitle:@"login" forState:UIControlStateNormal];
         [_fbButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
-        _isFBLogedin = NO;
+        _isFBLoggedin = NO;
     }
     else
         NSLog(@"logout failed");
@@ -302,8 +516,6 @@
     }
    // NSLog(@"action sheet at %ld is clicked",buttonIndex);
 }
-    
-
 
 -(void)showFBActionSheet
 {
@@ -318,15 +530,13 @@
     
 }
 
-
-
 - (void)sessionStateChanged:(FBSession *)session state:(FBSessionState) state error:(NSError *)error
 {
     NSLog(@"In Login view, FB session state changed to %@", session);
     
-    
 }
 
+//=====================================================================
 #pragma mark - UI component respond
 - (void) textFieldDidEndEditing:(UITextField *)sender
 {
@@ -348,9 +558,9 @@
 
 - (IBAction)onLoginButtonClicked:(id)sender
 {
-    [SessionManager refreshFBSessionFromLocalCacheWithCompletionHandler:^(FBSession *session, FBSessionState status, NSError *error) {
-        NSLog(@"3. the session is %@",session);
-    }];
+//    [SessionManager refreshFBSessionFromLocalCacheWithCompletionHandler:^(FBSession *session, FBSessionState status, NSError *error) {
+//        NSLog(@"3. the session is %@",session);
+//    }];
     
     //[self login];
 }
@@ -387,6 +597,8 @@
         [self.loginPasswordTextField resignFirstResponder];
 }
 
+
+//=================================================================
 #pragma mark - login logic
 
 - (void)login
@@ -396,48 +608,50 @@
 }
 
 
-- (BOOL)openSessionWithAllowLoginUI:(BOOL)allowLoginUI {
-    BOOL openSessionResult = NO;
-    // Set up token strategy, if needed
-    if (nil == _myFBTokenCachingStrategy) {
-        _myFBTokenCachingStrategy = [[MyFBSessionTokenCachingStrategy alloc] init];
-    }
-    // Initialize a session object with the tokenCacheStrategy
-    NSLog(@"initial in before open session, state is: %@", FBSession.activeSession);
-    FBSession *session = [[FBSession alloc] initWithAppID:nil permissions:@[@"public_profile"]
-                                          urlSchemeSuffix:nil
-                                       tokenCacheStrategy:_myFBTokenCachingStrategy];
-    [FBSession setActiveSession:session];
-    NSLog(@"initial in open session, state is: %@", FBSession.activeSession);
-    //    [session openWithCompletionHandler:^(FBSession *session, FBSessionState status, NSError *error) {
-    //        NSLog(@"");
-    //    }];
-    
-    // If showing the login UI, or if a cached token is available,
-    // then open the session.
-    if (allowLoginUI || session.state == FBSessionStateCreatedTokenLoaded) {
-        // For debugging purposes log if cached token was found
-        if (session.state == FBSessionStateCreatedTokenLoaded){
-            NSLog(@"Cached token found.");
-        }
-        // Set the active session
-        [FBSession setActiveSession:session];
-        // Open the session.
-        [session openWithBehavior:FBSessionLoginBehaviorUseSystemAccountIfPresent
-                completionHandler:^(FBSession *session,
-                                    FBSessionState state,
-                                    NSError *error) {
-                    [self sessionStateChanged:session
-                                        state:state
-                                        error:error];
-                }];
-        // Return the result - will be set to open immediately from the session
-        // open call if a cached token was previously found.
-        openSessionResult = session.isOpen;
-    }
-    return openSessionResult;
-}
+//- (BOOL)openSessionWithAllowLoginUI:(BOOL)allowLoginUI {
+//    BOOL openSessionResult = NO;
+//    // Set up token strategy, if needed
+//    if (nil == _myFBTokenCachingStrategy) {
+//        _myFBTokenCachingStrategy = [[MyFBSessionTokenCachingStrategy alloc] init];
+//    }
+//    // Initialize a session object with the tokenCacheStrategy
+//    NSLog(@"initial in before open session, state is: %@", FBSession.activeSession);
+//    FBSession *session = [[FBSession alloc] initWithAppID:nil permissions:@[@"public_profile"]
+//                                          urlSchemeSuffix:nil
+//                                       tokenCacheStrategy:_myFBTokenCachingStrategy];
+//    [FBSession setActiveSession:session];
+//    NSLog(@"initial in open session, state is: %@", FBSession.activeSession);
+//    //    [session openWithCompletionHandler:^(FBSession *session, FBSessionState status, NSError *error) {
+//    //        NSLog(@"");
+//    //    }];
+//    
+//    // If showing the login UI, or if a cached token is available,
+//    // then open the session.
+//    if (allowLoginUI || session.state == FBSessionStateCreatedTokenLoaded) {
+//        // For debugging purposes log if cached token was found
+//        if (session.state == FBSessionStateCreatedTokenLoaded){
+//            NSLog(@"Cached token found.");
+//        }
+//        // Set the active session
+//        [FBSession setActiveSession:session];
+//        // Open the session.
+//        [session openWithBehavior:FBSessionLoginBehaviorUseSystemAccountIfPresent
+//                completionHandler:^(FBSession *session,
+//                                    FBSessionState state,
+//                                    NSError *error) {
+//                    [self sessionStateChanged:session
+//                                        state:state
+//                                        error:error];
+//                }];
+//        // Return the result - will be set to open immediately from the session
+//        // open call if a cached token was previously found.
+//        openSessionResult = session.isOpen;
+//    }
+//    return openSessionResult;
+//}
 
+
+//=================================================================
 #pragma mark - view controller lifecycle methods
 - (void)viewDidLoad
 {
@@ -448,9 +662,9 @@
     [_spinner setCenter:CGPointMake(self.view.frame.size.width/2.0, self.view.frame.size.height/2.0)];
     _spinner.frame = self.view.frame;
     _spinner.backgroundColor = [UIColor colorWithWhite:0.5 alpha:0.4];
-    
     [self.view addSubview:_spinner];
     
+    _twSession = [SessionManager twSession];
     
     /*
      login button setup
@@ -478,36 +692,49 @@
     self.loginPasswordTextField.placeholder = LOGIN_PASSWORD;
     self.loginPasswordTextField.clearsOnBeginEditing = YES;
     self.loginPasswordTextField.secureTextEntry = YES;
+    
+    
+    
     /*
      Twitter login
      */
-    
     _twitterLoginButton.frame = CGRectMake(20, 370, 280, 70);
     _twitterLoginButton.layer.cornerRadius = 10.0f;
     [_twitterLoginButton addTarget:self action:@selector(twitterLoginButtonClicked:) forControlEvents:UIControlEventTouchUpInside];
     _twLoginRetryLimit = 5;
+    _isTWLoggedin = NO;
     /*
      fb login view
      */
 
     //xjyAppDelegate * app = [UIApplication sharedApplication].delegate;
     //app.sessionManager=_sessionManager;
-    _isFBLogedin =NO;
+    _isFBLoggedin =NO;
     _fbButton.titleLabel.text = @"login";
     
     //[self FBSetup];
     //[self openSessionWithAllowLoginUI:NO];
     
+    /*
+     Linkedin login
+     */
+    _isLKLogggedin = NO;
+    
+    
 }
 
-- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
+-(NSMutableDictionary*) parseResponseData:(NSString*)string
 {
-    self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
-    if (self) {
-        // Custom initialization
+    NSArray *compnents = [string componentsSeparatedByString:@"&"];
+    NSMutableDictionary * dict = [[NSMutableDictionary alloc] init];
+    for(int i=0;i<compnents.count;i++){
+        NSString *subString = compnents[i];
+        NSArray * keyVal = [subString componentsSeparatedByString:@"="];
+        [dict setValue:keyVal[1] forKey:keyVal[0]];
     }
-    return self;
+    return dict;
 }
+
 
 - (void)didReceiveMemoryWarning
 {

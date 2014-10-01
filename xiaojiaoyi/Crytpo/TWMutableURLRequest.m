@@ -62,6 +62,7 @@ signatureProvider:(id<OASignatureProviding, NSObject>)aProvider {
 signatureProvider:(id<OASignatureProviding, NSObject>)aProvider
             nonce:(NSString *)aNonce
         timestamp:(NSString *)aTimestamp {
+    
     self = [self initWithURL:aUrl
                     consumer:aConsumer
                        token:aToken

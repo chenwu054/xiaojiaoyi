@@ -27,6 +27,20 @@ typedef NS_ENUM(NSInteger, MyOAuthLoginType)
 +(NSArray *)getUsernameAndImageURLWithOAuthType:(MyOAuthLoginType)oauthType;
 +(BOOL)writeUsername:(NSString*)username imageURL:(NSString*)imageURL forOAuthType:(MyOAuthLoginType)oauthType;
 
+//linkedin methods
++(BOOL)writeLKSessionCache:(NSDictionary*)session;
++(NSDictionary*)readLKSessionCache;
++(void)clearLKSessionCache;
+
+
+//twitter methods
++(TWSession*)twSession;
++(NSDictionary*)readTWSessionCache;
++(void)loadTWSession;
++(BOOL)clearTwitterLocalCache;
++(void)clearUpTWSession;
++(BOOL) writeTWSessionCache:(NSDictionary*)dict;
++(BOOL)writeProfileImage:(NSData *)imageData;
 
 
 //facebook methods

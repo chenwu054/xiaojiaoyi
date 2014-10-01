@@ -126,7 +126,8 @@
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
                                 <connections>
-                                    <segue destination="RFV-O6-0x5" kind="modal" identifier="Linkedin segue" id="fgt-EO-8Qk"/>
+                                    <action selector="linkedinButtonClicked:" destination="txc-aV-psd" eventType="touchUpInside" id="L9v-Zz-dTj"/>
+                                    <segue destination="RFV-O6-0x5" kind="modal" identifier="Linkedin segue" id="Yzy-zB-qqw"/>
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ETE-3K-lMJ">
