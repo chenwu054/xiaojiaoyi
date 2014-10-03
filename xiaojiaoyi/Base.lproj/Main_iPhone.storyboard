@@ -150,6 +150,9 @@
                                 <state key="normal" title="Button">
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
+                                <connections>
+                                    <action selector="ggLoginButtonClicked:" destination="txc-aV-psd" eventType="touchUpInside" id="vlI-Mx-exo"/>
+                                </connections>
                             </button>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
@@ -161,6 +164,7 @@
                     <navigationItem key="navigationItem" id="abN-bU-ORx"/>
                     <connections>
                         <outlet property="fbButton" destination="ksW-mO-BlC" id="Hxl-US-3Dg"/>
+                        <outlet property="ggLoginButton" destination="eii-PW-Ice" id="g46-QB-kHW"/>
                         <outlet property="loginForgetPasswordButton" destination="AK1-8Q-IuI" id="BDR-zx-FuO"/>
                         <outlet property="loginLinkedinButton" destination="E8a-Xi-ULz" id="6DN-uU-79l"/>
                         <outlet property="loginLoginButton" destination="tIn-oW-BLj" id="O7P-Di-5kB"/>
@@ -430,6 +434,41 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="2fk-Q5-OYb" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="-833" y="535"/>
+        </scene>
+        <!--View Controller-->
+        <scene sceneID="WHE-5m-lGy">
+            <objects>
+                <viewController id="gZo-dd-mK8" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="meZ-wi-54B"/>
+                        <viewControllerLayoutGuide type="bottom" id="kS0-8K-AcP"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="a1G-LP-a6w">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                        <subviews>
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" fixedFrame="YES" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" translatesAutoresizingMaskIntoConstraints="NO" id="m48-bF-9gj">
+                                <rect key="frame" x="0.0" y="280" width="320" height="288"/>
+                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <prototypes>
+                                    <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" id="JmW-O9-hR8">
+                                        <rect key="frame" x="0.0" y="22" width="320" height="44"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="JmW-O9-hR8" id="kx8-NZ-oZ1">
+                                            <rect key="frame" x="0.0" y="0.0" width="320" height="43"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                        </tableViewCellContentView>
+                                    </tableViewCell>
+                                </prototypes>
+                            </tableView>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                    </view>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="zMD-jl-u2H" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-379" y="-630"/>
         </scene>
         <!--Tab Bar Controller-->
         <scene sceneID="wxd-B1-P20">

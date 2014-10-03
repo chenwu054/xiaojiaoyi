@@ -12,6 +12,8 @@
 
 @implementation xjyAppDelegate
 
+//static NSString * const kClientId = @"100128444749-l3hh0v0as5n6t4rnp3maciodja4oa4nc.apps.googleusercontent.com";
+
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
     // Override point for customization after application launch.
@@ -134,8 +136,7 @@
 //        //[self.window.rootViewController presentViewController:loginVC animated:YES completion:nil];
 //        return YES;
 //    }
-    return [FBAppCall handleOpenURL:url sourceApplication:sourceApplication withSession:[SessionManager fbSession]];
+    return [FBAppCall handleOpenURL:url sourceApplication:sourceApplication withSession:[SessionManager fbSession]] || [GPPURLHandler handleURL:url sourceApplication:sourceApplication annotation:annotation];
 }
-
 
 @end

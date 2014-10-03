@@ -50,11 +50,19 @@
 //@property  (nonatomic) IBOutlet FBLoginView *fbLoginView;
 
 @property (nonatomic) IBOutlet UIView *profileView;
-@property (weak, nonatomic) IBOutlet UIButton *fbButton;
+@property (nonatomic) IBOutlet UIButton *fbButton;
 @property (nonatomic) IBOutlet UIButton *twitterLoginButton;
+@property (nonatomic) IBOutlet UIButton *ggLoginButton;
+
 
 @property (nonatomic) NSString* redirectURL;
 @property (nonatomic) NSURLSession * session;
+
+//google private properties
+@property (nonatomic) GPPSignIn *ggSignIn;
+@property (nonatomic) BOOL isGGLoggedin;
+@property (nonatomic) GPPSignInButton *ggSignInButton;
+
 //linkedin private properties
 @property (nonatomic) BOOL isLKLogggedin;
 @property (nonatomic) NSString *lkAccessToken;
@@ -73,6 +81,7 @@
 
 @implementation LoginViewController
 
+static NSString * const kClientId = @"100128444749-l3hh0v0as5n6t4rnp3maciodja4oa4nc.apps.googleusercontent.com";
 //google OAuth login client ID
 //static NSString * const kClientId= @"100128444749-l3hh0v0as5n6t4rnp3maciodja4oa4nc.apps.googleusercontent.com";
 #pragma mark - login work methods
@@ -106,6 +115,138 @@
         }
     }
 }
+//====================================
+-(GPPSignIn *)getGGSignIn
+{
+    if(!_ggSignIn){
+        _ggSignIn=[GPPSignIn sharedInstance];
+    }
+    return _ggSignIn;
+}
+-(void)ggLoginSetup
+{
+    [self getGGSignIn];
+    _ggSignIn.delegate = self;
+    _ggSignIn.clientID = kClientId;
+    _ggSignIn.scopes = @[ kGTLAuthScopePlusLogin, @"profile"];
+    [_ggLoginButton setTitle:@"Login" forState:UIControlStateNormal];
+    _ggSignInButton=[[GPPSignInButton alloc] init];
+    _ggSignIn.shouldFetchGooglePlusUser = YES;
+    _ggSignIn.shouldFetchGoogleUserID = YES;
+    _ggSignIn.shouldFetchGoogleUserEmail = YES;
+    [self updateGGButton];
+    
+}
+- (IBAction)ggLoginButtonClicked:(id)sender
+{
+    NSLog(@"google button clicked");
+    [_spinner startAnimating];
+    if(_ggSignIn.authentication){
+        [self ggDisconnect];
+        //[self ggSignOut];
+    }
+    else{
+        [_ggSignInButton sendActionsForControlEvents:UIControlEventTouchUpInside];
+    }
+    //[self update];
+    
+}
+-(void)updateGGButton
+{
+    //NSLog(@"calling update");
+    _ggSignIn = [self getGGSignIn];
+    if(_ggSignIn.authentication){
+        //NSLog(@"update google button after sign in");
+        [_ggLoginButton setTitle:@"sign out" forState:UIControlStateNormal];
+        _isGGLoggedin = YES;
+    }
+    else{
+        //NSLog(@"update google button after sign out");
+        [_ggLoginButton setTitle:@"sign in" forState:UIControlStateNormal];
+        [self setGGUserProfilePicture:nil];
+        _isGGLoggedin=NO;
+    }
+    
+}
+-(void)ggSignOut
+{
+    [[self getGGSignIn] signOut];
+    [self setGGUserProfilePicture:nil];
+    [self updateGGButton];
+}
+-(void)ggDisconnect
+{
+    [[self getGGSignIn] disconnect];
+
+}
+//google sign in delegate methods
+-(void)finishedWithAuth:(GTMOAuth2Authentication *)auth error:(NSError *)error
+{
+    if(error){
+        [self showGGAlertView:error.description];
+    }
+    else{
+//        NSLog(@"the auth is %@",auth);
+//        NSDictionary* params = _ggSignIn.authentication.parameters;
+//        for(NSString *key in params){
+//            NSLog(@"key is %@ and value is %@",key,[params valueForKey:key]);
+//        }
+        GTLPlusPerson *user =  _ggSignIn.googlePlusUser;
+        dispatch_queue_t backgroundQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
+        
+        dispatch_async(backgroundQueue, ^{
+            NSData *avatarData = nil;
+            NSString *imageURLString = user.image.url;
+            if (imageURLString){
+                NSURL *imageURL = [NSURL URLWithString:imageURLString];
+                avatarData = [NSData dataWithContentsOfURL:imageURL];
+            }
+            if (avatarData) {
+                // Update UI from the main thread when available
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [self setGGUserProfilePicture:avatarData];
+                });
+            }
+        });
+        [self updateGGButton];
+    }
+    [_spinner stopAnimating];
+}
+-(void)setGGUserProfilePicture:(NSData*)data
+{
+    if(!data){
+        [self removeProfileViewOfOAuthType:GOOGLE];
+    }
+    else{
+        CGFloat height = _profileView.frame.size.height;
+        UIImageView* imageView = [[UIImageView alloc] initWithFrame:CGRectMake(3*height, 0, height, height)];
+        imageView.image = [UIImage imageWithData:data];
+        [_profileView addSubview:imageView];
+    }
+}
+
+-(void)didDisconnectWithError:(NSError *)error
+{
+    if (error) {
+        [self showGGAlertView:error.description];
+        
+    }
+    else {
+        _ggSignIn = [GPPSignIn sharedInstance];
+        [self removeProfileViewOfOAuthType:GOOGLE];
+    }
+    [self updateGGButton];
+    [_spinner stopAnimating];
+}
+
+-(void)showGGAlertView:(NSString *)message
+{
+    [[[UIAlertView alloc] initWithTitle:nil message:message delegate:nil cancelButtonTitle:@"ok" otherButtonTitles:nil] show];
+    
+}
+
+
+
 
 //======================================
 #pragma mark - twitter login methods
@@ -693,6 +834,10 @@
     self.loginPasswordTextField.clearsOnBeginEditing = YES;
     self.loginPasswordTextField.secureTextEntry = YES;
     
+    /*
+     google plus login
+     */
+    [self ggLoginSetup];
     
     
     /*

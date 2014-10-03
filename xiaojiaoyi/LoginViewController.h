@@ -8,12 +8,15 @@
 
 #import <UIKit/UIKit.h>
 #import "FacebookSDK/FacebookSDK.h"
+#import <GoogleOpenSource/GoogleOpenSource.h>
+#import <GooglePlus/GooglePlus.h>
+
 #import "TWSession.h"
 #import "xjyAppDelegate.h"
 #import "MyFBSessionTokenCachingStrategy.h"
 #import "SessionManager.h"
 
-@interface LoginViewController : UIViewController <FBLoginViewDelegate,UIAlertViewDelegate,UIActionSheetDelegate,NSXMLParserDelegate>
+@interface LoginViewController : UIViewController <FBLoginViewDelegate,UIAlertViewDelegate,UIActionSheetDelegate,NSXMLParserDelegate,GPPSignInDelegate>
 
 //@property (nonatomic) MyOAuthLoginType currentLoginType;
 //overall properties
