@@ -9,6 +9,8 @@
 #import <UIKit/UIKit.h>
 #import "OADataFetcher.h"
 #import "OAHMAC_SHA1SignatureProvider.h"
+#import "MainViewController.h"
+
 //#import "OASignatureProviding.h"
 #import "YelpViewController.h"
 
@@ -19,7 +21,8 @@
 @property (nonatomic) NSString* query;
 @property (nonatomic) NSString* limit;
 @property (nonatomic) NSString* location;
-@property (nonatomic) id<MenuNavigationDelegate> delegate;
+
+//@property (nonatomic) id<MenuNavigationDelegate> delegate;
 
 @property (weak, nonatomic) IBOutlet UIButton *slideButton;
 

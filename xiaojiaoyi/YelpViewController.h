@@ -9,17 +9,12 @@
 #import <UIKit/UIKit.h>
 #import "OADataFetcher.h"
 #import "NSURLRequest+OAuth.h"
+#import "MainViewController.h"
 #import "CollectionViewCell.h"
 #import "CollectionViewDownloadOperation.h"
 #import "CollectionViewDownloadOperationDelegate.h"
 
-@protocol MenuNavigationDelegate <NSObject>
 
--(void) slide;
--(void) reset;
--(void) slideWithTransition:(CGPoint)transition ended:(BOOL)ended;
-
-@end
 
 @interface YelpViewController : UICollectionViewController <UICollectionViewDataSource, UICollectionViewDelegate, DataFetcherDelegate,CollectionViewDownloadOperationDelegate>
 
@@ -31,7 +26,7 @@
 @property (nonatomic) NSMutableArray *buses;
 @property (nonatomic) NSMutableDictionary *cells;
 @property (nonatomic) NSOperationQueue * downloadQueue;
-@property (nonatomic) id<MenuNavigationDelegate> delegate;
+//@property (nonatomic) id<MenuNavigationDelegate> delegate;
 
 //@property (nonatomic) IBOutlet UICollectionView *collectionView;
 

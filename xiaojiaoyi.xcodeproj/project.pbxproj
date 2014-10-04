@@ -22,6 +22,9 @@
 		741FB5E919DCDB2600EA6D5B /* GooglePlus.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 741FB5E719DCDB2600EA6D5B /* GooglePlus.framework */; };
 		741FB5EB19DCDB5A00EA6D5B /* MediaPlayer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 741FB5EA19DCDB5A00EA6D5B /* MediaPlayer.framework */; };
 		741FB5ED19DCDB7D00EA6D5B /* CoreMotion.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 741FB5EC19DCDB7D00EA6D5B /* CoreMotion.framework */; };
+		741FB5F019DF541400EA6D5B /* UserMenuController.m in Sources */ = {isa = PBXBuildFile; fileRef = 741FB5EF19DF541400EA6D5B /* UserMenuController.m */; };
+		741FB5F219DF567700EA6D5B /* UserMenuCategory.plist in Resources */ = {isa = PBXBuildFile; fileRef = 741FB5F119DF567700EA6D5B /* UserMenuCategory.plist */; };
+		741FB5F419DF5E5F00EA6D5B /* home60.png in Resources */ = {isa = PBXBuildFile; fileRef = 741FB5F319DF5E5F00EA6D5B /* home60.png */; };
 		7493294A19D12D1C003A2388 /* FacebookSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7493294919D12D1C003A2388 /* FacebookSDK.framework */; };
 		7493294D19D27622003A2388 /* MyFBSessionTokenCachingStrategy.m in Sources */ = {isa = PBXBuildFile; fileRef = 7493294C19D27622003A2388 /* MyFBSessionTokenCachingStrategy.m */; };
 		7493295219D60EE1003A2388 /* AddressBook.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7493295119D60EE1003A2388 /* AddressBook.framework */; };
@@ -125,6 +128,10 @@
 		741FB5E719DCDB2600EA6D5B /* GooglePlus.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = GooglePlus.framework; sourceTree = "<group>"; };
 		741FB5EA19DCDB5A00EA6D5B /* MediaPlayer.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MediaPlayer.framework; path = System/Library/Frameworks/MediaPlayer.framework; sourceTree = SDKROOT; };
 		741FB5EC19DCDB7D00EA6D5B /* CoreMotion.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMotion.framework; path = System/Library/Frameworks/CoreMotion.framework; sourceTree = SDKROOT; };
+		741FB5EE19DF541400EA6D5B /* UserMenuController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UserMenuController.h; sourceTree = "<group>"; };
+		741FB5EF19DF541400EA6D5B /* UserMenuController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UserMenuController.m; sourceTree = "<group>"; };
+		741FB5F119DF567700EA6D5B /* UserMenuCategory.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = UserMenuCategory.plist; sourceTree = "<group>"; };
+		741FB5F319DF5E5F00EA6D5B /* home60.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = home60.png; sourceTree = "<group>"; };
 		7493294919D12D1C003A2388 /* FacebookSDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FacebookSDK.framework; path = ../../../../Documents/FacebookSDK/FacebookSDK.framework; sourceTree = "<group>"; };
 		7493294B19D27622003A2388 /* MyFBSessionTokenCachingStrategy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MyFBSessionTokenCachingStrategy.h; sourceTree = "<group>"; };
 		7493294C19D27622003A2388 /* MyFBSessionTokenCachingStrategy.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MyFBSessionTokenCachingStrategy.m; sourceTree = "<group>"; };
@@ -285,6 +292,7 @@
 		74065AE319C7E2DD0033DA71 /* images */ = {
 			isa = PBXGroup;
 			children = (
+				741FB5F319DF5E5F00EA6D5B /* home60.png */,
 				749366F319CB3E67003B3108 /* twitter small icon.jpg */,
 				74065AEA19C923540033DA71 /* linkedin.jpg */,
 				74065AE419C7E2DD0033DA71 /* apple image.jpg */,
@@ -387,15 +395,18 @@
 				749366F119CA7D9B003B3108 /* Location.m */,
 				74065AE019C748210033DA71 /* DetailPageContentViewController.h */,
 				74065AE119C748210033DA71 /* DetailPageContentViewController.m */,
-				740A2E7619C49B4F00D87965 /* MenuTableController.h */,
-				740A2E7719C49B4F00D87965 /* MenuTableController.m */,
-				740A2E7C19C53E4600D87965 /* MainViewController.h */,
-				740A2E7D19C53E4600D87965 /* MainViewController.m */,
 				74CB851B19C0193C00579432 /* YelpViewController.h */,
 				74CB851C19C0193C00579432 /* YelpViewController.m */,
 				74B9328419AAEB4E003B6594 /* xjyViewController.h */,
 				74B9328519AAEB4E003B6594 /* xjyViewController.m */,
+				740A2E7619C49B4F00D87965 /* MenuTableController.h */,
+				740A2E7719C49B4F00D87965 /* MenuTableController.m */,
+				740A2E7C19C53E4600D87965 /* MainViewController.h */,
+				740A2E7D19C53E4600D87965 /* MainViewController.m */,
+				741FB5EE19DF541400EA6D5B /* UserMenuController.h */,
+				741FB5EF19DF541400EA6D5B /* UserMenuController.m */,
 				74B9327E19AAEB4E003B6594 /* Main_iPhone.storyboard */,
+				741FB5F119DF567700EA6D5B /* UserMenuCategory.plist */,
 				74B9328719AAEB4E003B6594 /* Images.xcassets */,
 				74065AE319C7E2DD0033DA71 /* images */,
 				74B932EA19AD8695003B6594 /* STTwitter */,
@@ -631,6 +642,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				741FB5F419DF5E5F00EA6D5B /* home60.png in Resources */,
 				74065AE719C7E2DD0033DA71 /* apple image.jpg in Resources */,
 				74B9328319AAEB4E003B6594 /* Main_iPad.storyboard in Resources */,
 				74B9328819AAEB4E003B6594 /* Images.xcassets in Resources */,
@@ -641,6 +653,7 @@
 				74065AEB19C923540033DA71 /* linkedin.jpg in Resources */,
 				74B9327719AAEB4E003B6594 /* InfoPlist.strings in Resources */,
 				74B932AA19AC29CD003B6594 /* FBUserSettingsViewResources.bundle in Resources */,
+				741FB5F219DF567700EA6D5B /* UserMenuCategory.plist in Resources */,
 				7493296019D60FD3003A2388 /* GooglePlus.bundle in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -686,6 +699,7 @@
 				74CB84E019BA15FA00579432 /* Base64Transcoder.c in Sources */,
 				74CB850D19BBED6900579432 /* OAProblem.m in Sources */,
 				74CB850419BBDC0700579432 /* OAServiceTicket.m in Sources */,
+				741FB5F019DF541400EA6D5B /* UserMenuController.m in Sources */,
 				74CB84FE19BBD43A00579432 /* NSURL+Base.m in Sources */,
 				74B9330D19AD8695003B6594 /* STTwitterAppOnly.m in Sources */,
 				749366F219CA7D9B003B3108 /* Location.m in Sources */,

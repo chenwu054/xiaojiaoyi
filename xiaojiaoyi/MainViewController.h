@@ -8,13 +8,26 @@
 
 #import <UIKit/UIKit.h>
 #import "MenuTableController.h"
-#import "xjyViewController.h"
 #import "YelpViewController.h"
+#import "UserMenuController.h"
+#import "xjyViewController.h"
+
+@protocol MenuNavigationDelegate <NSObject>
+
+-(void) slideLeftAll;
+-(void) slideRightAll;
+-(void) reset;
+-(void) resetWithDuration:(CGFloat)duration;
+-(void) slideWithTransition:(CGPoint)transition ended:(BOOL)ended;
+
+@end
 
 @interface MainViewController : UIViewController <MenuNavigationDelegate,UITableViewDelegate>
 
 
 @property (nonatomic) MenuTableController* menuViewController;
-@property (nonatomic) xjyViewController * viewController;
+@property (nonatomic) UserMenuController *userMenuController;
+@property (nonatomic) UIViewController* viewController;
+
 
 @end

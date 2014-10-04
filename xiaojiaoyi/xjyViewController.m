@@ -30,13 +30,13 @@
     
 }
 
--(void) setDelegate:(id<MenuNavigationDelegate>)delegate
-{
-    if(!_delegate){
-        _delegate = delegate;
-        //NSLog(@"xjy delegate is set");
-    }
-}
+//-(void) setDelegate:(id<MenuNavigationDelegate>)delegate
+//{
+//    if(!_delegate){
+//        _delegate = delegate;
+//        //NSLog(@"xjy delegate is set");
+//    }
+//}
 
 
 - (void) setYelpButton:(UIButton *)yelpButton

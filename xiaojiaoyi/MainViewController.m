@@ -8,11 +8,15 @@
 
 #import "MainViewController.h"
 
+
 #define PANEL_WIDTH 40
 
 @interface MainViewController ()
 
 @property (nonatomic) BOOL isReset;
+@property (nonatomic) BOOL inMenuView;
+@property (nonatomic) BOOL inUserMenuView;
+
 @end
 
 @implementation MainViewController
@@ -22,6 +26,16 @@
 
 -(void) tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
+    if(tableView == _menuViewController.tableView){
+    
+    }
+    else if(tableView == _userMenuController.userMenuTableView){
+        
+    }
+    else{
+        NSLog(@"ERROR: clicked unkown table view");
+    }
+    
     [self reset];
     NSLog(@"main controller did select table view at index path: %ld,%ld",indexPath.section,indexPath.row);
     [_menuViewController tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath];
@@ -31,24 +45,27 @@
 
 
 #pragma mark - gesture recognizer setup
--(void) setupGestureRecognizer
+-(UIPanGestureRecognizer*)getPanGestureRecognizer
 {
-    UIPanGestureRecognizer *panGestureRecognizer = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(pan:)];
-    [panGestureRecognizer setMaximumNumberOfTouches:1];
-    [panGestureRecognizer setMaximumNumberOfTouches:1];
-    [_viewController.view addGestureRecognizer:panGestureRecognizer];
-    
-    UITapGestureRecognizer *tapGestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tap:)];
-    [_viewController.view addGestureRecognizer:tapGestureRecognizer];
+    UIPanGestureRecognizer *panGR=[[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(pan:)];
+    [panGR setMaximumNumberOfTouches:1];
+    [panGR setMaximumNumberOfTouches:1];
+    return panGR;
+}
+-(UITapGestureRecognizer*)getTapGestureRecognizer
+{
+    UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tap:)];
+    return tap;
 }
 
 -(void)tap:(UITapGestureRecognizer *)gesture
 {
     [self reset];
 }
+
 -(void)pan:(UIPanGestureRecognizer *)gesture
 {
-    
+    NSLog(@"calling pan");
     if(gesture.state == UIGestureRecognizerStateChanged || gesture.state == UIGestureRecognizerStateBegan){
         //NSLog(@"calling the pan gesture recognizer");
         CGPoint transition  = [gesture translationInView: _viewController.view]; // ?
@@ -62,42 +79,16 @@
 }
 
 #pragma mark - sub-controllers setup
+//NOTE: One gesture recognizer can be only added to ONE view
+//Adding one recognizer to multiple views will invalidate the recognizer and no view will response to the gesture.
 -(void)setup
 {
+    //[self setupGestureRecognizer];
     if(!_viewController){
-        //xjyViewControllerSB
-        //xjyTabBarControllerSB
         _viewController =[self.storyboard instantiateViewControllerWithIdentifier:@"xjyTabBarControllerSB"];
         
         [self addChildViewController:_viewController];
         [self.view addSubview:_viewController.view];
-        
-        _viewController.view.frame = CGRectMake(0,0, _viewController.view.frame.size.width, _viewController.view.frame.size.height);
-//        NSArray *childViewControllers=self.childViewControllers;
-//        for(int i=0;i<childViewControllers.count;i++){
-//            //NSLog(@"child view controller: %@",childViewControllers[i]);
-//            NSArray *subChildVCs=((UIViewController*)(childViewControllers[i])).childViewControllers;
-//            for(int j=0;j<subChildVCs.count;j++){
-//               // NSLog(@"sub child view controller: %@",subChildVCs[j]);
-//                NSArray *subsubChildVCs=((UIViewController*)(subChildVCs[i])).childViewControllers;
-//                for(int j=0;j<subsubChildVCs.count;j++){
-//                    //NSLog(@"sub child view controller: %@",subsubChildVCs[j]);
-//                    xjyViewController * c = (xjyViewController *)(subsubChildVCs[j]);
-//                    if(!c){
-//                        //NSLog(@"xjy view controller is null");
-//                    }
-//                    else{
-//                        //NSLog(@"xjy view controller is NOT null");
-//                        if(!c.delegate){
-//                            //NSLog(@"xjy delegate is null");
-//                            //c.delegate = self;
-//                        }
-//                    }
-//                }
-//            }
-//        }
-        [self setupGestureRecognizer];
-        
         //_viewController.delegate = self;
         //[self.navigationController pushViewController:_viewController animated:YES];
         
@@ -105,7 +96,12 @@
         [_viewController didMoveToParentViewController:self];
         
     }
-    
+    //setting up the gesture recognizer
+    UIPanGestureRecognizer *panGestureRecognizer=[self getPanGestureRecognizer];
+    [_viewController.view addGestureRecognizer:panGestureRecognizer];
+    UITapGestureRecognizer *tapGestureRecognizer=[self getTapGestureRecognizer];
+    [_viewController.view addGestureRecognizer:tapGestureRecognizer];
+
     if(!_menuViewController){
         _menuViewController = [MenuTableController alloc];
         _menuViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"menuController"];
@@ -114,87 +110,144 @@
         [self addChildViewController:_menuViewController];
         _menuViewController.view.frame = CGRectMake(_menuViewController.view.frame.size.width,0, _menuViewController.view.frame.size.width, _menuViewController.view.frame.size.height);
         [_menuViewController didMoveToParentViewController:self];
-        
         _menuViewController.tableView.delegate = self;
     }
-//    NSArray * menuSubViews = _menuViewController.view.subviews;
-//    for(int i=0;i<menuSubViews.count;i++){
-//        NSLog(@"menu subview is %@", menuSubViews[i]);
-//    }
-//    NSLog(@"===============");
-//    NSArray *viewSubViews = _viewController.view.subviews;
-//    for(int i=0;i<viewSubViews.count;i++){
-//        NSLog(@"view subview is %@", viewSubViews[i]);
-//    }
+    UIPanGestureRecognizer *menuPan = [self getPanGestureRecognizer];
+    [_menuViewController.view addGestureRecognizer:menuPan];
+    
+    if(!_userMenuController){
+        _userMenuController = [UserMenuController alloc];
+        _userMenuController = [self.storyboard instantiateViewControllerWithIdentifier:@"userMenuController"];
+        
+        [self.view addSubview:_userMenuController.view];
+        _userMenuController.view.frame = CGRectMake(-_userMenuController.view.frame.size.width, 0, _userMenuController.view.frame.size.width , _userMenuController.view.frame.size.height);
+        [_userMenuController didMoveToParentViewController:self];
+        _userMenuController.userMenuTableView.delegate=self;
+    }
+    UIPanGestureRecognizer *userPan = [self getPanGestureRecognizer];
+    [_userMenuController.view addGestureRecognizer:userPan];
     
 }
+
+
 /*
 slide all the way to the left
  */
- 
--(void) slide
+-(void) slideLeftAll
 {
     //NSLog(@"calling main view slide");
     [UIView animateWithDuration:0.2 delay: 0 options:UIViewAnimationOptionBeginFromCurrentState animations:^{
-        //NSArray *childVCs = self.childViewControllers;
+        
+        
         _viewController.view.frame = CGRectMake(PANEL_WIDTH-_viewController.view.frame.size.width, 0,_viewController.view.frame.size.width, _menuViewController.view.frame.size.height);
         _menuViewController.view.frame = CGRectMake(PANEL_WIDTH, 0,_menuViewController.view.frame.size.width, _menuViewController.view.frame.size.height);
+        
     } completion:^(BOOL finished) {
         if(finished)
             nil;
         //NSLog(@"menu navigation view from main view moved main frame successfully");
     }];
     _isReset=NO;
-    
+    _inMenuView = YES;
+    _inUserMenuView = NO;
 }
+
+-(void) slideRightAll
+{
+    //NSLog(@"calling main view slide");
+    [UIView animateWithDuration:0.2 delay: 0 options:UIViewAnimationOptionBeginFromCurrentState animations:^{
+
+        _viewController.view.frame = CGRectMake(_viewController.view.frame.size.width-PANEL_WIDTH, 0,_viewController.view.frame.size.width, _menuViewController.view.frame.size.height);
+        
+        _userMenuController.view.frame = CGRectMake(-PANEL_WIDTH, 0,_userMenuController.view.frame.size.width, _userMenuController.view.frame.size.height);
+        
+    } completion:^(BOOL finished) {
+        if(finished)
+            nil;
+        //NSLog(@"menu navigation view from main view moved main frame successfully");
+    }];
+    _isReset=NO;
+    _inUserMenuView = YES;
+    _inMenuView = NO;
+}
+
 /*
  slide based on the transition
  */
 -(void) slideWithTransition:(CGPoint)transition ended:(BOOL)ended
 {
-    //NSLog(@"calling main view slide with transition");
-    if((_isReset && transition.x>0) || (!_isReset && transition.x<0))
-        return;
-    //shortcut same as xiaojiaoyi~
     /*
      this is done because, there is push segue from xjyViewController to the YelpViewController
      therefore, in the !_isReset state, if the 
      */
-    if(!_isReset && transition.x>0){
-        [self reset];
-        return;
+    
+    CGFloat centerX = 0.0;
+    if(_isReset){
+        centerX = _viewController.view.frame.size.width/2;
     }
-    CGFloat centerX = _isReset?_viewController.view.frame.size.width/2:_viewController.view.frame.size.width/2-(_viewController.view.frame.size.width-PANEL_WIDTH);
+    else if(_inMenuView){
+        centerX = PANEL_WIDTH - _viewController.view.frame.size.width/2;
+
+    }
+    else{
+        centerX = _viewController.view.frame.size.width * 3/2 - PANEL_WIDTH;
+    }
+
+    //user view.center to instantly move the view
     _viewController.view.center=CGPointMake(centerX+transition.x,_viewController.view.center.y);
+    
     _menuViewController.view.center=CGPointMake(centerX + _menuViewController.view.frame.size.width + transition.x,_menuViewController.view.center.y);
+    
+    _userMenuController.view.center = CGPointMake(centerX - (_userMenuController.view.frame.size.width/2 + _viewController.view.frame.size.width/2) + transition.x, _userMenuController.view.center.y);
     
     if(ended){
         if(_isReset){
-            if(transition.x<-_viewController.view.frame.size.width/2)
-                [self slide];
-            else
+            if(transition.x < -_viewController.view.frame.size.width/2){
+                [self slideLeftAll];
+            }
+            else if(transition.x > _viewController.view.frame.size.width/2){
+                [self slideRightAll];
+            }
+            else{
                 [self reset];
+            }
 
         }
-        else{
+        else if(_inMenuView){
             if(transition.x > _viewController.view.frame.size.width/2)
                 [self reset];
             else
-                [self slide];
+                [self slideLeftAll];
+        }
+        else{
+            if(transition.x < - _viewController.view.frame.size.width/2){
+                [self reset];
+            }
+            else{
+                [self slideRightAll];
+            }
         }
     }
     
 }
 
+-(void)reset
+{
+    [self resetWithDuration:0.2];
+}
 /*
  slide the view back to original setting
  */
--(void)reset
+-(void)resetWithDuration:(CGFloat)duration
 {
     //NSLog(@"calling main view controller reset");
-    [UIView animateWithDuration:0.2 delay: 0 options:UIViewAnimationOptionBeginFromCurrentState animations:^{
+    [UIView animateWithDuration:duration delay: 0 options:UIViewAnimationOptionBeginFromCurrentState animations:^{
+        
         _viewController.view.frame = CGRectMake(0, 0,_viewController.view.frame.size.width, _viewController.view.frame.size.height);
+        
         _menuViewController.view.frame = CGRectMake(_viewController.view.frame.size.width, 0,_menuViewController.view.frame.size.width, _menuViewController.view.frame.size.height);
+        
+        _userMenuController.view.frame = CGRectMake(-_userMenuController.view.frame.size.width, 0, _userMenuController.view.frame.size.width, _userMenuController.view.frame.size.height);
         
     } completion:^(BOOL finished) {
         if(finished)
@@ -202,17 +255,10 @@ slide all the way to the left
             //NSLog(@"menu navigation view from main view reset successfully");
     }];
     _isReset = YES;
+    _inUserMenuView = NO;
+    _inMenuView= NO;
 }
 
-
-- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
-{
-    self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
-    if (self) {
-        // Custom initialization
-    }
-    return self;
-}
 
 - (void)viewDidLoad
 {
