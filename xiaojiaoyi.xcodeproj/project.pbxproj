@@ -25,6 +25,12 @@
 		741FB5F019DF541400EA6D5B /* UserMenuController.m in Sources */ = {isa = PBXBuildFile; fileRef = 741FB5EF19DF541400EA6D5B /* UserMenuController.m */; };
 		741FB5F219DF567700EA6D5B /* UserMenuCategory.plist in Resources */ = {isa = PBXBuildFile; fileRef = 741FB5F119DF567700EA6D5B /* UserMenuCategory.plist */; };
 		741FB5F419DF5E5F00EA6D5B /* home60.png in Resources */ = {isa = PBXBuildFile; fileRef = 741FB5F319DF5E5F00EA6D5B /* home60.png */; };
+		741FB5F719E06F4600EA6D5B /* CenterTabHotDealController.m in Sources */ = {isa = PBXBuildFile; fileRef = 741FB5F619E06F4600EA6D5B /* CenterTabHotDealController.m */; };
+		741FB5FA19E0897100EA6D5B /* CenterTabBuddyDealController.m in Sources */ = {isa = PBXBuildFile; fileRef = 741FB5F919E0897100EA6D5B /* CenterTabBuddyDealController.m */; };
+		741FB5FD19E0899800EA6D5B /* CenterTabNearbyDealController.m in Sources */ = {isa = PBXBuildFile; fileRef = 741FB5FC19E0899800EA6D5B /* CenterTabNearbyDealController.m */; };
+		741FB60619E11AF800EA6D5B /* zoom22.png in Resources */ = {isa = PBXBuildFile; fileRef = 741FB60519E11AF800EA6D5B /* zoom22.png */; };
+		741FB60919E11B0200EA6D5B /* add63.png in Resources */ = {isa = PBXBuildFile; fileRef = 741FB60719E11B0200EA6D5B /* add63.png */; };
+		741FB60A19E11B0200EA6D5B /* web11.png in Resources */ = {isa = PBXBuildFile; fileRef = 741FB60819E11B0200EA6D5B /* web11.png */; };
 		7493294A19D12D1C003A2388 /* FacebookSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7493294919D12D1C003A2388 /* FacebookSDK.framework */; };
 		7493294D19D27622003A2388 /* MyFBSessionTokenCachingStrategy.m in Sources */ = {isa = PBXBuildFile; fileRef = 7493294C19D27622003A2388 /* MyFBSessionTokenCachingStrategy.m */; };
 		7493295219D60EE1003A2388 /* AddressBook.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7493295119D60EE1003A2388 /* AddressBook.framework */; };
@@ -46,7 +52,7 @@
 		74B9327D19AAEB4E003B6594 /* xjyAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 74B9327C19AAEB4E003B6594 /* xjyAppDelegate.m */; };
 		74B9328019AAEB4E003B6594 /* Main_iPhone.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 74B9327E19AAEB4E003B6594 /* Main_iPhone.storyboard */; };
 		74B9328319AAEB4E003B6594 /* Main_iPad.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 74B9328119AAEB4E003B6594 /* Main_iPad.storyboard */; };
-		74B9328619AAEB4E003B6594 /* xjyViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 74B9328519AAEB4E003B6594 /* xjyViewController.m */; };
+		74B9328619AAEB4E003B6594 /* CenterViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 74B9328519AAEB4E003B6594 /* CenterViewController.m */; };
 		74B9328819AAEB4E003B6594 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 74B9328719AAEB4E003B6594 /* Images.xcassets */; };
 		74B9328F19AAEB4E003B6594 /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 74B9328E19AAEB4E003B6594 /* XCTest.framework */; };
 		74B9329019AAEB4E003B6594 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 74B9326C19AAEB4E003B6594 /* Foundation.framework */; };
@@ -132,6 +138,15 @@
 		741FB5EF19DF541400EA6D5B /* UserMenuController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UserMenuController.m; sourceTree = "<group>"; };
 		741FB5F119DF567700EA6D5B /* UserMenuCategory.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = UserMenuCategory.plist; sourceTree = "<group>"; };
 		741FB5F319DF5E5F00EA6D5B /* home60.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = home60.png; sourceTree = "<group>"; };
+		741FB5F519E06F4600EA6D5B /* CenterTabHotDealController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CenterTabHotDealController.h; sourceTree = "<group>"; };
+		741FB5F619E06F4600EA6D5B /* CenterTabHotDealController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CenterTabHotDealController.m; sourceTree = "<group>"; };
+		741FB5F819E0897100EA6D5B /* CenterTabBuddyDealController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CenterTabBuddyDealController.h; sourceTree = "<group>"; };
+		741FB5F919E0897100EA6D5B /* CenterTabBuddyDealController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CenterTabBuddyDealController.m; sourceTree = "<group>"; };
+		741FB5FB19E0899800EA6D5B /* CenterTabNearbyDealController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CenterTabNearbyDealController.h; sourceTree = "<group>"; };
+		741FB5FC19E0899800EA6D5B /* CenterTabNearbyDealController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CenterTabNearbyDealController.m; sourceTree = "<group>"; };
+		741FB60519E11AF800EA6D5B /* zoom22.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = zoom22.png; sourceTree = "<group>"; };
+		741FB60719E11B0200EA6D5B /* add63.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = add63.png; sourceTree = "<group>"; };
+		741FB60819E11B0200EA6D5B /* web11.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = web11.png; sourceTree = "<group>"; };
 		7493294919D12D1C003A2388 /* FacebookSDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FacebookSDK.framework; path = ../../../../Documents/FacebookSDK/FacebookSDK.framework; sourceTree = "<group>"; };
 		7493294B19D27622003A2388 /* MyFBSessionTokenCachingStrategy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MyFBSessionTokenCachingStrategy.h; sourceTree = "<group>"; };
 		7493294C19D27622003A2388 /* MyFBSessionTokenCachingStrategy.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MyFBSessionTokenCachingStrategy.m; sourceTree = "<group>"; };
@@ -162,8 +177,8 @@
 		74B9327C19AAEB4E003B6594 /* xjyAppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = xjyAppDelegate.m; sourceTree = "<group>"; };
 		74B9327F19AAEB4E003B6594 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main_iPhone.storyboard; sourceTree = "<group>"; };
 		74B9328219AAEB4E003B6594 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main_iPad.storyboard; sourceTree = "<group>"; };
-		74B9328419AAEB4E003B6594 /* xjyViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = xjyViewController.h; sourceTree = "<group>"; };
-		74B9328519AAEB4E003B6594 /* xjyViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = xjyViewController.m; sourceTree = "<group>"; };
+		74B9328419AAEB4E003B6594 /* CenterViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CenterViewController.h; sourceTree = "<group>"; };
+		74B9328519AAEB4E003B6594 /* CenterViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CenterViewController.m; sourceTree = "<group>"; };
 		74B9328719AAEB4E003B6594 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		74B9328D19AAEB4E003B6594 /* xiaojiaoyiTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = xiaojiaoyiTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		74B9328E19AAEB4E003B6594 /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
@@ -292,6 +307,9 @@
 		74065AE319C7E2DD0033DA71 /* images */ = {
 			isa = PBXGroup;
 			children = (
+				741FB60719E11B0200EA6D5B /* add63.png */,
+				741FB60819E11B0200EA6D5B /* web11.png */,
+				741FB60519E11AF800EA6D5B /* zoom22.png */,
 				741FB5F319DF5E5F00EA6D5B /* home60.png */,
 				749366F319CB3E67003B3108 /* twitter small icon.jpg */,
 				74065AEA19C923540033DA71 /* linkedin.jpg */,
@@ -314,6 +332,21 @@
 			name = collectionView;
 			sourceTree = "<group>";
 		};
+		741FB5FE19E0BE2E00EA6D5B /* CenterVC */ = {
+			isa = PBXGroup;
+			children = (
+				74B9328419AAEB4E003B6594 /* CenterViewController.h */,
+				74B9328519AAEB4E003B6594 /* CenterViewController.m */,
+				741FB5F819E0897100EA6D5B /* CenterTabBuddyDealController.h */,
+				741FB5F919E0897100EA6D5B /* CenterTabBuddyDealController.m */,
+				741FB5FB19E0899800EA6D5B /* CenterTabNearbyDealController.h */,
+				741FB5FC19E0899800EA6D5B /* CenterTabNearbyDealController.m */,
+				741FB5F519E06F4600EA6D5B /* CenterTabHotDealController.h */,
+				741FB5F619E06F4600EA6D5B /* CenterTabHotDealController.m */,
+			);
+			name = CenterVC;
+			sourceTree = "<group>";
+		};
 		749366FB19CE75F1003B3108 /* Login */ = {
 			isa = PBXGroup;
 			children = (
@@ -321,12 +354,12 @@
 				74CB84D319B588F700579432 /* OAuthViewController.m */,
 				749366F819CDE688003B3108 /* TWSession.h */,
 				749366F919CDE688003B3108 /* TWSession.m */,
-				74B932A419AAEC55003B6594 /* LoginViewController.h */,
-				74B932A519AAEC55003B6594 /* LoginViewController.m */,
 				7493296119D74382003A2388 /* SessionManager.h */,
 				7493296219D74382003A2388 /* SessionManager.m */,
 				7493294B19D27622003A2388 /* MyFBSessionTokenCachingStrategy.h */,
 				7493294C19D27622003A2388 /* MyFBSessionTokenCachingStrategy.m */,
+				74B932A419AAEC55003B6594 /* LoginViewController.h */,
+				74B932A519AAEC55003B6594 /* LoginViewController.m */,
 			);
 			name = Login;
 			sourceTree = "<group>";
@@ -385,6 +418,7 @@
 				740A2E6E19C299D200D87965 /* collectionView */,
 				74CB84D919BA15FA00579432 /* OAuth */,
 				749366FB19CE75F1003B3108 /* Login */,
+				741FB5FE19E0BE2E00EA6D5B /* CenterVC */,
 				74B9327B19AAEB4E003B6594 /* xjyAppDelegate.h */,
 				74B9327C19AAEB4E003B6594 /* xjyAppDelegate.m */,
 				74065ADD19C747D30033DA71 /* DetailPageViewController.h */,
@@ -397,8 +431,6 @@
 				74065AE119C748210033DA71 /* DetailPageContentViewController.m */,
 				74CB851B19C0193C00579432 /* YelpViewController.h */,
 				74CB851C19C0193C00579432 /* YelpViewController.m */,
-				74B9328419AAEB4E003B6594 /* xjyViewController.h */,
-				74B9328519AAEB4E003B6594 /* xjyViewController.m */,
 				740A2E7619C49B4F00D87965 /* MenuTableController.h */,
 				740A2E7719C49B4F00D87965 /* MenuTableController.m */,
 				740A2E7C19C53E4600D87965 /* MainViewController.h */,
@@ -647,11 +679,14 @@
 				74B9328319AAEB4E003B6594 /* Main_iPad.storyboard in Resources */,
 				74B9328819AAEB4E003B6594 /* Images.xcassets in Resources */,
 				74B9328019AAEB4E003B6594 /* Main_iPhone.storyboard in Resources */,
+				741FB60919E11B0200EA6D5B /* add63.png in Resources */,
 				74065AE819C7E2DD0033DA71 /* facebook.jpg in Resources */,
 				74065AE919C7E2DD0033DA71 /* google.jpg in Resources */,
 				749366F419CB3E67003B3108 /* twitter small icon.jpg in Resources */,
 				74065AEB19C923540033DA71 /* linkedin.jpg in Resources */,
 				74B9327719AAEB4E003B6594 /* InfoPlist.strings in Resources */,
+				741FB60619E11AF800EA6D5B /* zoom22.png in Resources */,
+				741FB60A19E11B0200EA6D5B /* web11.png in Resources */,
 				74B932AA19AC29CD003B6594 /* FBUserSettingsViewResources.bundle in Resources */,
 				741FB5F219DF567700EA6D5B /* UserMenuCategory.plist in Resources */,
 				7493296019D60FD3003A2388 /* GooglePlus.bundle in Resources */,
@@ -689,6 +724,7 @@
 				74B9330C19AD8695003B6594 /* STTwitterAPI.m in Sources */,
 				7493296319D74382003A2388 /* SessionManager.m in Sources */,
 				74B9331219AD8695003B6594 /* BAVPlistNode.m in Sources */,
+				741FB5F719E06F4600EA6D5B /* CenterTabHotDealController.m in Sources */,
 				74CB851819BEB80900579432 /* NSURLRequest+OAuth.m in Sources */,
 				74CB850119BBDB2100579432 /* OADataFetcher.m in Sources */,
 				74CB84F419BB503800579432 /* NSString+URLEncoding.m in Sources */,
@@ -708,6 +744,7 @@
 				74B9331019AD8695003B6594 /* STTwitterOS.m in Sources */,
 				74B9331119AD8695003B6594 /* STTwitterOSRequest.m in Sources */,
 				740A2E7819C49B4F00D87965 /* MenuTableController.m in Sources */,
+				741FB5FA19E0897100EA6D5B /* CenterTabBuddyDealController.m in Sources */,
 				74B9330A19AD8695003B6594 /* NSString+STTwitter.m in Sources */,
 				740A2E7119C29A1E00D87965 /* CollectionViewCell.m in Sources */,
 				74B9330B19AD8695003B6594 /* STHTTPRequest+STTwitter.m in Sources */,
@@ -716,12 +753,13 @@
 				74CB84FB19BBD14200579432 /* OARequestParameter.m in Sources */,
 				749366FA19CDE688003B3108 /* TWSession.m in Sources */,
 				74FE265A19CA72A300801CA1 /* MapViewController.m in Sources */,
+				741FB5FD19E0899800EA6D5B /* CenterTabNearbyDealController.m in Sources */,
 				74B9331419AD8695003B6594 /* STHTTPRequest.m in Sources */,
 				74B9330E19AD8695003B6594 /* STTwitterHTML.m in Sources */,
 				74B9330F19AD8695003B6594 /* STTwitterOAuth.m in Sources */,
 				74CB84E219BA15FA00579432 /* sha1.c in Sources */,
 				74B9331319AD8695003B6594 /* JSONSyntaxHighlight.m in Sources */,
-				74B9328619AAEB4E003B6594 /* xjyViewController.m in Sources */,
+				74B9328619AAEB4E003B6594 /* CenterViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

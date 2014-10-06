@@ -14,8 +14,6 @@
 #import "CollectionViewDownloadOperation.h"
 #import "CollectionViewDownloadOperationDelegate.h"
 
-
-
 @interface YelpViewController : UICollectionViewController <UICollectionViewDataSource, UICollectionViewDelegate, DataFetcherDelegate,CollectionViewDownloadOperationDelegate>
 
 @property (nonatomic) NSString* term;

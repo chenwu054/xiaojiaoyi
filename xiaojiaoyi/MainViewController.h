@@ -10,7 +10,9 @@
 #import "MenuTableController.h"
 #import "YelpViewController.h"
 #import "UserMenuController.h"
-#import "xjyViewController.h"
+#import "CenterViewController.h"
+
+@class CenterViewController;
 
 @protocol MenuNavigationDelegate <NSObject>
 
@@ -27,7 +29,7 @@
 
 @property (nonatomic) MenuTableController* menuViewController;
 @property (nonatomic) UserMenuController *userMenuController;
-@property (nonatomic) UIViewController* viewController;
+@property (nonatomic) CenterViewController* viewController;
 
 
 @end

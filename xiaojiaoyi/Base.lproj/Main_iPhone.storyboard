@@ -4,10 +4,10 @@
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="3733"/>
     </dependencies>
     <scenes>
-        <!--Xjy View Controller-->
+        <!--Center View Controller - Item-->
         <scene sceneID="ufC-wZ-h7g">
             <objects>
-                <viewController storyboardIdentifier="xjyViewControllerSB" id="vXZ-lx-hvc" customClass="xjyViewController" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="CenterTabBarControllerSB" id="vXZ-lx-hvc" customClass="CenterViewController" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="jyV-Pf-zRb"/>
                         <viewControllerLayoutGuide type="bottom" id="2fi-mo-0CV"/>
@@ -15,35 +15,16 @@
                     <view key="view" contentMode="scaleToFill" id="kh9-bI-dsS">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                        <subviews>
-                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="tMI-Ck-moL">
-                                <rect key="frame" x="115" y="411" width="90" height="30"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <state key="normal" title="get Yelp data">
-                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
-                                </state>
-                                <connections>
-                                    <action selector="onYelpButtonClicked:" destination="vXZ-lx-hvc" eventType="touchUpInside" id="idY-Y7-FFN"/>
-                                    <segue destination="xA0-fy-dBr" kind="push" identifier="CollectionViewControllerSegue" id="xKt-BK-tgB"/>
-                                </connections>
-                            </button>
-                        </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                     </view>
+                    <tabBarItem key="tabBarItem" title="Item" id="UQq-tJ-TsB"/>
                     <navigationItem key="navigationItem" id="5qH-K5-ao3">
-                        <barButtonItem key="leftBarButtonItem" title="login" id="joc-4t-N06">
-                            <connections>
-                                <segue destination="xQw-ON-jHA" kind="modal" id="kef-f7-uJo"/>
-                            </connections>
-                        </barButtonItem>
+                        <barButtonItem key="leftBarButtonItem" title="login" id="joc-4t-N06"/>
                     </navigationItem>
-                    <connections>
-                        <outlet property="yelpButton" destination="tMI-Ck-moL" id="fwz-5h-g5Z"/>
-                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="x5A-6p-PRh" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="673" y="42"/>
+            <point key="canvasLocation" x="-429" y="-4"/>
         </scene>
         <!--Login View Controller-->
         <scene sceneID="oef-u6-tbJ">
@@ -183,7 +164,7 @@
                     </connections>
                 </tapGestureRecognizer>
             </objects>
-            <point key="canvasLocation" x="1690" y="49"/>
+            <point key="canvasLocation" x="732" y="-699"/>
         </scene>
         <!--Auth View Controller-->
         <scene sceneID="mx7-ap-402">
@@ -216,7 +197,25 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="1vG-v3-TFb" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <exit id="EZw-Mw-Xno" userLabel="Exit" sceneMemberID="exit"/>
             </objects>
-            <point key="canvasLocation" x="2131" y="49"/>
+            <point key="canvasLocation" x="1169" y="-699"/>
+        </scene>
+        <!--Center Tab Hot Deal Controller-->
+        <scene sceneID="OOc-8b-VUl">
+            <objects>
+                <viewController id="6sz-HF-qny" customClass="CenterTabHotDealController" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="zgj-wz-Q1A"/>
+                        <viewControllerLayoutGuide type="bottom" id="aDm-ib-PGW"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="WdD-C5-TXl">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                    </view>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="yHD-Rd-Je6" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-38" y="-4"/>
         </scene>
         <!--Yelp View Controller-->
         <scene sceneID="LkU-WR-JqK">
@@ -239,7 +238,7 @@
                         </containerView>
                         <cells>
                             <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="CollectionViewCell" id="uS7-rF-7Vi">
-                                <rect key="frame" x="10" y="64" width="140" height="165"/>
+                                <rect key="frame" x="10" y="0.0" width="140" height="165"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
                                     <rect key="frame" x="0.0" y="0.0" width="140" height="165"/>
@@ -282,7 +281,43 @@
                 </collectionViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="zuo-wz-DGq" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1179" y="782"/>
+            <point key="canvasLocation" x="229" y="686"/>
+        </scene>
+        <!--Center Tab Nearby Deal Controller-->
+        <scene sceneID="bY0-Uh-GF0">
+            <objects>
+                <viewController id="V09-tx-TKF" customClass="CenterTabNearbyDealController" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="SWM-YR-UuP"/>
+                        <viewControllerLayoutGuide type="bottom" id="mXX-5o-hbI"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="o4j-8K-QJe">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                    </view>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="mfL-1u-Htz" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-429" y="674"/>
+        </scene>
+        <!--Center Tab Buddy Deal Controller-->
+        <scene sceneID="WDW-uP-jzc">
+            <objects>
+                <viewController id="64N-gM-bMb" customClass="CenterTabBuddyDealController" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="ux8-AM-GyB"/>
+                        <viewControllerLayoutGuide type="bottom" id="fxB-6h-qMe"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="0Bd-Oi-vtv">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                    </view>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="TjJ-K6-BBQ" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-429" y="-658"/>
         </scene>
         <!--Detail Page View Controller-->
         <scene sceneID="sbM-E4-8Om">
@@ -321,7 +356,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="soi-Tf-P4a" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1667" y="782"/>
+            <point key="canvasLocation" x="717" y="698"/>
         </scene>
         <!--Map View Controller-->
         <scene sceneID="3Su-4f-XBh">
@@ -360,7 +395,7 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="DKL-Af-wl0" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <exit id="Bzd-Ki-TEQ" userLabel="Exit" sceneMemberID="exit"/>
             </objects>
-            <point key="canvasLocation" x="2141" y="782"/>
+            <point key="canvasLocation" x="1191" y="698"/>
         </scene>
         <!--Detail Page Content View Controller-->
         <scene sceneID="M1G-pH-Rt5">
@@ -396,26 +431,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Cke-qY-pBg" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1667" y="1438"/>
-        </scene>
-        <!--Navigation Controller - Item-->
-        <scene sceneID="gPH-wy-vDH">
-            <objects>
-                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="vN5-xs-9UJ" sceneMemberID="viewController">
-                    <tabBarItem key="tabBarItem" title="Item" id="BO7-ye-BUp"/>
-                    <toolbarItems/>
-                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="bjI-7I-klH">
-                        <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
-                        <autoresizingMask key="autoresizingMask"/>
-                    </navigationBar>
-                    <nil name="viewControllers"/>
-                    <connections>
-                        <segue destination="vXZ-lx-hvc" kind="relationship" relationship="rootViewController" id="MMh-3v-5rh"/>
-                    </connections>
-                </navigationController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="8Q7-8a-uh5" userLabel="First Responder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="147" y="42"/>
+            <point key="canvasLocation" x="717" y="1354"/>
         </scene>
         <!--Main View Controller-->
         <scene sceneID="Vh5-Nw-Egc">
@@ -462,26 +478,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="zMD-jl-u2H" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-379" y="-630"/>
-        </scene>
-        <!--Tab Bar Controller-->
-        <scene sceneID="wxd-B1-P20">
-            <objects>
-                <tabBarController storyboardIdentifier="xjyTabBarControllerSB" automaticallyAdjustsScrollViewInsets="NO" id="TRc-kL-qMB" sceneMemberID="viewController">
-                    <toolbarItems/>
-                    <navigationItem key="navigationItem" id="WWN-AM-WCL"/>
-                    <nil key="simulatedBottomBarMetrics"/>
-                    <tabBar key="tabBar" contentMode="scaleToFill" id="Xee-eJ-gOi">
-                        <autoresizingMask key="autoresizingMask"/>
-                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
-                    </tabBar>
-                    <connections>
-                        <segue destination="vN5-xs-9UJ" kind="relationship" relationship="viewControllers" id="21p-hp-1B3"/>
-                    </connections>
-                </tabBarController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="5Pa-mf-ccr" userLabel="First Responder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="-379" y="42"/>
+            <point key="canvasLocation" x="-832" y="-658"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="Hls-R3-igx">
@@ -499,7 +496,7 @@
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="CWl-L3-K0X" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1164" y="49"/>
+            <point key="canvasLocation" x="272" y="-710"/>
         </scene>
         <!--Menu Table Controller-->
         <scene sceneID="KcO-Qt-azY">
@@ -579,7 +576,7 @@
                     </connections>
                 </searchDisplayController>
             </objects>
-            <point key="canvasLocation" x="-379" y="722"/>
+            <point key="canvasLocation" x="-832" y="674"/>
         </scene>
     </scenes>
     <simulatedMetricsContainer key="defaultSimulatedMetrics">

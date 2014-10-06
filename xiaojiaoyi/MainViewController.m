@@ -22,6 +22,34 @@
 @implementation MainViewController
 
 
+#pragma mark - gesture recognizer
+//
+//-(void)setupSubViewGestureRecognizer
+//{
+//    UISwipeGestureRecognizer *swipeGR = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(swipe:)];
+//    [swipeGR setNumberOfTouchesRequired:1];
+//    [swipeGR setDirection:UISwipeGestureRecognizerDirectionUp | UISwipeGestureRecognizerDirectionDown];
+//    
+//    [self.view addGestureRecognizer:swipeGR];
+//    
+//    UIPanGestureRecognizer *panGR = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(subviewPan:)];
+//    [panGR setMaximumNumberOfTouches:1];
+//    [panGR setMinimumNumberOfTouches:1];
+//
+//   // [self.viewController.view addGestureRecognizer:panGR];
+//
+//}
+//
+//-(void)subviewPan:(UIPanGestureRecognizer*)gesture
+//{
+//    NSLog(@"subview pan");
+//}
+//-(void)swipe:(UISwipeGestureRecognizer*)gesture
+//{
+//    NSLog(@"main swipe");
+//}
+
+
 #pragma mark - table view delegate methods
 
 -(void) tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
@@ -41,8 +69,6 @@
     [_menuViewController tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath];
     
 }
-
-
 
 #pragma mark - gesture recognizer setup
 -(UIPanGestureRecognizer*)getPanGestureRecognizer
@@ -65,7 +91,7 @@
 
 -(void)pan:(UIPanGestureRecognizer *)gesture
 {
-    NSLog(@"calling pan");
+    
     if(gesture.state == UIGestureRecognizerStateChanged || gesture.state == UIGestureRecognizerStateBegan){
         //NSLog(@"calling the pan gesture recognizer");
         CGPoint transition  = [gesture translationInView: _viewController.view]; // ?
@@ -85,8 +111,8 @@
 {
     //[self setupGestureRecognizer];
     if(!_viewController){
-        _viewController =[self.storyboard instantiateViewControllerWithIdentifier:@"xjyTabBarControllerSB"];
-        
+        _viewController =[self.storyboard instantiateViewControllerWithIdentifier:@"CenterTabBarControllerSB"];
+        _viewController.superVC = self;
         [self addChildViewController:_viewController];
         [self.view addSubview:_viewController.view];
         //_viewController.delegate = self;
@@ -265,6 +291,8 @@ slide all the way to the left
     [super viewDidLoad];
     [self setup];
     self.isReset = true;
+    //[self setupSubViewGestureRecognizer];
+    
     
     // Do any additional setup after loading the view.
 }

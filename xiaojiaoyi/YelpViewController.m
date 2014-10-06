@@ -7,13 +7,13 @@
 //
 
 #import "YelpViewController.h"
-#import "MenuTableController.h"
+//#import "MenuTableController.h"
 
 @interface YelpViewController ()
 
-@property (weak, nonatomic) IBOutlet UIBarButtonItem *menuButton;
+//@property (weak, nonatomic) IBOutlet UIBarButtonItem *menuButton;
 //@property (nonatomic) MenuTableController *menuController;
-@property (nonatomic) BOOL isShown;
+//@property (nonatomic) BOOL isShown;
 
 @end
 
@@ -59,30 +59,6 @@
 {
     NSLog(@"should select at %ld",indexPath.row);
     return true;
-}
-//-(void)setDelegate:(id<MenuNavigationDelegate>)delegate
-//{
-//    if(!_delegate){
-//        NSLog(@"will set Yelp View Delegate");
-//        _delegate = delegate;
-//    }
-//}
-
-- (IBAction)menuButtonClicked:(UIBarButtonItem *)sender {
-    
-    NSLog(@"collection view's delegate is %@",self.collectionView.delegate);
-    
-    /*
-     Both the sliding and resetting are delegated to Main View Controller
-     */
-//    if(_isShown){
-//        [_delegate slide];
-//        _isShown = false;
-//    }
-//    else{
-//        [_delegate reset];
-//        _isShown = true;
-//    }
 }
 
 #pragma mark - collection view data source methods
@@ -234,25 +210,8 @@
     [task resume];
 }
 
--(void)connection:(NSURLConnection *)connection finishLoadingWithTicket:(OAServiceTicket *)ticket
-{
-    
-}
-
--(void)connection:(NSURLConnection *)connection didFailWithError:(NSError *)error withTicket:(OAServiceTicket *)ticket
-{
-    
-}
-
-
 #pragma mark - life cycle methods
 
--(void) awakeFromNib
-{
-    [super awakeFromNib];
-    //NSLog(@"calling the init from nib ");
-    //[self fetchData];
-}
 - (void)viewDidLoad
 {
     [super viewDidLoad];
@@ -261,17 +220,8 @@
     [self fetchData];
     //download queue is necessary
     [self downloadQueue];
-    self.isShown = true;
+    //self.isShown = true;
     
-}
-
-- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
-{
-    self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
-    if (self) {
-        // Custom initialization
-    }
-    return self;
 }
 
 - (void)didReceiveMemoryWarning
