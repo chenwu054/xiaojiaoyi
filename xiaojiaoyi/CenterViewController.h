@@ -20,6 +20,7 @@
 
 @class  YelpViewController;
 @class MainViewController;
+@class CenterTabHotDealController;
 
 @interface CenterViewController : UIViewController <DataFetcherDelegate,UITabBarControllerDelegate,UIToolbarDelegate,UIActionSheetDelegate>
 @property (weak, nonatomic) IBOutlet UIButton *yelpButton;

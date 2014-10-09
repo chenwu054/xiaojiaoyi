@@ -11,6 +11,7 @@
 #import "YelpViewController.h"
 #import "UserMenuController.h"
 #import "CenterViewController.h"
+#import "UIView+GestureView.h"
 
 @class CenterViewController;
 

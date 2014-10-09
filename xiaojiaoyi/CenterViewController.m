@@ -61,6 +61,8 @@
     //_centerTabHotDealController.view.frame= CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height-200);
     
     _centerTabHotDealController.title = @"Hot Deals";
+    _centerTabHotDealController.mainVC = self.superVC;
+    
     _centerTabBuddyDealController.title = @"Buddies'";
     _centerTabNearbyDealController.title = @"Nearby";
     NSArray* viewControllers = @[_centerTabBuddyDealController,_centerTabHotDealController, _centerTabNearbyDealController];
@@ -227,7 +229,7 @@
     [super viewDidLoad];
     [self initTabBarAndController];
     [self toolBar];
-	
+	//[self setupGestureRecognizer];
     
 }
 

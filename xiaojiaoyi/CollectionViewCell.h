@@ -8,7 +8,7 @@
 
 #import <Foundation/Foundation.h>
 
-@interface CollectionViewCell : NSObject
+@interface CollectionViewCell : UICollectionViewCell
 
 @property (nonatomic) NSString *name;
 @property (nonatomic) NSURL *imageURL;

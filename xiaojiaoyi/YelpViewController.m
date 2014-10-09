@@ -11,7 +11,7 @@
 
 @interface YelpViewController ()
 
-//@property (weak, nonatomic) IBOutlet UIBarButtonItem *menuButton;
+@property (weak, nonatomic) IBOutlet UIBarButtonItem *menuButton;
 //@property (nonatomic) MenuTableController *menuController;
 //@property (nonatomic) BOOL isShown;
 
@@ -215,6 +215,10 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    NSArray * arr = self.collectionView.gestureRecognizers;
+    for(UIGestureRecognizer *g in arr){
+        NSLog(@"g is %@",g);
+    }
     //NSLog(@"calling view did load");
     // Do any additional setup after loading the view.
     [self fetchData];

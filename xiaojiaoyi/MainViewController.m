@@ -292,8 +292,8 @@ slide all the way to the left
     [self setup];
     self.isReset = true;
     //[self setupSubViewGestureRecognizer];
-    
-    
+    //[UIView recursivePrintViewTree:self.view];
+
     // Do any additional setup after loading the view.
 }
 

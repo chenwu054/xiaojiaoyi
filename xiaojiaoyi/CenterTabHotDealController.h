@@ -7,14 +7,25 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "CollectionViewCell.h"
+#import "UIView+GestureView.h"
+#import "GestureView.h"
+#import "MainViewController.h"
+#import "GestureCollectionView.h"
 
-@interface CenterTabHotDealController : UIViewController <UISearchBarDelegate,UISearchBarDelegate,UICollectionViewDataSource,UICollectionViewDelegate>
+@class  MainViewController;
+
+@interface CenterTabHotDealController : UIViewController <UISearchBarDelegate,UISearchBarDelegate,UICollectionViewDataSource,UICollectionViewDelegate,UICollectionViewDelegateFlowLayout>
 @property (nonatomic) UISearchBar *searchBar;
 
 @property (nonatomic) UICollectionView *collectionView;
 @property (nonatomic) UICollectionViewController *collectionVC;
+@property (nonatomic) UICollectionViewFlowLayout *flowLayout;
+
+@property (nonatomic) MainViewController *mainVC;
+@property (nonatomic) GestureView *mainDelegateView;
 
 
-
-
+-(void)hideSearchBar;
 @end
+

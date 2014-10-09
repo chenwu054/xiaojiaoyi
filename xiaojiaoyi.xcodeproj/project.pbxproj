@@ -97,6 +97,9 @@
 		74CB851819BEB80900579432 /* NSURLRequest+OAuth.m in Sources */ = {isa = PBXBuildFile; fileRef = 74CB851519BEB80900579432 /* NSURLRequest+OAuth.m */; };
 		74CB851919BEB80900579432 /* YPAPISample.m in Sources */ = {isa = PBXBuildFile; fileRef = 74CB851719BEB80900579432 /* YPAPISample.m */; };
 		74CB851D19C0193C00579432 /* YelpViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 74CB851C19C0193C00579432 /* YelpViewController.m */; };
+		74FD860D19E380B7000EC4C2 /* UIView+GestureView.m in Sources */ = {isa = PBXBuildFile; fileRef = 74FD860C19E380B7000EC4C2 /* UIView+GestureView.m */; };
+		74FD861019E392FF000EC4C2 /* GestureView.m in Sources */ = {isa = PBXBuildFile; fileRef = 74FD860F19E392FF000EC4C2 /* GestureView.m */; };
+		74FD861319E43DC7000EC4C2 /* GestureCollectionView.m in Sources */ = {isa = PBXBuildFile; fileRef = 74FD861219E43DC7000EC4C2 /* GestureCollectionView.m */; };
 		74FE265719CA721400801CA1 /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 74FE265619CA721400801CA1 /* MapKit.framework */; };
 		74FE265A19CA72A300801CA1 /* MapViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 74FE265919CA72A300801CA1 /* MapViewController.m */; };
 /* End PBXBuildFile section */
@@ -259,6 +262,12 @@
 		74CB851719BEB80900579432 /* YPAPISample.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YPAPISample.m; sourceTree = "<group>"; };
 		74CB851B19C0193C00579432 /* YelpViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YelpViewController.h; sourceTree = "<group>"; };
 		74CB851C19C0193C00579432 /* YelpViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YelpViewController.m; sourceTree = "<group>"; };
+		74FD860B19E380B7000EC4C2 /* UIView+GestureView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIView+GestureView.h"; sourceTree = "<group>"; };
+		74FD860C19E380B7000EC4C2 /* UIView+GestureView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView+GestureView.m"; sourceTree = "<group>"; };
+		74FD860E19E392FF000EC4C2 /* GestureView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GestureView.h; sourceTree = "<group>"; };
+		74FD860F19E392FF000EC4C2 /* GestureView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GestureView.m; sourceTree = "<group>"; };
+		74FD861119E43DC7000EC4C2 /* GestureCollectionView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GestureCollectionView.h; sourceTree = "<group>"; };
+		74FD861219E43DC7000EC4C2 /* GestureCollectionView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GestureCollectionView.m; sourceTree = "<group>"; };
 		74FE265619CA721400801CA1 /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
 		74FE265819CA72A300801CA1 /* MapViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MapViewController.h; sourceTree = "<group>"; };
 		74FE265919CA72A300801CA1 /* MapViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MapViewController.m; sourceTree = "<group>"; };
@@ -343,6 +352,12 @@
 				741FB5FC19E0899800EA6D5B /* CenterTabNearbyDealController.m */,
 				741FB5F519E06F4600EA6D5B /* CenterTabHotDealController.h */,
 				741FB5F619E06F4600EA6D5B /* CenterTabHotDealController.m */,
+				74FD861119E43DC7000EC4C2 /* GestureCollectionView.h */,
+				74FD861219E43DC7000EC4C2 /* GestureCollectionView.m */,
+				74FD860E19E392FF000EC4C2 /* GestureView.h */,
+				74FD860F19E392FF000EC4C2 /* GestureView.m */,
+				74FD860B19E380B7000EC4C2 /* UIView+GestureView.h */,
+				74FD860C19E380B7000EC4C2 /* UIView+GestureView.m */,
 			);
 			name = CenterVC;
 			sourceTree = "<group>";
@@ -419,6 +434,8 @@
 				74CB84D919BA15FA00579432 /* OAuth */,
 				749366FB19CE75F1003B3108 /* Login */,
 				741FB5FE19E0BE2E00EA6D5B /* CenterVC */,
+				74CB851B19C0193C00579432 /* YelpViewController.h */,
+				74CB851C19C0193C00579432 /* YelpViewController.m */,
 				74B9327B19AAEB4E003B6594 /* xjyAppDelegate.h */,
 				74B9327C19AAEB4E003B6594 /* xjyAppDelegate.m */,
 				74065ADD19C747D30033DA71 /* DetailPageViewController.h */,
@@ -429,8 +446,6 @@
 				749366F119CA7D9B003B3108 /* Location.m */,
 				74065AE019C748210033DA71 /* DetailPageContentViewController.h */,
 				74065AE119C748210033DA71 /* DetailPageContentViewController.m */,
-				74CB851B19C0193C00579432 /* YelpViewController.h */,
-				74CB851C19C0193C00579432 /* YelpViewController.m */,
 				740A2E7619C49B4F00D87965 /* MenuTableController.h */,
 				740A2E7719C49B4F00D87965 /* MenuTableController.m */,
 				740A2E7C19C53E4600D87965 /* MainViewController.h */,
@@ -712,6 +727,7 @@
 				74CB84E119BA15FA00579432 /* hmac.c in Sources */,
 				74CB84F719BBCC0400579432 /* NSMutableURLRequest+Parameters.m in Sources */,
 				740A2E7E19C53E4600D87965 /* MainViewController.m in Sources */,
+				74FD860D19E380B7000EC4C2 /* UIView+GestureView.m in Sources */,
 				74B932A619AAEC55003B6594 /* LoginViewController.m in Sources */,
 				74CB84EE19BB4B4E00579432 /* OAConsumer.m in Sources */,
 				74B9327D19AAEB4E003B6594 /* xjyAppDelegate.m in Sources */,
@@ -724,7 +740,9 @@
 				74B9330C19AD8695003B6594 /* STTwitterAPI.m in Sources */,
 				7493296319D74382003A2388 /* SessionManager.m in Sources */,
 				74B9331219AD8695003B6594 /* BAVPlistNode.m in Sources */,
+				74FD861319E43DC7000EC4C2 /* GestureCollectionView.m in Sources */,
 				741FB5F719E06F4600EA6D5B /* CenterTabHotDealController.m in Sources */,
+				74FD861019E392FF000EC4C2 /* GestureView.m in Sources */,
 				74CB851819BEB80900579432 /* NSURLRequest+OAuth.m in Sources */,
 				74CB850119BBDB2100579432 /* OADataFetcher.m in Sources */,
 				74CB84F419BB503800579432 /* NSString+URLEncoding.m in Sources */,
