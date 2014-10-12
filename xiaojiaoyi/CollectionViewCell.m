@@ -23,27 +23,18 @@
 }
 -(void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event
 {
-    //!!let the next responder respond to the touches! otherwise will not move horizontally
-    //NSLog(@"CV cell touches begin");
-    
+    //!!let the next responder respond to the touches! otherwise will not move horizontall;
     [self.nextResponder touchesBegan:touches withEvent:event];
-    //[self.nextResponder.nextResponder touchesBegan:touches withEvent:event];
 }
 
 
 -(void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event
 {
-    //NSLog(@"CV Cell touches moved");
-    
-    
     [self.nextResponder touchesMoved:touches withEvent:event];
-    //[self.nextResponder.nextResponder touchesMoved:touches withEvent:event];
 }
 -(void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event
 {
-    //NSLog(@"CV Cell touches ended");
     [self.nextResponder touchesEnded:touches withEvent:event];
-    //[self.nextResponder.nextResponder touchesEnded:touches withEvent:event];
 }
 -(void)touchesCancelled:(NSSet *)touches withEvent:(UIEvent *)event
 {
@@ -52,15 +43,15 @@
 //        NSLog(@"touch is %@",touch);
 //    }
 
-    UITouch *touch = [touches anyObject];
-    CGFloat xDiff = [touch locationInView:self].x - [touch previousLocationInView:self].x;
-    CGFloat yDiff = [touch locationInView:self].y - [touch previousLocationInView:self].y;
-    if(xDiff >=-0.5 && xDiff<=0.5 && yDiff>=-0.5 && yDiff<=0.5){
+//    UITouch *touch = [touches anyObject];
+//    CGFloat xDiff = [touch locationInView:self].x - [touch previousLocationInView:self].x;
+//    CGFloat yDiff = [touch locationInView:self].y - [touch previousLocationInView:self].y;
+//    if(xDiff >=-0.5 && xDiff<=0.5 && yDiff>=-0.5 && yDiff<=0.5){
         //NSLog(@"CV Cell selected");
-        UICollectionView * view = (UICollectionView*)self.nextResponder;
+        //UICollectionView * view = (UICollectionView*)self.nextResponder;
         //NSLog(@"delegate is %@",view.delegate);
         
-    }
+//    }
 //    NSArray *gestures = [self gestureRecognizers];
 //    NSLog(@"CV cell guesture size is %ld",gestures.count);
     
@@ -72,9 +63,7 @@
 //        [self.superview.nextResponder.nextResponder performSelector:@selector(hideSearchBar)];
 //    }
     
-    //NSLog(@"CV cell touches cancelled");
     [self.nextResponder touchesCancelled:touches withEvent:event];
-    //[self.nextResponder.nextResponder touchesCancelled:touches withEvent:event];
 }
 @end
 

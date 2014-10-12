@@ -12,10 +12,11 @@
 #import "GestureView.h"
 #import "MainViewController.h"
 #import "GestureCollectionView.h"
+#import "CenterCollectionViewFlowLayout.h"
 
 @class  MainViewController;
 
-@interface CenterTabHotDealController : UIViewController <UISearchBarDelegate,UISearchBarDelegate,UICollectionViewDataSource,UICollectionViewDelegate,UICollectionViewDelegateFlowLayout>
+@interface CenterTabHotDealController : UIViewController <UISearchBarDelegate,UISearchBarDelegate,UICollectionViewDataSource,UICollectionViewDelegate,UICollectionViewDelegateFlowLayout,UIGestureRecognizerDelegate>
 @property (nonatomic) UISearchBar *searchBar;
 
 @property (nonatomic) UICollectionView *collectionView;

@@ -122,12 +122,12 @@
         [_viewController didMoveToParentViewController:self];
         
     }
-    //setting up the gesture recognizer
+    //setting up the gesture recognizer !!! CenterView already has a Pan gesture recognizer!
     UIPanGestureRecognizer *panGestureRecognizer=[self getPanGestureRecognizer];
     [_viewController.view addGestureRecognizer:panGestureRecognizer];
     UITapGestureRecognizer *tapGestureRecognizer=[self getTapGestureRecognizer];
     [_viewController.view addGestureRecognizer:tapGestureRecognizer];
-
+    
     if(!_menuViewController){
         _menuViewController = [MenuTableController alloc];
         _menuViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"menuController"];

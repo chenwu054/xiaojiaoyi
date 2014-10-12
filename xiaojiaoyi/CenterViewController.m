@@ -27,6 +27,11 @@
 
 @implementation CenterViewController
 
+-(void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event
+{
+    //NSLog(@"delivered to Center View Controller! begin");
+}
+
 -(MainViewController*)superVC
 {
     if(!_superVC){
@@ -121,7 +126,7 @@
 
 -(void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex
 {
-    NSLog(@"buttonIndex is %ld in action sheet is clicked",buttonIndex);
+    //NSLog(@"buttonIndex is %ld in action sheet is clicked",buttonIndex);
     if(buttonIndex == 3){
         return;
     }
@@ -223,10 +228,30 @@
 }
 
 #pragma mark - controller lifecycle
+-(BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch{
+    NSLog(@"center view gesture recognizer delegate");
+    if([gestureRecognizer isKindOfClass:[UIPanGestureRecognizer class]]){
+        return YES;
+    }
+    return NO;
+}
+-(BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer
+{
+    NSLog(@"centerview simultaneous GR"); 
+    return YES;
+}
 
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    
+    //self.view = [[GestureView alloc] init];
+    //self.view.userInteractionEnabled = YES;
+    //NSLog(@"default GR count is %ld",self.view.gestureRecognizers.count);
+    //self.view.frame = [UIScreen mainScreen].bounds;
+    //NSLog(@"center view is %@",self.view);
+    
+    
     [self initTabBarAndController];
     [self toolBar];
 	//[self setupGestureRecognizer];

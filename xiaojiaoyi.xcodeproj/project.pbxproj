@@ -44,6 +44,9 @@
 		749366F419CB3E67003B3108 /* twitter small icon.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 749366F319CB3E67003B3108 /* twitter small icon.jpg */; };
 		749366F719CDE0C5003B3108 /* TWMutableURLRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = 749366F619CDE0C5003B3108 /* TWMutableURLRequest.m */; };
 		749366FA19CDE688003B3108 /* TWSession.m in Sources */ = {isa = PBXBuildFile; fileRef = 749366F919CDE688003B3108 /* TWSession.m */; };
+		74B7218919E83845000B3892 /* CenterCollectionViewFlowLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = 74B7218819E83845000B3892 /* CenterCollectionViewFlowLayout.m */; };
+		74B7218B19EA40F0000B3892 /* pull_down_arrow.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 74B7218A19EA40F0000B3892 /* pull_down_arrow.jpg */; };
+		74B7218D19EA4A29000B3892 /* pull_up_arrow.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 74B7218C19EA4A29000B3892 /* pull_up_arrow.jpg */; };
 		74B9326D19AAEB4E003B6594 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 74B9326C19AAEB4E003B6594 /* Foundation.framework */; };
 		74B9326F19AAEB4E003B6594 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 74B9326E19AAEB4E003B6594 /* CoreGraphics.framework */; };
 		74B9327119AAEB4E003B6594 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 74B9327019AAEB4E003B6594 /* UIKit.framework */; };
@@ -168,6 +171,10 @@
 		749366F619CDE0C5003B3108 /* TWMutableURLRequest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TWMutableURLRequest.m; sourceTree = "<group>"; };
 		749366F819CDE688003B3108 /* TWSession.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TWSession.h; path = Crytpo/TWSession.h; sourceTree = "<group>"; };
 		749366F919CDE688003B3108 /* TWSession.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TWSession.m; path = Crytpo/TWSession.m; sourceTree = "<group>"; };
+		74B7218719E83845000B3892 /* CenterCollectionViewFlowLayout.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CenterCollectionViewFlowLayout.h; sourceTree = "<group>"; };
+		74B7218819E83845000B3892 /* CenterCollectionViewFlowLayout.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CenterCollectionViewFlowLayout.m; sourceTree = "<group>"; };
+		74B7218A19EA40F0000B3892 /* pull_down_arrow.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = pull_down_arrow.jpg; sourceTree = "<group>"; };
+		74B7218C19EA4A29000B3892 /* pull_up_arrow.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = pull_up_arrow.jpg; sourceTree = "<group>"; };
 		74B9326919AAEB4E003B6594 /* xiaojiaoyi.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = xiaojiaoyi.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		74B9326C19AAEB4E003B6594 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		74B9326E19AAEB4E003B6594 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -316,6 +323,8 @@
 		74065AE319C7E2DD0033DA71 /* images */ = {
 			isa = PBXGroup;
 			children = (
+				74B7218C19EA4A29000B3892 /* pull_up_arrow.jpg */,
+				74B7218A19EA40F0000B3892 /* pull_down_arrow.jpg */,
 				741FB60719E11B0200EA6D5B /* add63.png */,
 				741FB60819E11B0200EA6D5B /* web11.png */,
 				741FB60519E11AF800EA6D5B /* zoom22.png */,
@@ -352,12 +361,15 @@
 				741FB5FC19E0899800EA6D5B /* CenterTabNearbyDealController.m */,
 				741FB5F519E06F4600EA6D5B /* CenterTabHotDealController.h */,
 				741FB5F619E06F4600EA6D5B /* CenterTabHotDealController.m */,
+				74B7218719E83845000B3892 /* CenterCollectionViewFlowLayout.h */,
+				74B7218819E83845000B3892 /* CenterCollectionViewFlowLayout.m */,
 				74FD861119E43DC7000EC4C2 /* GestureCollectionView.h */,
 				74FD861219E43DC7000EC4C2 /* GestureCollectionView.m */,
 				74FD860E19E392FF000EC4C2 /* GestureView.h */,
 				74FD860F19E392FF000EC4C2 /* GestureView.m */,
 				74FD860B19E380B7000EC4C2 /* UIView+GestureView.h */,
 				74FD860C19E380B7000EC4C2 /* UIView+GestureView.m */,
+				74CB851B19C0193C00579432 /* YelpViewController.h */,
 			);
 			name = CenterVC;
 			sourceTree = "<group>";
@@ -434,7 +446,6 @@
 				74CB84D919BA15FA00579432 /* OAuth */,
 				749366FB19CE75F1003B3108 /* Login */,
 				741FB5FE19E0BE2E00EA6D5B /* CenterVC */,
-				74CB851B19C0193C00579432 /* YelpViewController.h */,
 				74CB851C19C0193C00579432 /* YelpViewController.m */,
 				74B9327B19AAEB4E003B6594 /* xjyAppDelegate.h */,
 				74B9327C19AAEB4E003B6594 /* xjyAppDelegate.m */,
@@ -698,10 +709,12 @@
 				74065AE819C7E2DD0033DA71 /* facebook.jpg in Resources */,
 				74065AE919C7E2DD0033DA71 /* google.jpg in Resources */,
 				749366F419CB3E67003B3108 /* twitter small icon.jpg in Resources */,
+				74B7218D19EA4A29000B3892 /* pull_up_arrow.jpg in Resources */,
 				74065AEB19C923540033DA71 /* linkedin.jpg in Resources */,
 				74B9327719AAEB4E003B6594 /* InfoPlist.strings in Resources */,
 				741FB60619E11AF800EA6D5B /* zoom22.png in Resources */,
 				741FB60A19E11B0200EA6D5B /* web11.png in Resources */,
+				74B7218B19EA40F0000B3892 /* pull_down_arrow.jpg in Resources */,
 				74B932AA19AC29CD003B6594 /* FBUserSettingsViewResources.bundle in Resources */,
 				741FB5F219DF567700EA6D5B /* UserMenuCategory.plist in Resources */,
 				7493296019D60FD3003A2388 /* GooglePlus.bundle in Resources */,
@@ -773,6 +786,7 @@
 				74FE265A19CA72A300801CA1 /* MapViewController.m in Sources */,
 				741FB5FD19E0899800EA6D5B /* CenterTabNearbyDealController.m in Sources */,
 				74B9331419AD8695003B6594 /* STHTTPRequest.m in Sources */,
+				74B7218919E83845000B3892 /* CenterCollectionViewFlowLayout.m in Sources */,
 				74B9330E19AD8695003B6594 /* STTwitterHTML.m in Sources */,
 				74B9330F19AD8695003B6594 /* STTwitterOAuth.m in Sources */,
 				74CB84E219BA15FA00579432 /* sha1.c in Sources */,
