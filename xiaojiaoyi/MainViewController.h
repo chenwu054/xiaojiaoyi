@@ -30,7 +30,7 @@
 
 @property (nonatomic) MenuTableController* menuViewController;
 @property (nonatomic) UserMenuController *userMenuController;
-@property (nonatomic) CenterViewController* viewController;
+@property (nonatomic) CenterViewController* centerViewController;
 
-
+-(BOOL) isReset;
 @end

@@ -13,6 +13,8 @@
 #import "MainViewController.h"
 #import "GestureCollectionView.h"
 #import "CenterCollectionViewFlowLayout.h"
+#import "GestureCollectionReusableView.h"
+#import "GestureButton.h"
 
 @class  MainViewController;
 

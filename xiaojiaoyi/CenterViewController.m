@@ -22,15 +22,35 @@
 @interface CenterViewController ()
 
 @property NSString *requestStr;
-
+@property NSDate *touchStartTime;
 @end
 
 @implementation CenterViewController
 
 -(void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event
 {
+    _touchStartTime = [NSDate date];
     //NSLog(@"delivered to Center View Controller! begin");
 }
+-(void)touchesEnd:(NSSet *)touches withEvent:(UIEvent *)event
+{
+    NSTimeInterval timePeriod = [[NSDate date] timeIntervalSinceDate:self.touchStartTime];
+    NSLog(@"time is %f",timePeriod);
+    
+    [self.superVC reset];
+    NSLog(@"delivered to Center View Controller! ended");
+}
+-(void)touchesCancelled:(NSSet *)touches withEvent:(UIEvent *)event
+{
+    NSTimeInterval timePeriod = [[NSDate date] timeIntervalSinceDate:self.touchStartTime];
+    NSLog(@"time is %f",timePeriod);
+    if(timePeriod < 0.5){
+        [self.superVC reset];
+    }
+    
+    NSLog(@"delivered to Center View Controller! canncelled");
+}
+
 
 -(MainViewController*)superVC
 {
@@ -233,7 +253,10 @@
     if([gestureRecognizer isKindOfClass:[UIPanGestureRecognizer class]]){
         return YES;
     }
-    return NO;
+    if([gestureRecognizer isKindOfClass:[UITapGestureRecognizer class]])
+        return YES;
+    
+    return YES;
 }
 -(BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer
 {
@@ -244,7 +267,12 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    
+    //self.view = [[GestureView alloc] init];
+    //self.view.frame = [UIScreen mainScreen].bounds;
+    NSArray * gestures = [self.view gestureRecognizers];
+    for(UIGestureRecognizer * gesture in gestures){
+        gesture.delegate = self;
+    }
     //self.view = [[GestureView alloc] init];
     //self.view.userInteractionEnabled = YES;
     //NSLog(@"default GR count is %ld",self.view.gestureRecognizers.count);

@@ -1,20 +1,21 @@
 //
-//  GestureCollectionView.m
+//  GestureButton.m
 //  xiaojiaoyi
 //
-//  Created by chen on 10/7/14.
+//  Created by chen on 10/12/14.
 //  Copyright (c) 2014 com.practice. All rights reserved.
 //
 
-#import "GestureCollectionView.h"
+#import "GestureButton.h"
 
-@implementation GestureCollectionView
+@implementation GestureButton
 
 //-(UIView *)hitTest:(CGPoint)point withEvent:(UIEvent *)event
 //{
-//    NSLog(@"hit test in Gesture Collection View");
+//    NSLog(@"hit test in button");
 //    return [super hitTest:point withEvent:event];
 //}
+
 
 -(void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event
 {
@@ -24,37 +25,38 @@
     //calling super is to have the collecion view's functions, such as detecting selecting a cell. this
     // is very important.
     [super touchesBegan:touches withEvent:event];
+    NSLog(@"-------------------");
+    NSLog(@"button began");
+    NSArray *arr = [self gestureRecognizers];
+    for(int i=0;i<arr.count;i++){
+        //NSLog(@"buttonGR%d is %@",i,arr[i]);
+    }
     //this is the method that delivers to main view
-    NSLog(@"collection view began");
-    //NSLog(@"GCV next responder is %@",self.nextResponder);
-//    NSArray *arr = [self gestureRecognizers];
-//    for(int i=0;i<arr.count;i++){
-//        //NSLog(@"GCV GR%d is %@",i,arr[i]);
-//    }
     [self.nextResponder touchesBegan:touches withEvent:event];
     
 }
 -(void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event
 {
-    [super touchesMoved:touches withEvent:event];
-    NSLog(@"collection view moved");
-    [self.nextResponder touchesMoved:touches withEvent:event];
     
+    [super touchesMoved:touches withEvent:event];
+    NSLog(@"button moved");
+    [self.nextResponder touchesMoved:touches withEvent:event];
 }
 -(void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event
 {
-    //NSLog(@"collection view ended next responder:%@",self.nextResponder);
-    [super touchesEnded:touches withEvent:event];
-    NSLog(@"collection view ended");
-    [self.nextResponder touchesEnded:touches withEvent:event];
     
+    [super touchesEnded:touches withEvent:event];
+    NSLog(@"button ended");
+    [self.nextResponder touchesEnded:touches withEvent:event];
 }
 -(void)touchesCancelled:(NSSet *)touches withEvent:(UIEvent *)event
 {
     [super touchesCancelled:touches withEvent:event];
-    NSLog(@"collection view cancelled");
-    [self.nextResponder touchesCancelled:touches withEvent:event];
+    NSLog(@"button cancelled");
+    [self.superview touchesCancelled:touches withEvent:event];
 }
+
+
 
 - (id)initWithFrame:(CGRect)frame
 {

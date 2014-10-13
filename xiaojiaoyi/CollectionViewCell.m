@@ -23,8 +23,12 @@
 }
 -(void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event
 {
+    [super touchesBegan:touches withEvent:event];
     //!!let the next responder respond to the touches! otherwise will not move horizontall;
+    NSLog(@"cell-----------------------");
+    NSLog(@"cell touch began");
     [self.nextResponder touchesBegan:touches withEvent:event];
+    
 }
 
 
@@ -62,7 +66,8 @@
 //    if([self.superview.nextResponder.nextResponder respondsToSelector:@selector(hideSearchBar)]){
 //        [self.superview.nextResponder.nextResponder performSelector:@selector(hideSearchBar)];
 //    }
-    
+    [super touchesCancelled:touches withEvent:event];
+    NSLog(@"cell cancelled");
     [self.nextResponder touchesCancelled:touches withEvent:event];
 }
 @end

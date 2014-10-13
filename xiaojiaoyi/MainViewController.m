@@ -86,6 +86,7 @@
 
 -(void)tap:(UITapGestureRecognizer *)gesture
 {
+    NSLog(@"main view tap gesture");
     [self reset];
 }
 
@@ -94,7 +95,7 @@
     
     if(gesture.state == UIGestureRecognizerStateChanged || gesture.state == UIGestureRecognizerStateBegan){
         //NSLog(@"calling the pan gesture recognizer");
-        CGPoint transition  = [gesture translationInView: _viewController.view]; // ?
+        CGPoint transition  = [gesture translationInView: _centerViewController.view]; // ?
         [self slideWithTransition:transition ended:NO];
         
     }
@@ -110,23 +111,23 @@
 -(void)setup
 {
     //[self setupGestureRecognizer];
-    if(!_viewController){
-        _viewController =[self.storyboard instantiateViewControllerWithIdentifier:@"CenterTabBarControllerSB"];
-        _viewController.superVC = self;
-        [self addChildViewController:_viewController];
-        [self.view addSubview:_viewController.view];
+    if(!_centerViewController){
+        _centerViewController =[self.storyboard instantiateViewControllerWithIdentifier:@"CenterTabBarControllerSB"];
+        _centerViewController.superVC = self;
+        [self addChildViewController:_centerViewController];
+        [self.view addSubview:_centerViewController.view];
         //_viewController.delegate = self;
         //[self.navigationController pushViewController:_viewController animated:YES];
         
         //[self.viewController presentViewController:_viewController animated:YES completion:nil];
-        [_viewController didMoveToParentViewController:self];
+        [_centerViewController didMoveToParentViewController:self];
         
     }
     //setting up the gesture recognizer !!! CenterView already has a Pan gesture recognizer!
     UIPanGestureRecognizer *panGestureRecognizer=[self getPanGestureRecognizer];
-    [_viewController.view addGestureRecognizer:panGestureRecognizer];
+    [_centerViewController.view addGestureRecognizer:panGestureRecognizer];
     UITapGestureRecognizer *tapGestureRecognizer=[self getTapGestureRecognizer];
-    [_viewController.view addGestureRecognizer:tapGestureRecognizer];
+    [_centerViewController.view addGestureRecognizer:tapGestureRecognizer];
     
     if(!_menuViewController){
         _menuViewController = [MenuTableController alloc];
@@ -165,7 +166,7 @@ slide all the way to the left
     [UIView animateWithDuration:0.2 delay: 0 options:UIViewAnimationOptionBeginFromCurrentState animations:^{
         
         
-        _viewController.view.frame = CGRectMake(PANEL_WIDTH-_viewController.view.frame.size.width, 0,_viewController.view.frame.size.width, _menuViewController.view.frame.size.height);
+        _centerViewController.view.frame = CGRectMake(PANEL_WIDTH-_centerViewController.view.frame.size.width, 0,_centerViewController.view.frame.size.width, _menuViewController.view.frame.size.height);
         _menuViewController.view.frame = CGRectMake(PANEL_WIDTH, 0,_menuViewController.view.frame.size.width, _menuViewController.view.frame.size.height);
         
     } completion:^(BOOL finished) {
@@ -183,7 +184,7 @@ slide all the way to the left
     //NSLog(@"calling main view slide");
     [UIView animateWithDuration:0.2 delay: 0 options:UIViewAnimationOptionBeginFromCurrentState animations:^{
 
-        _viewController.view.frame = CGRectMake(_viewController.view.frame.size.width-PANEL_WIDTH, 0,_viewController.view.frame.size.width, _menuViewController.view.frame.size.height);
+        _centerViewController.view.frame = CGRectMake(_centerViewController.view.frame.size.width-PANEL_WIDTH, 0,_centerViewController.view.frame.size.width, _menuViewController.view.frame.size.height);
         
         _userMenuController.view.frame = CGRectMake(-PANEL_WIDTH, 0,_userMenuController.view.frame.size.width, _userMenuController.view.frame.size.height);
         
@@ -209,29 +210,29 @@ slide all the way to the left
     
     CGFloat centerX = 0.0;
     if(_isReset){
-        centerX = _viewController.view.frame.size.width/2;
+        centerX = _centerViewController.view.frame.size.width/2;
     }
     else if(_inMenuView){
-        centerX = PANEL_WIDTH - _viewController.view.frame.size.width/2;
+        centerX = PANEL_WIDTH - _centerViewController.view.frame.size.width/2;
 
     }
     else{
-        centerX = _viewController.view.frame.size.width * 3/2 - PANEL_WIDTH;
+        centerX = _centerViewController.view.frame.size.width * 3/2 - PANEL_WIDTH;
     }
 
     //user view.center to instantly move the view
-    _viewController.view.center=CGPointMake(centerX+transition.x,_viewController.view.center.y);
+    _centerViewController.view.center=CGPointMake(centerX+transition.x,_centerViewController.view.center.y);
     
     _menuViewController.view.center=CGPointMake(centerX + _menuViewController.view.frame.size.width + transition.x,_menuViewController.view.center.y);
     
-    _userMenuController.view.center = CGPointMake(centerX - (_userMenuController.view.frame.size.width/2 + _viewController.view.frame.size.width/2) + transition.x, _userMenuController.view.center.y);
+    _userMenuController.view.center = CGPointMake(centerX - (_userMenuController.view.frame.size.width/2 + _centerViewController.view.frame.size.width/2) + transition.x, _userMenuController.view.center.y);
     
     if(ended){
         if(_isReset){
-            if(transition.x < -_viewController.view.frame.size.width/2){
+            if(transition.x < -_centerViewController.view.frame.size.width/2){
                 [self slideLeftAll];
             }
-            else if(transition.x > _viewController.view.frame.size.width/2){
+            else if(transition.x > _centerViewController.view.frame.size.width/2){
                 [self slideRightAll];
             }
             else{
@@ -240,13 +241,13 @@ slide all the way to the left
 
         }
         else if(_inMenuView){
-            if(transition.x > _viewController.view.frame.size.width/2)
+            if(transition.x > _centerViewController.view.frame.size.width/2)
                 [self reset];
             else
                 [self slideLeftAll];
         }
         else{
-            if(transition.x < - _viewController.view.frame.size.width/2){
+            if(transition.x < - _centerViewController.view.frame.size.width/2){
                 [self reset];
             }
             else{
@@ -269,9 +270,9 @@ slide all the way to the left
     //NSLog(@"calling main view controller reset");
     [UIView animateWithDuration:duration delay: 0 options:UIViewAnimationOptionBeginFromCurrentState animations:^{
         
-        _viewController.view.frame = CGRectMake(0, 0,_viewController.view.frame.size.width, _viewController.view.frame.size.height);
+        _centerViewController.view.frame = CGRectMake(0, 0,_centerViewController.view.frame.size.width, _centerViewController.view.frame.size.height);
         
-        _menuViewController.view.frame = CGRectMake(_viewController.view.frame.size.width, 0,_menuViewController.view.frame.size.width, _menuViewController.view.frame.size.height);
+        _menuViewController.view.frame = CGRectMake(_centerViewController.view.frame.size.width, 0,_menuViewController.view.frame.size.width, _menuViewController.view.frame.size.height);
         
         _userMenuController.view.frame = CGRectMake(-_userMenuController.view.frame.size.width, 0, _userMenuController.view.frame.size.width, _userMenuController.view.frame.size.height);
         
@@ -285,6 +286,10 @@ slide all the way to the left
     _inMenuView= NO;
 }
 
+-(BOOL) isReset
+{
+    return (_centerViewController.view.frame.origin.x == 0);
+}
 
 - (void)viewDidLoad
 {

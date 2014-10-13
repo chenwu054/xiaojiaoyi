@@ -17,12 +17,17 @@
 #define COLLECTION_VIEW_HEADER_UPPER_HEIGHT 120
 #define COLLECTION_VIEW_HEADER_HEIGHT 250
 
-#define PULLDOWN_VIEW_THRESHOLD 70
+#define PULLDOWN_VIEW_THRESHOLD 50
 #define PULLDOWN_VIEW_HEIGHT 50
 
 @interface CenterTabHotDealController ()
 
 @property (nonatomic) UIView* pullDownView;
+@property (nonatomic) UIActivityIndicatorView *spinner;
+@property (nonatomic) UIImageView *pullDownImageView;
+@property (nonatomic) UILabel *pullDownInfoLabel;
+@property (nonatomic) UILabel *pullDownTimeLabel;
+
 @end
 
 @implementation CenterTabHotDealController
@@ -61,14 +66,23 @@
     [self tap:nil];
     [super touchesCancelled:touches withEvent:event];
     [self.nextResponder touchesCancelled:touches withEvent:event];
+    [self.view.superview touchesCancelled:touches withEvent:event];
 }
 -(void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event
 {
     //NSLog(@"gesture ended");
     [super touchesEnded:touches withEvent:event];
     [self.nextResponder touchesEnded:touches withEvent:event];
+    if(self.mainVC){
+        NSLog(@"main view is reset: %d",self.mainVC.isReset);
+        if(!self.mainVC.isReset){
+            [self.mainVC reset];
+        }
+    }
+    [self.view.superview touchesEnded:touches withEvent:event];
 }
 
+//=======================================
 #pragma mark - collection view layout methods
 -(UICollectionViewFlowLayout*) flowLayout
 {
@@ -79,31 +93,46 @@
         _flowLayout.minimumInteritemSpacing =0;
         _flowLayout.minimumLineSpacing = 5;
         _flowLayout.itemSize = CGSizeMake(170, 170);
-        //need to set header referenceSize to nonZeroSize to show the header!
-        _flowLayout.headerReferenceSize = CGSizeMake(320, 250);
+        
+        //H3.need to set header referenceSize to nonZeroSize to show the header!
+        _flowLayout.headerReferenceSize = CGSizeMake(self.view.frame.size.width, COLLECTION_VIEW_HEADER_HEIGHT);
+        _flowLayout.footerReferenceSize = CGSizeMake(self.view.frame.size.width,100);
     }
     return _flowLayout;
 }
-
+//set insets
 - (UIEdgeInsets)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout insetForSectionAtIndex:(NSInteger)section {
     return UIEdgeInsetsMake(5, 12, 5, 12);
 }
+
+//the collection view regular cell size
+-(CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath
+{
+    CGSize size = CGSizeMake(145, 170);
+    return size;
+}
+//set Header and Footer
 -(UICollectionReusableView *)collectionView:(UICollectionView *)collectionView viewForSupplementaryElementOfKind:(NSString *)kind atIndexPath:(NSIndexPath *)indexPath
 {
-    //NSLog(@"calling view for supplementary view");
-    
-    UICollectionReusableView*view = [collectionView dequeueReusableSupplementaryViewOfKind:kind withReuseIdentifier:@"CenterHotDealCollectionViewHeader" forIndexPath:indexPath];
-    if(!view){
-        view= [[UICollectionReusableView alloc] init];
-    }
+    //Header2. calling the supplementary view
+    UICollectionReusableView*view = nil;
     if(kind == UICollectionElementKindSectionHeader){
-        UIButton *leftButton = [[UIButton alloc] initWithFrame:CGRectMake(COLLECTION_VIEW_HEADER_MARGIN, 0, COLLECTION_VIEW_HEADER_LEFT_WIDTH, COLLECTION_VIEW_HEADER_HEIGHT)];
-        leftButton.backgroundColor = [UIColor greenColor];
+        view = [collectionView dequeueReusableSupplementaryViewOfKind:kind withReuseIdentifier:@"CenterHotDealCollectionViewHeader" forIndexPath:indexPath];
+        if(!view){
+            //view= [[UICollectionReusableView alloc] init];
+            view = [[GestureCollectionReusableView alloc] init];
+        }
+        UIButton *leftButton = [[GestureButton alloc] initWithFrame:CGRectMake(COLLECTION_VIEW_HEADER_MARGIN, 0, COLLECTION_VIEW_HEADER_LEFT_WIDTH, COLLECTION_VIEW_HEADER_HEIGHT)];
+        leftButton.backgroundColor = [UIColor colorWithRed:0 green:255 blue:0 alpha:0.5];
         
-        UIButton *upperButton = [[UIButton alloc] initWithFrame:CGRectMake(COLLECTION_VIEW_HEADER_LEFT_WIDTH + COLLECTION_VIEW_HEADER_MARGIN*2  ,0 , self.view.frame.size.width-(COLLECTION_VIEW_HEADER_LEFT_WIDTH + COLLECTION_VIEW_HEADER_MARGIN*3), COLLECTION_VIEW_HEADER_UPPER_HEIGHT)];
-        upperButton.backgroundColor = [UIColor redColor];
+        [leftButton addTarget:self action:@selector(leftButtonClicked:) forControlEvents:UIControlEventTouchUpInside];
         
-        UIButton *lowerButton = [[UIButton alloc] initWithFrame:CGRectMake(COLLECTION_VIEW_HEADER_LEFT_WIDTH + COLLECTION_VIEW_HEADER_MARGIN*2, COLLECTION_VIEW_HEADER_UPPER_HEIGHT+COLLECTION_VIEW_HEADER_MARGIN, self.view.frame.size.width-(COLLECTION_VIEW_HEADER_LEFT_WIDTH + COLLECTION_VIEW_HEADER_MARGIN*3) , COLLECTION_VIEW_HEADER_HEIGHT - COLLECTION_VIEW_HEADER_UPPER_HEIGHT - COLLECTION_VIEW_HEADER_MARGIN)];
+        UIButton *upperButton = [[GestureButton alloc] initWithFrame:CGRectMake(COLLECTION_VIEW_HEADER_LEFT_WIDTH + COLLECTION_VIEW_HEADER_MARGIN*2  ,0 , self.view.frame.size.width-(COLLECTION_VIEW_HEADER_LEFT_WIDTH + COLLECTION_VIEW_HEADER_MARGIN*3), COLLECTION_VIEW_HEADER_UPPER_HEIGHT)];
+        upperButton.backgroundColor = [UIColor colorWithRed:255 green:0 blue:0 alpha:0.5];
+        [upperButton addTarget:self action:@selector(topButtonClicked:) forControlEvents:UIControlEventTouchUpInside];
+        
+        UIButton *lowerButton = [[GestureButton alloc] initWithFrame:CGRectMake(COLLECTION_VIEW_HEADER_LEFT_WIDTH + COLLECTION_VIEW_HEADER_MARGIN*2, COLLECTION_VIEW_HEADER_UPPER_HEIGHT+COLLECTION_VIEW_HEADER_MARGIN, self.view.frame.size.width-(COLLECTION_VIEW_HEADER_LEFT_WIDTH + COLLECTION_VIEW_HEADER_MARGIN*3) , COLLECTION_VIEW_HEADER_HEIGHT - COLLECTION_VIEW_HEADER_UPPER_HEIGHT - COLLECTION_VIEW_HEADER_MARGIN)];
+        [lowerButton addTarget:self action:@selector(bottomButtonClicked:) forControlEvents:UIControlEventTouchUpInside];
         
         lowerButton.backgroundColor = [UIColor blueColor];
         view.frame = CGRectMake(0, 0,self.view.frame.size.width - 2*COLLECTION_VIEW_MARGIN, 250);
@@ -111,34 +140,61 @@
         [view addSubview:upperButton];
         [view addSubview:lowerButton];
     }
+    else if(kind == UICollectionElementKindSectionFooter){
+        view = [collectionView dequeueReusableSupplementaryViewOfKind:kind withReuseIdentifier:@"CenterHotDealCollectionViewFooter" forIndexPath:indexPath];
+        if(!view){
+            view =[[GestureCollectionReusableView alloc] init];
+        }
+        view.backgroundColor = [UIColor lightGrayColor];
+        CGFloat footerOriginY=self.collectionVC.collectionView.frame.origin.y + self.collectionVC.collectionView.frame.size.height + COLLECTION_VIEW_HEADER_HEIGHT;
+        //NSLog(@"footer origin y is %f",footerOriginY);
+        view.frame = CGRectMake(0,footerOriginY , self.view.frame.size.width, 100);
+    }
     [_collectionVC.collectionView addSubview:view];
     
     return view;
 }
--(CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath
-{
-    CGSize size = CGSizeMake(145, 170);
-    return size;
+
+//pull down view
+-(UIView*)pullDownView{
+    if(!_pullDownView){
+        CGRect frame = CGRectMake(0, -0, self.view.frame.size.width,PULLDOWN_VIEW_HEIGHT);
+        _pullDownView = [[UIView alloc] initWithFrame:frame];
+        _pullDownView.backgroundColor = [UIColor lightGrayColor];
+        
+        UIImage *image = [UIImage imageNamed:@"pull_down_arrow.jpg"];
+        if(!_pullDownImageView){
+            _pullDownImageView = [[UIImageView alloc] initWithImage:image];
+        }
+        _pullDownImageView.backgroundColor = [UIColor clearColor];
+        _pullDownImageView.frame = CGRectMake(20, 0, 20, PULLDOWN_VIEW_HEIGHT);
+        
+        [_pullDownView addSubview:_pullDownImageView];
+        
+        if(!_pullDownInfoLabel){
+            _pullDownInfoLabel = [[UILabel alloc] initWithFrame:CGRectMake(50, 0, 250, PULLDOWN_VIEW_HEIGHT/2)];
+        }
+        _pullDownInfoLabel.text = @"pull down to refresh";
+        _pullDownInfoLabel.font = [UIFont fontWithName:@"Arial" size:14.0f];
+        [_pullDownView addSubview:_pullDownInfoLabel];
+        
+        if(!_pullDownTimeLabel){
+            _pullDownTimeLabel = [[UILabel alloc] initWithFrame:CGRectMake(50, PULLDOWN_VIEW_HEIGHT/2, 250, PULLDOWN_VIEW_HEIGHT/2)];
+        }
+        _pullDownTimeLabel.text = [NSString stringWithFormat:@"last refreshed on %@",[self getCurrentDateTime]];
+        _pullDownTimeLabel.font = [UIFont fontWithName:@"Arial" size:12.0f];
+        
+        [_pullDownView addSubview:_pullDownTimeLabel];
+        
+        
+    }
+    return _pullDownView;
 }
 
-//collection view methods
--(UIView*)pullDownView{
-    CGRect frame = CGRectMake(0, 0, self.view.frame.size.width,PULLDOWN_VIEW_HEIGHT);
-    _pullDownView = [[UIView alloc] initWithFrame:frame];
-    UIImage *image = [UIImage imageNamed:@"pull_down_arrow.jpg"];
-    UIImageView *imageView = [[UIImageView alloc] initWithImage:image];
-    imageView.frame = CGRectMake(50, 0, 20, PULLDOWN_VIEW_HEIGHT);
-    [_pullDownView addSubview:imageView];
-    UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(100, 0, 200, PULLDOWN_VIEW_HEIGHT/2)];
-    label.text = @"pull down to refresh";
-    [_pullDownView addSubview:label];
-    return _pullDownView;
-    
-}
+//collecion view controller setup
 -(UICollectionViewController*)collectionVC
 {
     if(!_collectionVC){
-        
         _collectionVC = [[UICollectionViewController alloc] initWithCollectionViewLayout:self.flowLayout];
         CGFloat originY = _searchBar.frame.size.height + _searchBar.frame.origin.y;
         //NSLog(@"originY is %f",originY);
@@ -152,13 +208,16 @@
         _collectionVC.collectionView.backgroundColor = [UIColor clearColor];
         
         UIView *pullDownView=[self pullDownView];
-        pullDownView.frame = CGRectMake(0, -50, self.view.frame.size.width, 50);
+        //pullDownView.frame = CGRectMake(0, 0, self.view.frame.size.width, 50);
+        //[_collectionVC.collectionView bringSubviewToFront:pullDownView];
         [_collectionVC.collectionView addSubview:pullDownView];
         
         //_collectionVC.collectionView.backgroundView =
         [_collectionVC.collectionView registerClass:[CollectionViewCell class] forCellWithReuseIdentifier:@"hotDealCollectionViewCell"];
-        [_collectionVC.collectionView registerClass:[UICollectionReusableView class] forSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"CenterHotDealCollectionViewHeader"];
         
+        //Header1.register the header
+        [_collectionVC.collectionView registerClass:[UICollectionReusableView class] forSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"CenterHotDealCollectionViewHeader"];
+        [_collectionVC.collectionView registerClass:[UICollectionReusableView class] forSupplementaryViewOfKind:UICollectionElementKindSectionFooter withReuseIdentifier:@"CenterHotDealCollectionViewFooter"];
         
 //        NSArray *gestures = _collectionVC.collectionView.gestureRecognizers;
 //        for(int i=0;i<gestures.count;i++){
@@ -170,7 +229,6 @@
         
         //NSLog(@"frame origin y is %f",_collectionVC.collectionView.frame.origin.y);
         //_collectionVC.collectionView.frame=collectionViewFrame;
-
     }
     
     //view controller container
@@ -180,10 +238,9 @@
     return _collectionVC;
 }
 
-
+//collection view data source methods
 -collectionView:(UICollectionView*)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath
 {
-    
     UICollectionViewCell *cell;
     cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"hotDealCollectionViewCell" forIndexPath:indexPath];
     //NSLog(@"at index path: section = %ld row = %ld",indexPath.section,indexPath.row);
@@ -201,7 +258,6 @@
 //        [g setCancelsTouchesInView: NO];
 //    }
 
-    //NSLog(@"cell bounds is %f and %f",cell.bounds.size.width,cell.bounds.size.height);
 }
 
 -(NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section
@@ -221,11 +277,27 @@
 }
 -(void)collectionView:(UICollectionView *)collectionView didHighlightItemAtIndexPath:(NSIndexPath *)indexPath
 {
-    //NSLog(@"!!highlighted item at section:%ld and row: %ld",indexPath.section,indexPath.row);
+    NSLog(@"!!highlighted item at section:%ld and row: %ld",indexPath.section,indexPath.row);
 }
 -(void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath
 {
     NSLog(@"!!selected item at section:%ld and row: %ld",indexPath.section,indexPath.row);
+}
+
+
+//============================================
+#pragma mark - commercial button methods
+-(void)leftButtonClicked:(id)sender
+{
+    //NSLog(@"left button clicked");
+}
+-(void)topButtonClicked:(id)sender
+{
+   //NSLog(@"top button clicked");
+}
+-(void)bottomButtonClicked:(id)sender
+{
+    //NSLog(@"bottom button clicked");
 }
 
 
@@ -245,17 +317,18 @@
     UISwipeGestureRecognizer *swipeGR = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(showOrHighSearchbarBySwipeGesture:)];
     [swipeGR setDirection:UISwipeGestureRecognizerDirectionDown | UISwipeGestureRecognizerDirectionUp];
     [swipeGR setNumberOfTouchesRequired:1];
+    
     UIPanGestureRecognizer *panGR = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(showOrHideSearchBarByPanGesture:)];
     [panGR setCancelsTouchesInView:NO];
     panGR.cancelsTouchesInView = NO;
     [panGR setMaximumNumberOfTouches:1];
     [panGR setMinimumNumberOfTouches:1];
 
-    [self.view addGestureRecognizer:swipeGR];
+    //[self.view addGestureRecognizer:swipeGR];
     panGR.delegate = self;
     //if this panGR is added it conflicts with another PanGR?
     //blocking the panGR on the Center View's panGR
-    //[self.view addGestureRecognizer:panGR];
+    [self.view addGestureRecognizer:panGR];
 
     UITapGestureRecognizer *tapGR = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tap:)];
     [self.view addGestureRecognizer:tapGR];
@@ -278,7 +351,7 @@
 }
 -(void)tap:(UITapGestureRecognizer*)gesture
 {
-    //NSLog(@"HDC calling tap recognizer");
+    NSLog(@"HDC calling tap recognizer");
     //NSLog(@"gesture is %@ and view is %@",gesture,gesture.view);
     if([_searchBar isFirstResponder])
         [_searchBar resignFirstResponder];
@@ -309,41 +382,71 @@
     }
 }
 
-#pragma mark - overall setup
+#pragma mark - scroll view methods
 -(void)scrollViewDidScroll:(UIScrollView *)scrollView
 {
+    static BOOL userLetGo = NO;
+    static NSString *timeStr = nil;
     CGFloat offset = [_collectionVC.collectionView contentOffset].y;
-    NSArray* subviews = [_pullDownView subviews];
-    for(UIView * subview in subviews){
-        if([subview isKindOfClass:[UIImageView class]]){
-            UIImageView *imageView = (UIImageView*)subview;
-            imageView.image=(offset>-PULLDOWN_VIEW_THRESHOLD)?[UIImage imageNamed:@"pull_down_arrow.jpg"]:[UIImage imageNamed:@"pull_up_arrow.jpg"];
+    //NSArray* subviews = [self.pullDownView subviews];
+    NSArray *gestures = _collectionVC.collectionView.gestureRecognizers;
+
+    UIPanGestureRecognizer *panGesture = nil;
+    for(UIGestureRecognizer *gesture in gestures){
+        if([gesture isKindOfClass:[UIPanGestureRecognizer class]])
+            panGesture = (UIPanGestureRecognizer*)gesture;
+    }
+    if(panGesture.state == UIGestureRecognizerStateBegan){
+        userLetGo = NO;
+        _pullDownImageView.hidden = NO;
+        [_spinner stopAnimating];
+    }
+    
+    //this is the moment when user let go the scrollview(collectionView)
+    if(!userLetGo && panGesture.state ==UIGestureRecognizerStatePossible){
+        //NSLog(@"pan guesture ended");
+        _spinner.frame = CGRectMake(0, 0, 50, 50);
+        //every time need to use startAnimating, we need to add spinner to the subview;
+        [self.pullDownView addSubview:_spinner];
+        [_spinner startAnimating];
+        timeStr = [NSString stringWithFormat:@"last refreshed on %@",[self getCurrentDateTime]];
+        userLetGo = YES;
+    }
+    if(!userLetGo){
+        if(offset>-PULLDOWN_VIEW_THRESHOLD){
+            if(_pullDownImageView.image != [UIImage imageNamed:@"pull_down_arrow.jpg"]){
+                _pullDownImageView.image = [UIImage imageNamed:@"pull_down_arrow.jpg"];
+            }
+            _pullDownInfoLabel.text = @"pull down to refresh";
+            _pullDownTimeLabel.text = timeStr;
+            
         }
-        else if([subview isKindOfClass:[UILabel class]]){
-            UILabel *label = (UILabel*)subview;
-            label.text=(offset>-PULLDOWN_VIEW_THRESHOLD)?@"pull down to refresh":@"release to refresh";
+        else{
+            if(_pullDownImageView.image != [UIImage imageNamed:@"pull_up_arrow.jpg"]){
+                _pullDownImageView.image = [UIImage imageNamed:@"pull_up_arrow.jpg"];
+            }
+            _pullDownInfoLabel.text = @"let go to refresh";
+            //_pullDownTimeLabel.text = timeStr;
         }
     }
-
-//    
-//    static CGFloat lastY = 0.0;
-//    CGFloat offset = [_collectionVC.collectionView contentOffset].y;
-//    if(offset - lastY > TRANSITION_THRESHOLD ){
-//        [self hideSearchBar];
-//        lastY = offset;
-//    }
-//    else if(offset - lastY<-TRANSITION_THRESHOLD){
-//        [self showSearchBar];
-//        lastY=offset;
-//    }
-//    
-    
+    else{
+        [_spinner startAnimating];
+        _pullDownImageView.hidden = YES;
+    }
 }
 
+#pragma mark - overall setup
 -(void)setup
 {
     [self setupSearchBar];
     
+}
+-(NSString *)getCurrentDateTime
+{
+    NSDate *date = [[NSDate alloc] init];
+    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+    [dateFormatter setDateFormat:@" MMM/dd/yyyy 'at' HH':'mm':'ss"];
+    return [dateFormatter stringFromDate:date];
 }
 
 #pragma mark - life cycle methods
@@ -358,6 +461,14 @@
     //[self setupGestureRecognizer];
     [self collectionVC];
     //[UIView recursivePrintViewTree:self.view];
+    _spinner = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+    //_spinner.center = CGPointMake(0, 200);
+    //_spinner.backgroundColor = [UIColor clearColor];
+    //_spinner.frame = CGRectMake(0, 0, 50, 50);
+    //[self.pullDownView addSubview:_spinner];
+    
+    //[UIView recursivePrintViewTree:_collectionVC.collectionView];
+    
 }
 
 - (void)didReceiveMemoryWarning

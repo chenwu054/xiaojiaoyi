@@ -1,18 +1,19 @@
 //
-//  GestureCollectionView.m
+//  GestureCollectionReusableView.m
 //  xiaojiaoyi
 //
-//  Created by chen on 10/7/14.
+//  Created by chen on 10/12/14.
 //  Copyright (c) 2014 com.practice. All rights reserved.
 //
 
-#import "GestureCollectionView.h"
+#import "GestureCollectionReusableView.h"
 
-@implementation GestureCollectionView
+@implementation GestureCollectionReusableView
+
 
 //-(UIView *)hitTest:(CGPoint)point withEvent:(UIEvent *)event
 //{
-//    NSLog(@"hit test in Gesture Collection View");
+//    NSLog(@"hit test in reusable view");
 //    return [super hitTest:point withEvent:event];
 //}
 
@@ -25,36 +26,38 @@
     // is very important.
     [super touchesBegan:touches withEvent:event];
     //this is the method that delivers to main view
-    NSLog(@"collection view began");
-    //NSLog(@"GCV next responder is %@",self.nextResponder);
-//    NSArray *arr = [self gestureRecognizers];
-//    for(int i=0;i<arr.count;i++){
-//        //NSLog(@"GCV GR%d is %@",i,arr[i]);
-//    }
+    NSLog(@"reusable view began");
+    NSArray *arr = [self gestureRecognizers];
+    for(int i=0;i<arr.count;i++){
+        NSLog(@"reusable GR%d is %@",i,arr[i]);
+    }
     [self.nextResponder touchesBegan:touches withEvent:event];
     
 }
 -(void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event
 {
-    [super touchesMoved:touches withEvent:event];
-    NSLog(@"collection view moved");
-    [self.nextResponder touchesMoved:touches withEvent:event];
     
+    [super touchesMoved:touches withEvent:event];
+    NSLog(@"reusable view moved");
+    [self.nextResponder touchesMoved:touches withEvent:event];
+
 }
 -(void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event
 {
-    //NSLog(@"collection view ended next responder:%@",self.nextResponder);
     [super touchesEnded:touches withEvent:event];
-    NSLog(@"collection view ended");
+    NSLog(@"reusable view ended");
     [self.nextResponder touchesEnded:touches withEvent:event];
     
 }
 -(void)touchesCancelled:(NSSet *)touches withEvent:(UIEvent *)event
 {
     [super touchesCancelled:touches withEvent:event];
-    NSLog(@"collection view cancelled");
-    [self.nextResponder touchesCancelled:touches withEvent:event];
+    NSLog(@"reusable view cancelled");
+    [self.superview touchesCancelled:touches withEvent:event];
+    
+
 }
+
 
 - (id)initWithFrame:(CGRect)frame
 {
