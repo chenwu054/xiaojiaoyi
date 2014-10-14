@@ -14,6 +14,8 @@
 #import "CenterTabHotDealController.h"
 #import "CenterTabBuddyDealController.h"
 #import "CenterTabNearbyDealController.h"
+#import "MyDealViewController.h"
+
 
 //#import "OASignatureProviding.h"
 #import "YelpViewController.h"
@@ -22,7 +24,7 @@
 @class MainViewController;
 @class CenterTabHotDealController;
 
-@interface CenterViewController : UIViewController <DataFetcherDelegate,UITabBarControllerDelegate,UIToolbarDelegate,UIActionSheetDelegate,UIGestureRecognizerDelegate>
+@interface CenterViewController : UINavigationController <DataFetcherDelegate,UITabBarControllerDelegate,UIToolbarDelegate,UIActionSheetDelegate,UIGestureRecognizerDelegate,UINavigationControllerDelegate>
 @property (weak, nonatomic) IBOutlet UIButton *yelpButton;
 @property (strong,nonatomic) OADataFetcher *dataFetcher;
 @property (nonatomic) NSString* term;

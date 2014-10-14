@@ -12,25 +12,31 @@
 #import "UserMenuController.h"
 #import "CenterViewController.h"
 #import "UIView+GestureView.h"
+#import "MyDealViewController.h"
+
 
 @class CenterViewController;
 
 @protocol MenuNavigationDelegate <NSObject>
 
--(void) slideLeftAll;
--(void) slideRightAll;
--(void) reset;
--(void) resetWithDuration:(CGFloat)duration;
--(void) slideWithTransition:(CGPoint)transition ended:(BOOL)ended;
+-(void) slideLeftAllWithCenterView:(UIView*)centerView;
+-(void) slideRightAllWithCenterView:(UIView*)centerView;
+-(void) resetWithCenterView:(UIView*)centerView;
+-(void) resetWithCenterView:(UIView*)centerView inDuration:(CGFloat)duration;
+-(void) slideWithCenterView:(UIView*)centerView atTransition:(CGPoint)transition ended:(BOOL)ended;
 
 @end
 
-@interface MainViewController : UIViewController <MenuNavigationDelegate,UITableViewDelegate>
+@interface MainViewController : UINavigationController <MenuNavigationDelegate,UITableViewDelegate>
 
 
 @property (nonatomic) MenuTableController* menuViewController;
 @property (nonatomic) UserMenuController *userMenuController;
 @property (nonatomic) CenterViewController* centerViewController;
+@property (nonatomic) MyDealViewController* myDealViewController;
+
+
+-(UIPanGestureRecognizer*)getPanGestureRecognizer;
 
 -(BOOL) isReset;
 @end

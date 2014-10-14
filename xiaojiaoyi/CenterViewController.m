@@ -34,21 +34,21 @@
 }
 -(void)touchesEnd:(NSSet *)touches withEvent:(UIEvent *)event
 {
-    NSTimeInterval timePeriod = [[NSDate date] timeIntervalSinceDate:self.touchStartTime];
-    NSLog(@"time is %f",timePeriod);
+    //NSTimeInterval timePeriod = [[NSDate date] timeIntervalSinceDate:self.touchStartTime];
+    //NSLog(@"time is %f",timePeriod);
     
-    [self.superVC reset];
-    NSLog(@"delivered to Center View Controller! ended");
+    [self.superVC resetWithCenterView:self.view];
+    //NSLog(@"delivered to Center View Controller! ended");
 }
 -(void)touchesCancelled:(NSSet *)touches withEvent:(UIEvent *)event
 {
     NSTimeInterval timePeriod = [[NSDate date] timeIntervalSinceDate:self.touchStartTime];
-    NSLog(@"time is %f",timePeriod);
+    //NSLog(@"time is %f",timePeriod);
     if(timePeriod < 0.5){
-        [self.superVC reset];
+        [self.superVC resetWithCenterView:self.view];
     }
     
-    NSLog(@"delivered to Center View Controller! canncelled");
+    //NSLog(@"delivered to Center View Controller! canncelled");
 }
 
 
@@ -90,6 +90,7 @@
     
     _centerTabBuddyDealController.title = @"Buddies'";
     _centerTabNearbyDealController.title = @"Nearby";
+    
     NSArray* viewControllers = @[_centerTabBuddyDealController,_centerTabHotDealController, _centerTabNearbyDealController];
     _tabController.viewControllers = viewControllers;
     _tabController.selectedIndex = 1;
@@ -236,6 +237,7 @@
 #pragma mark - collection view
 -(void) prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
 {
+    NSLog(@"calling center view prepare for segue");
     if([[segue destinationViewController] isKindOfClass:[YelpViewController class]] ){
         YelpViewController* yelpController = (YelpViewController*)segue.destinationViewController;
         //NSLog(@"will perform segue");
@@ -244,6 +246,11 @@
         yelpController.limit = _limit;
         yelpController.query = _query;
         yelpController.location = _location;
+    }
+    else if([[segue destinationViewController] isKindOfClass:[MyDealViewController class]]){
+        MyDealViewController *myDealController = (MyDealViewController*)segue.destinationViewController;
+        [myDealController.view addGestureRecognizer:[_superVC getPanGestureRecognizer]];
+        
     }
 }
 
@@ -267,8 +274,8 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    //self.view = [[GestureView alloc] init];
-    //self.view.frame = [UIScreen mainScreen].bounds;
+    self.view = [[GestureView alloc] init];
+    self.view.frame = [UIScreen mainScreen].bounds;
     NSArray * gestures = [self.view gestureRecognizers];
     for(UIGestureRecognizer * gesture in gestures){
         gesture.delegate = self;

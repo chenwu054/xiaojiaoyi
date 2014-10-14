@@ -22,53 +22,56 @@
 @implementation MainViewController
 
 
-#pragma mark - gesture recognizer
-//
-//-(void)setupSubViewGestureRecognizer
-//{
-//    UISwipeGestureRecognizer *swipeGR = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(swipe:)];
-//    [swipeGR setNumberOfTouchesRequired:1];
-//    [swipeGR setDirection:UISwipeGestureRecognizerDirectionUp | UISwipeGestureRecognizerDirectionDown];
-//    
-//    [self.view addGestureRecognizer:swipeGR];
-//    
-//    UIPanGestureRecognizer *panGR = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(subviewPan:)];
-//    [panGR setMaximumNumberOfTouches:1];
-//    [panGR setMinimumNumberOfTouches:1];
-//
-//   // [self.viewController.view addGestureRecognizer:panGR];
-//
-//}
-//
-//-(void)subviewPan:(UIPanGestureRecognizer*)gesture
-//{
-//    NSLog(@"subview pan");
-//}
-//-(void)swipe:(UISwipeGestureRecognizer*)gesture
-//{
-//    NSLog(@"main swipe");
-//}
-
-
 #pragma mark - table view delegate methods
 
 -(void) tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    if(tableView == _menuViewController.tableView){
+    //[self resetWithCenterView:_centerViewController.view];
     
+    NSArray *subviews = [self.view subviews];
+    
+    if([subviews containsObject:self.centerViewController.view]){
+        [self resetWithCenterView:self.centerViewController.view inDuration:0.2 withCompletion:^(BOOL finished) {
+            
+            //NSLog(@"calling completion handler");
+            [self.centerViewController.view removeFromSuperview];
+            [self.view addSubview:self.myDealViewController.view];
+        }];
+        
+    }
+    else{
+        [self resetWithCenterView:self.myDealViewController.view];
+    }
+
+    if(tableView == _menuViewController.tableView){
+        
+        
     }
     else if(tableView == _userMenuController.userMenuTableView){
         
+        //[self.centerViewController presentViewController:self.myDealViewController animated:YES completion:nil];
+        //[self.centerViewController pushViewController:_myDealViewController animated:YES];
+        //[self.centerViewController performSegueWithIdentifier:@"MyDealSegue" sender:self.centerViewController];
+        //use different views
+        
+        
+        if(_myDealViewController)
+            NSLog(@"push view controller");
     }
     else{
         NSLog(@"ERROR: clicked unkown table view");
     }
     
-    [self reset];
-    NSLog(@"main controller did select table view at index path: %ld,%ld",indexPath.section,indexPath.row);
-    [_menuViewController tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath];
+    //NSLog(@"main controller did select table view at index path: %ld,%ld",indexPath.section,indexPath.row);
+    //[_menuViewController tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath];
+}
+
+-(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
+{
+    NSLog(@"!!!prepare for segue");
     
 }
+
 
 #pragma mark - gesture recognizer setup
 -(UIPanGestureRecognizer*)getPanGestureRecognizer
@@ -87,21 +90,21 @@
 -(void)tap:(UITapGestureRecognizer *)gesture
 {
     NSLog(@"main view tap gesture");
-    [self reset];
+    [self resetWithCenterView:_centerViewController.view];//???
 }
 
 -(void)pan:(UIPanGestureRecognizer *)gesture
 {
+    //NSLog(@"calling pan in main view");
+    UIView* view= gesture.view;
+    CGPoint transition  = [gesture translationInView: view]; // ?
     
     if(gesture.state == UIGestureRecognizerStateChanged || gesture.state == UIGestureRecognizerStateBegan){
         //NSLog(@"calling the pan gesture recognizer");
-        CGPoint transition  = [gesture translationInView: _centerViewController.view]; // ?
-        [self slideWithTransition:transition ended:NO];
-        
+        [self slideWithCenterView:view atTransition:transition ended:NO];
     }
     else if(gesture.state==UIGestureRecognizerStateEnded){
-        CGPoint transition = [gesture translationInView: self.view];
-        [self slideWithTransition:transition ended:YES];
+        [self slideWithCenterView:view atTransition:transition ended:YES];
     }
 }
 
@@ -110,25 +113,33 @@
 //Adding one recognizer to multiple views will invalidate the recognizer and no view will response to the gesture.
 -(void)setup
 {
+    [self setupCenterViewController];
+    [self setupMenuViewController];
+    [self setupUserMenuViewController];
+    [self setupMyDealViewController];
+    
+}
+-(void)setupCenterViewController
+{
     //[self setupGestureRecognizer];
     if(!_centerViewController){
         _centerViewController =[self.storyboard instantiateViewControllerWithIdentifier:@"CenterTabBarControllerSB"];
         _centerViewController.superVC = self;
         [self addChildViewController:_centerViewController];
         [self.view addSubview:_centerViewController.view];
-        //_viewController.delegate = self;
-        //[self.navigationController pushViewController:_viewController animated:YES];
-        
-        //[self.viewController presentViewController:_viewController animated:YES completion:nil];
         [_centerViewController didMoveToParentViewController:self];
         
+        //_viewController.delegate = self;
+        //[self.navigationController pushViewController:_viewController animated:YES];
     }
     //setting up the gesture recognizer !!! CenterView already has a Pan gesture recognizer!
     UIPanGestureRecognizer *panGestureRecognizer=[self getPanGestureRecognizer];
     [_centerViewController.view addGestureRecognizer:panGestureRecognizer];
     UITapGestureRecognizer *tapGestureRecognizer=[self getTapGestureRecognizer];
     [_centerViewController.view addGestureRecognizer:tapGestureRecognizer];
-    
+}
+-(void)setupMenuViewController
+{
     if(!_menuViewController){
         _menuViewController = [MenuTableController alloc];
         _menuViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"menuController"];
@@ -141,7 +152,9 @@
     }
     UIPanGestureRecognizer *menuPan = [self getPanGestureRecognizer];
     [_menuViewController.view addGestureRecognizer:menuPan];
-    
+}
+-(void)setupUserMenuViewController
+{
     if(!_userMenuController){
         _userMenuController = [UserMenuController alloc];
         _userMenuController = [self.storyboard instantiateViewControllerWithIdentifier:@"userMenuController"];
@@ -153,20 +166,98 @@
     }
     UIPanGestureRecognizer *userPan = [self getPanGestureRecognizer];
     [_userMenuController.view addGestureRecognizer:userPan];
+}
+-(void)setupMyDealViewController
+{
+    //setup my deal view controller
+    if(!_myDealViewController){
+        _myDealViewController = [[MyDealViewController alloc] init];
+    }
+    UIPanGestureRecognizer *myDealPan = [self getPanGestureRecognizer];
+    [_myDealViewController.view addGestureRecognizer:myDealPan];
+    
+    UITapGestureRecognizer *myDealTap = [self getTapGestureRecognizer];
+    [_myDealViewController.view addGestureRecognizer:myDealTap];
+}
+
+/*
+ slide based on the transition
+ */
+#pragma mark - transition animation methods
+-(void) slideWithCenterView:(UIView*)centerView atTransition:(CGPoint)transition ended:(BOOL)ended
+{
+    /*
+     this is done because, there is push segue from xjyViewController to the YelpViewController
+     therefore, in the !_isReset state, if the 
+     */
+    
+    CGFloat centerX = 0.0;
+    if(_isReset){
+        centerX = centerView.frame.size.width/2;
+        //centerX = _centerViewController.view.frame.size.width/2;
+    }
+    else if(_inMenuView){
+        centerX = PANEL_WIDTH - centerView.frame.size.width/2;
+        //centerX = PANEL_WIDTH - _centerViewController.view.frame.size.width/2;
+
+    }
+    else{
+        centerX = centerView.frame.size.width * 3/2 - PANEL_WIDTH;
+        //centerX = _centerViewController.view.frame.size.width * 3/2 - PANEL_WIDTH;
+    }
+
+    //user view.center to instantly move the view
+    centerView.center=CGPointMake(centerX+transition.x,centerView.center.y);
+    //_centerViewController.view.center=CGPointMake(centerX+transition.x,_centerViewController.view.center.y);
+
+    _menuViewController.view.center=CGPointMake(centerX + _menuViewController.view.frame.size.width + transition.x,_menuViewController.view.center.y);
+    
+    _userMenuController.view.center = CGPointMake(centerX - (_userMenuController.view.frame.size.width/2 + _centerViewController.view.frame.size.width/2) + transition.x, _userMenuController.view.center.y);
+    
+    //NSLog(@"calling the transition");
+    if(ended){
+        if(_isReset){
+            if(transition.x < -centerView.frame.size.width/2){
+                [self slideLeftAllWithCenterView:centerView];
+            }
+            else if(transition.x > centerView.frame.size.width/2){
+                [self slideRightAllWithCenterView:centerView];
+            }
+            else{
+                [self resetWithCenterView:centerView];
+            }
+
+        }
+        else if(_inMenuView){
+            if(transition.x > centerView.frame.size.width/2)
+                [self resetWithCenterView:centerView];
+            else
+                [self slideLeftAllWithCenterView:centerView];
+        }
+        else{
+            if(transition.x < - centerView.frame.size.width/2){
+                [self resetWithCenterView:centerView];
+            }
+            else{
+                [self slideRightAllWithCenterView:centerView];
+            }
+        }
+    }
     
 }
 
-
 /*
-slide all the way to the left
+ slide all the way to the left
  */
--(void) slideLeftAll
+-(void) slideLeftAllWithCenterView:(UIView*)centerView
 {
     //NSLog(@"calling main view slide");
     [UIView animateWithDuration:0.2 delay: 0 options:UIViewAnimationOptionBeginFromCurrentState animations:^{
         
         
-        _centerViewController.view.frame = CGRectMake(PANEL_WIDTH-_centerViewController.view.frame.size.width, 0,_centerViewController.view.frame.size.width, _menuViewController.view.frame.size.height);
+        //_centerViewController.view.frame = CGRectMake(PANEL_WIDTH-_centerViewController.view.frame.size.width, 0,_centerViewController.view.frame.size.width, _menuViewController.view.frame.size.height);
+        centerView.frame = CGRectMake(PANEL_WIDTH-_centerViewController.view.frame.size.width, 0,_centerViewController.view.frame.size.width, _menuViewController.view.frame.size.height);
+        
         _menuViewController.view.frame = CGRectMake(PANEL_WIDTH, 0,_menuViewController.view.frame.size.width, _menuViewController.view.frame.size.height);
         
     } completion:^(BOOL finished) {
@@ -179,13 +270,13 @@ slide all the way to the left
     _inUserMenuView = NO;
 }
 
--(void) slideRightAll
+-(void) slideRightAllWithCenterView:(UIView*)centerView
 {
     //NSLog(@"calling main view slide");
     [UIView animateWithDuration:0.2 delay: 0 options:UIViewAnimationOptionBeginFromCurrentState animations:^{
-
-        _centerViewController.view.frame = CGRectMake(_centerViewController.view.frame.size.width-PANEL_WIDTH, 0,_centerViewController.view.frame.size.width, _menuViewController.view.frame.size.height);
+        centerView.frame = CGRectMake(_centerViewController.view.frame.size.width-PANEL_WIDTH, 0,_centerViewController.view.frame.size.width, _menuViewController.view.frame.size.height);
         
+        //_centerViewController.view.frame = CGRectMake(_centerViewController.view.frame.size.width-PANEL_WIDTH, 0,_centerViewController.view.frame.size.width, _menuViewController.view.frame.size.height);
         _userMenuController.view.frame = CGRectMake(-PANEL_WIDTH, 0,_userMenuController.view.frame.size.width, _userMenuController.view.frame.size.height);
         
     } completion:^(BOOL finished) {
@@ -199,88 +290,39 @@ slide all the way to the left
 }
 
 /*
- slide based on the transition
+    reset methods
  */
--(void) slideWithTransition:(CGPoint)transition ended:(BOOL)ended
+-(void)resetWithCenterView:(UIView*)centerView
 {
-    /*
-     this is done because, there is push segue from xjyViewController to the YelpViewController
-     therefore, in the !_isReset state, if the 
-     */
-    
-    CGFloat centerX = 0.0;
-    if(_isReset){
-        centerX = _centerViewController.view.frame.size.width/2;
-    }
-    else if(_inMenuView){
-        centerX = PANEL_WIDTH - _centerViewController.view.frame.size.width/2;
-
-    }
-    else{
-        centerX = _centerViewController.view.frame.size.width * 3/2 - PANEL_WIDTH;
-    }
-
-    //user view.center to instantly move the view
-    _centerViewController.view.center=CGPointMake(centerX+transition.x,_centerViewController.view.center.y);
-    
-    _menuViewController.view.center=CGPointMake(centerX + _menuViewController.view.frame.size.width + transition.x,_menuViewController.view.center.y);
-    
-    _userMenuController.view.center = CGPointMake(centerX - (_userMenuController.view.frame.size.width/2 + _centerViewController.view.frame.size.width/2) + transition.x, _userMenuController.view.center.y);
-    
-    if(ended){
-        if(_isReset){
-            if(transition.x < -_centerViewController.view.frame.size.width/2){
-                [self slideLeftAll];
-            }
-            else if(transition.x > _centerViewController.view.frame.size.width/2){
-                [self slideRightAll];
-            }
-            else{
-                [self reset];
-            }
-
-        }
-        else if(_inMenuView){
-            if(transition.x > _centerViewController.view.frame.size.width/2)
-                [self reset];
-            else
-                [self slideLeftAll];
-        }
-        else{
-            if(transition.x < - _centerViewController.view.frame.size.width/2){
-                [self reset];
-            }
-            else{
-                [self slideRightAll];
-            }
-        }
-    }
-    
+    [self resetWithCenterView:centerView inDuration:0.2];
+}
+-(void)resetWithCenterView:(UIView*)centerView inDuration:(CGFloat)duration
+{
+    //NSLog(@"calling main view controller reset");
+    [self resetWithCenterView:centerView inDuration:duration withCompletion:nil];
 }
 
--(void)reset
-{
-    [self resetWithDuration:0.2];
-}
 /*
  slide the view back to original setting
  */
--(void)resetWithDuration:(CGFloat)duration
+-(void)resetWithCenterView:(UIView*)centerView inDuration:(CGFloat)duration withCompletion:(void(^)(BOOL finished))handler
 {
     //NSLog(@"calling main view controller reset");
+    
     [UIView animateWithDuration:duration delay: 0 options:UIViewAnimationOptionBeginFromCurrentState animations:^{
-        
-        _centerViewController.view.frame = CGRectMake(0, 0,_centerViewController.view.frame.size.width, _centerViewController.view.frame.size.height);
+        NSLog(@"duration is %f",duration);
+        centerView.frame = CGRectMake(0, 0,centerView.frame.size.width, centerView.frame.size.height);
         
         _menuViewController.view.frame = CGRectMake(_centerViewController.view.frame.size.width, 0,_menuViewController.view.frame.size.width, _menuViewController.view.frame.size.height);
         
         _userMenuController.view.frame = CGRectMake(-_userMenuController.view.frame.size.width, 0, _userMenuController.view.frame.size.width, _userMenuController.view.frame.size.height);
         
     } completion:^(BOOL finished) {
-        if(finished)
-            nil;
-            //NSLog(@"menu navigation view from main view reset successfully");
+        //NSLog(@"calling  handler");
+        if(handler)
+            handler(finished);
     }];
+    
     _isReset = YES;
     _inUserMenuView = NO;
     _inMenuView= NO;
@@ -288,8 +330,18 @@ slide all the way to the left
 
 -(BOOL) isReset
 {
-    return (_centerViewController.view.frame.origin.x == 0);
+    
+    return (_centerViewController.view.frame.origin.x == 0) || (_myDealViewController.view.frame.origin.x==0);
 }
+
+-(BOOL) isResetWithCenterView:(UIView*)centerView
+{
+    
+    return (centerView.frame.origin.x == 0);
+}
+
+
+#pragma mark - life cycle methods
 
 - (void)viewDidLoad
 {

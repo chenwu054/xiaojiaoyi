@@ -50,6 +50,7 @@
 		74B7219019EAEFAD000B3892 /* GestureCollectionReusableView.m in Sources */ = {isa = PBXBuildFile; fileRef = 74B7218F19EAEFAD000B3892 /* GestureCollectionReusableView.m */; };
 		74B7219319EAF1CB000B3892 /* GestureButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 74B7219219EAF1CB000B3892 /* GestureButton.m */; };
 		74B7219619EC1F91000B3892 /* MyTapGestureRecognizer.m in Sources */ = {isa = PBXBuildFile; fileRef = 74B7219519EC1F91000B3892 /* MyTapGestureRecognizer.m */; };
+		74B7219919EC857B000B3892 /* MyDealViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 74B7219819EC857B000B3892 /* MyDealViewController.m */; };
 		74B9326D19AAEB4E003B6594 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 74B9326C19AAEB4E003B6594 /* Foundation.framework */; };
 		74B9326F19AAEB4E003B6594 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 74B9326E19AAEB4E003B6594 /* CoreGraphics.framework */; };
 		74B9327119AAEB4E003B6594 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 74B9327019AAEB4E003B6594 /* UIKit.framework */; };
@@ -184,6 +185,8 @@
 		74B7219219EAF1CB000B3892 /* GestureButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GestureButton.m; sourceTree = "<group>"; };
 		74B7219419EC1F91000B3892 /* MyTapGestureRecognizer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MyTapGestureRecognizer.h; sourceTree = "<group>"; };
 		74B7219519EC1F91000B3892 /* MyTapGestureRecognizer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MyTapGestureRecognizer.m; sourceTree = "<group>"; };
+		74B7219719EC857B000B3892 /* MyDealViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MyDealViewController.h; sourceTree = "<group>"; };
+		74B7219819EC857B000B3892 /* MyDealViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MyDealViewController.m; sourceTree = "<group>"; };
 		74B9326919AAEB4E003B6594 /* xiaojiaoyi.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = xiaojiaoyi.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		74B9326C19AAEB4E003B6594 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		74B9326E19AAEB4E003B6594 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -350,11 +353,21 @@
 		740A2E6E19C299D200D87965 /* collectionView */ = {
 			isa = PBXGroup;
 			children = (
-				740A2E6F19C29A1E00D87965 /* CollectionViewCell.h */,
-				740A2E7019C29A1E00D87965 /* CollectionViewCell.m */,
+				74FD860B19E380B7000EC4C2 /* UIView+GestureView.h */,
+				74FD860C19E380B7000EC4C2 /* UIView+GestureView.m */,
 				740A2E7219C29BAA00D87965 /* CollectionViewDownloadOperation.h */,
 				740A2E7319C29BAA00D87965 /* CollectionViewDownloadOperation.m */,
 				740A2E7519C2BFD400D87965 /* CollectionViewDownloadOperationDelegate.h */,
+				740A2E6F19C29A1E00D87965 /* CollectionViewCell.h */,
+				740A2E7019C29A1E00D87965 /* CollectionViewCell.m */,
+				74B7219119EAF1CB000B3892 /* GestureButton.h */,
+				74B7219219EAF1CB000B3892 /* GestureButton.m */,
+				74B7218E19EAEFAD000B3892 /* GestureCollectionReusableView.h */,
+				74B7218F19EAEFAD000B3892 /* GestureCollectionReusableView.m */,
+				74FD861119E43DC7000EC4C2 /* GestureCollectionView.h */,
+				74FD861219E43DC7000EC4C2 /* GestureCollectionView.m */,
+				74FD860E19E392FF000EC4C2 /* GestureView.h */,
+				74FD860F19E392FF000EC4C2 /* GestureView.m */,
 			);
 			name = collectionView;
 			sourceTree = "<group>";
@@ -364,24 +377,14 @@
 			children = (
 				74B9328419AAEB4E003B6594 /* CenterViewController.h */,
 				74B9328519AAEB4E003B6594 /* CenterViewController.m */,
+				741FB5F519E06F4600EA6D5B /* CenterTabHotDealController.h */,
+				741FB5F619E06F4600EA6D5B /* CenterTabHotDealController.m */,
 				741FB5F819E0897100EA6D5B /* CenterTabBuddyDealController.h */,
 				741FB5F919E0897100EA6D5B /* CenterTabBuddyDealController.m */,
 				741FB5FB19E0899800EA6D5B /* CenterTabNearbyDealController.h */,
 				741FB5FC19E0899800EA6D5B /* CenterTabNearbyDealController.m */,
 				74B7218719E83845000B3892 /* CenterCollectionViewFlowLayout.h */,
 				74B7218819E83845000B3892 /* CenterCollectionViewFlowLayout.m */,
-				741FB5F519E06F4600EA6D5B /* CenterTabHotDealController.h */,
-				741FB5F619E06F4600EA6D5B /* CenterTabHotDealController.m */,
-				74B7219119EAF1CB000B3892 /* GestureButton.h */,
-				74B7219219EAF1CB000B3892 /* GestureButton.m */,
-				74B7218E19EAEFAD000B3892 /* GestureCollectionReusableView.h */,
-				74B7218F19EAEFAD000B3892 /* GestureCollectionReusableView.m */,
-				74FD861119E43DC7000EC4C2 /* GestureCollectionView.h */,
-				74FD861219E43DC7000EC4C2 /* GestureCollectionView.m */,
-				74FD860E19E392FF000EC4C2 /* GestureView.h */,
-				74FD860F19E392FF000EC4C2 /* GestureView.m */,
-				74FD860B19E380B7000EC4C2 /* UIView+GestureView.h */,
-				74FD860C19E380B7000EC4C2 /* UIView+GestureView.m */,
 				74B7219419EC1F91000B3892 /* MyTapGestureRecognizer.h */,
 				74B7219519EC1F91000B3892 /* MyTapGestureRecognizer.m */,
 			);
@@ -456,14 +459,16 @@
 		74B9327219AAEB4E003B6594 /* xiaojiaoyi */ = {
 			isa = PBXGroup;
 			children = (
-				740A2E6E19C299D200D87965 /* collectionView */,
 				74CB84D919BA15FA00579432 /* OAuth */,
 				749366FB19CE75F1003B3108 /* Login */,
+				740A2E6E19C299D200D87965 /* collectionView */,
 				741FB5FE19E0BE2E00EA6D5B /* CenterVC */,
 				74CB851B19C0193C00579432 /* YelpViewController.h */,
 				74CB851C19C0193C00579432 /* YelpViewController.m */,
-				74B9327B19AAEB4E003B6594 /* xjyAppDelegate.h */,
-				74B9327C19AAEB4E003B6594 /* xjyAppDelegate.m */,
+				74B7219719EC857B000B3892 /* MyDealViewController.h */,
+				74B7219819EC857B000B3892 /* MyDealViewController.m */,
+				740A2E7C19C53E4600D87965 /* MainViewController.h */,
+				740A2E7D19C53E4600D87965 /* MainViewController.m */,
 				74065ADD19C747D30033DA71 /* DetailPageViewController.h */,
 				74065ADE19C747D30033DA71 /* DetailPageViewController.m */,
 				74FE265819CA72A300801CA1 /* MapViewController.h */,
@@ -474,11 +479,11 @@
 				74065AE119C748210033DA71 /* DetailPageContentViewController.m */,
 				740A2E7619C49B4F00D87965 /* MenuTableController.h */,
 				740A2E7719C49B4F00D87965 /* MenuTableController.m */,
-				740A2E7C19C53E4600D87965 /* MainViewController.h */,
-				740A2E7D19C53E4600D87965 /* MainViewController.m */,
 				741FB5EE19DF541400EA6D5B /* UserMenuController.h */,
 				741FB5EF19DF541400EA6D5B /* UserMenuController.m */,
 				74B9327E19AAEB4E003B6594 /* Main_iPhone.storyboard */,
+				74B9327B19AAEB4E003B6594 /* xjyAppDelegate.h */,
+				74B9327C19AAEB4E003B6594 /* xjyAppDelegate.m */,
 				741FB5F119DF567700EA6D5B /* UserMenuCategory.plist */,
 				74B9328719AAEB4E003B6594 /* Images.xcassets */,
 				74065AE319C7E2DD0033DA71 /* images */,
@@ -783,6 +788,7 @@
 				74CB850D19BBED6900579432 /* OAProblem.m in Sources */,
 				74CB850419BBDC0700579432 /* OAServiceTicket.m in Sources */,
 				741FB5F019DF541400EA6D5B /* UserMenuController.m in Sources */,
+				74B7219919EC857B000B3892 /* MyDealViewController.m in Sources */,
 				74CB84FE19BBD43A00579432 /* NSURL+Base.m in Sources */,
 				74B9330D19AD8695003B6594 /* STTwitterAppOnly.m in Sources */,
 				749366F219CA7D9B003B3108 /* Location.m in Sources */,

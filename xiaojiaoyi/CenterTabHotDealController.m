@@ -74,10 +74,10 @@
     [super touchesEnded:touches withEvent:event];
     [self.nextResponder touchesEnded:touches withEvent:event];
     if(self.mainVC){
-        NSLog(@"main view is reset: %d",self.mainVC.isReset);
-        if(!self.mainVC.isReset){
-            [self.mainVC reset];
-        }
+        //NSLog(@"main view is reset: %d",self.mainVC.isReset);
+        //if(!self.mainVC.isReset){
+            [self.mainVC resetWithCenterView:self.mainVC.centerViewController.view];//???
+        //}
     }
     [self.view.superview touchesEnded:touches withEvent:event];
 }
@@ -351,7 +351,7 @@
 }
 -(void)tap:(UITapGestureRecognizer*)gesture
 {
-    NSLog(@"HDC calling tap recognizer");
+    //NSLog(@"HDC calling tap recognizer");
     //NSLog(@"gesture is %@ and view is %@",gesture,gesture.view);
     if([_searchBar isFirstResponder])
         [_searchBar resignFirstResponder];
@@ -453,7 +453,7 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    self.view = [[GestureView alloc] init];
+    //self.view = [[GestureView alloc] init];
     //NSLog(@"default GR count is %ld",self.view.gestureRecognizers.count);
     self.view.frame = [UIScreen mainScreen].bounds;
     //[self.view setUserInteractionEnabled:YES];

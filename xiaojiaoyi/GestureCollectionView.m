@@ -25,7 +25,7 @@
     // is very important.
     [super touchesBegan:touches withEvent:event];
     //this is the method that delivers to main view
-    NSLog(@"collection view began");
+    //NSLog(@"collection view began");
     //NSLog(@"GCV next responder is %@",self.nextResponder);
 //    NSArray *arr = [self gestureRecognizers];
 //    for(int i=0;i<arr.count;i++){
@@ -37,7 +37,7 @@
 -(void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event
 {
     [super touchesMoved:touches withEvent:event];
-    NSLog(@"collection view moved");
+    //NSLog(@"collection view moved");
     [self.nextResponder touchesMoved:touches withEvent:event];
     
 }
@@ -45,14 +45,14 @@
 {
     //NSLog(@"collection view ended next responder:%@",self.nextResponder);
     [super touchesEnded:touches withEvent:event];
-    NSLog(@"collection view ended");
+    //NSLog(@"collection view ended");
     [self.nextResponder touchesEnded:touches withEvent:event];
     
 }
 -(void)touchesCancelled:(NSSet *)touches withEvent:(UIEvent *)event
 {
     [super touchesCancelled:touches withEvent:event];
-    NSLog(@"collection view cancelled");
+    //NSLog(@"collection view cancelled");
     [self.nextResponder touchesCancelled:touches withEvent:event];
 }
 

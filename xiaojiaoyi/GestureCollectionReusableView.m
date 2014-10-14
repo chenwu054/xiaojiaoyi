@@ -10,7 +10,6 @@
 
 @implementation GestureCollectionReusableView
 
-
 //-(UIView *)hitTest:(CGPoint)point withEvent:(UIEvent *)event
 //{
 //    NSLog(@"hit test in reusable view");

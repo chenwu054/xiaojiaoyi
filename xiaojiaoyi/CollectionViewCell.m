@@ -10,7 +10,6 @@
 
 @implementation CollectionViewCell
 
-
 -(CollectionViewCell *)initWithName:(NSString *)name andURL:(NSURL*)url
 {
     _name=name;
@@ -25,8 +24,8 @@
 {
     [super touchesBegan:touches withEvent:event];
     //!!let the next responder respond to the touches! otherwise will not move horizontall;
-    NSLog(@"cell-----------------------");
-    NSLog(@"cell touch began");
+    //NSLog(@"cell-----------------------");
+    //NSLog(@"cell touch began");
     [self.nextResponder touchesBegan:touches withEvent:event];
     
 }
@@ -67,7 +66,7 @@
 //        [self.superview.nextResponder.nextResponder performSelector:@selector(hideSearchBar)];
 //    }
     [super touchesCancelled:touches withEvent:event];
-    NSLog(@"cell cancelled");
+    //NSLog(@"cell cancelled");
     [self.nextResponder touchesCancelled:touches withEvent:event];
 }
 @end

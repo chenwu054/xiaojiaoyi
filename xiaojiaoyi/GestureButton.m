@@ -16,7 +16,6 @@
 //    return [super hitTest:point withEvent:event];
 //}
 
-
 -(void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event
 {
     /*
@@ -25,8 +24,8 @@
     //calling super is to have the collecion view's functions, such as detecting selecting a cell. this
     // is very important.
     [super touchesBegan:touches withEvent:event];
-    NSLog(@"-------------------");
-    NSLog(@"button began");
+    //NSLog(@"-------------------");
+    //NSLog(@"button began");
     NSArray *arr = [self gestureRecognizers];
     for(int i=0;i<arr.count;i++){
         //NSLog(@"buttonGR%d is %@",i,arr[i]);
@@ -39,24 +38,22 @@
 {
     
     [super touchesMoved:touches withEvent:event];
-    NSLog(@"button moved");
+    //NSLog(@"button moved");
     [self.nextResponder touchesMoved:touches withEvent:event];
 }
 -(void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event
 {
     
     [super touchesEnded:touches withEvent:event];
-    NSLog(@"button ended");
+    //NSLog(@"button ended");
     [self.nextResponder touchesEnded:touches withEvent:event];
 }
 -(void)touchesCancelled:(NSSet *)touches withEvent:(UIEvent *)event
 {
     [super touchesCancelled:touches withEvent:event];
-    NSLog(@"button cancelled");
+    //NSLog(@"button cancelled");
     [self.superview touchesCancelled:touches withEvent:event];
 }
-
-
 
 - (id)initWithFrame:(CGRect)frame
 {
