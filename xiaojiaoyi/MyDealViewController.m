@@ -14,16 +14,26 @@
 
 @implementation MyDealViewController
 
+-(void)backToCenterView
+{
+    
+}
 -(UINavigationBar *)navigationBar
 {
     if(!_navigationBar){
         _navigationBar = [[UINavigationBar alloc] init];
     }
+    _navigationBar.frame = CGRectMake(0,0,self.view.frame.size.width,60);
     UINavigationItem * item = [[UINavigationItem alloc] init];
+    UIBarButtonItem *leftBarButton = [[UIBarButtonItem alloc] initWithTitle:@"back" style:UIBarButtonItemStylePlain target:self.mainVC action:@selector(backToCenterView)];
+    UIBarButtonItem *rightBarButton = [[UIBarButtonItem alloc] initWithTitle:@"main page" style:UIBarButtonItemStylePlain target:self.mainVC action:@selector(backToCenterView)];
     
+    item.leftBarButtonItem = leftBarButton;
+    item.rightBarButtonItem = rightBarButton;
     item.title = @"My Deals";
     _navigationBar.items = @[item];
-
+    _navigationBar.backgroundColor = [UIColor colorWithRed:0 green:0 blue:255 alpha:1];
+    
     return _navigationBar;
 }
 
@@ -31,13 +41,16 @@
 {
     [super viewDidLoad];
     self.view.backgroundColor = [UIColor greenColor];
-    _parentView = [[GestureView alloc] init];
-    _parentView.frame = [UIScreen mainScreen].bounds;
+    //_parentView = [[GestureView alloc] init];
+    //_parentView.frame = [UIScreen mainScreen].bounds;
     //[self.view addSubview:_parentView];
     
     [self navigationBar];
-    [_parentView addSubview:_navigationBar];
-    _parentView.backgroundColor = [UIColor greenColor];
+    [self.view addSubview:_navigationBar];
+    //for(UIView* view in self.view.subviews) 
+       // NSLog(@"subview is %@",view);
+    
+    //_parentView.backgroundColor = [UIColor greenColor];
     
     // Do any additional setup after loading the view.
 }

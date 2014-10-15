@@ -13,14 +13,18 @@
 #import "CenterViewController.h"
 #import "UIView+GestureView.h"
 #import "MyDealViewController.h"
-
+#import "CategoryCollectionViewController.h"
 
 @class CenterViewController;
+@class MyDealViewController;
 
-@protocol MenuNavigationDelegate <NSObject>
+@protocol MenuNavigationDelegate <NSObject,UIPageViewControllerDataSource,UIPageViewControllerDelegate>
 
+-(void) slideLeftAll;
+-(void) slideRightAll;
 -(void) slideLeftAllWithCenterView:(UIView*)centerView;
 -(void) slideRightAllWithCenterView:(UIView*)centerView;
+-(void) reset;
 -(void) resetWithCenterView:(UIView*)centerView;
 -(void) resetWithCenterView:(UIView*)centerView inDuration:(CGFloat)duration;
 -(void) slideWithCenterView:(UIView*)centerView atTransition:(CGPoint)transition ended:(BOOL)ended;
@@ -37,6 +41,7 @@
 
 
 -(UIPanGestureRecognizer*)getPanGestureRecognizer;
+-(void)backToCenterView;
 
 -(BOOL) isReset;
 @end

@@ -62,7 +62,7 @@
 }
 -(void)touchesCancelled:(NSSet *)touches withEvent:(UIEvent *)event
 {
-    //NSLog(@"gesture cancelled");
+    //NSLog(@"HDC gesture cancelled");
     [self tap:nil];
     [super touchesCancelled:touches withEvent:event];
     [self.nextResponder touchesCancelled:touches withEvent:event];
@@ -71,6 +71,7 @@
 -(void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event
 {
     //NSLog(@"gesture ended");
+    [self tap:nil];
     [super touchesEnded:touches withEvent:event];
     [self.nextResponder touchesEnded:touches withEvent:event];
     if(self.mainVC){
@@ -205,7 +206,7 @@
         _collectionVC.collectionView.frame = collectionViewFrame;
         _collectionVC.collectionView.delegate = self;
         _collectionVC.collectionView.dataSource = self;
-        _collectionVC.collectionView.backgroundColor = [UIColor clearColor];
+        _collectionVC.collectionView.backgroundColor = [UIColor whiteColor];
         
         UIView *pullDownView=[self pullDownView];
         //pullDownView.frame = CGRectMake(0, 0, self.view.frame.size.width, 50);
@@ -277,6 +278,7 @@
 }
 -(void)collectionView:(UICollectionView *)collectionView didHighlightItemAtIndexPath:(NSIndexPath *)indexPath
 {
+    [self tap:nil];
     NSLog(@"!!highlighted item at section:%ld and row: %ld",indexPath.section,indexPath.row);
 }
 -(void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath
@@ -462,10 +464,6 @@
     [self collectionVC];
     //[UIView recursivePrintViewTree:self.view];
     _spinner = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
-    //_spinner.center = CGPointMake(0, 200);
-    //_spinner.backgroundColor = [UIColor clearColor];
-    //_spinner.frame = CGRectMake(0, 0, 50, 50);
-    //[self.pullDownView addSubview:_spinner];
     
     //[UIView recursivePrintViewTree:_collectionVC.collectionView];
     

@@ -19,11 +19,11 @@
 -(void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event
 {
     [super touchesBegan:touches withEvent:event];
-    NSLog(@"gesture view began");
-    NSArray *arr = [self gestureRecognizers];
-    for(int i=0;i<arr.count;i++){
-        NSLog(@"GV GR%d is %@",i,arr[i]);
-    }
+    //NSLog(@"gesture view began");
+//    NSArray *arr = [self gestureRecognizers];
+//    for(int i=0;i<arr.count;i++){
+//        NSLog(@"GV GR%d is %@",i,arr[i]);
+//    }
     //NSLog(@"GV-------------------");
     //!!have to explicitly call the gesture recognizers, using super will not work
     [self.nextResponder touchesBegan:touches withEvent:event];
@@ -32,7 +32,7 @@
 -(void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event
 {
     [super touchesMoved:touches withEvent:event];
-    NSLog(@"gesture view moved");
+    //NSLog(@"gesture view moved");
     [self.nextResponder touchesMoved:touches withEvent:event];
 }
 -(void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event

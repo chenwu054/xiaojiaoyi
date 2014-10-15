@@ -8,11 +8,14 @@
 
 #import <UIKit/UIKit.h>
 #import "GestureView.h"
+#import "MainViewController.h"
+@class MainViewController;
 
 @interface MyDealViewController : UIViewController
 
 
 @property (strong, nonatomic) IBOutlet UINavigationBar *navigationBar;
 @property (nonatomic)UIView* parentView;
+@property (nonatomic) MainViewController* mainVC;
 
 @end

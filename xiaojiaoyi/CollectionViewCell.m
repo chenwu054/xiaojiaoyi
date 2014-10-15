@@ -37,6 +37,7 @@
 }
 -(void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event
 {
+    //NSLog(@"cell touch ended");
     [self.nextResponder touchesEnded:touches withEvent:event];
 }
 -(void)touchesCancelled:(NSSet *)touches withEvent:(UIEvent *)event
@@ -65,6 +66,7 @@
 //    if([self.superview.nextResponder.nextResponder respondsToSelector:@selector(hideSearchBar)]){
 //        [self.superview.nextResponder.nextResponder performSelector:@selector(hideSearchBar)];
 //    }
+    //NSLog(@"cell touch cancelled");
     [super touchesCancelled:touches withEvent:event];
     //NSLog(@"cell cancelled");
     [self.nextResponder touchesCancelled:touches withEvent:event];

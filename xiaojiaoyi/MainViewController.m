@@ -16,7 +16,9 @@
 @property (nonatomic) BOOL isReset;
 @property (nonatomic) BOOL inMenuView;
 @property (nonatomic) BOOL inUserMenuView;
-
+@property (nonatomic) UIView* currentView;
+@property (nonatomic) UIPageViewController* pageVC;
+@property (nonatomic) NSArray *pages;
 @end
 
 @implementation MainViewController
@@ -29,34 +31,48 @@
     //[self resetWithCenterView:_centerViewController.view];
     
     NSArray *subviews = [self.view subviews];
-    
-    if([subviews containsObject:self.centerViewController.view]){
-        [self resetWithCenterView:self.centerViewController.view inDuration:0.2 withCompletion:^(BOOL finished) {
-            
-            //NSLog(@"calling completion handler");
-            [self.centerViewController.view removeFromSuperview];
-            [self.view addSubview:self.myDealViewController.view];
-        }];
-        
-    }
-    else{
-        [self resetWithCenterView:self.myDealViewController.view];
-    }
 
     if(tableView == _menuViewController.tableView){
+
+        [self resetWithCenterView:_currentView];
+        [self.centerViewController.view removeFromSuperview];
+        [self.myDealViewController.view removeFromSuperview];
         
+        [self.view addSubview:self.pageVC.view];
+        _currentView=self.pageVC.view;
+        if(indexPath.row==0){
+            
+            [self.pageVC setViewControllers:@[_pages[0]] direction:UIPageViewControllerNavigationDirectionReverse animated:YES completion:nil];
+        }
+        else if(indexPath.row==1){
+            [self.pageVC setViewControllers:@[_pages[1]] direction:UIPageViewControllerNavigationDirectionForward animated:YES completion:nil];
+        }
+        
+        NSLog(@"page view's frame is %f,%f",_pageVC.view.frame.size.width,_pageVC.view.frame.size.height);
         
     }
     else if(tableView == _userMenuController.userMenuTableView){
-        
+        if(indexPath.row==1){
+            if([subviews containsObject:self.myDealViewController.view]){
+                return;
+            }
+            [self resetWithCenterView:self.currentView inDuration:0.5 withCompletion:^(BOOL finished) {
+                //NSLog(@"calling completion handler");
+                [self.centerViewController.view removeFromSuperview];
+                [self.pageVC.view removeFromSuperview];
+                [self.view addSubview:self.myDealViewController.view];
+                _currentView = self.myDealViewController.view;
+            }];
+            
+            //    [self resetWithCenterView:self.currentView];
+            
+        }
+        else {
+            [self resetWithCenterView:self.currentView];
+        }
         //[self.centerViewController presentViewController:self.myDealViewController animated:YES completion:nil];
         //[self.centerViewController pushViewController:_myDealViewController animated:YES];
         //[self.centerViewController performSegueWithIdentifier:@"MyDealSegue" sender:self.centerViewController];
-        //use different views
-        
-        
-        if(_myDealViewController)
-            NSLog(@"push view controller");
     }
     else{
         NSLog(@"ERROR: clicked unkown table view");
@@ -95,16 +111,23 @@
 
 -(void)pan:(UIPanGestureRecognizer *)gesture
 {
+    CGPoint transition  = [gesture translationInView: gesture.view]; // ?
+    UIView *view = gesture.view;
+    if(view == self.menuViewController.view && transition.x<0){
+        return;
+    }
+    if(view==self.userMenuController.view && transition.x>0){
+        return;
+    }
     //NSLog(@"calling pan in main view");
-    UIView* view= gesture.view;
-    CGPoint transition  = [gesture translationInView: view]; // ?
+    UIView* centerView= _currentView;
     
     if(gesture.state == UIGestureRecognizerStateChanged || gesture.state == UIGestureRecognizerStateBegan){
         //NSLog(@"calling the pan gesture recognizer");
-        [self slideWithCenterView:view atTransition:transition ended:NO];
+        [self slideWithCenterView:centerView atTransition:transition ended:NO];
     }
     else if(gesture.state==UIGestureRecognizerStateEnded){
-        [self slideWithCenterView:view atTransition:transition ended:YES];
+        [self slideWithCenterView:centerView atTransition:transition ended:YES];
     }
 }
 
@@ -117,7 +140,7 @@
     [self setupMenuViewController];
     [self setupUserMenuViewController];
     [self setupMyDealViewController];
-    
+    [self setupPageView];
 }
 -(void)setupCenterViewController
 {
@@ -137,6 +160,7 @@
     [_centerViewController.view addGestureRecognizer:panGestureRecognizer];
     UITapGestureRecognizer *tapGestureRecognizer=[self getTapGestureRecognizer];
     [_centerViewController.view addGestureRecognizer:tapGestureRecognizer];
+    _currentView = _centerViewController.view;
 }
 -(void)setupMenuViewController
 {
@@ -173,24 +197,77 @@
     if(!_myDealViewController){
         _myDealViewController = [[MyDealViewController alloc] init];
     }
+    _myDealViewController.mainVC = self;
+    
     UIPanGestureRecognizer *myDealPan = [self getPanGestureRecognizer];
     [_myDealViewController.view addGestureRecognizer:myDealPan];
     
     UITapGestureRecognizer *myDealTap = [self getTapGestureRecognizer];
     [_myDealViewController.view addGestureRecognizer:myDealTap];
 }
+-(void)setupPageView
+{
+    if(!_pageVC){
+        _pageVC = [[UIPageViewController alloc] initWithTransitionStyle:UIPageViewControllerTransitionStylePageCurl navigationOrientation:UIPageViewControllerNavigationOrientationVertical options:nil];
+    }
+    _pageVC.view.frame = [UIScreen mainScreen].bounds;//CGRectMake(0,0,self.view.frame.size.width,self.view.frame.size.height);
+    _pageVC.delegate=self;
+    _pageVC.dataSource = self;
+    CategoryCollectionViewController *cCVC = [[CategoryCollectionViewController alloc] initWithBackgroundColor:[UIColor colorWithRed:255 green:0 blue:0 alpha:0.5]];
+    CategoryCollectionViewController *nextPageView = [[CategoryCollectionViewController alloc] initWithBackgroundColor:[UIColor colorWithRed:0 green:255 blue:0 alpha:0.5]];
+    //cCVC.view.frame= [UIScreen mainScreen].bounds;//CGRectMake(0,0,self.view.frame.size.width,self.view.frame.size.height);
+    _pages= @[cCVC,nextPageView];
+    NSArray * contentPageVC = @[cCVC];
+    [_pageVC setViewControllers:contentPageVC direction:UIPageViewControllerNavigationDirectionForward animated:YES completion:nil];
+    UIPanGestureRecognizer *pagePan = [self getPanGestureRecognizer];
+    [_pageVC.view addGestureRecognizer:pagePan];
+    
+}
 
+#pragma mark - page view methods
+-(UIViewController *)pageViewController:(UIPageViewController *)pageViewController viewControllerAfterViewController:(UIViewController *)viewController
+{
+    NSLog(@"calling after view controller");
+    //NSInteger *integer = arc4random()%256;
+    //NSLog(@"random number is %ld",integer);
+    if(!viewController || viewController == _pages[1])
+        return nil;
+    return _pages[1];
+    //CategoryCollectionViewController *afterPageVC = [[CategoryCollectionViewController alloc] initWithBackgroundColor:[UIColor colorWithRed:arc4random()%256 green:arc4random()%256 blue:arc4random()%256 alpha:1.0]];
+    
+    //return afterPageVC;
+}
+-(UIViewController *)pageViewController:(UIPageViewController *)pageViewController viewControllerBeforeViewController:(UIViewController *)viewController
+{
+    NSLog(@"calling before view controller");
+    if(!viewController || viewController == _pages[0]){
+        return nil;
+    }
+    return _pages[0];
+    //CategoryCollectionViewController* beforePageVC = [[CategoryCollectionViewController alloc] initWithBackgroundColor:[UIColor colorWithRed:arc4random()%256 green:arc4random()%256 blue:arc4random()%256 alpha:1.0]];
+    //return beforePageVC;
+}
+-(void)pageViewController:(UIPageViewController *)pageViewController willTransitionToViewControllers:(NSArray *)pendingViewControllers
+{
+    NSLog(@"will transition to");
+}
 /*
  slide based on the transition
  */
 #pragma mark - transition animation methods
+-(void)backToCenterView
+{
+    [self.myDealViewController.view removeFromSuperview];
+    [self.view addSubview:self.centerViewController.view];
+    _currentView = self.centerViewController.view;
+}
+
 -(void) slideWithCenterView:(UIView*)centerView atTransition:(CGPoint)transition ended:(BOOL)ended
 {
     /*
      this is done because, there is push segue from xjyViewController to the YelpViewController
      therefore, in the !_isReset state, if the 
      */
-    
     CGFloat centerX = 0.0;
     if(_isReset){
         centerX = centerView.frame.size.width/2;
@@ -199,7 +276,6 @@
     else if(_inMenuView){
         centerX = PANEL_WIDTH - centerView.frame.size.width/2;
         //centerX = PANEL_WIDTH - _centerViewController.view.frame.size.width/2;
-
     }
     else{
         centerX = centerView.frame.size.width * 3/2 - PANEL_WIDTH;
@@ -245,7 +321,14 @@
     }
     
 }
-
+-(void) slideLeftAll
+{
+    [self slideLeftAllWithCenterView:_currentView];
+}
+-(void) slideRightAll
+{
+    [self slideRightAllWithCenterView:_currentView];
+}
 /*
  slide all the way to the left
  */
@@ -291,7 +374,11 @@
 
 /*
     reset methods
- */
+*/
+-(void) reset
+{
+    [self resetWithCenterView:_currentView];
+}
 -(void)resetWithCenterView:(UIView*)centerView
 {
     [self resetWithCenterView:centerView inDuration:0.2];
@@ -310,7 +397,7 @@
     //NSLog(@"calling main view controller reset");
     
     [UIView animateWithDuration:duration delay: 0 options:UIViewAnimationOptionBeginFromCurrentState animations:^{
-        NSLog(@"duration is %f",duration);
+        //NSLog(@"duration is %f",duration);
         centerView.frame = CGRectMake(0, 0,centerView.frame.size.width, centerView.frame.size.height);
         
         _menuViewController.view.frame = CGRectMake(_centerViewController.view.frame.size.width, 0,_menuViewController.view.frame.size.width, _menuViewController.view.frame.size.height);
@@ -322,7 +409,6 @@
         if(handler)
             handler(finished);
     }];
-    
     _isReset = YES;
     _inUserMenuView = NO;
     _inMenuView= NO;
@@ -330,13 +416,11 @@
 
 -(BOOL) isReset
 {
-    
-    return (_centerViewController.view.frame.origin.x == 0) || (_myDealViewController.view.frame.origin.x==0);
+    return (_currentView.frame.origin.x==0 || _centerViewController.view.frame.origin.x == 0) || (_myDealViewController.view.frame.origin.x==0);
 }
 
 -(BOOL) isResetWithCenterView:(UIView*)centerView
 {
-    
     return (centerView.frame.origin.x == 0);
 }
 
@@ -351,7 +435,6 @@
     //[self setupSubViewGestureRecognizer];
     //[UIView recursivePrintViewTree:self.view];
 
-    // Do any additional setup after loading the view.
 }
 
 - (void)didReceiveMemoryWarning
