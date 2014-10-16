@@ -52,6 +52,7 @@
 		74B7219619EC1F91000B3892 /* MyTapGestureRecognizer.m in Sources */ = {isa = PBXBuildFile; fileRef = 74B7219519EC1F91000B3892 /* MyTapGestureRecognizer.m */; };
 		74B7219919EC857B000B3892 /* MyDealViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 74B7219819EC857B000B3892 /* MyDealViewController.m */; };
 		74B7219C19EE0F3A000B3892 /* CategoryCollectionViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 74B7219B19EE0F3A000B3892 /* CategoryCollectionViewController.m */; };
+		74B7219F19EF8AF7000B3892 /* SellDealViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 74B7219E19EF8AF7000B3892 /* SellDealViewController.m */; };
 		74B9326D19AAEB4E003B6594 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 74B9326C19AAEB4E003B6594 /* Foundation.framework */; };
 		74B9326F19AAEB4E003B6594 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 74B9326E19AAEB4E003B6594 /* CoreGraphics.framework */; };
 		74B9327119AAEB4E003B6594 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 74B9327019AAEB4E003B6594 /* UIKit.framework */; };
@@ -190,6 +191,8 @@
 		74B7219819EC857B000B3892 /* MyDealViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MyDealViewController.m; sourceTree = "<group>"; };
 		74B7219A19EE0F3A000B3892 /* CategoryCollectionViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CategoryCollectionViewController.h; sourceTree = "<group>"; };
 		74B7219B19EE0F3A000B3892 /* CategoryCollectionViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CategoryCollectionViewController.m; sourceTree = "<group>"; };
+		74B7219D19EF8AF7000B3892 /* SellDealViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SellDealViewController.h; sourceTree = "<group>"; };
+		74B7219E19EF8AF7000B3892 /* SellDealViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SellDealViewController.m; sourceTree = "<group>"; };
 		74B9326919AAEB4E003B6594 /* xiaojiaoyi.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = xiaojiaoyi.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		74B9326C19AAEB4E003B6594 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		74B9326E19AAEB4E003B6594 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -378,8 +381,6 @@
 		741FB5FE19E0BE2E00EA6D5B /* CenterVC */ = {
 			isa = PBXGroup;
 			children = (
-				74B9328419AAEB4E003B6594 /* CenterViewController.h */,
-				74B9328519AAEB4E003B6594 /* CenterViewController.m */,
 				741FB5F519E06F4600EA6D5B /* CenterTabHotDealController.h */,
 				741FB5F619E06F4600EA6D5B /* CenterTabHotDealController.m */,
 				741FB5F819E0897100EA6D5B /* CenterTabBuddyDealController.h */,
@@ -468,6 +469,10 @@
 				741FB5FE19E0BE2E00EA6D5B /* CenterVC */,
 				74CB851B19C0193C00579432 /* YelpViewController.h */,
 				74CB851C19C0193C00579432 /* YelpViewController.m */,
+				74B9328419AAEB4E003B6594 /* CenterViewController.h */,
+				74B9328519AAEB4E003B6594 /* CenterViewController.m */,
+				74B7219D19EF8AF7000B3892 /* SellDealViewController.h */,
+				74B7219E19EF8AF7000B3892 /* SellDealViewController.m */,
 				74B7219719EC857B000B3892 /* MyDealViewController.h */,
 				74B7219819EC857B000B3892 /* MyDealViewController.m */,
 				740A2E7C19C53E4600D87965 /* MainViewController.h */,
@@ -817,6 +822,7 @@
 				741FB5FD19E0899800EA6D5B /* CenterTabNearbyDealController.m in Sources */,
 				74B9331419AD8695003B6594 /* STHTTPRequest.m in Sources */,
 				74B7218919E83845000B3892 /* CenterCollectionViewFlowLayout.m in Sources */,
+				74B7219F19EF8AF7000B3892 /* SellDealViewController.m in Sources */,
 				74B9330E19AD8695003B6594 /* STTwitterHTML.m in Sources */,
 				74B9330F19AD8695003B6594 /* STTwitterOAuth.m in Sources */,
 				74CB84E219BA15FA00579432 /* sha1.c in Sources */,

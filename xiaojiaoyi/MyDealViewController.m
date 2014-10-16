@@ -25,8 +25,8 @@
     }
     _navigationBar.frame = CGRectMake(0,0,self.view.frame.size.width,60);
     UINavigationItem * item = [[UINavigationItem alloc] init];
-    UIBarButtonItem *leftBarButton = [[UIBarButtonItem alloc] initWithTitle:@"back" style:UIBarButtonItemStylePlain target:self.mainVC action:@selector(backToCenterView)];
-    UIBarButtonItem *rightBarButton = [[UIBarButtonItem alloc] initWithTitle:@"main page" style:UIBarButtonItemStylePlain target:self.mainVC action:@selector(backToCenterView)];
+    UIBarButtonItem *leftBarButton = [[UIBarButtonItem alloc] initWithTitle:@"back" style:UIBarButtonItemStylePlain target:self.mainVC action:@selector(backToCenterViewFromMyDealView)];
+    UIBarButtonItem *rightBarButton = [[UIBarButtonItem alloc] initWithTitle:@"main page" style:UIBarButtonItemStylePlain target:self.mainVC action:@selector(backToCenterViewFromMyDealView)];
     
     item.leftBarButtonItem = leftBarButton;
     item.rightBarButtonItem = rightBarButton;

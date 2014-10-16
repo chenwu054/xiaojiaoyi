@@ -7,9 +7,13 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "MainViewController.h"
 
 @interface CategoryCollectionViewController : UIViewController
 
--(CategoryCollectionViewController*)initWithBackgroundColor:(UIColor*)color;
+@property (nonatomic) UINavigationBar* navigationBar;
+@property (nonatomic) MainViewController* mainVC;
 
+-(void)setBackgroundColor:(UIColor*)color;
+-(CategoryCollectionViewController*)initWithBackgroundColor:(UIColor*)color;
 @end

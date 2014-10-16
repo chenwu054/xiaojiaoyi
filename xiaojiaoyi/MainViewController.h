@@ -17,6 +17,7 @@
 
 @class CenterViewController;
 @class MyDealViewController;
+@class CategoryCollectionViewController;
 
 @protocol MenuNavigationDelegate <NSObject,UIPageViewControllerDataSource,UIPageViewControllerDelegate>
 
@@ -38,10 +39,11 @@
 @property (nonatomic) UserMenuController *userMenuController;
 @property (nonatomic) CenterViewController* centerViewController;
 @property (nonatomic) MyDealViewController* myDealViewController;
-
-
+@property (nonatomic) CategoryCollectionViewController* categoryViewControllerOne;
+@property (nonatomic) CategoryCollectionViewController* categoryViewControllerTwo;
 -(UIPanGestureRecognizer*)getPanGestureRecognizer;
--(void)backToCenterView;
+-(void)backToCenterViewFromMyDealView;
+-(void)backToCenterViewFromCategoryView;
 
 -(BOOL) isReset;
 @end
