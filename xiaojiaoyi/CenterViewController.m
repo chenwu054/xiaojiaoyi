@@ -27,6 +27,7 @@
 
 @implementation CenterViewController
 
+#pragma  mark - touch events overrides
 -(void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event
 {
     _touchStartTime = [NSDate date];
@@ -51,13 +52,21 @@
     //NSLog(@"delivered to Center View Controller! canncelled");
 }
 
-
+#pragma mark - propertys setup
 -(MainViewController*)superVC
 {
     if(!_superVC){
         _superVC =(MainViewController*)[self presentingViewController];
     }
     return _superVC;
+}
+-(SellDealViewController*)sellDealController
+{
+    if(!_sellDealController){
+        _sellDealController = [[SellDealViewController alloc] init];
+        
+    }
+    return _sellDealController;
 }
 
 -(void)initTabBarAndController
@@ -148,17 +157,24 @@
 -(void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex
 {
     //NSLog(@"buttonIndex is %ld in action sheet is clicked",buttonIndex);
-    if(buttonIndex == 3){
+    if(buttonIndex == 2){
         return;
     }
-    else if(buttonIndex == 1)
+    else if(buttonIndex == 0)
     {
-    
+        //NSLog(@"sell button clicked");
+        [self performSegueWithIdentifier:@"SellDealSegue" sender:self];
+        
     }
-    else if(buttonIndex == 2){
+    else if(buttonIndex == 1){
     
     }
 }
+-(IBAction)doneWithSellDealSegue:(UIStoryboardSegue*)sender
+{
+    
+}
+
 
 -(void)tabBarController:tabBarController didSelectViewController:(UIViewController *)viewController
 {
@@ -280,6 +296,7 @@
     for(UIGestureRecognizer * gesture in gestures){
         gesture.delegate = self;
     }
+    
     //self.view = [[GestureView alloc] init];
     //self.view.userInteractionEnabled = YES;
     //NSLog(@"default GR count is %ld",self.view.gestureRecognizers.count);

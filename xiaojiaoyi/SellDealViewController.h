@@ -8,6 +8,9 @@
 
 #import <UIKit/UIKit.h>
 
-@interface SellDealViewController : UIViewController
+@interface SellDealViewController : UIViewController <UIAlertViewDelegate>
+
+
+@property (nonatomic) UIButton *backButton;
 
 @end

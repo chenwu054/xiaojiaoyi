@@ -511,7 +511,7 @@
     
     UIView* retView = [self.viewStack lastObject];
     [self.viewStack removeLastObject];
-    NSLog(@"popped new view now stack size is %ld",_viewStack.count);
+    //NSLog(@"popped new view now stack size is %ld",_viewStack.count);
     return retView;
 }
 -(void)pushViewStack:(UIView*)newView
@@ -519,7 +519,7 @@
     if(newView)
         [self.viewStack addObject:newView];
     
-    NSLog(@"pushed new view now stack size is %ld",_viewStack.count);
+    //NSLog(@"pushed new view now stack size is %ld",_viewStack.count);
 }
 
 #pragma mark - life cycle methods

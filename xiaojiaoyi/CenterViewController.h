@@ -15,7 +15,7 @@
 #import "CenterTabBuddyDealController.h"
 #import "CenterTabNearbyDealController.h"
 #import "MyDealViewController.h"
-
+#import "SellDealViewController.h"
 
 //#import "OASignatureProviding.h"
 #import "YelpViewController.h"
@@ -46,5 +46,7 @@
 @property (nonatomic) CenterTabBuddyDealController* centerTabBuddyDealController;
 @property (nonatomic) CenterTabNearbyDealController* centerTabNearbyDealController;
 @property (nonatomic) MainViewController *superVC;
+@property (nonatomic) SellDealViewController *sellDealController;
+
 
 @end

@@ -53,6 +53,11 @@
 		74B7219919EC857B000B3892 /* MyDealViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 74B7219819EC857B000B3892 /* MyDealViewController.m */; };
 		74B7219C19EE0F3A000B3892 /* CategoryCollectionViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 74B7219B19EE0F3A000B3892 /* CategoryCollectionViewController.m */; };
 		74B7219F19EF8AF7000B3892 /* SellDealViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 74B7219E19EF8AF7000B3892 /* SellDealViewController.m */; };
+		74B721A319F0A8BB000B3892 /* camera.png in Resources */ = {isa = PBXBuildFile; fileRef = 74B721A019F0A8BB000B3892 /* camera.png */; };
+		74B721A419F0A8BB000B3892 /* check.png in Resources */ = {isa = PBXBuildFile; fileRef = 74B721A119F0A8BB000B3892 /* check.png */; };
+		74B721A519F0A8BB000B3892 /* cross.png in Resources */ = {isa = PBXBuildFile; fileRef = 74B721A219F0A8BB000B3892 /* cross.png */; };
+		74B721A719F0B685000B3892 /* picture.png in Resources */ = {isa = PBXBuildFile; fileRef = 74B721A619F0B685000B3892 /* picture.png */; };
+		74B721AA19F0C5C8000B3892 /* DealIntroController.m in Sources */ = {isa = PBXBuildFile; fileRef = 74B721A919F0C5C8000B3892 /* DealIntroController.m */; };
 		74B9326D19AAEB4E003B6594 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 74B9326C19AAEB4E003B6594 /* Foundation.framework */; };
 		74B9326F19AAEB4E003B6594 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 74B9326E19AAEB4E003B6594 /* CoreGraphics.framework */; };
 		74B9327119AAEB4E003B6594 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 74B9327019AAEB4E003B6594 /* UIKit.framework */; };
@@ -193,6 +198,12 @@
 		74B7219B19EE0F3A000B3892 /* CategoryCollectionViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CategoryCollectionViewController.m; sourceTree = "<group>"; };
 		74B7219D19EF8AF7000B3892 /* SellDealViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SellDealViewController.h; sourceTree = "<group>"; };
 		74B7219E19EF8AF7000B3892 /* SellDealViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SellDealViewController.m; sourceTree = "<group>"; };
+		74B721A019F0A8BB000B3892 /* camera.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = camera.png; sourceTree = "<group>"; };
+		74B721A119F0A8BB000B3892 /* check.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = check.png; sourceTree = "<group>"; };
+		74B721A219F0A8BB000B3892 /* cross.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cross.png; sourceTree = "<group>"; };
+		74B721A619F0B685000B3892 /* picture.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = picture.png; sourceTree = "<group>"; };
+		74B721A819F0C5C8000B3892 /* DealIntroController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DealIntroController.h; sourceTree = "<group>"; };
+		74B721A919F0C5C8000B3892 /* DealIntroController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DealIntroController.m; sourceTree = "<group>"; };
 		74B9326919AAEB4E003B6594 /* xiaojiaoyi.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = xiaojiaoyi.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		74B9326C19AAEB4E003B6594 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		74B9326E19AAEB4E003B6594 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -341,6 +352,10 @@
 		74065AE319C7E2DD0033DA71 /* images */ = {
 			isa = PBXGroup;
 			children = (
+				74B721A619F0B685000B3892 /* picture.png */,
+				74B721A019F0A8BB000B3892 /* camera.png */,
+				74B721A119F0A8BB000B3892 /* check.png */,
+				74B721A219F0A8BB000B3892 /* cross.png */,
 				74B7218C19EA4A29000B3892 /* pull_up_arrow.jpg */,
 				74B7218A19EA40F0000B3892 /* pull_down_arrow.jpg */,
 				741FB60719E11B0200EA6D5B /* add63.png */,
@@ -412,6 +427,34 @@
 			name = Login;
 			sourceTree = "<group>";
 		};
+		74B721AB19F0C5D6000B3892 /* MakeDeal */ = {
+			isa = PBXGroup;
+			children = (
+				74B7219D19EF8AF7000B3892 /* SellDealViewController.h */,
+				74B7219E19EF8AF7000B3892 /* SellDealViewController.m */,
+				74B721A819F0C5C8000B3892 /* DealIntroController.h */,
+				74B721A919F0C5C8000B3892 /* DealIntroController.m */,
+			);
+			name = MakeDeal;
+			sourceTree = "<group>";
+		};
+		74B721AC19F0C5FE000B3892 /* MainPage */ = {
+			isa = PBXGroup;
+			children = (
+				74B7219719EC857B000B3892 /* MyDealViewController.h */,
+				74B7219819EC857B000B3892 /* MyDealViewController.m */,
+				74B9328419AAEB4E003B6594 /* CenterViewController.h */,
+				74B9328519AAEB4E003B6594 /* CenterViewController.m */,
+				740A2E7C19C53E4600D87965 /* MainViewController.h */,
+				740A2E7D19C53E4600D87965 /* MainViewController.m */,
+				740A2E7619C49B4F00D87965 /* MenuTableController.h */,
+				740A2E7719C49B4F00D87965 /* MenuTableController.m */,
+				741FB5EE19DF541400EA6D5B /* UserMenuController.h */,
+				741FB5EF19DF541400EA6D5B /* UserMenuController.m */,
+			);
+			name = MainPage;
+			sourceTree = "<group>";
+		};
 		74B9326019AAEB4E003B6594 = {
 			isa = PBXGroup;
 			children = (
@@ -467,16 +510,8 @@
 				749366FB19CE75F1003B3108 /* Login */,
 				740A2E6E19C299D200D87965 /* collectionView */,
 				741FB5FE19E0BE2E00EA6D5B /* CenterVC */,
-				74CB851B19C0193C00579432 /* YelpViewController.h */,
-				74CB851C19C0193C00579432 /* YelpViewController.m */,
-				74B9328419AAEB4E003B6594 /* CenterViewController.h */,
-				74B9328519AAEB4E003B6594 /* CenterViewController.m */,
-				74B7219D19EF8AF7000B3892 /* SellDealViewController.h */,
-				74B7219E19EF8AF7000B3892 /* SellDealViewController.m */,
-				74B7219719EC857B000B3892 /* MyDealViewController.h */,
-				74B7219819EC857B000B3892 /* MyDealViewController.m */,
-				740A2E7C19C53E4600D87965 /* MainViewController.h */,
-				740A2E7D19C53E4600D87965 /* MainViewController.m */,
+				74B721AC19F0C5FE000B3892 /* MainPage */,
+				74B721AB19F0C5D6000B3892 /* MakeDeal */,
 				74B7219A19EE0F3A000B3892 /* CategoryCollectionViewController.h */,
 				74B7219B19EE0F3A000B3892 /* CategoryCollectionViewController.m */,
 				74065ADD19C747D30033DA71 /* DetailPageViewController.h */,
@@ -487,10 +522,8 @@
 				749366F119CA7D9B003B3108 /* Location.m */,
 				74065AE019C748210033DA71 /* DetailPageContentViewController.h */,
 				74065AE119C748210033DA71 /* DetailPageContentViewController.m */,
-				740A2E7619C49B4F00D87965 /* MenuTableController.h */,
-				740A2E7719C49B4F00D87965 /* MenuTableController.m */,
-				741FB5EE19DF541400EA6D5B /* UserMenuController.h */,
-				741FB5EF19DF541400EA6D5B /* UserMenuController.m */,
+				74CB851B19C0193C00579432 /* YelpViewController.h */,
+				74CB851C19C0193C00579432 /* YelpViewController.m */,
 				74B9327E19AAEB4E003B6594 /* Main_iPhone.storyboard */,
 				74B9327B19AAEB4E003B6594 /* xjyAppDelegate.h */,
 				74B9327C19AAEB4E003B6594 /* xjyAppDelegate.m */,
@@ -730,12 +763,15 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				74B721A519F0A8BB000B3892 /* cross.png in Resources */,
 				741FB5F419DF5E5F00EA6D5B /* home60.png in Resources */,
 				74065AE719C7E2DD0033DA71 /* apple image.jpg in Resources */,
 				74B9328319AAEB4E003B6594 /* Main_iPad.storyboard in Resources */,
+				74B721A719F0B685000B3892 /* picture.png in Resources */,
 				74B9328819AAEB4E003B6594 /* Images.xcassets in Resources */,
 				74B9328019AAEB4E003B6594 /* Main_iPhone.storyboard in Resources */,
 				741FB60919E11B0200EA6D5B /* add63.png in Resources */,
+				74B721A419F0A8BB000B3892 /* check.png in Resources */,
 				74065AE819C7E2DD0033DA71 /* facebook.jpg in Resources */,
 				74065AE919C7E2DD0033DA71 /* google.jpg in Resources */,
 				749366F419CB3E67003B3108 /* twitter small icon.jpg in Resources */,
@@ -746,6 +782,7 @@
 				741FB60A19E11B0200EA6D5B /* web11.png in Resources */,
 				74B7218B19EA40F0000B3892 /* pull_down_arrow.jpg in Resources */,
 				74B932AA19AC29CD003B6594 /* FBUserSettingsViewResources.bundle in Resources */,
+				74B721A319F0A8BB000B3892 /* camera.png in Resources */,
 				741FB5F219DF567700EA6D5B /* UserMenuCategory.plist in Resources */,
 				7493296019D60FD3003A2388 /* GooglePlus.bundle in Resources */,
 			);
@@ -823,6 +860,7 @@
 				74B9331419AD8695003B6594 /* STHTTPRequest.m in Sources */,
 				74B7218919E83845000B3892 /* CenterCollectionViewFlowLayout.m in Sources */,
 				74B7219F19EF8AF7000B3892 /* SellDealViewController.m in Sources */,
+				74B721AA19F0C5C8000B3892 /* DealIntroController.m in Sources */,
 				74B9330E19AD8695003B6594 /* STTwitterHTML.m in Sources */,
 				74B9330F19AD8695003B6594 /* STTwitterOAuth.m in Sources */,
 				74CB84E219BA15FA00579432 /* sha1.c in Sources */,
