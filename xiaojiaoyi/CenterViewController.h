@@ -24,7 +24,7 @@
 @class MainViewController;
 @class CenterTabHotDealController;
 
-@interface CenterViewController : UINavigationController <DataFetcherDelegate,UITabBarControllerDelegate,UIToolbarDelegate,UIActionSheetDelegate,UIGestureRecognizerDelegate,UINavigationControllerDelegate>
+@interface CenterViewController : UINavigationController <DataFetcherDelegate,UITabBarControllerDelegate,UIToolbarDelegate,UIActionSheetDelegate,UIGestureRecognizerDelegate,UINavigationControllerDelegate, UIImagePickerControllerDelegate>
 @property (weak, nonatomic) IBOutlet UIButton *yelpButton;
 @property (strong,nonatomic) OADataFetcher *dataFetcher;
 @property (nonatomic) NSString* term;

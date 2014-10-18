@@ -18,6 +18,7 @@
 @property (strong, nonatomic) IBOutlet UIButton *crossButton;
 @property (strong, nonatomic) IBOutlet UIButton *takePhotonButton;
 @property (strong, nonatomic) IBOutlet UIButton *checkButton;
+@property (nonatomic) UIImagePickerController *imagePickerController;
 
 @property (nonatomic) NSMutableArray *photos;
 
@@ -42,6 +43,36 @@
 //    
 //}
 
+-(UIImagePickerController*) imagePickerController
+{
+    if(!_imagePickerController){
+        _imagePickerController = [[UIImagePickerController alloc] init];
+    }
+    _imagePickerController.delegate = self;
+    if([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera]){
+        _imagePickerController.view.frame = CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height-(PREVIEW_LENGTH+2*PREVIEW_MARGIN_HEIGHT+BUTTON_HEIGHT));
+        _imagePickerController.sourceType = UIImagePickerControllerSourceTypeCamera;
+        [self.view addSubview:_imagePickerController.view];
+        //have to manually call these two lifecycle methods to add initiate the picker view.
+        [_imagePickerController viewWillAppear:YES];
+        [_imagePickerController viewDidAppear:YES];
+        
+        NSLog(@"camera is available");
+    }
+    else if([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypePhotoLibrary]){
+        _imagePickerController.view.frame = CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height-(PREVIEW_LENGTH+2*PREVIEW_MARGIN_HEIGHT+BUTTON_HEIGHT));
+        _imagePickerController.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
+        
+        NSLog(@"library is available");
+    }
+    else{
+        NSLog(@"!!!ERROR: neither camera nor ");
+    }
+    
+    return _imagePickerController;
+}
+
+
 -(NSMutableArray*)photos
 {
     if(!_photos){
@@ -50,6 +81,7 @@
             UIButton *button = [[UIButton alloc] initWithFrame:CGRectMake(PREVIEW_MARGIN_WIDTH*(i+1)+i*PREVIEW_LENGTH, PREVIEW_MARGIN_HEIGHT, PREVIEW_LENGTH, PREVIEW_LENGTH)];
             button.backgroundColor=[UIColor whiteColor];
             [button setImage:[UIImage imageNamed:@"picture.png"] forState:UIControlStateNormal];
+            [button addTarget:self action:@selector(photoButtonClicked:) forControlEvents:UIControlEventTouchUpInside];
             [_photos addObject:button];
         }
     }
@@ -76,6 +108,24 @@
 {
     NSLog(@"check button clicked");
     [self performSegueWithIdentifier:@"DealIntroSegue" sender:self];
+    
+}
+-(void)photoButtonClicked:(UIButton*)sender
+{
+    for(int i=0;i<_photos.count;i++){
+        if(sender==_photos[i]){
+            NSLog(@"button %d clicked",i);
+            break;
+        }
+    }
+    [self presentViewController:_imagePickerController animated:YES completion:nil];
+    
+    
+}
+-(void)setupImagePicker
+{
+    [self imagePickerController];
+    //[self presentViewController:self.imagePickerController animated:YES completion:nil];
     
 }
 -(void)setup
@@ -118,8 +168,37 @@
     }
     _photoPreviewParentView.backgroundColor = [UIColor grayColor];
     
+    [self setupImagePicker];
 }
-
+-(void)updateButtonWithImage:(UIImage*)image
+{
+    for(int i=0;i<self.photos.count;i++){
+        UIButton* button = self.photos[i];
+        if(button.imageView.image == [UIImage imageNamed:@"picture.png"]){
+            [button setImage:image forState:UIControlStateNormal];
+            break;
+        }
+    }
+    
+}
+-(void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info
+{
+    NSLog(@"picker source type is %ld",picker.sourceType);
+    UIImage* image = [info objectForKey:@"UIImagePickerControllerOriginalImage"];
+    //NSLog(@"image data is %@",image);
+    [self updateButtonWithImage:image];
+    for(NSString * k in info){
+        NSLog(@" %@ is %@",k, [info objectForKey:k]);
+    }
+    NSLog(@"=--------------------");
+    [self.imagePickerController dismissViewControllerAnimated:YES completion:nil];
+    
+}
+-(void) imagePickerControllerDidCancel:(UIImagePickerController *)picker
+{
+    NSLog(@"photo library picker cancelled");
+    
+}
 - (void)viewDidLoad
 {
     [super viewDidLoad];

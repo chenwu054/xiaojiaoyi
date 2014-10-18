@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="5056" systemVersion="13E28" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" initialViewController="qi8-pb-Aes">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="5056" systemVersion="13E28" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" initialViewController="zlh-K3-7kr">
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="3733"/>
     </dependencies>
@@ -89,10 +89,58 @@
             </objects>
             <point key="canvasLocation" x="-28" y="-4"/>
         </scene>
-        <!--View Controller-->
+        <!--Edit Image View Controller-->
+        <scene sceneID="VhF-JV-FWj">
+            <objects>
+                <viewController id="zlh-K3-7kr" customClass="EditImageViewController" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="xrw-kC-14T"/>
+                        <viewControllerLayoutGuide type="bottom" id="BKV-mT-a21"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="dWa-lS-a7Q">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                        <subviews>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="xu5-9b-d7o">
+                                <rect key="frame" x="0.0" y="525" width="112" height="43"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                                <state key="normal" title="Button">
+                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Ubr-yK-aiI">
+                                <rect key="frame" x="220" y="525" width="100" height="43"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                                <state key="normal" title="Button">
+                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="wGe-pY-kJW">
+                                <rect key="frame" x="120" y="525" width="92" height="43"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                                <state key="normal" title="Button">
+                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                            </button>
+                            <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="A4d-wD-xC6">
+                                <rect key="frame" x="0.0" y="0.0" width="320" height="442"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                            </scrollView>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                    </view>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="XAw-dn-Zrt" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="557" y="-568"/>
+        </scene>
+        <!--Deal Intro Controller-->
         <scene sceneID="vI4-XG-i0k">
             <objects>
-                <viewController id="B6H-wE-uM3" sceneMemberID="viewController">
+                <viewController id="B6H-wE-uM3" customClass="DealIntroController" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="RiJ-yc-qKD"/>
                         <viewControllerLayoutGuide type="bottom" id="G6o-tH-2k8"/>
@@ -127,7 +175,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dMX-GL-LlX" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="396" y="-4"/>
+            <point key="canvasLocation" x="557" y="91"/>
         </scene>
         <!--Login View Controller-->
         <scene sceneID="oef-u6-tbJ">
@@ -267,7 +315,7 @@
                     </connections>
                 </tapGestureRecognizer>
             </objects>
-            <point key="canvasLocation" x="1258" y="-699"/>
+            <point key="canvasLocation" x="-478" y="-1387"/>
         </scene>
         <!--Auth View Controller-->
         <scene sceneID="mx7-ap-402">
@@ -300,7 +348,7 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="1vG-v3-TFb" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <exit id="EZw-Mw-Xno" userLabel="Exit" sceneMemberID="exit"/>
             </objects>
-            <point key="canvasLocation" x="1695" y="-699"/>
+            <point key="canvasLocation" x="-41" y="-1387"/>
         </scene>
         <!--Center Tab Hot Deal Controller-->
         <scene sceneID="OOc-8b-VUl">
@@ -417,7 +465,7 @@
                 </collectionViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="zuo-wz-DGq" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="229" y="686"/>
+            <point key="canvasLocation" x="-405" y="1382"/>
         </scene>
         <!--Center Tab Nearby Deal Controller-->
         <scene sceneID="bY0-Uh-GF0">
@@ -492,7 +540,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="soi-Tf-P4a" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="717" y="698"/>
+            <point key="canvasLocation" x="83" y="1394"/>
         </scene>
         <!--Map View Controller-->
         <scene sceneID="3Su-4f-XBh">
@@ -531,7 +579,7 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="DKL-Af-wl0" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <exit id="Bzd-Ki-TEQ" userLabel="Exit" sceneMemberID="exit"/>
             </objects>
-            <point key="canvasLocation" x="1191" y="698"/>
+            <point key="canvasLocation" x="557" y="1394"/>
         </scene>
         <!--Detail Page Content View Controller-->
         <scene sceneID="M1G-pH-Rt5">
@@ -567,7 +615,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Cke-qY-pBg" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="717" y="1354"/>
+            <point key="canvasLocation" x="83" y="2050"/>
         </scene>
         <!--View Controller-->
         <scene sceneID="3Rc-UT-gU7">
@@ -681,7 +729,7 @@
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="CWl-L3-K0X" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="798" y="-710"/>
+            <point key="canvasLocation" x="-866" y="-1451"/>
         </scene>
         <!--Menu Table Controller-->
         <scene sceneID="KcO-Qt-azY">

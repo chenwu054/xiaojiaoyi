@@ -21,8 +21,10 @@
 
 @interface CenterViewController ()
 
-@property NSString *requestStr;
-@property NSDate *touchStartTime;
+@property (nonatomic) NSString *requestStr;
+@property (nonatomic) NSDate *touchStartTime;
+//@property (nonatomic) UIImagePickerController* imagePickerController;
+
 @end
 
 @implementation CenterViewController
