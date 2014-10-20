@@ -66,6 +66,7 @@
 		74B721B919F2279E000B3892 /* chop.png in Resources */ = {isa = PBXBuildFile; fileRef = 74B721B819F2279E000B3892 /* chop.png */; };
 		74B721BB19F22819000B3892 /* scaling.png in Resources */ = {isa = PBXBuildFile; fileRef = 74B721BA19F22819000B3892 /* scaling.png */; };
 		74B721BD19F22B60000B3892 /* rotate.png in Resources */ = {isa = PBXBuildFile; fileRef = 74B721BC19F22B60000B3892 /* rotate.png */; };
+		74B721C019F3387E000B3892 /* ChopImageView.m in Sources */ = {isa = PBXBuildFile; fileRef = 74B721BF19F3387E000B3892 /* ChopImageView.m */; };
 		74B9326D19AAEB4E003B6594 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 74B9326C19AAEB4E003B6594 /* Foundation.framework */; };
 		74B9326F19AAEB4E003B6594 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 74B9326E19AAEB4E003B6594 /* CoreGraphics.framework */; };
 		74B9327119AAEB4E003B6594 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 74B9327019AAEB4E003B6594 /* UIKit.framework */; };
@@ -221,6 +222,8 @@
 		74B721B819F2279E000B3892 /* chop.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = chop.png; sourceTree = "<group>"; };
 		74B721BA19F22819000B3892 /* scaling.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = scaling.png; sourceTree = "<group>"; };
 		74B721BC19F22B60000B3892 /* rotate.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = rotate.png; sourceTree = "<group>"; };
+		74B721BE19F3387E000B3892 /* ChopImageView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ChopImageView.h; sourceTree = "<group>"; };
+		74B721BF19F3387E000B3892 /* ChopImageView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ChopImageView.m; sourceTree = "<group>"; };
 		74B9326919AAEB4E003B6594 /* xiaojiaoyi.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = xiaojiaoyi.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		74B9326C19AAEB4E003B6594 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		74B9326E19AAEB4E003B6594 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -454,14 +457,16 @@
 		74B721AB19F0C5D6000B3892 /* MakeDeal */ = {
 			isa = PBXGroup;
 			children = (
+				74B721AD19F1D0B5000B3892 /* EditImageViewController.h */,
+				74B721AE19F1D0B5000B3892 /* EditImageViewController.m */,
 				74B7219D19EF8AF7000B3892 /* SellDealViewController.h */,
 				74B7219E19EF8AF7000B3892 /* SellDealViewController.m */,
 				74B721A819F0C5C8000B3892 /* DealIntroController.h */,
 				74B721A919F0C5C8000B3892 /* DealIntroController.m */,
 				74B9328419AAEB4E003B6594 /* CenterViewController.h */,
 				74B9328519AAEB4E003B6594 /* CenterViewController.m */,
-				74B721AD19F1D0B5000B3892 /* EditImageViewController.h */,
-				74B721AE19F1D0B5000B3892 /* EditImageViewController.m */,
+				74B721BE19F3387E000B3892 /* ChopImageView.h */,
+				74B721BF19F3387E000B3892 /* ChopImageView.m */,
 			);
 			name = MakeDeal;
 			sourceTree = "<group>";
@@ -856,6 +861,7 @@
 				74FD861319E43DC7000EC4C2 /* GestureCollectionView.m in Sources */,
 				741FB5F719E06F4600EA6D5B /* CenterTabHotDealController.m in Sources */,
 				74FD861019E392FF000EC4C2 /* GestureView.m in Sources */,
+				74B721C019F3387E000B3892 /* ChopImageView.m in Sources */,
 				74CB851819BEB80900579432 /* NSURLRequest+OAuth.m in Sources */,
 				74CB850119BBDB2100579432 /* OADataFetcher.m in Sources */,
 				74CB84F419BB503800579432 /* NSString+URLEncoding.m in Sources */,

@@ -7,7 +7,11 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "ChopImageView.h"
+#import "SellDealViewController.h"
 
-@interface EditImageViewController : UIViewController
+@interface EditImageViewController : UIViewController <UIScrollViewDelegate>
+
+@property (nonatomic) UIImage *originalImage;
 
 @end
