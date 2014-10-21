@@ -585,8 +585,10 @@ typedef NS_ENUM(NSInteger, MenuType)
             if(self.shouldDelete){
                 sellDealVC.shouldDelete=YES;
             }
-            else
+            else{
+                sellDealVC.shouldDelete=NO;
                 sellDealVC.editImage=self.shouldReplaceImage?self.imageView.image:nil;
+            }
         }
     }
     //NSLog(@"segue from Edit image View controller is %@",segue.identifier);

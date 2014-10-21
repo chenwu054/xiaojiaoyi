@@ -19,7 +19,7 @@
 @property (strong, nonatomic) IBOutlet UIButton *takePhotonButton;
 @property (strong, nonatomic) IBOutlet UIButton *checkButton;
 @property (nonatomic) UIImagePickerController *imagePickerController;
-
+@property (nonatomic) UIImage* defaultImage;
 
 @end
 
@@ -44,30 +44,37 @@
 
 
 #pragma mark - setup
+-(UIImage*)defaultImage
+{
+    if(!_defaultImage){
+        _defaultImage=[UIImage imageNamed:@"picture.png"];
+    }
+    return _defaultImage;
+}
 -(UIImagePickerController*) imagePickerController
 {
     if(!_imagePickerController){
         _imagePickerController = [[UIImagePickerController alloc] init];
-    }
-    _imagePickerController.delegate = self;
-    if([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera]){
-        _imagePickerController.view.frame = CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height-(PREVIEW_LENGTH+2*PREVIEW_MARGIN_HEIGHT+BUTTON_HEIGHT));
-        _imagePickerController.sourceType = UIImagePickerControllerSourceTypeCamera;
-        [self.view addSubview:_imagePickerController.view];
-        //have to manually call these two lifecycle methods to add initiate the picker view.
-        [_imagePickerController viewWillAppear:YES];
-        [_imagePickerController viewDidAppear:YES];
-        
-        NSLog(@"camera is available");
-    }
-    else if([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypePhotoLibrary]){
-        _imagePickerController.view.frame = CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height-(PREVIEW_LENGTH+2*PREVIEW_MARGIN_HEIGHT+BUTTON_HEIGHT));
-        _imagePickerController.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
-        
-        NSLog(@"library is available");
-    }
-    else{
-        NSLog(@"!!!ERROR: neither camera nor ");
+        _imagePickerController.delegate = self;
+        if([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera]){
+            _imagePickerController.view.frame = CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height-(PREVIEW_LENGTH+2*PREVIEW_MARGIN_HEIGHT+BUTTON_HEIGHT));
+            _imagePickerController.sourceType = UIImagePickerControllerSourceTypeCamera;
+            [self.view addSubview:_imagePickerController.view];
+            //have to manually call these two lifecycle methods to add initiate the picker view.
+            [_imagePickerController viewWillAppear:YES];
+            [_imagePickerController viewDidAppear:YES];
+            
+            NSLog(@"camera is available");
+        }
+        else if([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypePhotoLibrary]){
+            _imagePickerController.view.frame = CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height-(PREVIEW_LENGTH+2*PREVIEW_MARGIN_HEIGHT+BUTTON_HEIGHT));
+            _imagePickerController.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
+            
+            //NSLog(@"library is available");
+        }
+        else{
+            NSLog(@"!!!ERROR: neither camera nor ");
+        }
     }
     
     return _imagePickerController;
@@ -82,9 +89,8 @@
     for(int i=0;i<4;i++){
         UIButton *button = [[UIButton alloc] initWithFrame:CGRectMake(PREVIEW_MARGIN_WIDTH*(i+1)+i*PREVIEW_LENGTH, PREVIEW_MARGIN_HEIGHT, PREVIEW_LENGTH, PREVIEW_LENGTH)];
         button.backgroundColor=[UIColor whiteColor];
-        UIImage*image = [UIImage imageNamed:@"picture.png"];
-        [self.photos addObject:image];
-        [button setImage:image forState:UIControlStateNormal];
+        [self.photos addObject:self.defaultImage];
+        [button setImage:self.defaultImage forState:UIControlStateNormal];
         [button addTarget:self action:@selector(photoButtonClicked:) forControlEvents:UIControlEventTouchUpInside];
         [_buttons addObject:button];
     }
@@ -167,13 +173,13 @@
 
 -(void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
 {
-    NSLog(@"buttonIndex is %ld",buttonIndex);
+    //NSLog(@"buttonIndex is %ld",buttonIndex);
     if(buttonIndex==0)
         return;
     //[self performSegueWithIdentifier:@"SellDealBackSegue" sender:self];
 }
 
-#pragma mark - button methods
+#pragma mark - button clicked methods
 -(void)crossButtonClicked
 {
     [[[UIAlertView alloc] initWithTitle:@"Cancel the deal?" message:@"" delegate:self cancelButtonTitle:@"NO" otherButtonTitles:@"YES", nil] show];
@@ -185,7 +191,7 @@
 }
 -(void)checkButtonClicked
 {
-    NSLog(@"check button clicked");
+    //NSLog(@"check button clicked");
     [self performSegueWithIdentifier:@"DealIntroSegue" sender:self];
     
 }
@@ -193,12 +199,12 @@
 {
     for(int i=0;i<_buttons.count;i++){
         if(sender==_buttons[i]){
-            NSLog(@"button %d clicked",i);
+            //NSLog(@"button %d clicked",i);
             self.buttonToEdit=i;
             break;
         }
     }
-    if(sender.imageView.image==[UIImage imageNamed:@"picture.png"]){
+    if(sender.imageView.image==self.defaultImage){
         [self presentViewController:_imagePickerController animated:YES completion:nil];
     }
     else{
@@ -207,11 +213,26 @@
     
 }
 
--(void)updateButtonWithImage:(UIImage*)image
+#pragma mark - button image CRUD
+//similar to insert image but with a starting index
+-(void)insertImage:(UIImage*)image fromButtonIndex:(NSInteger)index
 {
-    for(int i=0;i<self.buttons.count;i++){
-        UIButton* button = self.buttons[i];
-        if(button.imageView.image == [UIImage imageNamed:@"picture.png"]){
+    if(index<0||index>=4)
+        return;
+    for(NSInteger i = index;i<_photos.count;i++){
+        if(_photos[i]==self.defaultImage){
+            _photos[i]=image;
+            [_buttons[i] setImage:image forState:UIControlStateNormal];
+            break;
+        }
+    }
+}
+//insert image to the first button that has default image currently
+-(void)insertImage:(UIImage*)image
+{
+    for(int i=0;i<_photos.count;i++){
+        UIButton* button = _buttons[i];
+        if(button.imageView.image == self.defaultImage){
             [button setImage:image forState:UIControlStateNormal];
             [self.photos replaceObjectAtIndex:i withObject:image];
             break;
@@ -223,10 +244,10 @@
 {
     if(index<0 || index>=4)
         return;
-    UIButton* button = self.buttons[index];
+    UIButton* button = _buttons[index];
     if(image){
         [button setImage:image forState:UIControlStateNormal];
-        [self.photos replaceObjectAtIndex:index withObject:image];
+        [_photos replaceObjectAtIndex:index withObject:image];
     }
 }
 
@@ -235,34 +256,39 @@
     if(index<0||index>=4)
         return;
     NSInteger i = index;
-    UIImage* defaultImage=[UIImage imageNamed:@"picture.png"];
     
-    while(i<self.photos.count-1 && self.photos[i+1]!=defaultImage){
-        self.photos[i]=self.photos[i+1];
+    while(i<self.photos.count-1 && self.photos[i+1]!=self.defaultImage){
+        _photos[i]=_photos[i+1];
         UIButton* button = self.buttons[i];
-        button.imageView.image=self.photos[i];
+        [button setImage:_photos[i] forState:UIControlStateNormal];
         i=i+1;
     }
-    self.photos[i]=defaultImage;
+    self.photos[i]=self.defaultImage;
     UIButton* button = self.buttons[i];
-    button.imageView.image=defaultImage;
+    [button setImage:self.defaultImage forState:UIControlStateNormal];
+
 }
+
+
+#pragma mark - callback methods
 -(void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info
 {
     //NSLog(@"picker source type is %ld",picker.sourceType);
     UIImage* image = [info objectForKey:@"UIImagePickerControllerOriginalImage"];
     //NSLog(@"image data is %@",image);
-    [self updateButtonWithImage:image];
+    [self insertImage:image];
+    //[self updateButtonWithImage:image];
 //    for(NSString * k in info){
 //        NSLog(@" %@ is %@",k, [info objectForKey:k]);
 //    }
     //NSLog(@"=--------------------");
-    [self.imagePickerController dismissViewControllerAnimated:YES completion:nil];
-    
+    [_imagePickerController dismissViewControllerAnimated:YES completion:nil];
 }
+
 -(void) imagePickerControllerDidCancel:(UIImagePickerController *)picker
 {
-    NSLog(@"photo library picker cancelled");
+    [_imagePickerController dismissViewControllerAnimated:YES completion:nil];
+   // NSLog(@"photo library picker cancelled");
 }
 
 #pragma mark - segue methods
@@ -271,11 +297,8 @@
     if([segue.identifier isEqualToString:@"EditImageSegue"]){
         if([segue.destinationViewController isKindOfClass:[EditImageViewController class]]){
             EditImageViewController *editVC = (EditImageViewController*)segue.destinationViewController;
-            if(self.shouldDelete){
-                [self deletePhotoAtButtonIndex:self.buttonToEdit];
-            }
-            else if(self.buttonToEdit>=0 && self.buttonToEdit<4){
-                editVC.originalImage=self.photos[self.buttonToEdit];
+            if(self.buttonToEdit>=0 && self.buttonToEdit<4){
+                editVC.originalImage=_photos[self.buttonToEdit];
             }
             else{
                 NSLog(@"!!!ERROR: button to edit is wrong");
@@ -287,16 +310,18 @@
 
 -(IBAction)unwindFromEditImageView:(UIStoryboardSegue*)sender
 {
-    if(self.editImage!=nil){
+    if(self.shouldDelete){
+        [self deletePhotoAtButtonIndex:self.buttonToEdit];
+    }
+    else if(self.editImage!=nil){
         if(self.buttonToEdit>=0 && self.buttonToEdit<4){
-            self.photos[self.buttonToEdit]=self.editImage;
-            [self updateButtonWithImage:self.photos[self.buttonToEdit]];
+            [self updateButtonWithImage:self.editImage atIndex:self.buttonToEdit];
         }
         else{
             NSLog(@"!!!ERROR: button to edit is wrong");
         }
     }
-    NSLog(@"calling unwind edit view");
+   // NSLog(@"calling unwind edit view");
 }
 
 

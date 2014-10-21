@@ -10,4 +10,6 @@
 
 @interface DealIntroController : UIViewController
 
+@property (nonatomic) UIImage *image;
+
 @end

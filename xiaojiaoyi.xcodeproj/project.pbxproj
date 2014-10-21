@@ -120,6 +120,10 @@
 		74CB851819BEB80900579432 /* NSURLRequest+OAuth.m in Sources */ = {isa = PBXBuildFile; fileRef = 74CB851519BEB80900579432 /* NSURLRequest+OAuth.m */; };
 		74CB851919BEB80900579432 /* YPAPISample.m in Sources */ = {isa = PBXBuildFile; fileRef = 74CB851719BEB80900579432 /* YPAPISample.m */; };
 		74CB851D19C0193C00579432 /* YelpViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 74CB851C19C0193C00579432 /* YelpViewController.m */; };
+		74CBCF0319F5716200049AA0 /* backArrow.png in Resources */ = {isa = PBXBuildFile; fileRef = 74CBCF0219F5716200049AA0 /* backArrow.png */; };
+		74CBCF0519F5791300049AA0 /* keyboard.png in Resources */ = {isa = PBXBuildFile; fileRef = 74CBCF0419F5791300049AA0 /* keyboard.png */; };
+		74CBCF0719F5793F00049AA0 /* speak.png in Resources */ = {isa = PBXBuildFile; fileRef = 74CBCF0619F5793F00049AA0 /* speak.png */; };
+		74CBCF0A19F57BA400049AA0 /* DealDescriptionViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 74CBCF0919F57BA400049AA0 /* DealDescriptionViewController.m */; };
 		74FD860D19E380B7000EC4C2 /* UIView+GestureView.m in Sources */ = {isa = PBXBuildFile; fileRef = 74FD860C19E380B7000EC4C2 /* UIView+GestureView.m */; };
 		74FD861019E392FF000EC4C2 /* GestureView.m in Sources */ = {isa = PBXBuildFile; fileRef = 74FD860F19E392FF000EC4C2 /* GestureView.m */; };
 		74FD861319E43DC7000EC4C2 /* GestureCollectionView.m in Sources */ = {isa = PBXBuildFile; fileRef = 74FD861219E43DC7000EC4C2 /* GestureCollectionView.m */; };
@@ -318,6 +322,11 @@
 		74CB851719BEB80900579432 /* YPAPISample.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YPAPISample.m; sourceTree = "<group>"; };
 		74CB851B19C0193C00579432 /* YelpViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YelpViewController.h; sourceTree = "<group>"; };
 		74CB851C19C0193C00579432 /* YelpViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YelpViewController.m; sourceTree = "<group>"; };
+		74CBCF0219F5716200049AA0 /* backArrow.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = backArrow.png; sourceTree = "<group>"; };
+		74CBCF0419F5791300049AA0 /* keyboard.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = keyboard.png; sourceTree = "<group>"; };
+		74CBCF0619F5793F00049AA0 /* speak.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = speak.png; sourceTree = "<group>"; };
+		74CBCF0819F57BA400049AA0 /* DealDescriptionViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DealDescriptionViewController.h; sourceTree = "<group>"; };
+		74CBCF0919F57BA400049AA0 /* DealDescriptionViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DealDescriptionViewController.m; sourceTree = "<group>"; };
 		74FD860B19E380B7000EC4C2 /* UIView+GestureView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIView+GestureView.h"; sourceTree = "<group>"; };
 		74FD860C19E380B7000EC4C2 /* UIView+GestureView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView+GestureView.m"; sourceTree = "<group>"; };
 		74FD860E19E392FF000EC4C2 /* GestureView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GestureView.h; sourceTree = "<group>"; };
@@ -372,6 +381,9 @@
 		74065AE319C7E2DD0033DA71 /* images */ = {
 			isa = PBXGroup;
 			children = (
+				74CBCF0619F5793F00049AA0 /* speak.png */,
+				74CBCF0419F5791300049AA0 /* keyboard.png */,
+				74CBCF0219F5716200049AA0 /* backArrow.png */,
 				74B721BC19F22B60000B3892 /* rotate.png */,
 				74B721BA19F22819000B3892 /* scaling.png */,
 				74B721B819F2279E000B3892 /* chop.png */,
@@ -461,6 +473,8 @@
 				74B721AE19F1D0B5000B3892 /* EditImageViewController.m */,
 				74B7219D19EF8AF7000B3892 /* SellDealViewController.h */,
 				74B7219E19EF8AF7000B3892 /* SellDealViewController.m */,
+				74CBCF0819F57BA400049AA0 /* DealDescriptionViewController.h */,
+				74CBCF0919F57BA400049AA0 /* DealDescriptionViewController.m */,
 				74B721A819F0C5C8000B3892 /* DealIntroController.h */,
 				74B721A919F0C5C8000B3892 /* DealIntroController.m */,
 				74B9328419AAEB4E003B6594 /* CenterViewController.h */,
@@ -795,6 +809,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				74B721B919F2279E000B3892 /* chop.png in Resources */,
+				74CBCF0719F5793F00049AA0 /* speak.png in Resources */,
 				74B721A519F0A8BB000B3892 /* cross.png in Resources */,
 				741FB5F419DF5E5F00EA6D5B /* home60.png in Resources */,
 				74B721B419F2272B000B3892 /* rotateCounterClock.png in Resources */,
@@ -805,6 +820,7 @@
 				74B9328819AAEB4E003B6594 /* Images.xcassets in Resources */,
 				74B9328019AAEB4E003B6594 /* Main_iPhone.storyboard in Resources */,
 				741FB60919E11B0200EA6D5B /* add63.png in Resources */,
+				74CBCF0319F5716200049AA0 /* backArrow.png in Resources */,
 				74B721A419F0A8BB000B3892 /* check.png in Resources */,
 				74065AE819C7E2DD0033DA71 /* facebook.jpg in Resources */,
 				74065AE919C7E2DD0033DA71 /* google.jpg in Resources */,
@@ -817,6 +833,7 @@
 				74B9327719AAEB4E003B6594 /* InfoPlist.strings in Resources */,
 				741FB60619E11AF800EA6D5B /* zoom22.png in Resources */,
 				741FB60A19E11B0200EA6D5B /* web11.png in Resources */,
+				74CBCF0519F5791300049AA0 /* keyboard.png in Resources */,
 				74B7218B19EA40F0000B3892 /* pull_down_arrow.jpg in Resources */,
 				74B932AA19AC29CD003B6594 /* FBUserSettingsViewResources.bundle in Resources */,
 				74B721A319F0A8BB000B3892 /* camera.png in Resources */,
@@ -904,6 +921,7 @@
 				74B9330E19AD8695003B6594 /* STTwitterHTML.m in Sources */,
 				74B9330F19AD8695003B6594 /* STTwitterOAuth.m in Sources */,
 				74CB84E219BA15FA00579432 /* sha1.c in Sources */,
+				74CBCF0A19F57BA400049AA0 /* DealDescriptionViewController.m in Sources */,
 				74B9331319AD8695003B6594 /* JSONSyntaxHighlight.m in Sources */,
 				74B9328619AAEB4E003B6594 /* CenterViewController.m in Sources */,
 			);
