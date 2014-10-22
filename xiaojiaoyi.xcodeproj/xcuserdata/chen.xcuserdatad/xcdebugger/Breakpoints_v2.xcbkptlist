@@ -2252,12 +2252,12 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "xiaojiaoyi/DealDescriptionViewController.m"
-            timestampString = "435562574.161461"
+            timestampString = "435643473.738543"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "653"
-            endingLineNumber = "653"
-            landmarkName = "-textField:shouldChangeCharactersInRange:replacementString:"
+            startingLineNumber = "948"
+            endingLineNumber = "948"
+            landmarkName = "-shippingLabel"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>

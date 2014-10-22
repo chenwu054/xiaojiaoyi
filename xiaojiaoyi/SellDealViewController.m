@@ -324,7 +324,10 @@
    // NSLog(@"calling unwind edit view");
 }
 
-
+-(IBAction)unwindFromDealDescriptionView:(UIStoryboardSegue*)sender
+{
+    // NSLog(@"calling unwind description View);
+}
 - (void)viewDidLoad
 {
     [super viewDidLoad];

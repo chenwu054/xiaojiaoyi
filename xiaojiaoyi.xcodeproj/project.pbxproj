@@ -124,6 +124,9 @@
 		74CBCF0519F5791300049AA0 /* keyboard.png in Resources */ = {isa = PBXBuildFile; fileRef = 74CBCF0419F5791300049AA0 /* keyboard.png */; };
 		74CBCF0719F5793F00049AA0 /* speak.png in Resources */ = {isa = PBXBuildFile; fileRef = 74CBCF0619F5793F00049AA0 /* speak.png */; };
 		74CBCF0A19F57BA400049AA0 /* DealDescriptionViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 74CBCF0919F57BA400049AA0 /* DealDescriptionViewController.m */; };
+		74CBCF0C19F6B9C200049AA0 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 74CBCF0B19F6B9C200049AA0 /* AVFoundation.framework */; };
+		74CBCF0E19F6FA8C00049AA0 /* play.png in Resources */ = {isa = PBXBuildFile; fileRef = 74CBCF0D19F6FA8C00049AA0 /* play.png */; };
+		74CBCF1119F76A3C00049AA0 /* DealSummaryViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 74CBCF1019F76A3C00049AA0 /* DealSummaryViewController.m */; };
 		74FD860D19E380B7000EC4C2 /* UIView+GestureView.m in Sources */ = {isa = PBXBuildFile; fileRef = 74FD860C19E380B7000EC4C2 /* UIView+GestureView.m */; };
 		74FD861019E392FF000EC4C2 /* GestureView.m in Sources */ = {isa = PBXBuildFile; fileRef = 74FD860F19E392FF000EC4C2 /* GestureView.m */; };
 		74FD861319E43DC7000EC4C2 /* GestureCollectionView.m in Sources */ = {isa = PBXBuildFile; fileRef = 74FD861219E43DC7000EC4C2 /* GestureCollectionView.m */; };
@@ -327,6 +330,10 @@
 		74CBCF0619F5793F00049AA0 /* speak.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = speak.png; sourceTree = "<group>"; };
 		74CBCF0819F57BA400049AA0 /* DealDescriptionViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DealDescriptionViewController.h; sourceTree = "<group>"; };
 		74CBCF0919F57BA400049AA0 /* DealDescriptionViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DealDescriptionViewController.m; sourceTree = "<group>"; };
+		74CBCF0B19F6B9C200049AA0 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
+		74CBCF0D19F6FA8C00049AA0 /* play.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = play.png; path = "../../../../../../Downloads/ios7-icons-1/png/play.png"; sourceTree = "<group>"; };
+		74CBCF0F19F76A3C00049AA0 /* DealSummaryViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DealSummaryViewController.h; sourceTree = "<group>"; };
+		74CBCF1019F76A3C00049AA0 /* DealSummaryViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DealSummaryViewController.m; sourceTree = "<group>"; };
 		74FD860B19E380B7000EC4C2 /* UIView+GestureView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIView+GestureView.h"; sourceTree = "<group>"; };
 		74FD860C19E380B7000EC4C2 /* UIView+GestureView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView+GestureView.m"; sourceTree = "<group>"; };
 		74FD860E19E392FF000EC4C2 /* GestureView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GestureView.h; sourceTree = "<group>"; };
@@ -343,6 +350,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				74CBCF0C19F6B9C200049AA0 /* AVFoundation.framework in Frameworks */,
 				741FB5ED19DCDB7D00EA6D5B /* CoreMotion.framework in Frameworks */,
 				741FB5EB19DCDB5A00EA6D5B /* MediaPlayer.framework in Frameworks */,
 				741FB5E919DCDB2600EA6D5B /* GooglePlus.framework in Frameworks */,
@@ -381,6 +389,7 @@
 		74065AE319C7E2DD0033DA71 /* images */ = {
 			isa = PBXGroup;
 			children = (
+				74CBCF0D19F6FA8C00049AA0 /* play.png */,
 				74CBCF0619F5793F00049AA0 /* speak.png */,
 				74CBCF0419F5791300049AA0 /* keyboard.png */,
 				74CBCF0219F5716200049AA0 /* backArrow.png */,
@@ -475,6 +484,10 @@
 				74B7219E19EF8AF7000B3892 /* SellDealViewController.m */,
 				74CBCF0819F57BA400049AA0 /* DealDescriptionViewController.h */,
 				74CBCF0919F57BA400049AA0 /* DealDescriptionViewController.m */,
+				74CBCF0F19F76A3C00049AA0 /* DealSummaryViewController.h */,
+				74CBCF1019F76A3C00049AA0 /* DealSummaryViewController.m */,
+				74065AE019C748210033DA71 /* DetailPageContentViewController.h */,
+				74065AE119C748210033DA71 /* DetailPageContentViewController.m */,
 				74B721A819F0C5C8000B3892 /* DealIntroController.h */,
 				74B721A919F0C5C8000B3892 /* DealIntroController.m */,
 				74B9328419AAEB4E003B6594 /* CenterViewController.h */,
@@ -522,6 +535,7 @@
 		74B9326B19AAEB4E003B6594 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				74CBCF0B19F6B9C200049AA0 /* AVFoundation.framework */,
 				741FB5EC19DCDB7D00EA6D5B /* CoreMotion.framework */,
 				741FB5EA19DCDB5A00EA6D5B /* MediaPlayer.framework */,
 				741FB5E619DCDB2600EA6D5B /* GoogleOpenSource.framework */,
@@ -565,8 +579,6 @@
 				74FE265919CA72A300801CA1 /* MapViewController.m */,
 				749366F019CA7D9B003B3108 /* Location.h */,
 				749366F119CA7D9B003B3108 /* Location.m */,
-				74065AE019C748210033DA71 /* DetailPageContentViewController.h */,
-				74065AE119C748210033DA71 /* DetailPageContentViewController.m */,
 				74CB851B19C0193C00579432 /* YelpViewController.h */,
 				74CB851C19C0193C00579432 /* YelpViewController.m */,
 				74B9327E19AAEB4E003B6594 /* Main_iPhone.storyboard */,
@@ -826,6 +838,7 @@
 				74065AE919C7E2DD0033DA71 /* google.jpg in Resources */,
 				74B721B119F20180000B3892 /* trash.png in Resources */,
 				749366F419CB3E67003B3108 /* twitter small icon.jpg in Resources */,
+				74CBCF0E19F6FA8C00049AA0 /* play.png in Resources */,
 				74B7218D19EA4A29000B3892 /* pull_up_arrow.jpg in Resources */,
 				74065AEB19C923540033DA71 /* linkedin.jpg in Resources */,
 				74B721B519F2272B000B3892 /* rotateClock.png in Resources */,
@@ -889,6 +902,7 @@
 				74B7219319EAF1CB000B3892 /* GestureButton.m in Sources */,
 				74B721AF19F1D0B5000B3892 /* EditImageViewController.m in Sources */,
 				74CB84E019BA15FA00579432 /* Base64Transcoder.c in Sources */,
+				74CBCF1119F76A3C00049AA0 /* DealSummaryViewController.m in Sources */,
 				74CB850D19BBED6900579432 /* OAProblem.m in Sources */,
 				74CB850419BBDC0700579432 /* OAServiceTicket.m in Sources */,
 				741FB5F019DF541400EA6D5B /* UserMenuController.m in Sources */,
