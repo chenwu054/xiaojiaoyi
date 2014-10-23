@@ -22,7 +22,7 @@
     self.imageView.image = [UIImage imageNamed:_contentImage];
     self.labelView.text = self.contentTitle;
     self.labelView.textColor = [UIColor whiteColor];
-    self.labelView.backgroundColor = [[UIColor grayColor] colorWithAlphaComponent:0.7];
+    self.labelView.backgroundColor = [[UIColor grayColor] colorWithAlphaComponent:0.5];
     
 }
 

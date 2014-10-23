@@ -112,6 +112,7 @@
     [_crossButton setImage:[UIImage imageNamed:@"cross.png"] forState:UIControlStateNormal];
     _crossButton.imageView.contentMode =UIViewContentModeScaleAspectFit;
     _crossButton.tintColor = [UIColor redColor];
+    _crossButton.imageEdgeInsets=UIEdgeInsetsMake(5, 0, 5, 0);
     [_crossButton addTarget:self action:@selector(crossButtonClicked) forControlEvents:UIControlEventTouchUpInside];
     return _crossButton;
 }
@@ -131,9 +132,10 @@
     if(!_checkButton){
         _checkButton = [[UIButton alloc] init];
     }
-    [_checkButton setImage:[UIImage imageNamed:@"check.png"] forState:UIControlStateNormal];
+    [_checkButton setImage:[UIImage imageNamed:@"correct.png"] forState:UIControlStateNormal];
     _checkButton.frame=CGRectMake(95+130, self.view.frame.size.height-BUTTON_HEIGHT, 95, BUTTON_HEIGHT);
     _checkButton.imageView.contentMode = UIViewContentModeScaleAspectFit;
+    _checkButton.tintColor=[UIColor greenColor];
     [_checkButton addTarget:self action:@selector(checkButtonClicked) forControlEvents:UIControlEventTouchUpInside];
     _checkButton.enabled = NO;
     return _checkButton;
@@ -192,7 +194,7 @@
 -(void)checkButtonClicked
 {
     //NSLog(@"check button clicked");
-    [self performSegueWithIdentifier:@"DealIntroSegue" sender:self];
+    [self performSegueWithIdentifier:@"DealDescriptionSegue" sender:self];
     
 }
 -(void)photoButtonClicked:(UIButton*)sender

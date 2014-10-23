@@ -15,8 +15,8 @@
 @property (nonatomic) NSString *contentImage;
 @property (nonatomic) NSUInteger index;
 
-@property (weak, nonatomic) IBOutlet UIImageView *imageView;
-@property (weak, nonatomic) IBOutlet UILabel *labelView;
-
+@property (nonatomic) IBOutlet UIImageView *imageView;
+@property (nonatomic) IBOutlet UILabel *labelView;
+@property (nonatomic) UIImage* image;
 
 @end

@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<model userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="5064" systemVersion="13E28" minimumToolsVersion="Xcode 4.3" macOSVersion="Automatic" iOSVersion="Automatic">
+    <entity name="Deal" representedClassName="Deal" syncable="YES">
+        <attribute name="condition" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="create_date" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="dealId" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
+        <attribute name="describe" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="exchange" optional="YES" attributeType="Boolean" syncable="YES"/>
+        <attribute name="expire_date" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="insured" optional="YES" attributeType="Boolean" syncable="YES"/>
+        <attribute name="price" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <attribute name="shipping" optional="YES" attributeType="Boolean" syncable="YES"/>
+        <attribute name="sound_url" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="title" optional="YES" attributeType="String" syncable="YES"/>
+        <relationship name="user_id_bought" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="User" inverseName="deals_bought" inverseEntity="User" syncable="YES"/>
+        <relationship name="user_id_created" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="User" inverseName="deals_created" inverseEntity="User" syncable="YES"/>
+    </entity>
+    <entity name="OAuthToken" representedClassName="OAuthToken" syncable="YES">
+        <attribute name="fb_access_token" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="fb_profile_url" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="fb_token_secret" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="fb_username" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="gg_access_token" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="gg_profile_url" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="gg_token_secret" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="gg_username" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="lk_access_token" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="lk_profile_url" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="lk_token_secret" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="lk_username" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="tw_access_token" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="tw_profile_url" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="tw_token_secret" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="tw_username" optional="YES" attributeType="String" syncable="YES"/>
+        <relationship name="user_id" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="User" inverseName="user_id" inverseEntity="User" syncable="YES"/>
+    </entity>
+    <entity name="User" representedClassName="User" syncable="YES">
+        <attribute name="email" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="password" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="user_last_login" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="username" optional="YES" attributeType="String" syncable="YES"/>
+        <relationship name="deals_bought" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Deal" inverseName="user_id_bought" inverseEntity="Deal" syncable="YES"/>
+        <relationship name="deals_created" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Deal" inverseName="user_id_created" inverseEntity="Deal" syncable="YES"/>
+        <relationship name="user_id" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="OAuthToken" inverseName="user_id" inverseEntity="OAuthToken" syncable="YES"/>
+    </entity>
+    <elements>
+        <element name="Deal" positionX="-486" positionY="-52" width="128" height="238"/>
+        <element name="User" positionX="-243" positionY="54" width="128" height="148"/>
+        <element name="OAuthToken" positionX="-47" positionY="-91" width="128" height="298"/>
+    </elements>
+</model>

@@ -336,6 +336,7 @@ static NSInteger t =0.0;
     }
     else{
         NSLog(@"congrats! segue to deal summary view!");
+        [self performSegueWithIdentifier:@"DealSummarySegue" sender:self];
     }
     
 }
@@ -562,6 +563,13 @@ static NSInteger t =0.0;
         }];
     }
 }
+#pragma mark - segue methods
+-(IBAction)unwindFromDealSummaryView:(UIStoryboardSegue*)segue
+{
+    NSLog(@"unwind from deal summary view");
+    
+}
+
 
 //========================================================
 #pragma mark - setup
@@ -598,6 +606,7 @@ static NSInteger t =0.0;
         _crossButton.frame=CGRectMake(0, self.view.frame.size.height-BUTTON_HEIGHT, self.view.frame.size.width/2, BUTTON_HEIGHT);
         [_crossButton setImage:[UIImage imageNamed:@"cross.png"] forState:UIControlStateNormal];
         _crossButton.imageView.contentMode=UIViewContentModeScaleAspectFit;
+        _crossButton.imageEdgeInsets=UIEdgeInsetsMake(5, 0, 5, 0);
         _crossButton.backgroundColor=[UIColor whiteColor];
         [_crossButton addTarget:self action:@selector(crossButtonClicked:) forControlEvents:UIControlEventTouchUpInside];
     }
@@ -608,7 +617,7 @@ static NSInteger t =0.0;
     if(!_checkButton){
         _checkButton=[[UIButton alloc] init];
         _checkButton.frame=CGRectMake(self.view.frame.size.width/2, self.view.frame.size.height-BUTTON_HEIGHT, self.view.frame.size.width/2, BUTTON_HEIGHT);
-        [_checkButton setImage:[UIImage imageNamed:@"check.png"] forState:UIControlStateNormal];
+        [_checkButton setImage:[UIImage imageNamed:@"correct.png"] forState:UIControlStateNormal];
         _checkButton.imageView.contentMode=UIViewContentModeScaleAspectFit;
         _checkButton.backgroundColor=[UIColor whiteColor];
         [_checkButton addTarget:self action:@selector(checkButtonClicked:) forControlEvents:UIControlEventTouchUpInside];

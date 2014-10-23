@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="5056" systemVersion="13E28" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" initialViewController="15X-04-7DI">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="5056" systemVersion="13E28" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" initialViewController="a7X-IY-YXB">
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="3733"/>
     </dependencies>
@@ -49,7 +49,7 @@
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
                                 <connections>
-                                    <segue destination="B6H-wE-uM3" kind="modal" identifier="DealIntroSegue" id="9da-Kt-ce7"/>
+                                    <segue destination="15X-04-7DI" kind="modal" identifier="DealDescriptionSegue" id="x7V-nP-5vo"/>
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="3ro-4z-jqe">
@@ -195,7 +195,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dMX-GL-LlX" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="905" y="-143"/>
+            <point key="canvasLocation" x="897" y="-601"/>
         </scene>
         <!--Deal Description View Controller-->
         <scene sceneID="K0J-EN-mtr">
@@ -208,6 +208,18 @@
                     <view key="view" contentMode="scaleToFill" id="hus-Hu-TYN">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                        <subviews>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="cDL-qs-ZMl">
+                                <rect key="frame" x="270" y="505" width="30" height="30"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <state key="normal" title="B">
+                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <connections>
+                                    <segue destination="a7X-IY-YXB" kind="modal" identifier="DealSummarySegue" id="HMv-AQ-1JL"/>
+                                </connections>
+                            </button>
+                        </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                     </view>
                     <connections>
@@ -217,12 +229,12 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="erq-G3-KsJ" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <exit id="uof-Wg-FgI" userLabel="Exit" sceneMemberID="exit"/>
             </objects>
-            <point key="canvasLocation" x="452" y="389"/>
+            <point key="canvasLocation" x="490" y="157"/>
         </scene>
-        <!--View Controller-->
+        <!--Deal Summary View Controller-->
         <scene sceneID="JSN-c1-yfV">
             <objects>
-                <viewController id="a7X-IY-YXB" sceneMemberID="viewController">
+                <viewController id="a7X-IY-YXB" customClass="DealSummaryViewController" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="zU5-La-HS7"/>
                         <viewControllerLayoutGuide type="bottom" id="jyP-2J-U93"/>
@@ -232,10 +244,14 @@
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                     </view>
+                    <connections>
+                        <segue destination="69C-2I-n8f" kind="unwind" identifier="DealSummaryUnwindSegue" unwindAction="unwindFromDealSummaryView:" id="unu-mf-URa"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Lrh-g9-RPj" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <exit id="69C-2I-n8f" userLabel="Exit" sceneMemberID="exit"/>
             </objects>
-            <point key="canvasLocation" x="847" y="524"/>
+            <point key="canvasLocation" x="910" y="131"/>
         </scene>
         <!--Login View Controller-->
         <scene sceneID="oef-u6-tbJ">

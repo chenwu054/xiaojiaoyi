@@ -7,7 +7,14 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "DetailPageContentViewController.h"
 
-@interface DealSummaryViewController : UIViewController
+
+@interface DealSummaryViewController : UIViewController <UIPageViewControllerDataSource,UIPageViewControllerDelegate,UIAlertViewDelegate>
+
+@property (nonatomic) NSString* conditionStr;
+@property (nonatomic) NSString* descriptionStr;
+@property (nonatomic) NSDate* expireDate;
+
 
 @end
