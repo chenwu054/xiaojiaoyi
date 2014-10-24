@@ -10,4 +10,14 @@
 
 @interface DataModalUtils : NSObject
 
+
+-(NSManagedObjectContext*)myDealsContext;
+-(NSManagedObjectContext*)boughtDealsContext;
+-(UIManagedDocument*)myDealsManagedDocument;
+-(UIManagedDocument*)boughtDealsManagedDocument;
+
+//-(UIManagedDocument*)getMyDealsDocument;
+-(UIManagedDocument*)getMyDealsDocumentWithFileName:(NSString*)filename;
+
+-(NSManagedObjectContext*)getMyDealsContextWithFilename:(NSString*)filename;
 @end

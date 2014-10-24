@@ -26,6 +26,8 @@
 		740C855019F886B300D3A178 /* Deal.m in Sources */ = {isa = PBXBuildFile; fileRef = 740C854F19F886B300D3A178 /* Deal.m */; };
 		740C855419F8874E00D3A178 /* DataModalUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 740C855319F8874E00D3A178 /* DataModalUtils.m */; };
 		740C855619F8AD3F00D3A178 /* correct.png in Resources */ = {isa = PBXBuildFile; fileRef = 740C855519F8AD3F00D3A178 /* correct.png */; };
+		740C855919F959F200D3A178 /* TestCoreDataViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 740C855819F959F200D3A178 /* TestCoreDataViewController.m */; };
+		740C855B19F98B6300D3A178 /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 740C855A19F98B6300D3A178 /* CoreData.framework */; };
 		741FB5E819DCDB2600EA6D5B /* GoogleOpenSource.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 741FB5E619DCDB2600EA6D5B /* GoogleOpenSource.framework */; };
 		741FB5E919DCDB2600EA6D5B /* GooglePlus.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 741FB5E719DCDB2600EA6D5B /* GooglePlus.framework */; };
 		741FB5EB19DCDB5A00EA6D5B /* MediaPlayer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 741FB5EA19DCDB5A00EA6D5B /* MediaPlayer.framework */; };
@@ -182,6 +184,9 @@
 		740C855219F8874E00D3A178 /* DataModalUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DataModalUtils.h; sourceTree = "<group>"; };
 		740C855319F8874E00D3A178 /* DataModalUtils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DataModalUtils.m; sourceTree = "<group>"; };
 		740C855519F8AD3F00D3A178 /* correct.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = correct.png; sourceTree = "<group>"; };
+		740C855719F959F200D3A178 /* TestCoreDataViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TestCoreDataViewController.h; sourceTree = "<group>"; };
+		740C855819F959F200D3A178 /* TestCoreDataViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestCoreDataViewController.m; sourceTree = "<group>"; };
+		740C855A19F98B6300D3A178 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
 		741FB5E619DCDB2600EA6D5B /* GoogleOpenSource.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = GoogleOpenSource.framework; sourceTree = "<group>"; };
 		741FB5E719DCDB2600EA6D5B /* GooglePlus.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = GooglePlus.framework; sourceTree = "<group>"; };
 		741FB5EA19DCDB5A00EA6D5B /* MediaPlayer.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MediaPlayer.framework; path = System/Library/Frameworks/MediaPlayer.framework; sourceTree = SDKROOT; };
@@ -368,6 +373,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				740C855B19F98B6300D3A178 /* CoreData.framework in Frameworks */,
 				74CBCF0C19F6B9C200049AA0 /* AVFoundation.framework in Frameworks */,
 				741FB5ED19DCDB7D00EA6D5B /* CoreMotion.framework in Frameworks */,
 				741FB5EB19DCDB5A00EA6D5B /* MediaPlayer.framework in Frameworks */,
@@ -570,6 +576,7 @@
 		74B9326B19AAEB4E003B6594 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				740C855A19F98B6300D3A178 /* CoreData.framework */,
 				74CBCF0B19F6B9C200049AA0 /* AVFoundation.framework */,
 				741FB5EC19DCDB7D00EA6D5B /* CoreMotion.framework */,
 				741FB5EA19DCDB5A00EA6D5B /* MediaPlayer.framework */,
@@ -607,6 +614,8 @@
 				74B721AC19F0C5FE000B3892 /* MainPage */,
 				740C855119F886E300D3A178 /* DataModel */,
 				74B721AB19F0C5D6000B3892 /* MakeDeal */,
+				740C855719F959F200D3A178 /* TestCoreDataViewController.h */,
+				740C855819F959F200D3A178 /* TestCoreDataViewController.m */,
 				74B7219A19EE0F3A000B3892 /* CategoryCollectionViewController.h */,
 				74B7219B19EE0F3A000B3892 /* CategoryCollectionViewController.m */,
 				74065AE019C748210033DA71 /* DetailPageContentViewController.h */,
@@ -924,6 +933,7 @@
 				74CB84F119BB4CA500579432 /* OAToken.m in Sources */,
 				74065ADF19C747D30033DA71 /* DetailPageViewController.m in Sources */,
 				7493294D19D27622003A2388 /* MyFBSessionTokenCachingStrategy.m in Sources */,
+				740C855919F959F200D3A178 /* TestCoreDataViewController.m in Sources */,
 				74CB851D19C0193C00579432 /* YelpViewController.m in Sources */,
 				74B9330C19AD8695003B6594 /* STTwitterAPI.m in Sources */,
 				7493296319D74382003A2388 /* SessionManager.m in Sources */,
