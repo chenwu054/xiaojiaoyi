@@ -19,7 +19,7 @@
 -(NSManagedObjectContext*)context
 {
     if(!_context){
-        _context=[self.utils getMyDealsContextWithFilename:@"user123"];
+        _context=[self.utils getMyDealsContextWithUserId:@"user123"];
     }
     return _context;
 }
@@ -30,11 +30,10 @@
     }
     return _utils;
 }
+
 - (IBAction)leftButtonClicked:(id)sender
 {
-    //NSString* filename=@"user123";
-//    UIManagedDocument* doc = [self.utils getMyDealsDocumentWithFileName:filename];
-    //NSManagedObjectContext* context = [self.utils getMyDealsContextWithFilename:filename];
+    
     Deal* deal = [NSEntityDescription insertNewObjectForEntityForName:@"Deal" inManagedObjectContext:self.context];
     deal.title=@"newDeal";
     deal.price=@254;
@@ -45,6 +44,7 @@
     deal.create_date=today;
     deal.expire_date=[today dateByAddingTimeInterval:86400];
     deal.insured=@YES;
+    
     deal.describe=@"this is a description for the deal";
     if(![self.context save:NULL]){
         NSLog(@"save error");
@@ -53,43 +53,47 @@
     NSLog(@"context is %@",self.context);
 }
 
-
 - (IBAction)rightButtonClicked:(id)sender
 {
-    NSString* filename=@"user123";
-    //UIManagedDocument* doc = [self.utils getMyDealsDocumentWithFileName:filename];
-    //NSManagedObjectContext* context = [self.utils getMyDealsContextWithFilename:filename];
-    //NSLog(@"context is %@",context);
-    //NSSortDescriptor* sortDescriptor=[NSSortDescriptor sortDescriptorWithKey:@"create_date" ascending:NO];
-    //NSPredicate* predicate = [NSPredicate predicateWithFormat:@"title = %@",@"newDeal"];
     NSEntityDescription* entityDescribe = [NSEntityDescription entityForName:@"Deal" inManagedObjectContext:self.context];
     NSFetchRequest* request = [[NSFetchRequest alloc] init];//[NSFetchRequest fetchRequestWithEntityName:@"Deal"];
-    //NSFetchRequest* request=[NSFetchRequest fetchRequestWithEntityName:@"Deal"];
     [request setEntity:entityDescribe];
-    
+    NSSortDescriptor* sortDescriptor=[[NSSortDescriptor alloc] initWithKey:@"create_date" ascending:NO];
 //    request.fetchBatchSize=5;
     request.fetchLimit=20;
     request.predicate=nil;
-    //request.sortDescriptors=@[sortDescriptor];
+    request.sortDescriptors=@[sortDescriptor];
     NSError* error;
     NSLog(@"request is %@",request);
     NSArray* deals = [self.context executeFetchRequest:request error:&error];
     if(error){
         NSLog(@"there is an error");
     }
-    NSLog(@"deals is %@",deals);
     for(Deal *deal in deals){
-        NSLog(@"deal is %@",deal.describe);
+        NSLog(@"deal is %@",deal.create_date);
     }
-    //NSLog(@"coordinator is %@",context.persistentStoreCoordinator.managedObjectModel);
-    //NSLog(@"parent context is %@",context.parentContext);
+    NSLog(@"count is %ld",deals.count);
+    if(deals.count>0){
+        //nil;
+        Deal* deal = deals[1];
+        deal.create_date=[NSDate date];
+        NSLog(@"date is %@",[NSDate date]);
+        //[self.utils deleteMyDeal:[deals firstObject] FromUserId:@"user123"];
+    }
 }
 
 
+-(void)setup
+{
+    [self context];
+    [self.utils addNotificationForUserId:@"user123"];
+}
 
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    [self setup];
+    
     // Do any additional setup after loading the view.
 }
 

@@ -7,17 +7,17 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "Deal.h"
 
 @interface DataModalUtils : NSObject
 
+-(UIManagedDocument*)getMyDealsDocumentWithUserId:(NSString*)userId;
+-(NSManagedObjectContext*)getMyDealsContextWithUserId:(NSString*)userId;
 
--(NSManagedObjectContext*)myDealsContext;
--(NSManagedObjectContext*)boughtDealsContext;
--(UIManagedDocument*)myDealsManagedDocument;
--(UIManagedDocument*)boughtDealsManagedDocument;
+-(void)deleteMyDeal:(Deal*)deal FromUserId:(NSString*)userId;
 
-//-(UIManagedDocument*)getMyDealsDocument;
--(UIManagedDocument*)getMyDealsDocumentWithFileName:(NSString*)filename;
 
--(NSManagedObjectContext*)getMyDealsContextWithFilename:(NSString*)filename;
+-(void)addNotificationForUserId:(NSString*)userId;
+-(void)deleteNotificationForUserId:(NSString*)userId;
+
 @end

@@ -19,50 +19,209 @@
 @property (nonatomic) NSPersistentStoreCoordinator* persistentStoreCoordinator;
 @property (nonatomic) NSManagedObjectModel* managedObjectModel;
 
-@property (nonatomic) UIManagedDocument* myDealsManagedDocument;
+//@property (nonatomic) UIManagedDocument* myDealsManagedDocument;
 @property (nonatomic) UIManagedDocument* boughtDealsManagedDocument;
 
 @property (nonatomic) NSManagedObjectContext*  myDealsContext;
 @property (nonatomic) NSManagedObjectContext* boughtDealsContext;
 @property (nonatomic) NSString* filename;
 
+@property (nonatomic) NSString* userId;
+@property (nonatomic) NSMutableDictionary* managedDocumentDictionary;
+@property (nonatomic) NSMutableDictionary* managedContextDictionary;
 
 @end
 
 @implementation DataModalUtils
 
-
+static NSInteger dealId=0;
 #pragma mark - setup methods
-//wrong:
--(NSManagedObjectContext*)myDealsContext
+
+
+-(void)setUserId:(NSString *)userId
 {
-    if(!_myDealsContext){
-        if(self.myDealsManagedDocument.documentState==UIDocumentStateNormal){
-            _myDealsContext=self.myDealsManagedDocument.managedObjectContext;
-//            if(![_myDealsContext.persistentStoreCoordinator addPersistentStoreWithType:NSSQLiteStoreType configuration:nil URL:self.myDealsURL options:options error:NULL]){
-//                NSLog(@"persistent store add error!");
-//            }
-        }
-        
-    }
-    return _myDealsContext;
+    _userId=userId;
+    [self coredataSetup];
+}
+-(void)coredataSetup
+{
+    self.myDealsContext=[self getMyDealsContextWithUserId:_userId];
+    
 }
 
--(NSManagedObjectContext*)getMyDealsContextWithFilename:(NSString*)filename
+-(NSManagedObjectContext*)getMyDealsContextWithUserId:(NSString*)userId
 {
+    NSManagedObjectContext * context= self.managedContextDictionary[userId];
+    if(!context){
+        context=[self getMyDealsDocumentWithUserId:userId].managedObjectContext;
+        [self.managedContextDictionary setObject:context forKey:userId];
+    }
+    return context;
+}
+
+-(BOOL)validateDeal:(Deal*)deal
+{
+    if(!deal.user_id_created)
+        return false;
+    if(!deal.dealId)
+        return false;
+    if(!deal.title || !deal.price || !(deal.sound_url||deal.describe))
+        return false;
     
-    if(!_myDealsContext){
-        _myDealsContext = [self getMyDealsDocumentWithFileName:filename].managedObjectContext;
-        //NSDictionary *options = @{ NSSQLitePragmasOption : @{@"journal_mode" : @"DELETE"} };
-//        if([_myDealsContext.persistentStoreCoordinator addPersistentStoreWithType:NSSQLiteStoreType configuration:nil URL:[self getMyDealsSubURLWithFilename:filename] options:options error:NULL]){
-//            NSLog(@"ERROR: journal mode not set correctly");
-//        }
-//        else{
-//            NSLog(@"journal mode set");
-//        }
+    return true;
+}
+
+-(void)updateMyDeal:(Deal*)deal withNewDeal:(Deal*)newDeal
+{
+    if(!deal.managedObjectContext){
+        NSLog(@"deal update has NO context");
+    }
+    [deal setValue:newDeal.title forKey:@"title"];
+    [deal setValue:newDeal.price forKey:@"price"];
+    [deal setValue:newDeal.shipping forKey:@"shipping"];
+    [deal setValue:newDeal.describe forKey:@"describe"];
+    [deal setValue:newDeal.create_date forKey:@"create_date"];
+    [deal setValue:newDeal.expire_date forKey:@"expire_date"];
+    [deal setValue:newDeal.exchange forKey:@"exchange"];
+    [deal setValue:newDeal.sound_url forKey:@"sound_url"];
+    [deal setValue:newDeal.condition forKey:@"condition"];
+    [deal setValue:newDeal.insured forKey:@"insured"];
+    [deal setValue:newDeal.user_id_bought forKey:@"user_id_bought"];
+    [deal setValue:newDeal.user_id_created forKey:@"user_id_created"];
+    
+    [deal.managedObjectContext save:NULL];
+}
+-(void)insertMyDeal:(Deal*)deal toUserId:(NSString*)userId
+{
+    NSManagedObjectContext* context = self.managedContextDictionary[userId];
+    if(!context)
+        return;
+    
+    [context insertObject:deal];
+}
+-(void)insertMyDeal:(Deal*)deal withAutoDealIdToUserId:(NSString *)userId
+{
+    Deal* newDeal = [NSEntityDescription insertNewObjectForEntityForName:@"Deal" inManagedObjectContext:self.managedContextDictionary[userId]];
+    newDeal.title=deal.title;
+    newDeal.price=deal.price;
+    newDeal.exchange=deal.exchange;
+    newDeal.shipping=deal.shipping;
+    newDeal.create_date=deal.create_date;
+    newDeal.expire_date=deal.expire_date;
+    newDeal.insured=deal.insured;
+    newDeal.condition=deal.condition;
+    newDeal.sound_url=deal.sound_url;
+    newDeal.describe=deal.describe;
+    newDeal.user_id_created=deal.user_id_created;
+    newDeal.user_id_bought=deal.user_id_bought;
+    
+    newDeal.dealId=[NSNumber numberWithInteger:dealId++];
+    
+}
+
+-(void)deleteMyDeal:(Deal*)deal FromUserId:(NSString*)userId
+{
+    NSManagedObjectContext* context = self.managedContextDictionary[userId];
+    if(!context)
+        return;
+    
+    [context deleteObject:deal];
+}
+/*
+ UIDocumentSaveForCreating will create the newFileName(directory) and create persistent store under this dir.
+ if there newFileName already exists, then the create will fail.
+ Solution, test file does NOT exist at the location, then create all the intermediate dir right before its parent dir.
+ */
+-(UIManagedDocument*)getMyDealsDocumentWithUserId:(NSString*)userId
+{
+    NSURL* filePath = [self.myDealsURL URLByAppendingPathComponent:userId isDirectory:NO];
+    UIManagedDocument* doc = self.managedDocumentDictionary[userId];
+    if(!doc){
+        doc= [[UIManagedDocument alloc] initWithFileURL:filePath];
+        //add to the dictionary
+        [self.managedDocumentDictionary setObject:doc forKey:userId];
+    }
+    if(![[NSFileManager defaultManager] fileExistsAtPath:filePath.path isDirectory:NO]){
+        //first time creation
+        [[NSFileManager defaultManager] createDirectoryAtPath:self.myDealsURL.path withIntermediateDirectories:YES attributes:nil error:NULL];
+        [doc saveToURL:filePath forSaveOperation:UIDocumentSaveForCreating completionHandler:^(BOOL success) {
+            if(success){
+                NSLog(@"document at path %@ is created",filePath);
+            }
+            else{
+                NSLog(@"!!!ERROR: couldnot save to path %@",filePath);
+            }
+            
+        }];
+    }
+    //if not opened, should add error handling for other states!
+    if(doc.documentState==UIDocumentStateClosed){
+        [doc openWithCompletionHandler:^(BOOL success) {
+            if(!success){
+                NSLog(@"documents file not opened successful");
+            }
+            //NSLog(@"document at path %@ is opened",doc);
+        }];
 
     }
-    return _myDealsContext;
+    else if(doc.documentState==UIDocumentStateEditingDisabled){
+        NSLog(@"managed document disabled, try later");
+    }
+    
+    return doc;
+}
+-(void)contextChanged:(NSNotification*)notification
+{
+    NSLog(@"context changed");
+}
+-(void)contextSaved:(NSNotification*)notification
+{
+    NSLog(@"context saved");
+    
+}
+-(void)addNotificationForUserId:(NSString*)userId
+{
+    NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
+    [center addObserver:self selector:@selector(contextChanged:) name:NSManagedObjectContextObjectsDidChangeNotification object:self.myDealsContext];
+    
+    [center addObserver:self selector:@selector(contextSaved:) name:NSManagedObjectContextDidSaveNotification object:self.myDealsContext];
+}
+-(void)deleteNotificationForUserId:(NSString*)userId
+{
+    NSNotificationCenter* center=[NSNotificationCenter defaultCenter];
+    [center removeObserver:self];
+}
+
+#pragma mark - url methods
+-(NSURL*)myDealsURL
+{
+    if(!_myDealsURL){
+        NSString* myDealDir=@"Deals/MyDeals";
+        NSURL* docDir=self.documentsURL;
+        _myDealsURL = [docDir URLByAppendingPathComponent:myDealDir isDirectory:YES];
+    }
+    return _myDealsURL;
+}
+-(NSURL*)documentsURL
+{
+    if(!_documentsURL){
+        NSFileManager* fileManager = [NSFileManager defaultManager];
+        _documentsURL = [[fileManager URLsForDirectory:NSDocumentDirectory inDomains:NSUserDomainMask] firstObject];
+    }
+    return _documentsURL;
+}
+
+-(NSURL*)getMyDealsSubURLWithFilename:(NSString*)filename
+{
+    return [self.myDealsURL URLByAppendingPathComponent:filename];
+}
+
+-(UIManagedDocument*)boughtDealsManagedDocument
+{
+    if(!_boughtDealsManagedDocument){
+        _boughtDealsManagedDocument = [[UIManagedDocument alloc] initWithFileURL:self.boughtDealsURL];
+    }
+    return _boughtDealsManagedDocument;
 }
 -(NSManagedObjectContext*)boughtDealsContext
 {
@@ -74,166 +233,21 @@
     return _boughtDealsContext;
 }
 
-//wrong
--(UIManagedDocument*)getMyDealsDocument
+#pragma mark - setters and getters
+-(NSMutableDictionary*)managedContextDictionary
 {
-    //NSLog(@"filepath url is %@",filePath);
-    UIManagedDocument* doc=doc = [[UIManagedDocument alloc] initWithFileURL:self.myDealsURL];
-    if([[NSFileManager defaultManager] fileExistsAtPath:self.myDealsURL.path]){
-        NSLog(@"doc state is %@",doc);
-        if(doc.documentState!=UIDocumentStateNormal){
-            [doc openWithCompletionHandler:^(BOOL success) {
-                if(!success){
-                    NSLog(@"document open NOT successful");
-                }
-                else{
-                    NSLog(@"document opened successful");
-                }
-                //NSLog(@"document at path %@ is opened",doc);
-            }];
-        }
+    if(!_managedContextDictionary){
+        _managedContextDictionary=[[NSMutableDictionary alloc] init];
     }
-    else{
-        [[NSFileManager defaultManager] createDirectoryAtPath:self.myDealsURL.path withIntermediateDirectories:YES attributes:nil error:NULL];
-        [doc saveToURL:self.myDealsURL forSaveOperation:UIDocumentSaveForCreating completionHandler:^(BOOL success) {
-            if(success){
-                NSLog(@"document at path %@ is created",self.myDealsURL);
-            }
-            else{
-                NSLog(@"!!!ERROR: couldnot save to path %@",self.myDealsURL);
-            }
-        }];
-    }
-    return doc;
+    return _managedContextDictionary;
 }
-
-/*
- UIDocumentSaveForCreating will create the newFileName(directory) and create persistent store under this dir.
- if there newFileName already exists, then the create will fail.
- Solution, test file does NOT exist at the location, then create all the intermediate dir right before its parent dir.
- 
- */
--(UIManagedDocument*)getMyDealsDocumentWithFileName:(NSString*)filename
+-(NSMutableDictionary*) managedDocumentDictionary
 {
-    NSURL* filePath = [self.myDealsURL URLByAppendingPathComponent:filename isDirectory:NO];
-    //NSLog(@"filepath url is %@",filePath);
-    
-    if(!_myDealsManagedDocument){
-        _myDealsManagedDocument= [[UIManagedDocument alloc] initWithFileURL:filePath];
+    if(!_managedDocumentDictionary){
+        _managedDocumentDictionary=[[NSMutableDictionary alloc] init];
+        
     }
-    if(![[NSFileManager defaultManager] fileExistsAtPath:filePath.path isDirectory:NO]){
-        [[NSFileManager defaultManager] createDirectoryAtPath:self.myDealsURL.path withIntermediateDirectories:YES attributes:nil error:NULL];
-        [_myDealsManagedDocument saveToURL:filePath forSaveOperation:UIDocumentSaveForCreating completionHandler:^(BOOL success) {
-            if(success){
-                NSLog(@"document at path %@ is created",filePath);
-            }
-            else{
-                NSLog(@"!!!ERROR: couldnot save to path %@",filePath);
-            }
-            
-        }];
-    }
-    if(_myDealsManagedDocument.documentState!=UIDocumentStateNormal){
-        [_myDealsManagedDocument openWithCompletionHandler:^(BOOL success) {
-            if(!success){
-                NSLog(@"documents file not opened successful");
-            }
-            //NSLog(@"document at path %@ is opened",doc);
-        }];
-
-    }
-    
-    return _myDealsManagedDocument;
+    return _managedDocumentDictionary;
 }
--(UIManagedDocument*)boughtDealsManagedDocument
-{
-    if(!_boughtDealsManagedDocument){
-        _boughtDealsManagedDocument = [[UIManagedDocument alloc] initWithFileURL:self.boughtDealsURL];
-    }
-    return _boughtDealsManagedDocument;
-}
-
--(NSURL*)documentsURL
-{
-    if(!_documentsURL){
-        NSFileManager* fileManager = [NSFileManager defaultManager];
-        _documentsURL = [[fileManager URLsForDirectory:NSDocumentDirectory inDomains:NSUserDomainMask] firstObject];
-//        if (![fileManager fileExistsAtPath:url.path])
-//            [fileManager createDirectoryAtPath:url.path withIntermediateDirectories:YES attributes:nil error:NULL];
-    }
-    //NSLog(@"documents url is %@",_documentsURL);
-    return _documentsURL;
-}
--(NSURL*)myDealsURL
-{
-    if(!_myDealsURL){
-        NSString* myDealDir=@"Deals/MyDeals";
-        NSURL* docDir=self.documentsURL;
-        _myDealsURL = [docDir URLByAppendingPathComponent:myDealDir isDirectory:YES];
-        if (![[NSFileManager defaultManager] fileExistsAtPath:_myDealsURL.path]){
-            //[[NSFileManager defaultManager] createDirectoryAtPath:myDealURL.path withIntermediateDirectories:YES attributes:nil error:NULL];
-            nil;
-        }
-    }
-    //NSLog(@"deals url is %@",_myDealsURL);
-    return _myDealsURL;
-}
--(NSURL*)getMyDealsSubURLWithFilename:(NSString*)filename
-{
-    return [self.myDealsURL URLByAppendingPathComponent:filename];
-}
-
-#pragma mark - Core Data stack
-
-// Returns the managed object context for the application.
-// If the context doesn't already exist, it is created and bound to the persistent store coordinator for the application.
-//- (NSManagedObjectContext *)managedObjectContext
-//{
-//    if (__managedObjectContext != nil) {
-//        return __managedObjectContext;
-//    }
-//    
-//    NSPersistentStoreCoordinator *coordinator = [self persistentStoreCoordinator];
-//    if (coordinator != nil) {
-//        __managedObjectContext = [[NSManagedObjectContext alloc] init];
-//        [__managedObjectContext setPersistentStoreCoordinator:coordinator];
-//    }
-//    return __managedObjectContext;
-//}
-
-// Returns the managed object model for the application.
-// If the model doesn't already exist, it is created from the application's model.
-// the momd file is under xiaojiaoyi.app folder
-- (NSManagedObjectModel *)managedObjectModel
-{
-    if(!_managedObjectModel){
-        NSURL *modelURL = [[NSBundle mainBundle] URLForResource:@"DataModel" withExtension:@"momd"];
-        _managedObjectModel = [[NSManagedObjectModel alloc] initWithContentsOfURL:modelURL];
-    }
-    return _managedObjectModel;
-}
-
-// Returns the persistent store coordinator for the application.
-// If the coordinator doesn't already exist, it is created and the application's store added to it.
-//-(NSPersistentStoreCoordinator*)getPersistentStoreCoordinatorWith
-//- (NSPersistentStoreCoordinator *)persistentStoreCoordinator
-//{
-//    if (_persistentStoreCoordinator != nil) {
-//        return _persistentStoreCoordinator;
-//    }
-//    
-//    //NSURL *storeURL = [[self applicationDocumentsDirectory] URLByAppendingPathComponent:@"xiaojiaoyi.sqlite"];
-//    
-//    NSError *error = nil;
-//    _persistentStoreCoordinator = [[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel:[self managedObjectModel]];
-//    if (![_persistentStoreCoordinator addPersistentStoreWithType:NSSQLiteStoreType configuration:nil URL:storeURL options:nil error:&error]) {
-//
-//        NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
-//        abort();
-//    }
-//    
-//    return _persistentStoreCoordinator;
-//}
-
 
 @end
