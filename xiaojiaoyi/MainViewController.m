@@ -50,7 +50,18 @@
         
     }
     else if(tableView == _userMenuController.userMenuTableView){
-        if(indexPath.row==1){
+        if(indexPath.row==0){
+            [self resetWithCenterView:[self peekViewStack] inDuration:0.5 withCompletion:^(BOOL finished) {
+                while(self.viewStack.count>0){
+                    UIView* childView = [self peekViewStack];
+                    [childView removeFromSuperview];
+                    [self popViewStack];
+                }
+                [self peekViewStack];
+            }];
+            
+        }
+        else if(indexPath.row==1){
             
             __block UIView *lastView = [self peekViewStack];
             
@@ -124,7 +135,7 @@
 
 -(void)tap:(UITapGestureRecognizer *)gesture
 {
-    NSLog(@"main view tap gesture");
+    //NSLog(@"main view tap gesture");
     [self resetWithCenterView:[self peekViewStack]];//???
 }
 
@@ -295,6 +306,7 @@
 #pragma mark - transition animation methods
 -(void)backToCenterViewFromMyDealView
 {
+    NSLog(@"calling back to center view from my deal view");
     if([self peekViewStack] == self.myDealViewController.view){
         [self popViewStack];
     }

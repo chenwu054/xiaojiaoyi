@@ -71,51 +71,58 @@
     return _sellDealController;
 }
 
--(void)initTabBarAndController
+-(CenterTabBuddyDealController*)centerTabBuddyDealController
+{
+    if(!_centerTabBuddyDealController){
+        _centerTabBuddyDealController=[[CenterTabBuddyDealController alloc] init];
+        _centerTabBuddyDealController.title = @"Buddies'";
+    }
+    return  _centerTabBuddyDealController;
+}
+-(CenterTabHotDealController*)centerTabHotDealController
+{
+    if(!_centerTabHotDealController){
+        _centerTabHotDealController=[[CenterTabHotDealController alloc] init];
+        _centerTabHotDealController.title = @"Hot Deals";
+        _centerTabHotDealController.mainVC = self.superVC;
+    }
+    return _centerTabHotDealController;
+}
+-(CenterTabNearbyDealController*)centerTabNearbyDealController
+{
+    if(!_centerTabNearbyDealController){
+        _centerTabNearbyDealController=[[CenterTabNearbyDealController alloc] init];
+        _centerTabNearbyDealController.title = @"Nearby";
+    }
+    return _centerTabNearbyDealController;
+}
+
+-(UITabBarController*)tabController
 {
     if(!_tabController){
         _tabController = [[UITabBarController alloc] init];
+        _tabController.delegate = self;
+        _tabController.view.frame = CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height);
+        _tabBar = _tabController.tabBar;
+        CGRect tabBarFrame = CGRectMake(0, 0, self.view.frame.size.width, TAB_BAR_HEIGHT);
+        _tabController.tabBar.frame = tabBarFrame;
+        
+        //_tabController.tabBar.delegate = self;
+        //_centerTabHotDealController.view.frame= CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height-200);
+        NSArray* viewControllers = @[self.centerTabBuddyDealController,self.centerTabHotDealController, self.centerTabNearbyDealController];
+        _tabController.viewControllers = viewControllers;
+        _tabController.selectedIndex = 1;
+        _tabController.tabBar.tintColor = [UIColor blueColor];
+        for(int i=0;i<viewControllers.count;i++){
+            [_tabController.tabBar.items[i] setTitlePositionAdjustment:UIOffsetMake(0, -5)];
+            [_tabController.tabBar.items[i] setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys:[UIFont fontWithName:@"Arial" size:16.0f], NSFontAttributeName, nil] forState:UIControlStateNormal];
+        }
+        //view controller container
+        [self addChildViewController:_tabController];
+        [self.view addSubview:_tabController.view];
+        [_tabController didMoveToParentViewController:self];
     }
-    _tabController.delegate = self;
-    _tabController.view.frame = CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height);
-    
-    _tabBar = _tabController.tabBar;
-    CGRect tabBarFrame = CGRectMake(0, 0, self.view.frame.size.width, TAB_BAR_HEIGHT);
-    _tabController.tabBar.frame = tabBarFrame;
-
-    //_tabController.tabBar.delegate = self;
-    
-    if(!_centerTabHotDealController){
-        _centerTabHotDealController = [[CenterTabHotDealController alloc] init];
-    }
-    if(!_centerTabBuddyDealController){
-        _centerTabBuddyDealController = [[CenterTabBuddyDealController alloc] init];
-    }
-    if(!_centerTabNearbyDealController){
-        _centerTabNearbyDealController = [[CenterTabNearbyDealController alloc] init];
-    }
-    //_centerTabHotDealController.view.frame= CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height-200);
-    
-    _centerTabHotDealController.title = @"Hot Deals";
-    _centerTabHotDealController.mainVC = self.superVC;
-    
-    _centerTabBuddyDealController.title = @"Buddies'";
-    _centerTabNearbyDealController.title = @"Nearby";
-    
-    NSArray* viewControllers = @[_centerTabBuddyDealController,_centerTabHotDealController, _centerTabNearbyDealController];
-    _tabController.viewControllers = viewControllers;
-    _tabController.selectedIndex = 1;
-    _tabController.tabBar.tintColor = [UIColor blueColor];
-    for(int i=0;i<viewControllers.count;i++){
-        [_tabController.tabBar.items[i] setTitlePositionAdjustment:UIOffsetMake(0, -5)];
-        [_tabController.tabBar.items[i] setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys:[UIFont fontWithName:@"Arial" size:16.0f], NSFontAttributeName, nil] forState:UIControlStateNormal];
-    }
-    
-    //view controller container
-    [self addChildViewController:_tabController];
-    [self.view addSubview:_tabController.view];
-    [_tabController didMoveToParentViewController:self];
-    
+    return _tabController;
 }
 
 -(UIToolbar*)toolBar
@@ -304,9 +311,8 @@
     //NSLog(@"default GR count is %ld",self.view.gestureRecognizers.count);
     //self.view.frame = [UIScreen mainScreen].bounds;
     //NSLog(@"center view is %@",self.view);
-    
-    
-    [self initTabBarAndController];
+
+    [self tabController];
     [self toolBar];
 	//[self setupGestureRecognizer];
     

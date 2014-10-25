@@ -9,13 +9,26 @@
 #import <UIKit/UIKit.h>
 #import "GestureView.h"
 #import "MainViewController.h"
+#import "MyDealListViewController.h"
+#import "BoughtDealListViewController.h"
+#import "FriendDealListViewController.h"
+
+
 @class MainViewController;
 
-@interface MyDealViewController : UIViewController
+@interface MyDealViewController : UIViewController <UITabBarControllerDelegate>
+
 
 
 @property (strong, nonatomic) IBOutlet UINavigationBar *navigationBar;
 @property (nonatomic)UIView* parentView;
 @property (nonatomic) MainViewController* mainVC;
+
+
+@property (nonatomic) MyDealListViewController* myDealListController;
+@property (nonatomic) BoughtDealListViewController* boughtDealListController;
+@property (nonatomic) FriendDealListViewController* friendDealListController;
+
+
 
 @end

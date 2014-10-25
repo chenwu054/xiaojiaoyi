@@ -54,6 +54,9 @@
 		749366F419CB3E67003B3108 /* twitter small icon.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 749366F319CB3E67003B3108 /* twitter small icon.jpg */; };
 		749366F719CDE0C5003B3108 /* TWMutableURLRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = 749366F619CDE0C5003B3108 /* TWMutableURLRequest.m */; };
 		749366FA19CDE688003B3108 /* TWSession.m in Sources */ = {isa = PBXBuildFile; fileRef = 749366F919CDE688003B3108 /* TWSession.m */; };
+		74A88CA219FC0D8F00872C26 /* MyDealListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 74A88CA119FC0D8F00872C26 /* MyDealListViewController.m */; };
+		74A88CA519FC0DB700872C26 /* BoughtDealListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 74A88CA419FC0DB700872C26 /* BoughtDealListViewController.m */; };
+		74A88CA819FC0DE600872C26 /* FriendDealListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 74A88CA719FC0DE600872C26 /* FriendDealListViewController.m */; };
 		74B7218919E83845000B3892 /* CenterCollectionViewFlowLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = 74B7218819E83845000B3892 /* CenterCollectionViewFlowLayout.m */; };
 		74B7218B19EA40F0000B3892 /* pull_down_arrow.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 74B7218A19EA40F0000B3892 /* pull_down_arrow.jpg */; };
 		74B7218D19EA4A29000B3892 /* pull_up_arrow.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 74B7218C19EA4A29000B3892 /* pull_up_arrow.jpg */; };
@@ -222,6 +225,12 @@
 		749366F619CDE0C5003B3108 /* TWMutableURLRequest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TWMutableURLRequest.m; sourceTree = "<group>"; };
 		749366F819CDE688003B3108 /* TWSession.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TWSession.h; path = Crytpo/TWSession.h; sourceTree = "<group>"; };
 		749366F919CDE688003B3108 /* TWSession.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TWSession.m; path = Crytpo/TWSession.m; sourceTree = "<group>"; };
+		74A88CA019FC0D8F00872C26 /* MyDealListViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MyDealListViewController.h; sourceTree = "<group>"; };
+		74A88CA119FC0D8F00872C26 /* MyDealListViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MyDealListViewController.m; sourceTree = "<group>"; };
+		74A88CA319FC0DB700872C26 /* BoughtDealListViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BoughtDealListViewController.h; sourceTree = "<group>"; };
+		74A88CA419FC0DB700872C26 /* BoughtDealListViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BoughtDealListViewController.m; sourceTree = "<group>"; };
+		74A88CA619FC0DE600872C26 /* FriendDealListViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FriendDealListViewController.h; sourceTree = "<group>"; };
+		74A88CA719FC0DE600872C26 /* FriendDealListViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FriendDealListViewController.m; sourceTree = "<group>"; };
 		74B7218719E83845000B3892 /* CenterCollectionViewFlowLayout.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CenterCollectionViewFlowLayout.h; sourceTree = "<group>"; };
 		74B7218819E83845000B3892 /* CenterCollectionViewFlowLayout.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CenterCollectionViewFlowLayout.m; sourceTree = "<group>"; };
 		74B7218A19EA40F0000B3892 /* pull_down_arrow.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = pull_down_arrow.jpg; sourceTree = "<group>"; };
@@ -531,8 +540,6 @@
 				74065ADE19C747D30033DA71 /* DetailPageViewController.m */,
 				74B721A819F0C5C8000B3892 /* DealIntroController.h */,
 				74B721A919F0C5C8000B3892 /* DealIntroController.m */,
-				74B9328419AAEB4E003B6594 /* CenterViewController.h */,
-				74B9328519AAEB4E003B6594 /* CenterViewController.m */,
 				74B721BE19F3387E000B3892 /* ChopImageView.h */,
 				74B721BF19F3387E000B3892 /* ChopImageView.m */,
 			);
@@ -542,14 +549,22 @@
 		74B721AC19F0C5FE000B3892 /* MainPage */ = {
 			isa = PBXGroup;
 			children = (
-				74B7219719EC857B000B3892 /* MyDealViewController.h */,
-				74B7219819EC857B000B3892 /* MyDealViewController.m */,
 				740A2E7C19C53E4600D87965 /* MainViewController.h */,
 				740A2E7D19C53E4600D87965 /* MainViewController.m */,
 				740A2E7619C49B4F00D87965 /* MenuTableController.h */,
 				740A2E7719C49B4F00D87965 /* MenuTableController.m */,
 				741FB5EE19DF541400EA6D5B /* UserMenuController.h */,
 				741FB5EF19DF541400EA6D5B /* UserMenuController.m */,
+				74B9328419AAEB4E003B6594 /* CenterViewController.h */,
+				74B9328519AAEB4E003B6594 /* CenterViewController.m */,
+				74B7219719EC857B000B3892 /* MyDealViewController.h */,
+				74B7219819EC857B000B3892 /* MyDealViewController.m */,
+				74A88CA019FC0D8F00872C26 /* MyDealListViewController.h */,
+				74A88CA119FC0D8F00872C26 /* MyDealListViewController.m */,
+				74A88CA619FC0DE600872C26 /* FriendDealListViewController.h */,
+				74A88CA719FC0DE600872C26 /* FriendDealListViewController.m */,
+				74A88CA319FC0DB700872C26 /* BoughtDealListViewController.h */,
+				74A88CA419FC0DB700872C26 /* BoughtDealListViewController.m */,
 			);
 			name = MainPage;
 			sourceTree = "<group>";
@@ -939,6 +954,7 @@
 				7493296319D74382003A2388 /* SessionManager.m in Sources */,
 				74B9331219AD8695003B6594 /* BAVPlistNode.m in Sources */,
 				74FD861319E43DC7000EC4C2 /* GestureCollectionView.m in Sources */,
+				74A88CA219FC0D8F00872C26 /* MyDealListViewController.m in Sources */,
 				741FB5F719E06F4600EA6D5B /* CenterTabHotDealController.m in Sources */,
 				74FD861019E392FF000EC4C2 /* GestureView.m in Sources */,
 				74B721C019F3387E000B3892 /* ChopImageView.m in Sources */,
@@ -946,6 +962,7 @@
 				74CB851819BEB80900579432 /* NSURLRequest+OAuth.m in Sources */,
 				74CB850119BBDB2100579432 /* OADataFetcher.m in Sources */,
 				74CB84F419BB503800579432 /* NSString+URLEncoding.m in Sources */,
+				74A88CA519FC0DB700872C26 /* BoughtDealListViewController.m in Sources */,
 				74CB84D419B588F700579432 /* OAuthViewController.m in Sources */,
 				74B9330919AD8695003B6594 /* NSError+STTwitter.m in Sources */,
 				74CB850A19BBDED800579432 /* OACall.m in Sources */,
@@ -979,6 +996,7 @@
 				74CB84FB19BBD14200579432 /* OARequestParameter.m in Sources */,
 				749366FA19CDE688003B3108 /* TWSession.m in Sources */,
 				74FE265A19CA72A300801CA1 /* MapViewController.m in Sources */,
+				74A88CA819FC0DE600872C26 /* FriendDealListViewController.m in Sources */,
 				74B7219C19EE0F3A000B3892 /* CategoryCollectionViewController.m in Sources */,
 				741FB5FD19E0899800EA6D5B /* CenterTabNearbyDealController.m in Sources */,
 				74B9331419AD8695003B6594 /* STHTTPRequest.m in Sources */,

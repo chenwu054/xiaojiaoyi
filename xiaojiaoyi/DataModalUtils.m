@@ -15,6 +15,9 @@
 @property (nonatomic) NSURL* documentsURL;
 @property (nonatomic) NSURL* myDealsURL;
 @property (nonatomic) NSURL* boughtDealsURL;
+@property (nonatomic) NSURL* soundTrackMyDealsURL;
+@property (nonatomic) NSURL* soundTrackBoughtDealsURL;
+
 
 @property (nonatomic) NSPersistentStoreCoordinator* persistentStoreCoordinator;
 @property (nonatomic) NSManagedObjectModel* managedObjectModel;
@@ -192,6 +195,22 @@ static NSInteger dealId=0;
     [center removeObserver:self];
 }
 
+#pragma mark - sound track methods
+-(void)writeMyDealsSoundTrack:(NSData*)data forFilename:(NSString*)filename
+{
+    NSURL* myDealSoundTrackURL = [self.soundTrackMyDealsURL URLByAppendingPathComponent:filename];
+    BOOL success = [data writeToURL:myDealSoundTrackURL atomically:YES];
+    if(!success){
+        NSLog(@"sound track write to url failed");
+    }
+}
+-(NSData*)readMyDealsSoundTrack:(NSData*)date forFilename:(NSString*)filename
+{
+    NSURL* myDealSoundTrackURL=[self.soundTrackMyDealsURL URLByAppendingPathComponent:filename];
+    NSData* data=[NSData dataWithContentsOfFile:myDealSoundTrackURL.path];
+    return  data;
+}
+
 #pragma mark - url methods
 -(NSURL*)myDealsURL
 {
@@ -202,6 +221,24 @@ static NSInteger dealId=0;
     }
     return _myDealsURL;
 }
+
+
+
+-(NSURL*)soundTrackMyDealsURL
+{
+    if(!_soundTrackMyDealsURL){
+        _soundTrackMyDealsURL=[self.documentsURL URLByAppendingPathComponent:@"SoundTrack/MyDeals"];
+    }
+    return _soundTrackMyDealsURL;
+}
+-(NSURL*)soundTrackBoughtDealsURL
+{
+    if(!_soundTrackBoughtDealsURL){
+        _soundTrackBoughtDealsURL=[self.documentsURL URLByAppendingPathComponent:@"SoundTrack/BoughtDeals"];
+    }
+    return _soundTrackBoughtDealsURL;
+}
+
 -(NSURL*)documentsURL
 {
     if(!_documentsURL){
@@ -210,6 +247,8 @@ static NSInteger dealId=0;
     }
     return _documentsURL;
 }
+
+
 
 -(NSURL*)getMyDealsSubURLWithFilename:(NSString*)filename
 {
