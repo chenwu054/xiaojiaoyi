@@ -23,7 +23,6 @@
 		740C851119F87CAC00D3A178 /* DataModel.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 740C850F19F87CAC00D3A178 /* DataModel.xcdatamodeld */; };
 		740C854A19F886B200D3A178 /* OAuthToken.m in Sources */ = {isa = PBXBuildFile; fileRef = 740C854919F886B200D3A178 /* OAuthToken.m */; };
 		740C854D19F886B300D3A178 /* User.m in Sources */ = {isa = PBXBuildFile; fileRef = 740C854C19F886B300D3A178 /* User.m */; };
-		740C855019F886B300D3A178 /* Deal.m in Sources */ = {isa = PBXBuildFile; fileRef = 740C854F19F886B300D3A178 /* Deal.m */; };
 		740C855419F8874E00D3A178 /* DataModalUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 740C855319F8874E00D3A178 /* DataModalUtils.m */; };
 		740C855619F8AD3F00D3A178 /* correct.png in Resources */ = {isa = PBXBuildFile; fileRef = 740C855519F8AD3F00D3A178 /* correct.png */; };
 		740C855919F959F200D3A178 /* TestCoreDataViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 740C855819F959F200D3A178 /* TestCoreDataViewController.m */; };
@@ -57,6 +56,7 @@
 		74A88CA219FC0D8F00872C26 /* MyDealListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 74A88CA119FC0D8F00872C26 /* MyDealListViewController.m */; };
 		74A88CA519FC0DB700872C26 /* BoughtDealListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 74A88CA419FC0DB700872C26 /* BoughtDealListViewController.m */; };
 		74A88CA819FC0DE600872C26 /* FriendDealListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 74A88CA719FC0DE600872C26 /* FriendDealListViewController.m */; };
+		74A88CB719FC656100872C26 /* Deal.m in Sources */ = {isa = PBXBuildFile; fileRef = 74A88CB619FC656100872C26 /* Deal.m */; };
 		74B7218919E83845000B3892 /* CenterCollectionViewFlowLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = 74B7218819E83845000B3892 /* CenterCollectionViewFlowLayout.m */; };
 		74B7218B19EA40F0000B3892 /* pull_down_arrow.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 74B7218A19EA40F0000B3892 /* pull_down_arrow.jpg */; };
 		74B7218D19EA4A29000B3892 /* pull_up_arrow.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 74B7218C19EA4A29000B3892 /* pull_up_arrow.jpg */; };
@@ -182,8 +182,6 @@
 		740C854919F886B200D3A178 /* OAuthToken.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = OAuthToken.m; path = ../OAuthToken.m; sourceTree = "<group>"; };
 		740C854B19F886B300D3A178 /* User.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = User.h; path = ../User.h; sourceTree = "<group>"; };
 		740C854C19F886B300D3A178 /* User.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = User.m; path = ../User.m; sourceTree = "<group>"; };
-		740C854E19F886B300D3A178 /* Deal.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Deal.h; path = ../Deal.h; sourceTree = "<group>"; };
-		740C854F19F886B300D3A178 /* Deal.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Deal.m; path = ../Deal.m; sourceTree = "<group>"; };
 		740C855219F8874E00D3A178 /* DataModalUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DataModalUtils.h; sourceTree = "<group>"; };
 		740C855319F8874E00D3A178 /* DataModalUtils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DataModalUtils.m; sourceTree = "<group>"; };
 		740C855519F8AD3F00D3A178 /* correct.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = correct.png; sourceTree = "<group>"; };
@@ -231,6 +229,8 @@
 		74A88CA419FC0DB700872C26 /* BoughtDealListViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BoughtDealListViewController.m; sourceTree = "<group>"; };
 		74A88CA619FC0DE600872C26 /* FriendDealListViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FriendDealListViewController.h; sourceTree = "<group>"; };
 		74A88CA719FC0DE600872C26 /* FriendDealListViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FriendDealListViewController.m; sourceTree = "<group>"; };
+		74A88CB519FC656100872C26 /* Deal.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Deal.h; sourceTree = SOURCE_ROOT; };
+		74A88CB619FC656100872C26 /* Deal.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Deal.m; sourceTree = SOURCE_ROOT; };
 		74B7218719E83845000B3892 /* CenterCollectionViewFlowLayout.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CenterCollectionViewFlowLayout.h; sourceTree = "<group>"; };
 		74B7218819E83845000B3892 /* CenterCollectionViewFlowLayout.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CenterCollectionViewFlowLayout.m; sourceTree = "<group>"; };
 		74B7218A19EA40F0000B3892 /* pull_down_arrow.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = pull_down_arrow.jpg; sourceTree = "<group>"; };
@@ -479,10 +479,10 @@
 		740C855119F886E300D3A178 /* DataModel */ = {
 			isa = PBXGroup;
 			children = (
-				740C854E19F886B300D3A178 /* Deal.h */,
-				740C854F19F886B300D3A178 /* Deal.m */,
 				740C854B19F886B300D3A178 /* User.h */,
 				740C854C19F886B300D3A178 /* User.m */,
+				74A88CB519FC656100872C26 /* Deal.h */,
+				74A88CB619FC656100872C26 /* Deal.m */,
 				740C854819F886B200D3A178 /* OAuthToken.h */,
 				740C854919F886B200D3A178 /* OAuthToken.m */,
 				740C855219F8874E00D3A178 /* DataModalUtils.h */,
@@ -942,7 +942,6 @@
 				74B932A619AAEC55003B6594 /* LoginViewController.m in Sources */,
 				74CB84EE19BB4B4E00579432 /* OAConsumer.m in Sources */,
 				74B9327D19AAEB4E003B6594 /* xjyAppDelegate.m in Sources */,
-				740C855019F886B300D3A178 /* Deal.m in Sources */,
 				74B9330819AD8695003B6594 /* NSDateFormatter+STTwitter.m in Sources */,
 				74CB851019BC067E00579432 /* OAMutableURLRequest.m in Sources */,
 				74CB84F119BB4CA500579432 /* OAToken.m in Sources */,
@@ -994,6 +993,7 @@
 				74CB851319BC072D00579432 /* OAHMAC_SHA1SignatureProvider.m in Sources */,
 				74B9327919AAEB4E003B6594 /* main.m in Sources */,
 				74CB84FB19BBD14200579432 /* OARequestParameter.m in Sources */,
+				74A88CB719FC656100872C26 /* Deal.m in Sources */,
 				749366FA19CDE688003B3108 /* TWSession.m in Sources */,
 				74FE265A19CA72A300801CA1 /* MapViewController.m in Sources */,
 				74A88CA819FC0DE600872C26 /* FriendDealListViewController.m in Sources */,

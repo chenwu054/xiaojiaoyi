@@ -33,13 +33,24 @@
 @property (nonatomic) NSMutableDictionary* managedDocumentDictionary;
 @property (nonatomic) NSMutableDictionary* managedContextDictionary;
 
+
 @end
 
 @implementation DataModalUtils
-
+static DataModalUtils* singleton;
 static NSInteger dealId=0;
+
+
 #pragma mark - setup methods
 
+
++(DataModalUtils*)sharedInstance
+{
+    if(!singleton){
+        singleton = [[DataModalUtils alloc] init];
+    }
+    return singleton;
+}
 
 -(void)setUserId:(NSString *)userId
 {
@@ -120,6 +131,20 @@ static NSInteger dealId=0;
     
     newDeal.dealId=[NSNumber numberWithInteger:dealId++];
     
+}
+-(NSArray*)queryForDealsWithUserId:(NSString*)userId predicate:(NSPredicate*)predicate andSortDescriptors:(NSArray*)descriptors
+{
+    self.userId=userId;
+    NSFetchRequest* request = [[NSFetchRequest alloc] init];
+    NSEntityDescription* entityDescribe = [NSEntityDescription entityForName:@"Deal" inManagedObjectContext:self.myDealsContext];
+    [request setEntity:entityDescribe];
+    //    request.fetchBatchSize=5;
+    request.fetchLimit=20;
+    request.predicate=predicate;
+    request.sortDescriptors=descriptors;
+    NSError* error;
+    NSArray* deals = [self.myDealsContext executeFetchRequest:request error:&error];
+    return deals;
 }
 
 -(void)deleteMyDeal:(Deal*)deal FromUserId:(NSString*)userId

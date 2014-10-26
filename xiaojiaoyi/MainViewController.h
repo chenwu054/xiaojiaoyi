@@ -34,6 +34,7 @@
 
 @interface MainViewController : UINavigationController <MenuNavigationDelegate,UITableViewDelegate>
 
+@property (nonatomic) NSInteger* currentUserId;
 
 @property (nonatomic) MenuTableController* menuViewController;
 @property (nonatomic) UserMenuController *userMenuController;
@@ -41,6 +42,9 @@
 @property (nonatomic) MyDealViewController* myDealViewController;
 @property (nonatomic) CategoryCollectionViewController* categoryViewControllerOne;
 @property (nonatomic) CategoryCollectionViewController* categoryViewControllerTwo;
+
+
+
 -(UIPanGestureRecognizer*)getPanGestureRecognizer;
 -(void)backToCenterViewFromMyDealView;
 -(void)backToCenterViewFromCategoryView;

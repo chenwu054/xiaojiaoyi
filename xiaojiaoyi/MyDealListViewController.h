@@ -7,7 +7,11 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "DataModalUtils.h"
 
-@interface MyDealListViewController : UIViewController
+@interface MyDealListViewController : UIViewController <UITableViewDataSource,UITableViewDelegate,NSFetchedResultsControllerDelegate>
+
+
+@property (nonatomic) NSString* userId;
 
 @end

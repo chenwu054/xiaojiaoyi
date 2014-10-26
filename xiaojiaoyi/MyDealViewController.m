@@ -8,8 +8,6 @@
 
 #import "MyDealViewController.h"
 
-
-
 #define NAVIGATION_BAR_HEIGHT 60
 #define TAB_BAR_HEIGHT 20
 #define TAB_BAR_OFFSET 10
@@ -94,6 +92,7 @@
         //view controller container
         [self addChildViewController:_tabController];
         [self.view addSubview:_tabController.view];
+        _tabController.view.backgroundColor=[UIColor lightGrayColor];
         [_tabController didMoveToParentViewController:self];
     }
     return _tabController;
@@ -108,6 +107,7 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    //self.view.frame = [UIScreen mainScreen].bounds;
     [self setup];
     
     //_parentView = [[GestureView alloc] init];

@@ -8,6 +8,7 @@
         <attribute name="exchange" optional="YES" attributeType="Boolean" syncable="YES"/>
         <attribute name="expire_date" optional="YES" attributeType="Date" syncable="YES"/>
         <attribute name="insured" optional="YES" attributeType="Boolean" syncable="YES"/>
+        <attribute name="photoURL" optional="YES" attributeType="Transformable" syncable="YES"/>
         <attribute name="price" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
         <attribute name="shipping" optional="YES" attributeType="Boolean" syncable="YES"/>
         <attribute name="sound_url" optional="YES" attributeType="String" syncable="YES"/>
@@ -44,8 +45,8 @@
         <relationship name="user_id" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="OAuthToken" inverseName="user_id" inverseEntity="OAuthToken" syncable="YES"/>
     </entity>
     <elements>
-        <element name="Deal" positionX="-486" positionY="-52" width="128" height="238"/>
-        <element name="User" positionX="-243" positionY="54" width="128" height="148"/>
+        <element name="Deal" positionX="-486" positionY="-52" width="128" height="253"/>
         <element name="OAuthToken" positionX="-47" positionY="-91" width="128" height="298"/>
+        <element name="User" positionX="-243" positionY="54" width="128" height="148"/>
     </elements>
 </model>

@@ -15,9 +15,11 @@
 -(NSManagedObjectContext*)getMyDealsContextWithUserId:(NSString*)userId;
 
 -(void)deleteMyDeal:(Deal*)deal FromUserId:(NSString*)userId;
-
+-(void)insertMyDeal:(Deal*)deal withAutoDealIdToUserId:(NSString *)userId;
+-(NSArray*)queryForDealsWithUserId:(NSString*)userId predicate:(NSPredicate*)predicate andSortDescriptors:(NSArray*)descriptors;
 
 -(void)addNotificationForUserId:(NSString*)userId;
 -(void)deleteNotificationForUserId:(NSString*)userId;
-
++(DataModalUtils*)sharedInstance;
 @end
+

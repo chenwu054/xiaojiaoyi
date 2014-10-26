@@ -18,8 +18,6 @@
 
 @interface MyDealViewController : UIViewController <UITabBarControllerDelegate>
 
-
-
 @property (strong, nonatomic) IBOutlet UINavigationBar *navigationBar;
 @property (nonatomic)UIView* parentView;
 @property (nonatomic) MainViewController* mainVC;

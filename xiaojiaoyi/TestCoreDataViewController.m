@@ -13,6 +13,8 @@
 @property (strong, nonatomic) IBOutlet UIButton *rightButton;
 @property (nonatomic) DataModalUtils* utils;
 @property (nonatomic) NSManagedObjectContext* context;
+@property (nonatomic) NSFetchedResultsController* fetchedResultsController;
+
 @end
 
 @implementation TestCoreDataViewController
@@ -26,7 +28,7 @@
 -(DataModalUtils*)utils
 {
     if(!_utils){
-        _utils=[[DataModalUtils alloc] init];
+        _utils=[DataModalUtils sharedInstance];
     }
     return _utils;
 }
@@ -72,21 +74,21 @@
     for(Deal *deal in deals){
         NSLog(@"deal is %@",deal.create_date);
     }
-    NSLog(@"count is %ld",deals.count);
-    if(deals.count>0){
-        //nil;
-        Deal* deal = deals[1];
-        deal.create_date=[NSDate date];
-        NSLog(@"date is %@",[NSDate date]);
-        //[self.utils deleteMyDeal:[deals firstObject] FromUserId:@"user123"];
-    }
+//    NSLog(@"count is %ld",deals.count);
+//    if(deals.count>0){
+//        //nil;
+//        Deal* deal = deals[0];
+//        deal.create_date=[NSDate date];
+//        NSLog(@"date is %@",[NSDate date]);
+//        //[self.utils deleteMyDeal:[deals firstObject] FromUserId:@"user123"];
+//    }
 }
 
 
 -(void)setup
 {
     [self context];
-    [self.utils addNotificationForUserId:@"user123"];
+    //[self.utils addNotificationForUserId:@"user123"];
 }
 
 - (void)viewDidLoad
