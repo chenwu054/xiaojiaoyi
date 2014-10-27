@@ -8,6 +8,9 @@
 
 #import <UIKit/UIKit.h>
 #import "EditImageViewController.h"
+#import "DealObject.h"
+#import "DataModalUtils.h"
+#import "DealDescriptionViewController.h"
 
 @interface SellDealViewController : UIViewController <UIAlertViewDelegate,UINavigationControllerDelegate,UIImagePickerControllerDelegate>
 
@@ -17,4 +20,7 @@
 @property (nonatomic) NSMutableArray* photos;
 @property (nonatomic) UIImage* editImage;
 @property (nonatomic) BOOL shouldDelete;
+
+@property (nonatomic) DealObject* myNewDeal;
+
 @end

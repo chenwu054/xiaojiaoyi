@@ -103,6 +103,7 @@
     self.view.backgroundColor = [UIColor greenColor];
     [self tabController];
     [self navigationBar];
+    //NSLog(@"MyDealView has deal:%@",self.newDeal);
 }
 - (void)viewDidLoad
 {

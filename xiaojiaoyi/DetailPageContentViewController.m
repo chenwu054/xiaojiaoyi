@@ -19,10 +19,10 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    self.imageView.image = [UIImage imageNamed:_contentImage];
-    self.labelView.text = self.contentTitle;
-    self.labelView.textColor = [UIColor whiteColor];
-    self.labelView.backgroundColor = [[UIColor grayColor] colorWithAlphaComponent:0.5];
+    self.imageView.image = self.image; //[UIImage imageNamed:_contentImage];
+    //self.labelView.text = self.contentTitle;
+    //self.labelView.textColor = [UIColor whiteColor];
+    //self.labelView.backgroundColor = [[UIColor grayColor] colorWithAlphaComponent:0.5];
     
 }
 

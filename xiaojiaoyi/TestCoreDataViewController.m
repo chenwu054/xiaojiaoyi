@@ -41,7 +41,7 @@
     deal.price=@254;
     deal.exchange=@YES;
     deal.shipping=@NO;
-    deal.dealId=@125;
+    deal.deal_id=@"asdf123";
     NSDate *today = [NSDate date];
     deal.create_date=today;
     deal.expire_date=[today dateByAddingTimeInterval:86400];

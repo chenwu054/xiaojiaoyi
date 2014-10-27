@@ -15,6 +15,8 @@
 #define CONTAINER_VIEW_MARGIN 10
 #define USER_PROFILE_LABEL_WIDTH 180
 #define SECURED_BUTTON_CORNER_RADIUS 10.0
+#define TITLE_VIEW_HEIGHT 40
+#define TITLE_WIDTH 280
 
 #define INFO_VIEW_HEIGHT 80
 #define INFO_BUTTON_LEFT_MARGIN 20
@@ -65,11 +67,22 @@
 @property (nonatomic) UIButton* cancelButton;
 @property (nonatomic) UIButton* confirmButton;
 @property (nonatomic) UIAlertView* alertView;
+
+@property (nonatomic) UIView* titleView;
+
+@property (nonatomic) DataModalUtils* utils;
 @end
 
 @implementation DealSummaryViewController
 
 #pragma mark - components setup
+-(DataModalUtils*)utils
+{
+    if(!_utils){
+        _utils = [DataModalUtils sharedInstance];
+    }
+    return _utils;
+}
 -(UIColor*)infoButtonFrameColor
 {
     if(!_infoButtonFrameColor){
@@ -91,9 +104,28 @@
         DetailPageContentViewController *startingVC = [self contentViewAtIndex:0];
         NSArray * contentArray=@[startingVC];
         [_pageVC setViewControllers:contentArray direction:UIPageViewControllerNavigationDirectionForward animated:NO completion:nil];
-
     }
     return _pageVC;
+}
+-(UIView*)titleView
+{
+    if(!_titleView){
+        _titleView=[[UIView alloc] initWithFrame:CGRectMake(0, PAGE_VIEW_HEIGHT-TITLE_VIEW_HEIGHT, self.view.frame.size.width, TITLE_VIEW_HEIGHT)];
+        _titleView.backgroundColor=[UIColor colorWithWhite:0.5 alpha:0.5];//[UIColor colorWithWhite:0.5 alpha:0.5];
+        
+        UILabel* titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, TITLE_WIDTH, TITLE_VIEW_HEIGHT)];
+        
+        titleLabel.attributedText=[[NSAttributedString alloc] initWithString:self.myNewDeal.title?self.myNewDeal.title:@"default title" attributes:@{NSFontAttributeName:[UIFont fontWithName:@"Arial" size:15.0],NSForegroundColorAttributeName:[UIColor whiteColor]}];
+        titleLabel.tintColor=[UIColor whiteColor];
+        
+        
+        UILabel* priceLabel = [[UILabel alloc] initWithFrame:CGRectMake(TITLE_WIDTH, 0, self.view.frame.size.width-TITLE_WIDTH, TITLE_VIEW_HEIGHT)];
+        priceLabel.attributedText=[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"$%@",self.myNewDeal.price] attributes:@{NSFontAttributeName:[UIFont fontWithName:@"Arial" size:15.0],NSForegroundColorAttributeName:[UIColor whiteColor]}];
+        
+        [_titleView addSubview:titleLabel];
+        [_titleView addSubview:priceLabel];
+    }
+    return _titleView;
 }
 -(UIScrollView*)mainView
 {
@@ -103,6 +135,7 @@
         _mainView.contentSize=CGSizeMake(self.view.frame.size.width, self.containerView.frame.origin.y+self.containerView.frame.size.height+CONTROL_BUTTON_HEIGHT);
         _mainView.backgroundColor=[UIColor lightGrayColor];
         [_mainView addSubview:self.pageVC.view];
+        [_mainView addSubview:self.titleView];
         [_mainView addSubview:self.pageControl];
     }
     return _mainView;
@@ -110,8 +143,8 @@
 -(UIPageControl*)pageControl
 {
     if(!_pageControl){
-        _pageControl=[[UIPageControl alloc] initWithFrame:CGRectMake(142, 190, 40, 37)];
-        _pageControl.numberOfPages=self.photoTitles.count;
+        _pageControl=[[UIPageControl alloc] initWithFrame:CGRectMake(142, 210, 40, 37)];
+        _pageControl.numberOfPages=self.myNewDeal.photos.count; //self.photoTitles.count;
         _pageControl.backgroundColor = [UIColor clearColor];
         _pageControl.currentPage = 0;
         _pageControl.pageIndicatorTintColor = [UIColor grayColor];
@@ -167,7 +200,7 @@
 {
     if(!_userProfileLabel){
         _userProfileLabel=[[UILabel alloc] initWithFrame:CGRectMake(self.userProfileButton.frame.origin.x+self.userProfileButton.frame.size.width+5, 0, USER_PROFILE_LABEL_WIDTH, PROFILE_HEIGHT)];
-        _userProfileLabel.attributedText=[[NSAttributedString alloc] initWithString:@"this is a very long user name" attributes:@{NSFontAttributeName:[UIFont fontWithName:@"Arial" size:14.0],NSForegroundColorAttributeName:[UIColor blackColor]}];
+        _userProfileLabel.attributedText=[[NSAttributedString alloc] initWithString:self.myNewDeal.user_id_created?self.myNewDeal.user_id_created:@"" attributes:@{NSFontAttributeName:[UIFont fontWithName:@"Arial" size:14.0],NSForegroundColorAttributeName:[UIColor blackColor]}];
 
         _userProfileLabel.numberOfLines=1;
         [_userProfileLabel adjustsFontSizeToFitWidth];
@@ -207,7 +240,7 @@
         _playSoundButton.layer.borderColor=[[UIColor lightGrayColor] CGColor];
         _playSoundButton.layer.borderWidth=2.0;
         [_playSoundButton setImage:[[UIImage imageNamed:@"play.png"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate] forState:UIControlStateNormal];
-        [_playSoundButton setBackgroundColor:[UIColor whiteColor]];
+        [_playSoundButton setBackgroundColor:self.myNewDeal.sound_url?[UIColor orangeColor]:[UIColor lightGrayColor]];
         [_playSoundButton setTintColor:[UIColor blueColor]];
         [_playSoundButton addTarget:self action:@selector(playSoundButtonClicked:) forControlEvents:UIControlEventTouchUpInside];
     }
@@ -233,9 +266,9 @@
         _exchangeButton.layer.borderColor=[[UIColor lightGrayColor] CGColor];
         _exchangeButton.layer.borderWidth=2.0;
         [_exchangeButton setImage:[[UIImage imageNamed:@"exchange.png"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate] forState:UIControlStateNormal];
-        _exchangeButton.tintColor=[UIColor colorWithRed:000/255.0 green:200/255.0 blue:000/255.0 alpha:1.0];
+        _exchangeButton.backgroundColor=self.myNewDeal.exchange?[UIColor orangeColor]:[UIColor lightGrayColor];
+        _exchangeButton.tintColor=[UIColor blueColor];
         _exchangeButton.imageView.contentMode=UIViewContentModeScaleAspectFit;
-        [_exchangeButton setBackgroundColor:[UIColor whiteColor]];
         [_exchangeButton addTarget:self action:@selector(exchangeButtonClicked:) forControlEvents:UIControlEventTouchUpInside];
     }
     return _exchangeButton;
@@ -260,9 +293,9 @@
         _shippingButton.layer.borderColor=[[UIColor lightGrayColor] CGColor];
         _shippingButton.layer.borderWidth=2.0;
         [_shippingButton setImage:[[UIImage imageNamed:@"delivery.png"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate] forState:UIControlStateNormal];
-        _shippingButton.tintColor=[UIColor magentaColor];
+        _shippingButton.backgroundColor=self.myNewDeal.shipping?[UIColor orangeColor]:[UIColor lightGrayColor];
+        _shippingButton.tintColor=[UIColor blueColor];
         _shippingButton.imageView.contentMode=UIViewContentModeScaleAspectFit;
-        [_shippingButton setBackgroundColor:[UIColor whiteColor]];
         [_shippingButton addTarget:self action:@selector(shippingButtonClicked:) forControlEvents:UIControlEventTouchUpInside];
     }
     return _shippingButton;
@@ -273,7 +306,7 @@
     if(!_descriptionLabel){
         _descriptionLabel=[[UILabel alloc] initWithFrame:CGRectMake(CONTAINER_VIEW_MARGIN, self.playSoundView.frame.origin.y+self.playSoundView.frame.size.height + CONTAINER_VIEW_MARGIN, self.view.frame.size.width-4*CONTAINER_VIEW_MARGIN, 0)];
         UIFont *font = [UIFont fontWithName:@"Arial" size:14.0];
-        NSAttributedString* text= [[NSAttributedString alloc] initWithString:self.descriptionStr attributes:@{NSFontAttributeName:font,NSForegroundColorAttributeName:[UIColor blackColor]}];
+        NSAttributedString* text= [[NSAttributedString alloc] initWithString:self.myNewDeal.describe?self.myNewDeal.describe:@"" attributes:@{NSFontAttributeName:font,NSForegroundColorAttributeName:[UIColor blackColor]}];
         _descriptionLabel.attributedText=text;
         _descriptionLabel.lineBreakMode=NSLineBreakByWordWrapping;
         _descriptionLabel.textAlignment=NSTextAlignmentJustified;
@@ -289,7 +322,7 @@
     if(!_conditionLabel){
         _conditionLabel=[[UILabel alloc] initWithFrame:CGRectMake(CONTAINER_VIEW_MARGIN, self.descriptionLabel.frame.origin.y+self.descriptionLabel.frame.size.height + CONTAINER_VIEW_MARGIN, self.view.frame.size.width-4*CONTAINER_VIEW_MARGIN, 0)];
         UIFont *font = [UIFont fontWithName:@"Arial" size:14.0];
-        NSAttributedString* text= [[NSAttributedString alloc] initWithString:self.conditionStr attributes:@{NSFontAttributeName:font,NSForegroundColorAttributeName:[UIColor blackColor]}];
+        NSAttributedString* text= [[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"condition: %@",self.myNewDeal.condition?self.myNewDeal.condition:@""] attributes:@{NSFontAttributeName:font,NSForegroundColorAttributeName:[UIColor blackColor]}];
         _conditionLabel.attributedText=text;
         _conditionLabel.lineBreakMode=NSLineBreakByWordWrapping;
         _conditionLabel.numberOfLines=0;
@@ -303,8 +336,9 @@
     if(!_expiryLabel){
         _expiryLabel=[[UILabel alloc] initWithFrame:CGRectMake(CONTAINER_VIEW_MARGIN, self.conditionLabel.frame.origin.y+self.conditionLabel.frame.size.height, self.view.frame.size.width-4*CONTAINER_VIEW_MARGIN, 0)];
         NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
-        [dateFormatter setDateFormat:@" MMM/dd/yyyy 'at' HH':'mm"];
-        NSString* expireDate=[dateFormatter stringFromDate:self.expireDate];
+        //[dateFormatter setDateFormat:@" MMM/dd/yyyy 'at' HH':'mm"];
+        [dateFormatter setDateFormat:@" MMM/dd/yyyy"];
+        NSString* expireDate=[dateFormatter stringFromDate:self.myNewDeal.expire_date];
         UIFont *font = [UIFont fontWithName:@"Arial" size:14.0];
         NSAttributedString* text= [[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"expire by %@", expireDate] attributes:@{NSFontAttributeName:font,NSForegroundColorAttributeName:[UIColor blackColor]}];
         _expiryLabel.attributedText=text;
@@ -372,20 +406,36 @@
 }
 -(void)setup
 {
-    if(!self.descriptionStr){
-        self.descriptionStr=@"description: this is a description about a deal posted by this app. this item is almost new and used only a couple of times. I am located in san francisco. shipping will be provided at buyer's expense.";
+    if(self.myNewDeal){
+        //0.deal_id
+        //1.title
+        
+        //2.price
+        //3.describe
+        //4. condition
+        
+        //5. expiry
+        //5. expiry
+        
+        //6. shipping
+        
+        //7. exchange
+        
+        //8. sound URL
+        
+        //9.user id created
+        
+        //10. photoURL
+        nil;
+        
     }
-    if(!self.conditionStr){
-        self.conditionStr=@"condition: <80%";
-    }
-    if(!self.expireDate){
-        self.expireDate=[NSDate date];
-    }
-    self.photoTitles =@[@"This is google icon",@"This is facebook icon", @"this is linkedin"];
-    self.photoNames=@[@"google.jpg",@"facebook.jpg",@"linkedin.jpg"];
+
+    //self.photoTitles =@[@"This is google icon",@"This is facebook icon", @"this is linkedin"];
+    //self.photoNames=@[@"google.jpg",@"facebook.jpg",@"linkedin.jpg"];
     [self pageVC];
     [self.view addSubview:self.mainView];
     [self.mainView addSubview:self.containerView];
+    
     self.mainView.contentSize=CGSizeMake(self.view.frame.size.width, self.containerView.frame.origin.y+self.containerView.frame.size.height+CONTROL_BUTTON_HEIGHT);
 
     [self.view addSubview:self.cancelButton];
@@ -416,7 +466,22 @@
 }
 -(void)confirmButtonClicked:(UIButton*)sender
 {
-    NSLog(@"confirmed and calling core data");
+    
+//    NSLog(@"confirmed and calling core data");
+//    Deal* newDeal = [[Deal alloc] init];
+//    newDeal.title=self.dealTitle;
+//    newDeal.price=[NSNumber numberWithInteger:*(self.dealPrice)];
+//    newDeal.condition=self.dealCondition;
+//    newDeal.describe = self.dealDescription;
+//    newDeal.shipping=[NSNumber numberWithBool:self.dealShipping];
+//    newDeal.exchange=[NSNumber numberWithBool:self.dealExchange];
+//    newDeal.sound_url=self.dealSoundURL;
+//    newDeal.create_date=self.dealCreateDate;
+//    newDeal.expire_date=self.expireDate;
+//    newDeal.photoURL = self.dealPhotoURL;
+    
+    //[self.utils insertMyDeal:newDeal];
+    
 }
 
 -(void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
@@ -431,11 +496,12 @@
 }
 #pragma mark - pageview methods
 //------data source-----------------
--(DetailPageContentViewController*) contentViewAtIndex:(NSUInteger)index
+-(DetailPageContentViewController*)contentViewAtIndex:(NSUInteger)index
 {
     DetailPageContentViewController *contentVC=[self.storyboard instantiateViewControllerWithIdentifier:@"DetailPageContentController"];
-    contentVC.contentImage = self.photoNames[index];
-    contentVC.contentTitle = self.photoTitles[index];
+    //contentVC.contentImage = self.photoNames[index];
+    contentVC.image=self.photos[index];
+    //contentVC.contentTitle = self.myNewDeal.photoURL[index]; //self.photoTitles[index];
     contentVC.index = index;
     return contentVC;
 }
@@ -450,7 +516,7 @@
 {
     DetailPageContentViewController *pVC = (DetailPageContentViewController*)viewController;
     NSUInteger idx = pVC.index;
-    if(idx == NSNotFound || idx == self.photoTitles.count - 1)
+    if(idx == NSNotFound || idx == self.photos.count - 1)
         return nil;
     return [self contentViewAtIndex:++idx];
 }
@@ -470,7 +536,13 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    self.photos=self.myNewDeal.photos;
     [self setup];
+    for(int i=0; i<self.myNewDeal.photoURL.count;i++){
+        NSLog(@"url is %@",self.myNewDeal.photoURL[i]);
+    }
+    //NSLog(@"summary view: %@",self.myNewDeal);
+    
     // Do any additional setup after loading the view.
 }
 
@@ -480,15 +552,6 @@
     // Dispose of any resources that can be recreated.
 }
 
-/*
-#pragma mark - Navigation
 
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
-{
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
-}
-*/
 
 @end

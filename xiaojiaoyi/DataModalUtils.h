@@ -11,6 +11,9 @@
 
 @interface DataModalUtils : NSObject
 
+@property (nonatomic) NSString* userId;
+
+
 -(UIManagedDocument*)getMyDealsDocumentWithUserId:(NSString*)userId;
 -(NSManagedObjectContext*)getMyDealsContextWithUserId:(NSString*)userId;
 
@@ -21,5 +24,11 @@
 -(void)addNotificationForUserId:(NSString*)userId;
 -(void)deleteNotificationForUserId:(NSString*)userId;
 +(DataModalUtils*)sharedInstance;
+-(void)insertMyDeal:(Deal*)deal;
+
+-(void)updateUserId:(NSString*)userId;
+
+-(NSURL*)myDealsDataURL;
+
 @end
 

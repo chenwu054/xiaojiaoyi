@@ -21,6 +21,10 @@
 @property (nonatomic) UIImagePickerController *imagePickerController;
 @property (nonatomic) UIImage* defaultImage;
 
+@property (nonatomic) DataModalUtils* utils;
+@property (nonatomic) NSURL* dealBaseFolder;
+@property (nonatomic) NSMutableArray* photosURL;
+
 @end
 
 @implementation SellDealViewController
@@ -44,6 +48,13 @@
 
 
 #pragma mark - setup
+-(DataModalUtils*)utils
+{
+    if(!_utils){
+        _utils=[DataModalUtils sharedInstance];
+    }
+    return _utils;
+}
 -(UIImage*)defaultImage
 {
     if(!_defaultImage){
@@ -308,8 +319,38 @@
             
         }
     }
+    else if([segue.identifier isEqualToString:@"DealDescriptionSegue"]){
+        if([segue.destinationViewController isKindOfClass:[DealDescriptionViewController class]]){
+            DealDescriptionViewController* dealDescribeVC = (DealDescriptionViewController*)segue.destinationViewController;
+            [self savePhotosToDisk];
+            self.myNewDeal.photoURL= self.photosURL;
+            dealDescribeVC.myNewDeal = self.myNewDeal;
+        }
+    }
+    
 }
-
+//---------------------------------------
+-(void)savePhotosToDisk
+{
+    self.dealBaseFolder = [[self.utils myDealsDataURL] URLByAppendingPathComponent:self.myNewDeal.deal_id];
+    NSMutableArray* photoArr= [[NSMutableArray alloc] init];
+    self.photosURL=[[NSMutableArray alloc] init];
+    BOOL isDir = YES;
+    if(![[NSFileManager defaultManager] fileExistsAtPath:self.dealBaseFolder.path isDirectory: &isDir]){
+        [[NSFileManager defaultManager] createDirectoryAtURL:self.dealBaseFolder withIntermediateDirectories:YES attributes:nil error:NULL];
+    }
+    for(int i=0;i<self.photos.count;i++){
+        if(self.photos[i]==self.defaultImage)
+            break;
+        NSURL* url = [self.dealBaseFolder URLByAppendingPathComponent:[NSString stringWithFormat:@"photo%d",i]];
+        UIImage* image = self.photos[i];
+        NSData* data = UIImagePNGRepresentation(image);
+        [data writeToURL:url atomically:YES];
+        [self.photosURL addObject:url.path];
+        [photoArr addObject:self.photos[i]];
+    }
+    self.myNewDeal.photos=photoArr;
+}
 -(IBAction)unwindFromEditImageView:(UIStoryboardSegue*)sender
 {
     if(self.shouldDelete){
@@ -334,6 +375,7 @@
 {
     [super viewDidLoad];
     [self setup];
+    self.dealBaseFolder=nil;
     
     //[self backButton];
     // Do any additional setup after loading the view.

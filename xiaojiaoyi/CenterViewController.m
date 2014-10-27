@@ -10,7 +10,7 @@
 #import "YPAPISample.h"
 #import "NSURLRequest+OAuth.h"
 #import "YelpViewController.h"
-
+#import "DealObject.h"
 
 #define YELP_CONSUMER_KEY @"f1UUkqY-ArXOelq_hGKBOg"
 #define YELP_CONSUMER_SECRET @"J-aIV0DJDUOJ4cBdGyBkIKmcdoY"
@@ -55,6 +55,13 @@
 }
 
 #pragma mark - propertys setup
+-(DataModalUtils*)utils
+{
+    if(!_utils){
+        _utils=[DataModalUtils sharedInstance];
+    }
+    return _utils;
+}
 -(MainViewController*)superVC
 {
     if(!_superVC){
@@ -262,7 +269,7 @@
 #pragma mark - collection view
 -(void) prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
 {
-    NSLog(@"calling center view prepare for segue");
+    //NSLog(@"calling center view prepare for segue %ld,%ld",[segue.identifier isEqualToString:@"SellDealSegue"], [[segue destinationViewController] isKindOfClass:[MyDealViewController class]]);
     if([[segue destinationViewController] isKindOfClass:[YelpViewController class]] ){
         YelpViewController* yelpController = (YelpViewController*)segue.destinationViewController;
         //NSLog(@"will perform segue");
@@ -272,10 +279,25 @@
         yelpController.query = _query;
         yelpController.location = _location;
     }
-    else if([[segue destinationViewController] isKindOfClass:[MyDealViewController class]]){
-        MyDealViewController *myDealController = (MyDealViewController*)segue.destinationViewController;
-        [myDealController.view addGestureRecognizer:[_superVC getPanGestureRecognizer]];
+    else if([segue.identifier isEqualToString:@"SellDealSegue"] && [[segue destinationViewController] isKindOfClass:[SellDealViewController class]]){
         
+        SellDealViewController *sellDealViewController = (SellDealViewController*)segue.destinationViewController;
+        //[myDealController.view addGestureRecognizer:[_superVC getPanGestureRecognizer]];
+        //NSEntityDescription* entity = [NSEntityDescription entityForName:@"Deal" inManagedObjectContext:[self.utils getMyDealsContextWithUserId:@"user123"]];
+        //[entity setName:@"Deal"];
+        //[entity setManagedObjectClassName:@"Deal"];
+        //Deal* newDeal = [NSEntityDescription insertNewObjectForEntityForName:@"Deal" inManagedObjectContext:[self.utils getMyDealsContextWithUserId:@"user123"]];
+        //Deal* newDeal = [[Deal alloc] initWithEntity:entity insertIntoManagedObjectContext:[self.utils getMyDealsContextWithUserId:@"user123"]];
+        DealObject* newDeal=[[DealObject alloc] init];
+        NSDate* today=[NSDate date];
+        NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+        [dateFormatter setDateFormat:@"yyyyMMddHHmmss"];
+        NSString* dealId = [NSString stringWithFormat:@"%@_%@",self.utils.userId,[dateFormatter stringFromDate:today]];
+        //NSLog(@"dealId is %@",dealId);
+        newDeal.deal_id = dealId;
+        sellDealViewController.myNewDeal=newDeal;
+        //NSLog(@"%@",newDeal);
+        //sellDealViewController.newDeal=newDeal;
     }
 }
 

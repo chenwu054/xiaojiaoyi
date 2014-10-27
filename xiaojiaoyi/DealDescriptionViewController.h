@@ -8,7 +8,13 @@
 
 #import <UIKit/UIKit.h>
 #import <AVFoundation/AVFoundation.h>
+#import "DealObject.h"
+#import "DataModalUtils.h"
+#import "DealSummaryViewController.h"
 
 @interface DealDescriptionViewController : UIViewController <UITextFieldDelegate,AVAudioPlayerDelegate,AVAudioRecorderDelegate,UIAlertViewDelegate>
+
+
+@property (nonatomic) DealObject* myNewDeal;
 
 @end

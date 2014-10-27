@@ -14,6 +14,7 @@
 #define CELL_HEIGHT 90
 #define CELL_HEIGHT_MARGIN 10
 #define CELL_WIDTH_MARGIN 10
+#define EDIT_BUTTON_WIDTH 80
 
 #define CELL_IMAGE_HEIGHT 50
 #define CELL_IMAGE_CORNER_RADIUS 5
@@ -151,15 +152,112 @@
         descriptionLabel.attributedText=[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"%@",deal.describe] attributes:@{NSFontAttributeName:[UIFont fontWithName:@"Arial" size:12.0],NSForegroundColorAttributeName:[UIColor grayColor]}];
         [containerView addSubview:descriptionLabel];
         
-        [cell addSubview:containerView];
+        
+        //[cell addSubview:containerView];
         cell.selectionStyle=UITableViewCellSelectionStyleNone;
+        
+        UIView* editView = [[UIView alloc] initWithFrame:CGRectMake(cell.frame.size.width-2*EDIT_BUTTON_WIDTH, CELL_HEIGHT_MARGIN, 2*EDIT_BUTTON_WIDTH, CELL_HEIGHT-2*CELL_HEIGHT_MARGIN)];
+        editView.layer.cornerRadius=10.0;
+        UIButton* repostButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, EDIT_BUTTON_WIDTH, CELL_HEIGHT-2*CELL_HEIGHT_MARGIN)];
+        [repostButton setBackgroundColor:[UIColor greenColor]];
+        [repostButton setAttributedTitle:[[NSAttributedString alloc] initWithString:@"repost" attributes:@{NSFontAttributeName:[UIFont fontWithName:@"Arial" size:20],NSForegroundColorAttributeName:[UIColor grayColor]}] forState:UIControlStateNormal];
+        [editView addSubview:repostButton];
+        UIButton* deleteButton = [[UIButton alloc] initWithFrame:CGRectMake(EDIT_BUTTON_WIDTH, 0, EDIT_BUTTON_WIDTH, CELL_HEIGHT-2*CELL_HEIGHT_MARGIN)];
+        [deleteButton setBackgroundColor:[UIColor redColor]];
+        [deleteButton setAttributedTitle:[[NSAttributedString alloc] initWithString:@"delete" attributes:@{NSFontAttributeName:[UIFont fontWithName:@"Arial" size:20],NSForegroundColorAttributeName:[UIColor grayColor]}] forState:UIControlStateNormal];
+        [editView addSubview:deleteButton];
+        [cell addSubview:editView];
+        
+        EditTableCellView* hideEditView = [[EditTableCellView alloc] initWithFrame:CGRectMake(0, 0, cell.frame.size.width, CELL_HEIGHT)];
+        hideEditView.indexPath=indexPath;
+        hideEditView.initialCenter=CGPointMake(cell.frame.size.width/2, CELL_HEIGHT/2);
+        hideEditView.backgroundColor=[UIColor whiteColor];
+        [cell addSubview:hideEditView];
+        UIPanGestureRecognizer* panCell=[[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(cellPanned:)];
+        [hideEditView addGestureRecognizer:panCell];
+        
+        [hideEditView addSubview:containerView];
+        //[cell addSubview:containerView];
         
     }
     return cell;
 }
+-(void)cellPanned:(UIPanGestureRecognizer*)gesture
+{
+    if([gesture.view isKindOfClass:[EditTableCellView class]]){
+        EditTableCellView* view = (EditTableCellView*)gesture.view;
+        CGPoint translation = [gesture translationInView:view];
+        if(gesture.state==UIGestureRecognizerStateBegan){
+            //view.center = CGPointMake(self.view.frame.size.width/2+translation.x<0?translation.x:0, view.center.y);
+            //view.backgroundColor=[UIColor clearColor];
+        
+        }
+        else if(gesture.state==UIGestureRecognizerStateChanged){
+            if(view.initialCenter.x>100){
+                view.center = CGPointMake(self.view.frame.size.width/2+(translation.x<0?translation.x:0), view.center.y);
+            }
+            else{
+                view.center=CGPointMake(view.initialCenter.x+translation.x<self.view.frame.size.width/2?translation.x:self.view.frame.size.width/2, view.center.y);
+            }
+            view.backgroundColor=[UIColor colorWithWhite:1.0 alpha:view.center.x/(self.view.frame.size.width/2) ];
+            //NSLog(@"x=%f,y=%f,self.view.frame.size.width/2=%f",view.center.x,view.center.y,self.view.frame.size.width/2);
+            
+        }
+        else if(gesture.state==UIGestureRecognizerStateEnded){
+            if(view.center.x<self.view.frame.size.width/2-EDIT_BUTTON_WIDTH-CELL_WIDTH_MARGIN){
+                [UIView animateWithDuration:0.2 delay:0 options:UIViewAnimationOptionBeginFromCurrentState animations:^{
+                    view.center=CGPointMake(self.view.frame.size.width/2-(2*EDIT_BUTTON_WIDTH) + CELL_WIDTH_MARGIN, view.center.y);
+                    
+                } completion:nil];
+                view.initialCenter=CGPointMake(self.view.frame.size.width/2-(2*EDIT_BUTTON_WIDTH) + CELL_WIDTH_MARGIN, view.center.y);
+            }
+            else{
+                [UIView animateWithDuration:0.2 delay:0 options:UIViewAnimationOptionBeginFromCurrentState animations:^{
+                    
+                    view.center=CGPointMake(self.view.frame.size.width/2, view.center.y);
+                } completion:nil];
+                view.initialCenter=CGPointMake(self.view.frame.size.width/2, view.center.y);
+                view.backgroundColor=[UIColor whiteColor];
+            }
+
+        }
+    }
+    
+    //NSLog(@"gesture view is %@",view);
+}
+//-(BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath
+//{
+//    NSLog(@"table view can edit row at index path");
+//    return YES;
+//}
+//-(BOOL)tableView:(UITableView *)tableView canMoveRowAtIndexPath:(NSIndexPath *)indexPath
+//{
+//    NSLog(@"table view can move cell at index path");
+//    return YES;
+//}
+//-(UITableViewCellEditingStyle)tableView:(UITableView *)tableView editingStyleForRowAtIndexPath:(NSIndexPath *)indexPath
+//{
+//    
+//    return UITableViewCellEditingStyleDelete;
+//}
+//-(void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath
+//{
+//    if(editingStyle==UITableViewCellEditingStyleInsert){
+//        NSLog(@"calling insert");
+//        [self.tableView insertRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationLeft];
+//        
+//    }
+//    else if(editingStyle==UITableViewCellEditingStyleDelete){
+//        NSLog(@"calling delete");
+//        [self.tableView insertRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationRight];
+//        
+//    }
+//    
+//}
+
 -(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    NSLog(@"calling height for cell");
+    //NSLog(@"calling height for cell");
     return CELL_HEIGHT;
 }
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
@@ -167,6 +265,8 @@
     NSLog(@"selected cell");
     
 }
+
+
 
 -(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
@@ -252,6 +352,7 @@
         _tableView.delegate=self;
         _tableView.dataSource=self;
         _tableView.separatorStyle=UITableViewCellSeparatorStyleNone;
+        //[_tableView setEditing:YES animated:YES];
         
         UIImageView* backgroundView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, _tableView.frame.size.width, _tableView.frame.size.height)];
         backgroundView.image=[UIImage imageNamed:@"linkedin.jpg"];

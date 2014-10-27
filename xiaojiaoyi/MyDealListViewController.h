@@ -8,6 +8,7 @@
 
 #import <UIKit/UIKit.h>
 #import "DataModalUtils.h"
+#import "EditTableCellView.h"
 
 @interface MyDealListViewController : UIViewController <UITableViewDataSource,UITableViewDelegate,NSFetchedResultsControllerDelegate>
 

@@ -91,7 +91,7 @@
 @property (nonatomic) NSTimer* timer;
 @property (nonatomic) NSURL* soundURL;
 
-
+@property (nonatomic) DataModalUtils* utils;
 @end
 
 @implementation DealDescriptionViewController
@@ -335,21 +335,94 @@ static NSInteger t =0.0;
         NSLog(@"please either write a description or talk about it");
     }
     else{
+        
+        //1. title
+        self.myNewDeal.title=self.nameTextField.text;
+        //2. price
+        self.myNewDeal.price=[NSNumber numberWithInteger:[self.priceTextField.text integerValue]];
+        //3. describe
+        self.myNewDeal.describe=self.descriptionTextField.text;
+        //4. condition
+        switch (self.conditionPicked) {
+            case 0:
+                self.myNewDeal.condition= @"<80%";
+                break;
+            case 1:
+                self.myNewDeal.condition= @"80%";
+                break;
+            case 2:
+                self.myNewDeal.condition= @"90%";
+                break;
+            case 3:
+                self.myNewDeal.condition= @"new";
+                break;
+            default:
+                self.myNewDeal.condition=@"new";
+                break;
+        }
+        //5. expiry date
+        NSDateComponents *components = [[NSCalendar currentCalendar] components:NSYearCalendarUnit|NSMonthCalendarUnit|NSDayCalendarUnit fromDate:[NSDate date]];
+        NSDate *startDate = [[NSCalendar currentCalendar] dateFromComponents:components];
+        self.myNewDeal.create_date=startDate;
+        NSInteger daysToAdd = 30;
+        switch (self.expiryPicked) {
+            case 0:
+                daysToAdd=3;
+                break;
+            case 1:
+                daysToAdd=7;
+                break;
+            case 2:
+                daysToAdd=15;
+                break;
+            case 3:
+                daysToAdd=30;
+                break;
+            default:
+                daysToAdd=30;
+                break;
+        }
+        NSDate *newDate = [startDate dateByAddingTimeInterval:60*60*24*daysToAdd];
+        NSLog(@"start date is %@, end date is %@",startDate,newDate);
+        self.myNewDeal.expire_date=newDate;
+        //6. shipping
+        self.myNewDeal.shipping=[NSNumber numberWithBool:self.shippingSwitch.on];
+        //7. exchange
+        self.myNewDeal.exchange=[NSNumber numberWithBool:self.acceptExchangeSwitch.on];
+        //8. sound URL
+        self.myNewDeal.sound_url=self.soundRecorded?self.soundURL.path:nil;
+        //9. user id created
+        self.myNewDeal.user_id_created=self.utils.userId;
+
         NSLog(@"congrats! segue to deal summary view!");
         [self performSegueWithIdentifier:@"DealSummarySegue" sender:self];
     }
     
 }
 //---------------------------------
+-(NSURL*)soundURL
+{
+    if(!_soundURL){
+        NSURL* baseURL=[self.utils myDealsDataURL];
+        BOOL isDir = YES;
+        if(![[NSFileManager defaultManager] fileExistsAtPath:baseURL.path isDirectory: &isDir]){
+            [[NSFileManager defaultManager] createDirectoryAtURL:baseURL withIntermediateDirectories:YES attributes:nil error:NULL];
+        }
+        _soundURL=[baseURL URLByAppendingPathComponent:[NSString stringWithFormat:@"%@.m4a",self.myNewDeal.deal_id]];
+        NSLog(@"set sound url is %@",_soundURL);
+    }
+    return _soundURL;
+}
 - (void)initiateRecording
 {
     // Set the audio file
-    NSArray *pathComponents = [NSArray arrayWithObjects:
-                               [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) lastObject],
-                               @"MyAudioMemo.m4a",
-                               nil];
-    NSURL *outputFileURL = [NSURL fileURLWithPathComponents:pathComponents];
-    self.soundURL=outputFileURL;
+//    NSArray *pathComponents = [NSArray arrayWithObjects:
+//                               [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) lastObject],
+//                               @"MyAudioMemo.m4a",
+//                               nil];
+//    NSURL *outputFileURL = [NSURL fileURLWithPathComponents:pathComponents];
+
+//    self.soundURL=outputFileURL;
     //NSLog(@"outputfile url is %@",outputFileURL);
     // Setup audio session
     AVAudioSession *session = [AVAudioSession sharedInstance];
@@ -476,7 +549,6 @@ static NSInteger t =0.0;
     }
 }
 
-
 //======================================================
 
 #pragma mark - delegate methods
@@ -564,15 +636,33 @@ static NSInteger t =0.0;
     }
 }
 #pragma mark - segue methods
+-(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
+{
+    NSLog(@"calling prepare for segue:%@",segue.identifier);
+    if([segue.identifier isEqualToString:@"DealSummarySegue"]){
+        if([segue.destinationViewController isKindOfClass:[DealSummaryViewController class]]){
+            DealSummaryViewController* dealSummaryVC=(DealSummaryViewController*)segue.destinationViewController;
+            
+            dealSummaryVC.myNewDeal=self.myNewDeal;
+        }
+    }
+    
+}
 -(IBAction)unwindFromDealSummaryView:(UIStoryboardSegue*)segue
 {
     NSLog(@"unwind from deal summary view");
     
 }
 
-
 //========================================================
 #pragma mark - setup
+-(DataModalUtils*)utils
+{
+    if(!_utils){
+        _utils=[DataModalUtils sharedInstance];
+    }
+    return _utils;
+}
 -(UIAlertView*)cancelAlert
 {
     if(!_cancelAlert){
@@ -624,7 +714,6 @@ static NSInteger t =0.0;
     }
     
     return _checkButton;
-
 }
 -(UIView*)titleView
 {

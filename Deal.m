@@ -2,7 +2,7 @@
 //  Deal.m
 //  xiaojiaoyi
 //
-//  Created by chen on 10/25/14.
+//  Created by chen on 10/26/14.
 //  Copyright (c) 2014 com.practice. All rights reserved.
 //
 
@@ -14,7 +14,7 @@
 
 @dynamic condition;
 @dynamic create_date;
-@dynamic dealId;
+@dynamic deal_id;
 @dynamic describe;
 @dynamic exchange;
 @dynamic expire_date;

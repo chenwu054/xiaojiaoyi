@@ -16,6 +16,8 @@
 #import "CenterTabNearbyDealController.h"
 #import "MyDealViewController.h"
 #import "SellDealViewController.h"
+#import "DataModalUtils.h"
+
 
 //#import "OASignatureProviding.h"
 #import "YelpViewController.h"
@@ -48,5 +50,6 @@
 @property (nonatomic) MainViewController *superVC;
 @property (nonatomic) SellDealViewController *sellDealController;
 
+@property (nonatomic) DataModalUtils* utils;
 
 @end

@@ -29,7 +29,7 @@
 @property (nonatomic) NSManagedObjectContext* boughtDealsContext;
 @property (nonatomic) NSString* filename;
 
-@property (nonatomic) NSString* userId;
+
 @property (nonatomic) NSMutableDictionary* managedDocumentDictionary;
 @property (nonatomic) NSMutableDictionary* managedContextDictionary;
 
@@ -38,7 +38,7 @@
 
 @implementation DataModalUtils
 static DataModalUtils* singleton;
-static NSInteger dealId=0;
+@synthesize userId=_userId;
 
 
 #pragma mark - setup methods
@@ -51,11 +51,25 @@ static NSInteger dealId=0;
     }
     return singleton;
 }
-
+-(void)updateUserId:(NSString*)userId;
+{
+    if(!userId || [userId isEqualToString:@""])
+        return;
+    
+    self.userId=userId;
+    
+}
 -(void)setUserId:(NSString *)userId
 {
     _userId=userId;
     [self coredataSetup];
+}
+-(NSString*)userId
+{
+    if(!_userId){
+        _userId=@"user123";//default userID;
+    }
+    return _userId;
 }
 -(void)coredataSetup
 {
@@ -77,7 +91,7 @@ static NSInteger dealId=0;
 {
     if(!deal.user_id_created)
         return false;
-    if(!deal.dealId)
+    if(!deal.deal_id)
         return false;
     if(!deal.title || !deal.price || !(deal.sound_url||deal.describe))
         return false;
@@ -105,6 +119,11 @@ static NSInteger dealId=0;
     
     [deal.managedObjectContext save:NULL];
 }
+-(void)insertMyDeal:(Deal*)deal
+{
+    [self insertMyDeal:deal toUserId:self.userId];
+    
+}
 -(void)insertMyDeal:(Deal*)deal toUserId:(NSString*)userId
 {
     NSManagedObjectContext* context = self.managedContextDictionary[userId];
@@ -113,6 +132,7 @@ static NSInteger dealId=0;
     
     [context insertObject:deal];
 }
+//wrong
 -(void)insertMyDeal:(Deal*)deal withAutoDealIdToUserId:(NSString *)userId
 {
     Deal* newDeal = [NSEntityDescription insertNewObjectForEntityForName:@"Deal" inManagedObjectContext:self.managedContextDictionary[userId]];
@@ -129,7 +149,7 @@ static NSInteger dealId=0;
     newDeal.user_id_created=deal.user_id_created;
     newDeal.user_id_bought=deal.user_id_bought;
     
-    newDeal.dealId=[NSNumber numberWithInteger:dealId++];
+    //newDeal.deal_id=[NSNumber numberWithInteger:dealId++];
     
 }
 -(NSArray*)queryForDealsWithUserId:(NSString*)userId predicate:(NSPredicate*)predicate andSortDescriptors:(NSArray*)descriptors
@@ -164,8 +184,12 @@ static NSInteger dealId=0;
 {
     NSURL* filePath = [self.myDealsURL URLByAppendingPathComponent:userId isDirectory:NO];
     UIManagedDocument* doc = self.managedDocumentDictionary[userId];
+    
+    NSLog(@"T");
     if(!doc){
         doc= [[UIManagedDocument alloc] initWithFileURL:filePath];
+        doc.persistentStoreOptions=@{NSMigratePersistentStoresAutomaticallyOption: @YES, NSInferMappingModelAutomaticallyOption: @YES};
+        
         //add to the dictionary
         [self.managedDocumentDictionary setObject:doc forKey:userId];
     }
@@ -196,6 +220,10 @@ static NSInteger dealId=0;
         NSLog(@"managed document disabled, try later");
     }
     
+//    NSDictionary* options = doc.persistentStoreOptions;
+//    for(NSString* k in options){
+//        NSLog(@"k=%@, v = %@",k,options[k]);
+//    }
     return doc;
 }
 -(void)contextChanged:(NSNotification*)notification
@@ -237,6 +265,12 @@ static NSInteger dealId=0;
 }
 
 #pragma mark - url methods
+-(NSURL*)myDealsDataURL
+{
+    NSURL* dataURL = [self.myDealsURL URLByAppendingPathComponent:@"data" isDirectory:YES];
+    
+    return dataURL;
+}
 -(NSURL*)myDealsURL
 {
     if(!_myDealsURL){
@@ -246,8 +280,19 @@ static NSInteger dealId=0;
     }
     return _myDealsURL;
 }
-
-
+-(NSURL*)createDataURLWithFilename:(NSString*)filename
+{
+    NSURL* url=[self myDealsDataURL];
+    return [url URLByAppendingPathComponent:filename];
+}
+-(void)deleteDirAtURL:(NSURL*)dir
+{
+    BOOL success = [[NSFileManager defaultManager] removeItemAtURL:dir error:NULL];
+    if(!success){
+        NSLog(@"!!!ERROR: DataModelUtils delete dir failed!");
+    }
+    
+}
 
 -(NSURL*)soundTrackMyDealsURL
 {

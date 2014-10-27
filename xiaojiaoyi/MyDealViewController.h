@@ -12,7 +12,7 @@
 #import "MyDealListViewController.h"
 #import "BoughtDealListViewController.h"
 #import "FriendDealListViewController.h"
-
+#import "Deal.h"
 
 @class MainViewController;
 
@@ -27,6 +27,6 @@
 @property (nonatomic) BoughtDealListViewController* boughtDealListController;
 @property (nonatomic) FriendDealListViewController* friendDealListController;
 
-
+//@property (nonatomic) Deal* newDeal;
 
 @end
