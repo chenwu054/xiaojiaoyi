@@ -407,31 +407,8 @@
 -(void)setup
 {
     if(self.myNewDeal){
-        //0.deal_id
-        //1.title
-        
-        //2.price
-        //3.describe
-        //4. condition
-        
-        //5. expiry
-        //5. expiry
-        
-        //6. shipping
-        
-        //7. exchange
-        
-        //8. sound URL
-        
-        //9.user id created
-        
-        //10. photoURL
-        nil;
-        
+        self.cancelDeal=NO;
     }
-
-    //self.photoTitles =@[@"This is google icon",@"This is facebook icon", @"this is linkedin"];
-    //self.photoNames=@[@"google.jpg",@"facebook.jpg",@"linkedin.jpg"];
     [self pageVC];
     [self.view addSubview:self.mainView];
     [self.mainView addSubview:self.containerView];
@@ -491,7 +468,22 @@
     }
     else if(buttonIndex==1){
         NSLog(@"1 clicked");
+        self.cancelDeal=YES;
         [self performSegueWithIdentifier:@"DealSummaryUnwindSegue" sender:self];
+        
+    }
+}
+
+//------------prepare for segue---------------------
+#pragma mark - prepare for segue
+-(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
+{
+    if([segue.identifier isEqualToString:@"DealSummaryUnwindSegue"]){
+        if([segue.destinationViewController isKindOfClass:[DealDescriptionViewController class]]){
+            DealDescriptionViewController* dealDescriptionVC=(DealDescriptionViewController*)segue.destinationViewController;
+            dealDescriptionVC.cancelDeal=self.cancelDeal;
+            
+        }
     }
 }
 #pragma mark - pageview methods

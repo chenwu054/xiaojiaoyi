@@ -25,6 +25,7 @@
 @class  YelpViewController;
 @class MainViewController;
 @class CenterTabHotDealController;
+@class SellDealViewController;
 
 @interface CenterViewController : UINavigationController <DataFetcherDelegate,UITabBarControllerDelegate,UIToolbarDelegate,UIActionSheetDelegate,UIGestureRecognizerDelegate,UINavigationControllerDelegate, UIImagePickerControllerDelegate>
 @property (weak, nonatomic) IBOutlet UIButton *yelpButton;

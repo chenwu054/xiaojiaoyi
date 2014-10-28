@@ -10,13 +10,14 @@
 #import "DetailPageContentViewController.h"
 #import "DataModalUtils.h"
 #import "DealObject.h"
+#import "DealDescriptionViewController.h"
 
 @interface DealSummaryViewController : UIViewController <UIPageViewControllerDataSource,UIPageViewControllerDelegate,UIAlertViewDelegate>
 
 @property (nonatomic) NSString* conditionStr;
 @property (nonatomic) NSString* descriptionStr;
 @property (nonatomic) NSDate* expireDate;
-
+@property (nonatomic) BOOL cancelDeal;
 
 ////Deal parameters
 //@property (nonatomic) NSString* dealSoundURL;

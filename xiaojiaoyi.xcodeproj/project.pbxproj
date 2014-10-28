@@ -41,6 +41,8 @@
 		741FB60919E11B0200EA6D5B /* add63.png in Resources */ = {isa = PBXBuildFile; fileRef = 741FB60719E11B0200EA6D5B /* add63.png */; };
 		741FB60A19E11B0200EA6D5B /* web11.png in Resources */ = {isa = PBXBuildFile; fileRef = 741FB60819E11B0200EA6D5B /* web11.png */; };
 		7452569A19FDE08E00A12020 /* DealObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 7452569919FDE08E00A12020 /* DealObject.m */; };
+		7452569D19FF2DA100A12020 /* MyDealListTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 7452569C19FF2DA100A12020 /* MyDealListTableViewCell.m */; };
+		745256A019FF2FB500A12020 /* MyDealPassGestureView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7452569F19FF2FB500A12020 /* MyDealPassGestureView.m */; };
 		7493294A19D12D1C003A2388 /* FacebookSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7493294919D12D1C003A2388 /* FacebookSDK.framework */; };
 		7493294D19D27622003A2388 /* MyFBSessionTokenCachingStrategy.m in Sources */ = {isa = PBXBuildFile; fileRef = 7493294C19D27622003A2388 /* MyFBSessionTokenCachingStrategy.m */; };
 		7493295219D60EE1003A2388 /* AddressBook.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7493295119D60EE1003A2388 /* AddressBook.framework */; };
@@ -209,6 +211,10 @@
 		741FB60819E11B0200EA6D5B /* web11.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = web11.png; sourceTree = "<group>"; };
 		7452569819FDE08E00A12020 /* DealObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DealObject.h; sourceTree = "<group>"; };
 		7452569919FDE08E00A12020 /* DealObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DealObject.m; sourceTree = "<group>"; };
+		7452569B19FF2DA100A12020 /* MyDealListTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MyDealListTableViewCell.h; sourceTree = "<group>"; };
+		7452569C19FF2DA100A12020 /* MyDealListTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MyDealListTableViewCell.m; sourceTree = "<group>"; };
+		7452569E19FF2FB500A12020 /* MyDealPassGestureView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MyDealPassGestureView.h; sourceTree = "<group>"; };
+		7452569F19FF2FB500A12020 /* MyDealPassGestureView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MyDealPassGestureView.m; sourceTree = "<group>"; };
 		7493294919D12D1C003A2388 /* FacebookSDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FacebookSDK.framework; path = ../../../../Documents/FacebookSDK/FacebookSDK.framework; sourceTree = "<group>"; };
 		7493294B19D27622003A2388 /* MyFBSessionTokenCachingStrategy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MyFBSessionTokenCachingStrategy.h; sourceTree = "<group>"; };
 		7493294C19D27622003A2388 /* MyFBSessionTokenCachingStrategy.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MyFBSessionTokenCachingStrategy.m; sourceTree = "<group>"; };
@@ -567,6 +573,8 @@
 				741FB5EF19DF541400EA6D5B /* UserMenuController.m */,
 				74B7219719EC857B000B3892 /* MyDealViewController.h */,
 				74B7219819EC857B000B3892 /* MyDealViewController.m */,
+				7452569B19FF2DA100A12020 /* MyDealListTableViewCell.h */,
+				7452569C19FF2DA100A12020 /* MyDealListTableViewCell.m */,
 				74A88CA019FC0D8F00872C26 /* MyDealListViewController.h */,
 				74A88CA119FC0D8F00872C26 /* MyDealListViewController.m */,
 				74A88CA619FC0DE600872C26 /* FriendDealListViewController.h */,
@@ -575,6 +583,8 @@
 				74A88CA419FC0DB700872C26 /* BoughtDealListViewController.m */,
 				74A88CB819FD63FB00872C26 /* EditTableCellView.h */,
 				74A88CB919FD63FB00872C26 /* EditTableCellView.m */,
+				7452569E19FF2FB500A12020 /* MyDealPassGestureView.h */,
+				7452569F19FF2FB500A12020 /* MyDealPassGestureView.m */,
 			);
 			name = MainPage;
 			sourceTree = "<group>";
@@ -950,6 +960,7 @@
 				740A2E7E19C53E4600D87965 /* MainViewController.m in Sources */,
 				74FD860D19E380B7000EC4C2 /* UIView+GestureView.m in Sources */,
 				74B932A619AAEC55003B6594 /* LoginViewController.m in Sources */,
+				7452569D19FF2DA100A12020 /* MyDealListTableViewCell.m in Sources */,
 				74CB84EE19BB4B4E00579432 /* OAConsumer.m in Sources */,
 				74B9327D19AAEB4E003B6594 /* xjyAppDelegate.m in Sources */,
 				74B9330819AD8695003B6594 /* NSDateFormatter+STTwitter.m in Sources */,
@@ -1022,6 +1033,7 @@
 				74B9331319AD8695003B6594 /* JSONSyntaxHighlight.m in Sources */,
 				74B9328619AAEB4E003B6594 /* CenterViewController.m in Sources */,
 				749E6CF219FDB52F00D1816A /* Deal.m in Sources */,
+				745256A019FF2FB500A12020 /* MyDealPassGestureView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

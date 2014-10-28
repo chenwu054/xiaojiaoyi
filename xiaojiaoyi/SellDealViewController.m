@@ -181,14 +181,21 @@
     [self checkButton];
     [self photoPreviewParentView];
     [self setupImagePicker];
+    self.cancelDeal=NO;
+    
 }
 
 
 -(void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
 {
-    //NSLog(@"buttonIndex is %ld",buttonIndex);
+    NSLog(@"sell deal view alert view buttonIndex is %ld",buttonIndex);
     if(buttonIndex==0)
         return;
+    else if(buttonIndex==1){
+        [self deleteDealArchive];
+        [self performSegueWithIdentifier:@"SellDealUnwindSegue" sender:self];
+    }
+    
     //[self performSegueWithIdentifier:@"SellDealBackSegue" sender:self];
 }
 
@@ -367,9 +374,30 @@
    // NSLog(@"calling unwind edit view");
 }
 
+-(void)deleteDealArchive
+{
+    if(!self.myNewDeal.deal_id){
+        NSLog(@"!!!ERROR: deal id is missing in sell deal delete deal archive");
+    }
+    if(!self.dealBaseFolder){
+        self.dealBaseFolder = [[self.utils myDealsDataURL] URLByAppendingPathComponent:self.myNewDeal.deal_id];
+        
+    }
+    [[NSFileManager defaultManager] removeItemAtURL:self.dealBaseFolder error:NULL];
+    
+    
+}
 -(IBAction)unwindFromDealDescriptionView:(UIStoryboardSegue*)sender
 {
     // NSLog(@"calling unwind description View);
+    if(self.cancelDeal){
+        
+        [self deleteDealArchive];
+        [self performSegueWithIdentifier:@"SellDealUnwindSegue" sender:self];
+        
+    }
+    
+    
 }
 - (void)viewDidLoad
 {

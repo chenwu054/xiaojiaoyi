@@ -405,10 +405,11 @@ static NSInteger t =0.0;
     if(!_soundURL){
         NSURL* baseURL=[self.utils myDealsDataURL];
         BOOL isDir = YES;
-        if(![[NSFileManager defaultManager] fileExistsAtPath:baseURL.path isDirectory: &isDir]){
-            [[NSFileManager defaultManager] createDirectoryAtURL:baseURL withIntermediateDirectories:YES attributes:nil error:NULL];
+        NSURL* myDealIdURL=[baseURL URLByAppendingPathComponent:self.myNewDeal.deal_id];
+        if(![[NSFileManager defaultManager] fileExistsAtPath:myDealIdURL.path isDirectory: &isDir]){
+            [[NSFileManager defaultManager] createDirectoryAtURL:myDealIdURL withIntermediateDirectories:YES attributes:nil error:NULL];
         }
-        _soundURL=[baseURL URLByAppendingPathComponent:[NSString stringWithFormat:@"%@.m4a",self.myNewDeal.deal_id]];
+        _soundURL=[myDealIdURL URLByAppendingPathComponent:[NSString stringWithFormat:@"%@.m4a",self.myNewDeal.deal_id]];
         NSLog(@"set sound url is %@",_soundURL);
     }
     return _soundURL;
@@ -558,6 +559,9 @@ static NSInteger t =0.0;
         NSLog(@"No clicked");
     }
     else if(buttonIndex==1){
+        
+        self.cancelDeal=YES;
+        
         [self performSegueWithIdentifier:@"DealDescriptionUnwindSegue" sender:self];
     }
 }
@@ -646,11 +650,40 @@ static NSInteger t =0.0;
             dealSummaryVC.myNewDeal=self.myNewDeal;
         }
     }
-    
+    else if([segue.identifier isEqualToString:@"DealDescriptionUnwindSegue"]){
+        if([segue.destinationViewController isKindOfClass:[SellDealViewController class]]){
+            SellDealViewController* sellDealVC=(SellDealViewController*)segue.destinationViewController;
+            sellDealVC.cancelDeal= self.cancelDeal;
+            if(self.cancelDeal){
+                [self deleteSoundTrack];
+            }
+        
+        }
+    }
+}
+-(void)deleteSoundTrack
+{
+    NSLog(@"sound track url is %@",self.soundURL);
+    NSURL* baseURL=[self.utils myDealsDataURL];
+    BOOL isDir = NO;
+    NSURL* myDealIdURL=[baseURL URLByAppendingPathComponent:self.myNewDeal.deal_id];
+    NSURL* soundTrackURL =[myDealIdURL URLByAppendingPathComponent:[NSString stringWithFormat:@"%@.m4a",self.myNewDeal.deal_id]];
+    //delete the sound track file
+    if([[NSFileManager defaultManager] fileExistsAtPath:soundTrackURL.path isDirectory: &isDir]){
+        [[NSFileManager defaultManager] removeItemAtURL:soundTrackURL error:NULL];
+    }
+    else{
+        NSLog(@"Warning: sound track does not exist in deal id: %@",self.myNewDeal.deal_id);
+    }
 }
 -(IBAction)unwindFromDealSummaryView:(UIStoryboardSegue*)segue
 {
-    NSLog(@"unwind from deal summary view");
+    NSLog(@"in description view, unwind from deal summary view");
+    if(self.cancelDeal){
+        
+        [self performSegueWithIdentifier:@"DealDescriptionUnwindSegue" sender:self];
+    }
+    
     
 }
 
@@ -1209,6 +1242,8 @@ static NSInteger t =0.0;
     //[self.exchangeView addSubview:self.exchangeLabel];
     [self initiateRecording];
     
+    self.cancelDeal = NO;
+    
 }
 
 - (void)viewDidLoad
@@ -1224,15 +1259,6 @@ static NSInteger t =0.0;
     // Dispose of any resources that can be recreated.
 }
 
-/*
-#pragma mark - Navigation
 
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
-{
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
-}
-*/
 
 @end

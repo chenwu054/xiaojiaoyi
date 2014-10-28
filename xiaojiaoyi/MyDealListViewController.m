@@ -90,7 +90,7 @@
 #pragma mark - table view methods
 -(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    NSLog(@"calling cell");
+    //NSLog(@"calling cell");
     UITableViewCell* cell =[tableView dequeueReusableCellWithIdentifier:@"MyDealListCell"];
     if(!cell){
         cell=[[UITableViewCell alloc] init];
@@ -173,19 +173,94 @@
         hideEditView.initialCenter=CGPointMake(cell.frame.size.width/2, CELL_HEIGHT/2);
         hideEditView.backgroundColor=[UIColor whiteColor];
         [cell addSubview:hideEditView];
-        UIPanGestureRecognizer* panCell=[[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(cellPanned:)];
-        [hideEditView addGestureRecognizer:panCell];
+//        UIPanGestureRecognizer* panCell=[[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(cellPanned:)];
+//        [hideEditView addGestureRecognizer:panCell];
+//        UISwipeGestureRecognizer* swipeCell = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(cellSwiped:)];
+//        swipeCell.direction=UISwipeGestureRecognizerDirectionLeft | UISwipeGestureRecognizerDirectionRight;
         
+        //[hideEditView addGestureRecognizer:swipeCell];
+        
+        UILongPressGestureRecognizer* longPress = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(longPressedCell:)];
+        //[hideEditView addGestureRecognizer:longPress];
         [hideEditView addSubview:containerView];
         //[cell addSubview:containerView];
         
     }
     return cell;
 }
+-(void)longPressedCell:(UILongPressGestureRecognizer*)gesture
+{
+    if([gesture.view isKindOfClass:[EditTableCellView class]]){
+        
+        EditTableCellView* view = (EditTableCellView*)gesture.view;
+        
+        //CGPoint translation = [gesture translationInView:view];
+        if(gesture.state==UIGestureRecognizerStateBegan){
+            //view.center = CGPointMake(self.view.frame.size.width/2+translation.x<0?translation.x:0, view.center.y);
+            //view.backgroundColor=[UIColor clearColor];
+            NSLog(@"long press began");
+        }
+        else if(gesture.state==UIGestureRecognizerStateChanged){
+            NSLog(@"long press began");
+//            if(view.initialCenter.x>100){
+//                view.center = CGPointMake(self.view.frame.size.width/2+(translation.x<0?translation.x:0), view.center.y);
+//            }
+//            else{
+//                view.center=CGPointMake(view.initialCenter.x+translation.x<self.view.frame.size.width/2?translation.x:self.view.frame.size.width/2, view.center.y);
+//            }
+//            view.backgroundColor=[UIColor colorWithWhite:1.0 alpha:view.center.x/(self.view.frame.size.width/2) ];
+//            //NSLog(@"x=%f,y=%f,self.view.frame.size.width/2=%f",view.center.x,view.center.y,self.view.frame.size.width/2);
+            
+        }
+        else if(gesture.state==UIGestureRecognizerStateEnded){
+            if(view.center.x<self.view.frame.size.width/2-EDIT_BUTTON_WIDTH-CELL_WIDTH_MARGIN){
+                [UIView animateWithDuration:0.2 delay:0 options:UIViewAnimationOptionBeginFromCurrentState animations:^{
+                    view.center=CGPointMake(self.view.frame.size.width/2-(2*EDIT_BUTTON_WIDTH) + CELL_WIDTH_MARGIN, view.center.y);
+                    
+                } completion:nil];
+                view.initialCenter=CGPointMake(self.view.frame.size.width/2-(2*EDIT_BUTTON_WIDTH) + CELL_WIDTH_MARGIN, view.center.y);
+            }
+            else{
+                [UIView animateWithDuration:0.2 delay:0 options:UIViewAnimationOptionBeginFromCurrentState animations:^{
+                    
+                    view.center=CGPointMake(self.view.frame.size.width/2, view.center.y);
+                } completion:nil];
+                view.initialCenter=CGPointMake(self.view.frame.size.width/2, view.center.y);
+                view.backgroundColor=[UIColor whiteColor];
+            }
+            
+        }
+    }
+}
+-(void)cellSwiped:(UISwipeGestureRecognizer*)gesture
+{
+    NSLog(@"calling swipe recognizer");
+    if([gesture.view isKindOfClass:[EditTableCellView class]]){
+        
+        EditTableCellView* view = (EditTableCellView*)gesture.view;
+        
+        if(gesture.direction==UISwipeGestureRecognizerDirectionLeft){
+            [UIView animateWithDuration:0.2 delay:0 options:UIViewAnimationOptionBeginFromCurrentState animations:^{
+                view.center=CGPointMake(self.view.frame.size.width/2-(2*EDIT_BUTTON_WIDTH) + CELL_WIDTH_MARGIN, view.center.y);
+                
+            } completion:nil];
+        }
+        else if(gesture.direction==UISwipeGestureRecognizerDirectionRight){
+            [UIView animateWithDuration:0.2 delay:0 options:UIViewAnimationOptionBeginFromCurrentState animations:^{
+                
+                view.center=CGPointMake(self.view.frame.size.width/2, view.center.y);
+            } completion:nil];
+        }
+        
+    }
+    
+}
 -(void)cellPanned:(UIPanGestureRecognizer*)gesture
 {
     if([gesture.view isKindOfClass:[EditTableCellView class]]){
+        
         EditTableCellView* view = (EditTableCellView*)gesture.view;
+        
         CGPoint translation = [gesture translationInView:view];
         if(gesture.state==UIGestureRecognizerStateBegan){
             //view.center = CGPointMake(self.view.frame.size.width/2+translation.x<0?translation.x:0, view.center.y);
@@ -225,35 +300,7 @@
     
     //NSLog(@"gesture view is %@",view);
 }
-//-(BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath
-//{
-//    NSLog(@"table view can edit row at index path");
-//    return YES;
-//}
-//-(BOOL)tableView:(UITableView *)tableView canMoveRowAtIndexPath:(NSIndexPath *)indexPath
-//{
-//    NSLog(@"table view can move cell at index path");
-//    return YES;
-//}
-//-(UITableViewCellEditingStyle)tableView:(UITableView *)tableView editingStyleForRowAtIndexPath:(NSIndexPath *)indexPath
-//{
-//    
-//    return UITableViewCellEditingStyleDelete;
-//}
-//-(void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath
-//{
-//    if(editingStyle==UITableViewCellEditingStyleInsert){
-//        NSLog(@"calling insert");
-//        [self.tableView insertRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationLeft];
-//        
-//    }
-//    else if(editingStyle==UITableViewCellEditingStyleDelete){
-//        NSLog(@"calling delete");
-//        [self.tableView insertRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationRight];
-//        
-//    }
-//    
-//}
+
 
 -(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
@@ -262,6 +309,7 @@
 }
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
+
     NSLog(@"selected cell");
     
 }

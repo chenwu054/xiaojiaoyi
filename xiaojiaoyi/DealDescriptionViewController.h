@@ -11,10 +11,12 @@
 #import "DealObject.h"
 #import "DataModalUtils.h"
 #import "DealSummaryViewController.h"
+#import "SellDealViewController.h"
 
 @interface DealDescriptionViewController : UIViewController <UITextFieldDelegate,AVAudioPlayerDelegate,AVAudioRecorderDelegate,UIAlertViewDelegate>
 
 
 @property (nonatomic) DealObject* myNewDeal;
+@property (nonatomic) BOOL cancelDeal;
 
 @end

@@ -9,6 +9,8 @@
 #import <UIKit/UIKit.h>
 #import "DataModalUtils.h"
 #import "EditTableCellView.h"
+#import "MyDealListTableViewCell.h"
+#import "MyDealPassGestureView.h"
 
 @interface MyDealListViewController : UIViewController <UITableViewDataSource,UITableViewDelegate,NSFetchedResultsControllerDelegate>
 

@@ -179,6 +179,7 @@
     else if(buttonIndex == 0)
     {
         //NSLog(@"sell button clicked");
+        
         [self performSegueWithIdentifier:@"SellDealSegue" sender:self];
         
     }
@@ -186,6 +187,14 @@
     
     }
 }
+
+
+-(IBAction)unwindFromSellDealSegue:(UIStoryboardSegue*)sender
+{
+    NSLog(@"calling unwind from sell deal segue in center view controller");
+}
+
+
 -(IBAction)doneWithSellDealSegue:(UIStoryboardSegue*)sender
 {
     
@@ -282,12 +291,8 @@
     else if([segue.identifier isEqualToString:@"SellDealSegue"] && [[segue destinationViewController] isKindOfClass:[SellDealViewController class]]){
         
         SellDealViewController *sellDealViewController = (SellDealViewController*)segue.destinationViewController;
-        //[myDealController.view addGestureRecognizer:[_superVC getPanGestureRecognizer]];
-        //NSEntityDescription* entity = [NSEntityDescription entityForName:@"Deal" inManagedObjectContext:[self.utils getMyDealsContextWithUserId:@"user123"]];
-        //[entity setName:@"Deal"];
-        //[entity setManagedObjectClassName:@"Deal"];
-        //Deal* newDeal = [NSEntityDescription insertNewObjectForEntityForName:@"Deal" inManagedObjectContext:[self.utils getMyDealsContextWithUserId:@"user123"]];
-        //Deal* newDeal = [[Deal alloc] initWithEntity:entity insertIntoManagedObjectContext:[self.utils getMyDealsContextWithUserId:@"user123"]];
+        sellDealViewController.parentVC=self;
+        
         DealObject* newDeal=[[DealObject alloc] init];
         NSDate* today=[NSDate date];
         NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
