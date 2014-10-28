@@ -334,6 +334,13 @@
             dealDescribeVC.myNewDeal = self.myNewDeal;
         }
     }
+    else if([segue.identifier isEqualToString:@"SellDealUnwindSegue"]){
+        if([segue.destinationViewController isKindOfClass:[CenterViewController class]]){
+            CenterViewController*centerVC = (CenterViewController*)segue.destinationViewController;
+            [centerVC.superVC reset];
+        }
+    }
+    
     
 }
 //---------------------------------------
@@ -393,10 +400,8 @@
     if(self.cancelDeal){
         
         [self deleteDealArchive];
-        [self performSegueWithIdentifier:@"SellDealUnwindSegue" sender:self];
-        
     }
-    
+    [self performSegueWithIdentifier:@"SellDealUnwindSegue" sender:self];
     
 }
 - (void)viewDidLoad

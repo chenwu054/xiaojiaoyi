@@ -443,21 +443,24 @@
 }
 -(void)confirmButtonClicked:(UIButton*)sender
 {
-    
-//    NSLog(@"confirmed and calling core data");
-//    Deal* newDeal = [[Deal alloc] init];
-//    newDeal.title=self.dealTitle;
-//    newDeal.price=[NSNumber numberWithInteger:*(self.dealPrice)];
-//    newDeal.condition=self.dealCondition;
-//    newDeal.describe = self.dealDescription;
-//    newDeal.shipping=[NSNumber numberWithBool:self.dealShipping];
-//    newDeal.exchange=[NSNumber numberWithBool:self.dealExchange];
-//    newDeal.sound_url=self.dealSoundURL;
-//    newDeal.create_date=self.dealCreateDate;
-//    newDeal.expire_date=self.expireDate;
-//    newDeal.photoURL = self.dealPhotoURL;
-    
-    //[self.utils insertMyDeal:newDeal];
+    NSManagedObjectContext* context = [self.utils getMyDealsContextWithUserId:self.utils.userId];
+    Deal* deal = [NSEntityDescription insertNewObjectForEntityForName:@"Deal" inManagedObjectContext:context];
+    deal.deal_id=self.myNewDeal.deal_id;
+    deal.title=self.myNewDeal.title;
+    deal.price=self.myNewDeal.price;
+    deal.condition=self.myNewDeal.condition;
+    deal.describe=self.myNewDeal.describe;
+    deal.shipping=self.myNewDeal.shipping;
+    deal.exchange=self.myNewDeal.exchange;
+    deal.create_date=self.myNewDeal.create_date;
+    deal.expire_date=self.myNewDeal.expire_date;
+    deal.sound_url=self.myNewDeal.sound_url?self.myNewDeal.sound_url:nil;
+    deal.photoURL=self.myNewDeal.photoURL;
+    if(![context save:NULL]){
+        NSLog(@"new deal correctly saved to core data");
+    }
+    self.cancelDeal=NO;
+    [self performSegueWithIdentifier:@"DealSummaryUnwindSegue" sender:self];
     
 }
 

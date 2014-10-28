@@ -679,10 +679,10 @@ static NSInteger t =0.0;
 -(IBAction)unwindFromDealSummaryView:(UIStoryboardSegue*)segue
 {
     NSLog(@"in description view, unwind from deal summary view");
-    if(self.cancelDeal){
+
         
-        [self performSegueWithIdentifier:@"DealDescriptionUnwindSegue" sender:self];
-    }
+    [self performSegueWithIdentifier:@"DealDescriptionUnwindSegue" sender:self];
+
     
     
 }

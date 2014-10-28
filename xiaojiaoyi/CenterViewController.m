@@ -192,6 +192,7 @@
 -(IBAction)unwindFromSellDealSegue:(UIStoryboardSegue*)sender
 {
     NSLog(@"calling unwind from sell deal segue in center view controller");
+    [self.superVC reset];
 }
 
 
