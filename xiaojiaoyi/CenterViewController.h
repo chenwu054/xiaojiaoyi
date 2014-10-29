@@ -39,7 +39,7 @@
 
 @property (nonatomic) IBOutlet UIButton *slideButton;
 @property (nonatomic) UITabBarController *tabController;
-@property (nonatomic) UIToolbar* toolBar;
+//@property (nonatomic) UIToolbar* toolBar;
 @property (nonatomic) UITabBar *tabBar;
 
 @property (nonatomic) LoginViewController* loginController;

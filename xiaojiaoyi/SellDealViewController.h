@@ -12,6 +12,7 @@
 #import "DataModalUtils.h"
 #import "DealDescriptionViewController.h"
 #import "CenterViewController.h"
+#import "MainViewController.h"
 
 @class CenterViewController;
 @interface SellDealViewController : UIViewController <UIAlertViewDelegate,UINavigationControllerDelegate,UIImagePickerControllerDelegate>
@@ -22,7 +23,7 @@
 @property (nonatomic) NSMutableArray* photos;
 @property (nonatomic) UIImage* editImage;
 @property (nonatomic) BOOL shouldDelete;
-@property (nonatomic) CenterViewController* parentVC;
+@property (nonatomic) MainViewController* parentVC;
 
 @property (nonatomic) DealObject* myNewDeal;
 @property (nonatomic) BOOL cancelDeal;

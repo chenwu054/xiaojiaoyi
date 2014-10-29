@@ -544,8 +544,6 @@
 			children = (
 				74B721AD19F1D0B5000B3892 /* EditImageViewController.h */,
 				74B721AE19F1D0B5000B3892 /* EditImageViewController.m */,
-				74B9328419AAEB4E003B6594 /* CenterViewController.h */,
-				74B9328519AAEB4E003B6594 /* CenterViewController.m */,
 				74B7219D19EF8AF7000B3892 /* SellDealViewController.h */,
 				74B7219E19EF8AF7000B3892 /* SellDealViewController.m */,
 				74CBCF0819F57BA400049AA0 /* DealDescriptionViewController.h */,
@@ -567,6 +565,8 @@
 			children = (
 				740A2E7C19C53E4600D87965 /* MainViewController.h */,
 				740A2E7D19C53E4600D87965 /* MainViewController.m */,
+				74B9328419AAEB4E003B6594 /* CenterViewController.h */,
+				74B9328519AAEB4E003B6594 /* CenterViewController.m */,
 				740A2E7619C49B4F00D87965 /* MenuTableController.h */,
 				740A2E7719C49B4F00D87965 /* MenuTableController.m */,
 				741FB5EE19DF541400EA6D5B /* UserMenuController.h */,

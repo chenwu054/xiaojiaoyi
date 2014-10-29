@@ -193,7 +193,8 @@
         return;
     else if(buttonIndex==1){
         [self deleteDealArchive];
-        [self performSegueWithIdentifier:@"SellDealUnwindSegue" sender:self];
+        [self.presentingViewController dismissViewControllerAnimated:self completion:nil];
+        //[self performSegueWithIdentifier:@"SellDealUnwindSegue" sender:self];
     }
     
     //[self performSegueWithIdentifier:@"SellDealBackSegue" sender:self];
@@ -398,10 +399,10 @@
 {
     // NSLog(@"calling unwind description View);
     if(self.cancelDeal){
-        
         [self deleteDealArchive];
     }
-    [self performSegueWithIdentifier:@"SellDealUnwindSegue" sender:self];
+    [self.presentingViewController dismissViewControllerAnimated:YES completion:nil];
+    //[self performSegueWithIdentifier:@"SellDealUnwindSegue" sender:self];
     
 }
 - (void)viewDidLoad

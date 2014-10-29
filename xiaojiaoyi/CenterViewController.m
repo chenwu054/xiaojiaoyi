@@ -132,68 +132,68 @@
     return _tabController;
 }
 
--(UIToolbar*)toolBar
-{
-    if(!_toolBar){
-        _toolBar = [[UIToolbar alloc] initWithFrame:CGRectMake(0, self.view.frame.size.height-TOOL_BAR_HEIGHT, self.view.frame.size.width , TOOL_BAR_HEIGHT)];
-        //[_toolBar setBackgroundImage:[UIImage new] forToolbarPosition:UIBarPositionAny barMetrics:UIBarMetricsDefault];
-        [_toolBar setShadowImage:[UIImage new] forToolbarPosition:UIToolbarPositionAny];
-        _toolBar.translucent = YES;
-        
-        UIImage *mineImage = [UIImage imageNamed:@"web11.png"];
-        UIBarButtonItem *mine = [[UIBarButtonItem alloc] initWithImage:mineImage style:UIBarButtonItemStylePlain target:self.superVC action:@selector(slideRightAll)];
-        mine.width = 80;
-        
-        UIImage *postImage = [UIImage imageNamed:@"add63.png"];
-        UIBarButtonItem *post = [[UIBarButtonItem alloc] initWithImage:postImage style:UIBarButtonItemStylePlain target:self action:@selector(showPostActionSheet)];
-        post.title = @"post";
-        post.width = 100;
-        
-        UIImage *searchImage = [UIImage imageNamed:@"zoom22.png"];
-        UIBarButtonItem *search = [[UIBarButtonItem alloc] initWithImage:searchImage style:UIBarButtonItemStylePlain target:_superVC action:@selector(slideLeftAll)];
-        search.width = 80;
-        
-        NSArray *toolItems = [[NSArray alloc] initWithObjects:mine,post,search, nil];
-        [_toolBar setItems:toolItems];
-        
-        [self.view addSubview:_toolBar];
-        
-    }
-    _toolBar.delegate = self;
-    return _toolBar;
-    
-}
--(void)showPostActionSheet
-{
-    UIActionSheet *actionSheet= [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:@"cancel" destructiveButtonTitle:nil otherButtonTitles:@"Sell deal",@"Buy deal", nil];
-    [actionSheet showInView:self.view];
-    
-}
-
--(void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex
-{
-    //NSLog(@"buttonIndex is %ld in action sheet is clicked",buttonIndex);
-    if(buttonIndex == 2){
-        return;
-    }
-    else if(buttonIndex == 0)
-    {
-        //NSLog(@"sell button clicked");
-        
-        [self performSegueWithIdentifier:@"SellDealSegue" sender:self];
-        
-    }
-    else if(buttonIndex == 1){
-    
-    }
-}
-
-
--(IBAction)unwindFromSellDealSegue:(UIStoryboardSegue*)sender
-{
-    NSLog(@"calling unwind from sell deal segue in center view controller");
-    [self.superVC reset];
-}
+//-(UIToolbar*)toolBar
+//{
+//    if(!_toolBar){
+//        _toolBar = [[UIToolbar alloc] initWithFrame:CGRectMake(0, self.view.frame.size.height-TOOL_BAR_HEIGHT, self.view.frame.size.width , TOOL_BAR_HEIGHT)];
+//        //[_toolBar setBackgroundImage:[UIImage new] forToolbarPosition:UIBarPositionAny barMetrics:UIBarMetricsDefault];
+//        [_toolBar setShadowImage:[UIImage new] forToolbarPosition:UIToolbarPositionAny];
+//        _toolBar.translucent = YES;
+//        
+//        UIImage *mineImage = [UIImage imageNamed:@"web11.png"];
+//        UIBarButtonItem *mine = [[UIBarButtonItem alloc] initWithImage:mineImage style:UIBarButtonItemStylePlain target:self.superVC action:@selector(slideRightAll)];
+//        mine.width = 80;
+//        
+//        UIImage *postImage = [UIImage imageNamed:@"add63.png"];
+//        UIBarButtonItem *post = [[UIBarButtonItem alloc] initWithImage:postImage style:UIBarButtonItemStylePlain target:self action:@selector(showPostActionSheet)];
+//        post.title = @"post";
+//        post.width = 100;
+//        
+//        UIImage *searchImage = [UIImage imageNamed:@"zoom22.png"];
+//        UIBarButtonItem *search = [[UIBarButtonItem alloc] initWithImage:searchImage style:UIBarButtonItemStylePlain target:_superVC action:@selector(slideLeftAll)];
+//        search.width = 80;
+//        
+//        NSArray *toolItems = [[NSArray alloc] initWithObjects:mine,post,search, nil];
+//        [_toolBar setItems:toolItems];
+//        
+//        [self.view addSubview:_toolBar];
+//        
+//    }
+//    _toolBar.delegate = self;
+//    return _toolBar;
+//    
+//}
+//-(void)showPostActionSheet
+//{
+//    UIActionSheet *actionSheet= [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:@"cancel" destructiveButtonTitle:nil otherButtonTitles:@"Sell deal",@"Buy deal", nil];
+//    [actionSheet showInView:self.view];
+//    
+//}
+//
+//-(void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex
+//{
+//    //NSLog(@"buttonIndex is %ld in action sheet is clicked",buttonIndex);
+//    if(buttonIndex == 2){
+//        return;
+//    }
+//    else if(buttonIndex == 0)
+//    {
+//        //NSLog(@"sell button clicked");
+//        
+//        [self performSegueWithIdentifier:@"SellDealSegue" sender:self];
+//        
+//    }
+//    else if(buttonIndex == 1){
+//    
+//    }
+//}
+//
+//
+//-(IBAction)unwindFromSellDealSegue:(UIStoryboardSegue*)sender
+//{
+//    NSLog(@"calling unwind from sell deal segue in center view controller");
+//    [self.superVC reset];
+//}
 
 
 -(IBAction)doneWithSellDealSegue:(UIStoryboardSegue*)sender
@@ -292,7 +292,7 @@
     else if([segue.identifier isEqualToString:@"SellDealSegue"] && [[segue destinationViewController] isKindOfClass:[SellDealViewController class]]){
         
         SellDealViewController *sellDealViewController = (SellDealViewController*)segue.destinationViewController;
-        sellDealViewController.parentVC=self;
+        //sellDealViewController.parentVC=self;
         
         DealObject* newDeal=[[DealObject alloc] init];
         NSDate* today=[NSDate date];
@@ -341,7 +341,7 @@
     //NSLog(@"center view is %@",self.view);
 
     [self tabController];
-    [self toolBar];
+    //[self toolBar];
 	//[self setupGestureRecognizer];
     
 }

@@ -14,12 +14,13 @@
 #import "UIView+GestureView.h"
 #import "MyDealViewController.h"
 #import "CategoryCollectionViewController.h"
+#import "DataModalUtils.h"
 
 @class CenterViewController;
 @class MyDealViewController;
 @class CategoryCollectionViewController;
 
-@protocol MenuNavigationDelegate <NSObject,UIPageViewControllerDataSource,UIPageViewControllerDelegate>
+@protocol MenuNavigationDelegate <NSObject,UIPageViewControllerDataSource,UIPageViewControllerDelegate,UIToolbarDelegate,UIActionSheetDelegate>
 
 -(void) slideLeftAll;
 -(void) slideRightAll;
@@ -43,7 +44,7 @@
 @property (nonatomic) CategoryCollectionViewController* categoryViewControllerOne;
 @property (nonatomic) CategoryCollectionViewController* categoryViewControllerTwo;
 
-
+@property (nonatomic) UIToolbar* toolBar;
 
 -(UIPanGestureRecognizer*)getPanGestureRecognizer;
 -(void)backToCenterViewFromMyDealView;

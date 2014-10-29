@@ -21,13 +21,10 @@
                     <navigationItem key="navigationItem" id="5qH-K5-ao3">
                         <barButtonItem key="leftBarButtonItem" title="login" id="joc-4t-N06"/>
                     </navigationItem>
-                    <connections>
-                        <segue destination="qi8-pb-Aes" kind="modal" identifier="SellDealSegue" id="QZT-xp-CvB"/>
-                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="x5A-6p-PRh" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-429" y="-4"/>
+            <point key="canvasLocation" x="-505" y="2"/>
         </scene>
         <!--Sell Deal View Controller-->
         <scene sceneID="YlS-co-7bw">
@@ -783,10 +780,13 @@
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                     </view>
+                    <connections>
+                        <segue destination="qi8-pb-Aes" kind="modal" identifier="SellDealSegue" id="1YG-ao-61j"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="2fk-Q5-OYb" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-832" y="-4"/>
+            <point key="canvasLocation" x="-914" y="-4"/>
         </scene>
         <!--My Deal View Controller - Title-->
         <scene sceneID="utn-gS-mCR">

@@ -8,8 +8,9 @@
 
 #import "MainViewController.h"
 
-
 #define PANEL_WIDTH 40
+#define TOOL_BAR_HEIGHT 50
+
 
 @interface MainViewController ()
 
@@ -21,6 +22,12 @@
 @property (nonatomic) NSArray *pages;
 @property (nonatomic) NSMutableArray *viewStack;
 @property (nonatomic) BOOL allowBeforePageView;
+
+@property (nonatomic) UIView* centerContainerView;
+@property (nonatomic) UIView* mainContainerView;
+
+@property (nonatomic) DataModalUtils* utils;
+
 @end
 
 @implementation MainViewController
@@ -36,10 +43,11 @@
 
     if(tableView == _menuViewController.tableView){
         
-        [self resetWithCenterView:[self peekViewStack]];
+        [self resetWithCenterView:self.mainContainerView];
         [self.centerViewController.view removeFromSuperview];
         [self.myDealViewController.view removeFromSuperview];
-        [self.view addSubview:self.pageVC.view];
+        [self.centerContainerView addSubview:self.pageVC.view];
+        
         _allowBeforePageView = YES;
        
         [self.pageVC setViewControllers:_pages direction:UIPageViewControllerNavigationDirectionReverse animated:YES completion:nil];
@@ -51,7 +59,7 @@
     }
     else if(tableView == _userMenuController.userMenuTableView){
         if(indexPath.row==0){
-            [self resetWithCenterView:[self peekViewStack] inDuration:0.5 withCompletion:^(BOOL finished) {
+            [self resetWithCenterView:self.mainContainerView inDuration:0.5 withCompletion:^(BOOL finished) {
                 while(self.viewStack.count>0){
                     UIView* childView = [self peekViewStack];
                     [childView removeFromSuperview];
@@ -65,11 +73,12 @@
             
             __block UIView *lastView = [self peekViewStack];
             
-            [self resetWithCenterView:lastView inDuration:0.5 withCompletion:^(BOOL finished) {
+            [self resetWithCenterView:self.mainContainerView inDuration:0.5 withCompletion:^(BOOL finished) {
                 
                 if(lastView == self.centerViewController.view){
                     [lastView removeFromSuperview];
-                    [self.view addSubview:self.myDealViewController.view];
+                    [self.centerContainerView addSubview:self.myDealViewController.view];//!!!
+                    //[self.view addSubview:self.myDealViewController.view];
                     [self pushViewStack:self.myDealViewController.view];
                 }
                 else if(lastView == self.myDealViewController.view){
@@ -79,9 +88,12 @@
                     [lastView removeFromSuperview];
                     [self popViewStack];
                     lastView = [self peekViewStack];
-                    if(self.myDealViewController.view.superview != self.view)
-                        [self.view addSubview:self.myDealViewController.view];
-                    
+//                    if(self.myDealViewController.view.superview != self.view)
+//                        [self.view addSubview:self.myDealViewController.view];
+                    //!!!
+                    if(self.myDealViewController.view.superview!=self.centerContainerView){
+                        [self.centerContainerView addSubview:self.myDealViewController.view];
+                    }
                     if(lastView == self.myDealViewController.view){
                         nil;
                     }
@@ -99,7 +111,7 @@
             
         }
         else {
-            [self resetWithCenterView:[self peekViewStack]];
+            [self resetWithCenterView:self.mainContainerView];
         }
         //[self.centerViewController presentViewController:self.myDealViewController animated:YES completion:nil];
         //[self.centerViewController pushViewController:_myDealViewController animated:YES];
@@ -115,8 +127,23 @@
 
 -(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
 {
-    NSLog(@"!!!prepare for segue");
-    
+    NSLog(@"!!!prepare for segue in Main View");
+    if([segue.identifier isEqualToString:@"SellDealSegue"] && [[segue destinationViewController] isKindOfClass:[SellDealViewController class]]){
+        
+        SellDealViewController *sellDealViewController = (SellDealViewController*)segue.destinationViewController;
+        //sellDealViewController.parentVC=self;
+        
+        DealObject* newDeal=[[DealObject alloc] init];
+        NSDate* today=[NSDate date];
+        NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+        [dateFormatter setDateFormat:@"yyyyMMddHHmmss"];
+        NSString* dealId = [NSString stringWithFormat:@"%@_%@",self.utils.userId,[dateFormatter stringFromDate:today]];
+        //NSLog(@"dealId is %@",dealId);
+        newDeal.deal_id = dealId;
+        sellDealViewController.myNewDeal=newDeal;
+        //NSLog(@"%@",newDeal);
+        //sellDealViewController.newDeal=newDeal;
+    }
 }
 
 #pragma mark - gesture recognizer setup
@@ -136,7 +163,8 @@
 -(void)tap:(UITapGestureRecognizer *)gesture
 {
     //NSLog(@"main view tap gesture");
-    [self resetWithCenterView:[self peekViewStack]];//???
+    //[self resetWithCenterView:[self peekViewStack]];//???
+    [self resetWithCenterView:self.mainContainerView];
 }
 
 -(void)pan:(UIPanGestureRecognizer *)gesture
@@ -150,112 +178,176 @@
         return;
     }
     //NSLog(@"calling pan in main view");
-    UIView* centerView= [self peekViewStack];
+    //UIView* centerView= [self peekViewStack];
     
     if(gesture.state == UIGestureRecognizerStateChanged || gesture.state == UIGestureRecognizerStateBegan){
         //NSLog(@"calling the pan gesture recognizer");
-        [self slideWithCenterView:centerView atTransition:transition ended:NO];
+        [self slideWithCenterView:self.mainContainerView atTransition:transition ended:NO];
+        //[self slideWithCenterView:centerView atTransition:transition ended:NO];
     }
     else if(gesture.state==UIGestureRecognizerStateEnded){
-        [self slideWithCenterView:centerView atTransition:transition ended:YES];
+        [self slideWithCenterView:self.mainContainerView atTransition:transition ended:YES];
+        //[self slideWithCenterView:centerView atTransition:transition ended:YES];
     }
 }
-
+//=============setup ================
 #pragma mark - sub-controllers setup
+-(DataModalUtils*)utils
+{
+    if(!_utils){
+        _utils=[DataModalUtils sharedInstance];
+    }
+    return _utils;
+}
+-(UIView*)centerContainerView
+{
+    if(!_centerContainerView){
+        _centerContainerView=[[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height)];
+        
+    }
+    return _centerContainerView;
+}
+-(UIView*)mainContainerView
+{
+    if(!_mainContainerView){
+        _mainContainerView=[[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height)];
+        UIPanGestureRecognizer *panGestureRecognizer=[self getPanGestureRecognizer];
+        [self.mainContainerView addGestureRecognizer:panGestureRecognizer];
+        //[_centerViewController.view addGestureRecognizer:panGestureRecognizer];
+    }
+    return _mainContainerView;
+}
 //NOTE: One gesture recognizer can be only added to ONE view
 //Adding one recognizer to multiple views will invalidate the recognizer and no view will response to the gesture.
 -(void)setup
 {
-    [self setupCenterViewController];
-    [self setupMenuViewController];
-    [self setupUserMenuViewController];
-    [self setupMyDealViewController];
-    [self setupPageView];
-    [self setupCategoryViewController];
+    [self.view addSubview:self.mainContainerView];
+    [self.mainContainerView addSubview:self.centerContainerView];
+    [self.mainContainerView addSubview:self.toolBar];
+    
+    [self centerViewController];
+    //add to center container view;
+    [self.centerContainerView addSubview:_centerViewController.view];
+    //[self setupCenterViewController];
+    [self menuViewController];
+    [self.view addSubview:_menuViewController.view];
+    //[self setupMenuViewController];
+    [self userMenuController];
+    [self.view addSubview:_userMenuController.view];
+    //[self setupUserMenuViewController];
+    [self myDealViewController];
+    //[self setupMyDealViewController];
+    [self pageVC];
+    //[self setupPageView];
+    
+    //[self setupCategoryViewController];
+    [self categoryViewControllerOne];
+    [self categoryViewControllerTwo];
+
+    
 }
--(void)setupCenterViewController
+-(CenterViewController*)centerViewController
 {
     //[self setupGestureRecognizer];
     if(!_centerViewController){
         _centerViewController =[self.storyboard instantiateViewControllerWithIdentifier:@"CenterTabBarControllerSB"];
         _centerViewController.superVC = self;
         [self addChildViewController:_centerViewController];
-        [self.view addSubview:_centerViewController.view];
+        //[self.view addSubview:_centerViewController.view];
         [_centerViewController didMoveToParentViewController:self];
         
         //_viewController.delegate = self;
         //[self.navigationController pushViewController:_viewController animated:YES];
+        //setting up the gesture recognizer !!! CenterView already has a Pan gesture recognizer!
+        
+        UITapGestureRecognizer *tapGestureRecognizer=[self getTapGestureRecognizer];
+        [_centerViewController.view addGestureRecognizer:tapGestureRecognizer];
+        _currentView = _centerViewController.view;
+        
     }
-    
-    //setting up the gesture recognizer !!! CenterView already has a Pan gesture recognizer!
-    UIPanGestureRecognizer *panGestureRecognizer=[self getPanGestureRecognizer];
-    [_centerViewController.view addGestureRecognizer:panGestureRecognizer];
-    UITapGestureRecognizer *tapGestureRecognizer=[self getTapGestureRecognizer];
-    [_centerViewController.view addGestureRecognizer:tapGestureRecognizer];
-    _currentView = _centerViewController.view;
+    return _centerViewController;
 }
--(void)setupMenuViewController
+-(MenuTableController*)menuViewController
 {
     if(!_menuViewController){
-        _menuViewController = [MenuTableController alloc];
+        _menuViewController = [MenuTableController alloc];//!!!TODO: this call may be redundent
         _menuViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"menuController"];
         
-        [self.view addSubview:_menuViewController.view];
         [self addChildViewController:_menuViewController];
         _menuViewController.view.frame = CGRectMake(_menuViewController.view.frame.size.width,0, _menuViewController.view.frame.size.width, _menuViewController.view.frame.size.height);
         [_menuViewController didMoveToParentViewController:self];
         _menuViewController.tableView.delegate = self;
+        UIPanGestureRecognizer *menuPan = [self getPanGestureRecognizer];
+        [_menuViewController.view addGestureRecognizer:menuPan];
     }
-    UIPanGestureRecognizer *menuPan = [self getPanGestureRecognizer];
-    [_menuViewController.view addGestureRecognizer:menuPan];
+    return _menuViewController;
 }
--(void)setupUserMenuViewController
+-(UserMenuController*)userMenuController
 {
     if(!_userMenuController){
-        _userMenuController = [UserMenuController alloc];
+        _userMenuController = [UserMenuController alloc];//!!!TODO: this call may be redundent
         _userMenuController = [self.storyboard instantiateViewControllerWithIdentifier:@"userMenuController"];
         
-        [self.view addSubview:_userMenuController.view];
         _userMenuController.view.frame = CGRectMake(-_userMenuController.view.frame.size.width, 0, _userMenuController.view.frame.size.width , _userMenuController.view.frame.size.height);
+        
         [_userMenuController didMoveToParentViewController:self];
         _userMenuController.userMenuTableView.delegate=self;
+        
+        UIPanGestureRecognizer *userPan = [self getPanGestureRecognizer];
+        [_userMenuController.view addGestureRecognizer:userPan];
     }
-    UIPanGestureRecognizer *userPan = [self getPanGestureRecognizer];
-    [_userMenuController.view addGestureRecognizer:userPan];
+    return _userMenuController;
 }
--(void)setupMyDealViewController
+-(MyDealViewController*)myDealViewController
 {
     //setup my deal view controller
     if(!_myDealViewController){
         _myDealViewController = [[MyDealViewController alloc] init];
+        _myDealViewController.mainVC = self;
+        UIPanGestureRecognizer *myDealPan = [self getPanGestureRecognizer];
+        [_myDealViewController.view addGestureRecognizer:myDealPan];
+        
+        UITapGestureRecognizer *myDealTap = [self getTapGestureRecognizer];
+        [_myDealViewController.view addGestureRecognizer:myDealTap];
     }
-    _myDealViewController.mainVC = self;
-    
-    UIPanGestureRecognizer *myDealPan = [self getPanGestureRecognizer];
-    [_myDealViewController.view addGestureRecognizer:myDealPan];
-    
-    UITapGestureRecognizer *myDealTap = [self getTapGestureRecognizer];
-    [_myDealViewController.view addGestureRecognizer:myDealTap];
+    return _myDealViewController;
 }
-
--(void)setupPageView
+-(UIPageViewController*)pageVC
 {
     if(!_pageVC){
         _pageVC = [[UIPageViewController alloc] initWithTransitionStyle:UIPageViewControllerTransitionStylePageCurl navigationOrientation:UIPageViewControllerNavigationOrientationVertical options:nil];
+        
+        _pageVC.view.frame = [UIScreen mainScreen].bounds;//CGRectMake(0,0,self.view.frame.size.width,self.view.frame.size.height);
+        _pageVC.delegate=self;
+        _pageVC.dataSource = self;
+        _pageVC.view.backgroundColor = [UIColor colorWithRed:100 green:100 blue:100 alpha:0.5];
+        //CGRectMake(0,0,self.view.frame.size.width,self.view.frame.size.height);
+        [self setupCategoryViewController];
+        _pages=@[self.categoryViewControllerOne];
+        
+        [self.pageVC setViewControllers:_pages direction:UIPageViewControllerNavigationDirectionReverse animated:YES completion:nil];
+        UIPanGestureRecognizer *pagePan = [self getPanGestureRecognizer];
+        [_pageVC.view addGestureRecognizer:pagePan];
+        
+        UITapGestureRecognizer *pageTap = [self getTapGestureRecognizer];
+        [_pageVC.view addGestureRecognizer:pageTap];
+
     }
-    _pageVC.view.frame = [UIScreen mainScreen].bounds;//CGRectMake(0,0,self.view.frame.size.width,self.view.frame.size.height);
-    _pageVC.delegate=self;
-    _pageVC.dataSource = self;
-    _pageVC.view.backgroundColor = [UIColor colorWithRed:100 green:100 blue:100 alpha:0.5];
-    //CGRectMake(0,0,self.view.frame.size.width,self.view.frame.size.height);
-    [self setupCategoryViewController];
-    _pages=@[self.categoryViewControllerOne];
-    [self.pageVC setViewControllers:_pages direction:UIPageViewControllerNavigationDirectionReverse animated:YES completion:nil];
-    UIPanGestureRecognizer *pagePan = [self getPanGestureRecognizer];
-    [_pageVC.view addGestureRecognizer:pagePan];
-    
-    UITapGestureRecognizer *pageTap = [self getTapGestureRecognizer];
-    [_pageVC.view addGestureRecognizer:pageTap];
+    return _pageVC;
+}
+-(CategoryCollectionViewController*)categoryViewControllerOne
+{
+    if(!_categoryViewControllerOne){
+        _categoryViewControllerOne = [[CategoryCollectionViewController alloc] init];
+    }
+    return _categoryViewControllerOne;
+}
+-(CategoryCollectionViewController*)categoryViewControllerTwo
+{
+    if(!_categoryViewControllerTwo){
+        _categoryViewControllerTwo = [[CategoryCollectionViewController alloc] init];
+    }
+    return _categoryViewControllerTwo;
 }
 -(void)setupCategoryViewController
 {
@@ -266,8 +358,72 @@
         _categoryViewControllerTwo = [[CategoryCollectionViewController alloc] init];
     }
 }
+-(UIToolbar*)toolBar
+{
+    if(!_toolBar){
+        _toolBar = [[UIToolbar alloc] initWithFrame:CGRectMake(0, self.view.frame.size.height-TOOL_BAR_HEIGHT, self.view.frame.size.width , TOOL_BAR_HEIGHT)];
+        //[_toolBar setBackgroundImage:[UIImage new] forToolbarPosition:UIBarPositionAny barMetrics:UIBarMetricsDefault];
+        [_toolBar setShadowImage:[UIImage new] forToolbarPosition:UIToolbarPositionAny];
+        _toolBar.translucent = YES;
+        
+        UIImage *mineImage = [UIImage imageNamed:@"web11.png"];
+        UIBarButtonItem *mine = [[UIBarButtonItem alloc] initWithImage:mineImage style:UIBarButtonItemStylePlain target:self action:@selector(slideRightAll)];
+        mine.width = 80;
+        
+        UIImage *postImage = [UIImage imageNamed:@"add63.png"];
+        UIBarButtonItem *post = [[UIBarButtonItem alloc] initWithImage:postImage style:UIBarButtonItemStylePlain target:self action:@selector(showPostActionSheet)];
+        post.title = @"post";
+        post.width = 100;
+        
+        UIImage *searchImage = [UIImage imageNamed:@"zoom22.png"];
+        UIBarButtonItem *search = [[UIBarButtonItem alloc] initWithImage:searchImage style:UIBarButtonItemStylePlain target:self action:@selector(slideLeftAll)];
+        search.width = 80;
+        
+        NSArray *toolItems = [[NSArray alloc] initWithObjects:mine,post,search, nil];
+        [_toolBar setItems:toolItems];
+    
+         _toolBar.delegate = self;
+    }
+    return _toolBar;
+    
+}
 
 
+//---------tool bar methods---------------------
+-(void)showPostActionSheet
+{
+    UIActionSheet *actionSheet= [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:@"cancel" destructiveButtonTitle:nil otherButtonTitles:@"Sell deal",@"Buy deal", nil];
+    [actionSheet showInView:self.view];
+    
+}
+
+-(void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex
+{
+    //NSLog(@"buttonIndex is %ld in action sheet is clicked",buttonIndex);
+    if(buttonIndex == 2){
+        return;
+    }
+    else if(buttonIndex == 0)
+    {
+        //NSLog(@"sell button clicked");
+        
+        [self performSegueWithIdentifier:@"SellDealSegue" sender:self];
+        
+    }
+    else if(buttonIndex == 1){
+        
+    }
+}
+
+
+-(IBAction)unwindFromSellDealSegue:(UIStoryboardSegue*)sender
+{
+    NSLog(@"calling unwind from sell deal segue in center view controller");
+    [self reset];
+}
+
+
+//================page view setup=====================
 #pragma mark - page view methods
 -(UIViewController *)pageViewController:(UIPageViewController *)pageViewController viewControllerAfterViewController:(UIViewController *)viewController
 {
@@ -313,9 +469,12 @@
     [self.pageVC.view removeFromSuperview];
     [self.myDealViewController.view removeFromSuperview];
     
-    if(self.centerViewController.view.superview != self.view){
-        [self.view addSubview:self.centerViewController.view];
+    if(self.centerViewController.view.superview != self.centerContainerView){
+        [self.centerContainerView addSubview:self.centerViewController.view];
     }
+//    if(self.centerViewController.view.superview != self.view){
+//        [self.view addSubview:self.centerViewController.view];
+//    }
     _currentView = self.centerViewController.view;
 }
 -(void)backToCenterViewFromCategoryView
@@ -325,16 +484,22 @@
     UIView *lastView = [self peekViewStack];
     if(lastView == self.centerViewController.view){
         [self.myDealViewController.view removeFromSuperview];
-        if([lastView superview] != self.view){
-            [self.view addSubview:self.centerViewController.view];
+        if([lastView superview] != self.centerContainerView){
+            [self.centerContainerView addSubview:self.centerViewController.view];
         }
+//        if([lastView superview] != self.view){
+//            [self.view addSubview:self.centerViewController.view];
+//        }
         
     }
     else if(lastView ==self.myDealViewController.view){
         [self.centerViewController.view removeFromSuperview];
-        if([self.myDealViewController.view superview]!=self.view){
-            [self.view addSubview:self.myDealViewController.view];
+        if([self.myDealViewController.view superview]!=self.centerContainerView){
+            [self.centerContainerView addSubview:self.myDealViewController.view];
         }
+//        if([self.myDealViewController.view superview]!=self.view){
+//            [self.view addSubview:self.myDealViewController.view];
+//        }
     }
     else{
         NSLog(@"!!!ERROR: coming back from category view");
@@ -342,6 +507,7 @@
     
 }
 
+//sliding methods
 -(void) slideWithCenterView:(UIView*)centerView atTransition:(CGPoint)transition ended:(BOOL)ended
 {
     /*
@@ -403,11 +569,13 @@
 }
 -(void) slideLeftAll
 {
-    [self slideLeftAllWithCenterView:[self peekViewStack]];
+    [self slideLeftAllWithCenterView:self.mainContainerView];
+    //[self slideLeftAllWithCenterView:[self peekViewStack]];
 }
 -(void) slideRightAll
 {
-    [self slideRightAllWithCenterView:[self peekViewStack]];
+    [self slideRightAllWithCenterView:self.mainContainerView];
+    //[self slideRightAllWithCenterView:[self peekViewStack]];
 }
 /*
  slide all the way to the left
@@ -489,7 +657,8 @@
 
 -(BOOL) isReset
 {
-    return (_currentView.frame.origin.x==0 || _centerViewController.view.frame.origin.x == 0) || (_myDealViewController.view.frame.origin.x==0);
+    return (self.mainContainerView.frame.origin.x==0 || self.mainContainerView.frame.origin.x == 0);
+    //return (_currentView.frame.origin.x==0 || _centerViewController.view.frame.origin.x == 0) || (_myDealViewController.view.frame.origin.x==0);
 }
 
 -(BOOL) isResetWithCenterView:(UIView*)centerView
@@ -510,8 +679,12 @@
         return [self.viewStack objectAtIndex:self.viewStack.count-1];
     }
     
-    if(self.centerViewController.view.superview != self.view)
-        [self.view addSubview:self.centerViewController.view];
+    if(self.centerViewController.view.superview != self.view){
+        
+        [self.centerContainerView addSubview:self.centerViewController.view];
+        //[self.view addSubview:self.centerViewController.view];
+    }
+    
     [self pushViewStack:self.centerViewController.view];
     
     return self.centerViewController.view;
@@ -541,8 +714,7 @@
     [super viewDidLoad];
     [self setup];
     self.isReset = true;
-    //[self setupSubViewGestureRecognizer];
-    //[UIView recursivePrintViewTree:self.view];
+
 
 }
 
