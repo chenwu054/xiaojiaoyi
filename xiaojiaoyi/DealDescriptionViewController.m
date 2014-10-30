@@ -363,7 +363,9 @@ static NSInteger t =0.0;
         //5. expiry date
         NSDateComponents *components = [[NSCalendar currentCalendar] components:NSYearCalendarUnit|NSMonthCalendarUnit|NSDayCalendarUnit fromDate:[NSDate date]];
         NSDate *startDate = [[NSCalendar currentCalendar] dateFromComponents:components];
-        self.myNewDeal.create_date=startDate;
+        //self.myNewDeal.create_date=startDate;
+        self.myNewDeal.create_date=[NSDate date];
+        
         NSInteger daysToAdd = 30;
         switch (self.expiryPicked) {
             case 0:
@@ -727,9 +729,10 @@ static NSInteger t =0.0;
     if(!_crossButton){
         _crossButton=[[UIButton alloc] init];
         _crossButton.frame=CGRectMake(0, self.view.frame.size.height-BUTTON_HEIGHT, self.view.frame.size.width/2, BUTTON_HEIGHT);
-        [_crossButton setImage:[UIImage imageNamed:@"cross.png"] forState:UIControlStateNormal];
+        [_crossButton setImage:[[UIImage imageNamed:@"cross.png"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate] forState:UIControlStateNormal];
         _crossButton.imageView.contentMode=UIViewContentModeScaleAspectFit;
         _crossButton.imageEdgeInsets=UIEdgeInsetsMake(5, 0, 5, 0);
+        _crossButton.tintColor=[UIColor redColor];
         _crossButton.backgroundColor=[UIColor whiteColor];
         [_crossButton addTarget:self action:@selector(crossButtonClicked:) forControlEvents:UIControlEventTouchUpInside];
     }
@@ -740,7 +743,8 @@ static NSInteger t =0.0;
     if(!_checkButton){
         _checkButton=[[UIButton alloc] init];
         _checkButton.frame=CGRectMake(self.view.frame.size.width/2, self.view.frame.size.height-BUTTON_HEIGHT, self.view.frame.size.width/2, BUTTON_HEIGHT);
-        [_checkButton setImage:[UIImage imageNamed:@"correct.png"] forState:UIControlStateNormal];
+        [_checkButton setImage:[[UIImage imageNamed:@"correct.png"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate] forState:UIControlStateNormal];
+        _checkButton.tintColor=[UIColor greenColor];
         _checkButton.imageView.contentMode=UIViewContentModeScaleAspectFit;
         _checkButton.backgroundColor=[UIColor whiteColor];
         [_checkButton addTarget:self action:@selector(checkButtonClicked:) forControlEvents:UIControlEventTouchUpInside];

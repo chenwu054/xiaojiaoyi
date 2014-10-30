@@ -50,7 +50,7 @@
         
         _allowBeforePageView = YES;
        
-        [self.pageVC setViewControllers:_pages direction:UIPageViewControllerNavigationDirectionReverse animated:YES completion:nil];
+        [self.pageVC setViewControllers:_pages direction:UIPageViewControllerNavigationDirectionForward animated:YES completion:nil];
         
         if([self peekViewStack]!=self.pageVC.view){
             [self pushViewStack:self.pageVC.view];
@@ -237,13 +237,15 @@
     //[self setupUserMenuViewController];
     [self myDealViewController];
     //[self setupMyDealViewController];
-    [self pageVC];
+    [self categoryViewControllerOne];
+    [self categoryViewControllerTwo];
+    //[self pageVC];
     //[self setupPageView];
     
     //[self setupCategoryViewController];
-    [self categoryViewControllerOne];
-    [self categoryViewControllerTwo];
-
+    
+    
+    [self.pageVC setViewControllers:_pages direction:UIPageViewControllerNavigationDirectionReverse animated:YES completion:nil];
     
 }
 -(CenterViewController*)centerViewController
@@ -312,28 +314,35 @@
     }
     return _myDealViewController;
 }
--(UIPageViewController*)pageVC
+//---------tool bar methods---------------------
+-(UIToolbar*)toolBar
 {
-    if(!_pageVC){
-        _pageVC = [[UIPageViewController alloc] initWithTransitionStyle:UIPageViewControllerTransitionStylePageCurl navigationOrientation:UIPageViewControllerNavigationOrientationVertical options:nil];
+    if(!_toolBar){
+        _toolBar = [[UIToolbar alloc] initWithFrame:CGRectMake(0, self.view.frame.size.height-TOOL_BAR_HEIGHT, self.view.frame.size.width , TOOL_BAR_HEIGHT)];
+        //[_toolBar setBackgroundImage:[UIImage new] forToolbarPosition:UIBarPositionAny barMetrics:UIBarMetricsDefault];
+        [_toolBar setShadowImage:[UIImage new] forToolbarPosition:UIToolbarPositionAny];
+        _toolBar.translucent = YES;
         
-        _pageVC.view.frame = [UIScreen mainScreen].bounds;//CGRectMake(0,0,self.view.frame.size.width,self.view.frame.size.height);
-        _pageVC.delegate=self;
-        _pageVC.dataSource = self;
-        _pageVC.view.backgroundColor = [UIColor colorWithRed:100 green:100 blue:100 alpha:0.5];
-        //CGRectMake(0,0,self.view.frame.size.width,self.view.frame.size.height);
-        [self setupCategoryViewController];
-        _pages=@[self.categoryViewControllerOne];
+        UIImage *mineImage = [UIImage imageNamed:@"web11.png"];
+        UIBarButtonItem *mine = [[UIBarButtonItem alloc] initWithImage:mineImage style:UIBarButtonItemStylePlain target:self action:@selector(slideRightAll)];
+        mine.width = 80;
         
-        [self.pageVC setViewControllers:_pages direction:UIPageViewControllerNavigationDirectionReverse animated:YES completion:nil];
-        UIPanGestureRecognizer *pagePan = [self getPanGestureRecognizer];
-        [_pageVC.view addGestureRecognizer:pagePan];
+        UIImage *postImage = [UIImage imageNamed:@"add63.png"];
+        UIBarButtonItem *post = [[UIBarButtonItem alloc] initWithImage:postImage style:UIBarButtonItemStylePlain target:self action:@selector(showPostActionSheet)];
+        post.title = @"post";
+        post.width = 100;
         
-        UITapGestureRecognizer *pageTap = [self getTapGestureRecognizer];
-        [_pageVC.view addGestureRecognizer:pageTap];
-
+        UIImage *searchImage = [UIImage imageNamed:@"zoom22.png"];
+        UIBarButtonItem *search = [[UIBarButtonItem alloc] initWithImage:searchImage style:UIBarButtonItemStylePlain target:self action:@selector(slideLeftAll)];
+        search.width = 80;
+        
+        NSArray *toolItems = [[NSArray alloc] initWithObjects:mine,post,search, nil];
+        [_toolBar setItems:toolItems];
+        
+        _toolBar.delegate = self;
     }
-    return _pageVC;
+    return _toolBar;
+    
 }
 -(CategoryCollectionViewController*)categoryViewControllerOne
 {
@@ -358,38 +367,29 @@
         _categoryViewControllerTwo = [[CategoryCollectionViewController alloc] init];
     }
 }
--(UIToolbar*)toolBar
+
+-(UIPageViewController*)pageVC
 {
-    if(!_toolBar){
-        _toolBar = [[UIToolbar alloc] initWithFrame:CGRectMake(0, self.view.frame.size.height-TOOL_BAR_HEIGHT, self.view.frame.size.width , TOOL_BAR_HEIGHT)];
-        //[_toolBar setBackgroundImage:[UIImage new] forToolbarPosition:UIBarPositionAny barMetrics:UIBarMetricsDefault];
-        [_toolBar setShadowImage:[UIImage new] forToolbarPosition:UIToolbarPositionAny];
-        _toolBar.translucent = YES;
+    if(!_pageVC){
+        _pageVC = [[UIPageViewController alloc] initWithTransitionStyle:UIPageViewControllerTransitionStylePageCurl navigationOrientation:UIPageViewControllerNavigationOrientationVertical options:nil];
+        _pageVC.view.frame = [UIScreen mainScreen].bounds;//CGRectMake(0,0,self.view.frame.size.width,self.view.frame.size.height);
+        _pageVC.delegate=self;
+        _pageVC.dataSource = self;
+        _pageVC.view.backgroundColor = [UIColor colorWithRed:100 green:100 blue:100 alpha:0.5];
+        //CGRectMake(0,0,self.view.frame.size.width,self.view.frame.size.height);
+        [self setupCategoryViewController];
+        _pages=@[self.categoryViewControllerOne];
+        [self.pageVC setViewControllers:_pages direction:UIPageViewControllerNavigationDirectionReverse animated:YES completion:nil];
+        UIPanGestureRecognizer *pagePan = [self getPanGestureRecognizer];
+        [_pageVC.view addGestureRecognizer:pagePan];
         
-        UIImage *mineImage = [UIImage imageNamed:@"web11.png"];
-        UIBarButtonItem *mine = [[UIBarButtonItem alloc] initWithImage:mineImage style:UIBarButtonItemStylePlain target:self action:@selector(slideRightAll)];
-        mine.width = 80;
-        
-        UIImage *postImage = [UIImage imageNamed:@"add63.png"];
-        UIBarButtonItem *post = [[UIBarButtonItem alloc] initWithImage:postImage style:UIBarButtonItemStylePlain target:self action:@selector(showPostActionSheet)];
-        post.title = @"post";
-        post.width = 100;
-        
-        UIImage *searchImage = [UIImage imageNamed:@"zoom22.png"];
-        UIBarButtonItem *search = [[UIBarButtonItem alloc] initWithImage:searchImage style:UIBarButtonItemStylePlain target:self action:@selector(slideLeftAll)];
-        search.width = 80;
-        
-        NSArray *toolItems = [[NSArray alloc] initWithObjects:mine,post,search, nil];
-        [_toolBar setItems:toolItems];
-    
-         _toolBar.delegate = self;
+        UITapGestureRecognizer *pageTap = [self getTapGestureRecognizer];
+        [_pageVC.view addGestureRecognizer:pageTap];
+
     }
-    return _toolBar;
-    
+    return _pageVC;
 }
 
-
-//---------tool bar methods---------------------
 -(void)showPostActionSheet
 {
     UIActionSheet *actionSheet= [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:@"cancel" destructiveButtonTitle:nil otherButtonTitles:@"Sell deal",@"Buy deal", nil];
@@ -405,10 +405,8 @@
     }
     else if(buttonIndex == 0)
     {
-        //NSLog(@"sell button clicked");
-        
+
         [self performSegueWithIdentifier:@"SellDealSegue" sender:self];
-        
     }
     else if(buttonIndex == 1){
         
@@ -425,37 +423,55 @@
 
 //================page view setup=====================
 #pragma mark - page view methods
+-(void)pageViewController:(UIPageViewController *)pageViewController willTransitionToViewControllers:(NSArray *)pendingViewControllers
+{
+    NSLog(@"calling will transition to view controller");
+    
+    
+}
 -(UIViewController *)pageViewController:(UIPageViewController *)pageViewController viewControllerAfterViewController:(UIViewController *)viewController
 {
     NSLog(@"!calling after view controller");
         return nil;
-    //return _pages[1];
-    //CategoryCollectionViewController *afterPageVC = [[CategoryCollectionViewController alloc] initWithBackgroundColor:[UIColor colorWithRed:arc4random()%256 green:arc4random()%256 blue:arc4random()%256 alpha:1.0]];
+    //    if(!_allowBeforePageView)
+    //        return nil;
+    //_allowBeforePageView=NO;
     
-    //return afterPageVC;
-}
--(UIViewController *)pageViewController:(UIPageViewController *)pageViewController viewControllerBeforeViewController:(UIViewController *)viewController
-{
-    NSLog(@"calling before view controller1");
-    if(!_allowBeforePageView)
-        return nil;
-    _allowBeforePageView=NO;
-    NSLog(@"calling before view controller2");
     CategoryCollectionViewController *retCatogoryVC = viewController==_categoryViewControllerTwo?_categoryViewControllerOne:_categoryViewControllerTwo;
     _pages = @[(viewController==_categoryViewControllerTwo)?_categoryViewControllerOne:_categoryViewControllerTwo];
     UIColor *newColor = [UIColor colorWithRed:(arc4random()%256)/256.0 green:(arc4random()%256)/256.0 blue:(arc4random()%256)/256.0 alpha:1.0];
     retCatogoryVC.view.backgroundColor = newColor;
     //Does NOT call the categoryCollectionViewController view did load
     UINavigationItem *item =  retCatogoryVC.navigationBar.items[0];
-    item.title = [NSString stringWithFormat:@"new %d",arc4random()%256];
+    int ranNum =arc4random()%256;
+    NSLog(@"the random number is %d",ranNum);
+    item.title = [NSString stringWithFormat:@"new %d",ranNum];
     
     //NSLog(@"calling before view controller");
     return retCatogoryVC;
 }
--(void)pageViewController:(UIPageViewController *)pageViewController willTransitionToViewControllers:(NSArray *)pendingViewControllers
+-(UIViewController *)pageViewController:(UIPageViewController *)pageViewController viewControllerBeforeViewController:(UIViewController *)viewController
 {
-    NSLog(@"will transition to");
+    NSLog(@"calling before view controller1");
+//    if(!_allowBeforePageView)
+//        return nil;
+    //_allowBeforePageView=NO;
+    //NSLog(@"calling before view controller2");
+    
+    CategoryCollectionViewController *retCatogoryVC = viewController==_categoryViewControllerTwo?_categoryViewControllerOne:_categoryViewControllerTwo;
+    _pages = @[(viewController==_categoryViewControllerTwo)?_categoryViewControllerOne:_categoryViewControllerTwo];
+    UIColor *newColor = [UIColor colorWithRed:(arc4random()%256)/256.0 green:(arc4random()%256)/256.0 blue:(arc4random()%256)/256.0 alpha:1.0];
+    retCatogoryVC.view.backgroundColor = newColor;
+    //Does NOT call the categoryCollectionViewController view did load
+    UINavigationItem *item =  retCatogoryVC.navigationBar.items[0];
+    int ranNum =arc4random()%256;
+    NSLog(@"the random number is %d",ranNum);
+    item.title = [NSString stringWithFormat:@"new %d",ranNum];
+    
+    //NSLog(@"calling before view controller");
+    return retCatogoryVC;
 }
+
 /*
  slide based on the transition
  */

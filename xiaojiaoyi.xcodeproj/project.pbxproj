@@ -41,8 +41,9 @@
 		741FB60919E11B0200EA6D5B /* add63.png in Resources */ = {isa = PBXBuildFile; fileRef = 741FB60719E11B0200EA6D5B /* add63.png */; };
 		741FB60A19E11B0200EA6D5B /* web11.png in Resources */ = {isa = PBXBuildFile; fileRef = 741FB60819E11B0200EA6D5B /* web11.png */; };
 		7452569A19FDE08E00A12020 /* DealObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 7452569919FDE08E00A12020 /* DealObject.m */; };
-		7452569D19FF2DA100A12020 /* MyDealListTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 7452569C19FF2DA100A12020 /* MyDealListTableViewCell.m */; };
 		745256A019FF2FB500A12020 /* MyDealPassGestureView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7452569F19FF2FB500A12020 /* MyDealPassGestureView.m */; };
+		745256A31A01AB2300A12020 /* upArrow.png in Resources */ = {isa = PBXBuildFile; fileRef = 745256A11A01AB2300A12020 /* upArrow.png */; };
+		745256A41A01AB2300A12020 /* downArrow.png in Resources */ = {isa = PBXBuildFile; fileRef = 745256A21A01AB2300A12020 /* downArrow.png */; };
 		7493294A19D12D1C003A2388 /* FacebookSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7493294919D12D1C003A2388 /* FacebookSDK.framework */; };
 		7493294D19D27622003A2388 /* MyFBSessionTokenCachingStrategy.m in Sources */ = {isa = PBXBuildFile; fileRef = 7493294C19D27622003A2388 /* MyFBSessionTokenCachingStrategy.m */; };
 		7493295219D60EE1003A2388 /* AddressBook.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7493295119D60EE1003A2388 /* AddressBook.framework */; };
@@ -211,10 +212,10 @@
 		741FB60819E11B0200EA6D5B /* web11.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = web11.png; sourceTree = "<group>"; };
 		7452569819FDE08E00A12020 /* DealObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DealObject.h; sourceTree = "<group>"; };
 		7452569919FDE08E00A12020 /* DealObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DealObject.m; sourceTree = "<group>"; };
-		7452569B19FF2DA100A12020 /* MyDealListTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MyDealListTableViewCell.h; sourceTree = "<group>"; };
-		7452569C19FF2DA100A12020 /* MyDealListTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MyDealListTableViewCell.m; sourceTree = "<group>"; };
 		7452569E19FF2FB500A12020 /* MyDealPassGestureView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MyDealPassGestureView.h; sourceTree = "<group>"; };
 		7452569F19FF2FB500A12020 /* MyDealPassGestureView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MyDealPassGestureView.m; sourceTree = "<group>"; };
+		745256A11A01AB2300A12020 /* upArrow.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = upArrow.png; sourceTree = "<group>"; };
+		745256A21A01AB2300A12020 /* downArrow.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = downArrow.png; sourceTree = "<group>"; };
 		7493294919D12D1C003A2388 /* FacebookSDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FacebookSDK.framework; path = ../../../../Documents/FacebookSDK/FacebookSDK.framework; sourceTree = "<group>"; };
 		7493294B19D27622003A2388 /* MyFBSessionTokenCachingStrategy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MyFBSessionTokenCachingStrategy.h; sourceTree = "<group>"; };
 		7493294C19D27622003A2388 /* MyFBSessionTokenCachingStrategy.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MyFBSessionTokenCachingStrategy.m; sourceTree = "<group>"; };
@@ -434,6 +435,8 @@
 		74065AE319C7E2DD0033DA71 /* images */ = {
 			isa = PBXGroup;
 			children = (
+				745256A11A01AB2300A12020 /* upArrow.png */,
+				745256A21A01AB2300A12020 /* downArrow.png */,
 				740C850D19F81A4A00D3A178 /* delivery.png */,
 				740C850B19F818A500D3A178 /* exchange.png */,
 				74CBCF0D19F6FA8C00049AA0 /* play.png */,
@@ -573,8 +576,6 @@
 				741FB5EF19DF541400EA6D5B /* UserMenuController.m */,
 				74B7219719EC857B000B3892 /* MyDealViewController.h */,
 				74B7219819EC857B000B3892 /* MyDealViewController.m */,
-				7452569B19FF2DA100A12020 /* MyDealListTableViewCell.h */,
-				7452569C19FF2DA100A12020 /* MyDealListTableViewCell.m */,
 				74A88CA019FC0D8F00872C26 /* MyDealListViewController.h */,
 				74A88CA119FC0D8F00872C26 /* MyDealListViewController.m */,
 				74A88CA619FC0DE600872C26 /* FriendDealListViewController.h */,
@@ -646,8 +647,8 @@
 				749366FB19CE75F1003B3108 /* Login */,
 				740A2E6E19C299D200D87965 /* CollectionView */,
 				741FB5FE19E0BE2E00EA6D5B /* CenterVC */,
-				74B721AC19F0C5FE000B3892 /* MainPage */,
 				740C855119F886E300D3A178 /* DataModel */,
+				74B721AC19F0C5FE000B3892 /* MainPage */,
 				74B721AB19F0C5D6000B3892 /* MakeDeal */,
 				740C855719F959F200D3A178 /* TestCoreDataViewController.h */,
 				740C855819F959F200D3A178 /* TestCoreDataViewController.m */,
@@ -909,6 +910,7 @@
 				74B721B419F2272B000B3892 /* rotateCounterClock.png in Resources */,
 				74065AE719C7E2DD0033DA71 /* apple image.jpg in Resources */,
 				74B9328319AAEB4E003B6594 /* Main_iPad.storyboard in Resources */,
+				745256A31A01AB2300A12020 /* upArrow.png in Resources */,
 				74B721B719F22766000B3892 /* square.png in Resources */,
 				74B721A719F0B685000B3892 /* picture.png in Resources */,
 				74B9328819AAEB4E003B6594 /* Images.xcassets in Resources */,
@@ -920,6 +922,7 @@
 				74065AE919C7E2DD0033DA71 /* google.jpg in Resources */,
 				74B721B119F20180000B3892 /* trash.png in Resources */,
 				749366F419CB3E67003B3108 /* twitter small icon.jpg in Resources */,
+				745256A41A01AB2300A12020 /* downArrow.png in Resources */,
 				74CBCF0E19F6FA8C00049AA0 /* play.png in Resources */,
 				74B7218D19EA4A29000B3892 /* pull_up_arrow.jpg in Resources */,
 				74065AEB19C923540033DA71 /* linkedin.jpg in Resources */,
@@ -960,7 +963,6 @@
 				740A2E7E19C53E4600D87965 /* MainViewController.m in Sources */,
 				74FD860D19E380B7000EC4C2 /* UIView+GestureView.m in Sources */,
 				74B932A619AAEC55003B6594 /* LoginViewController.m in Sources */,
-				7452569D19FF2DA100A12020 /* MyDealListTableViewCell.m in Sources */,
 				74CB84EE19BB4B4E00579432 /* OAConsumer.m in Sources */,
 				74B9327D19AAEB4E003B6594 /* xjyAppDelegate.m in Sources */,
 				74B9330819AD8695003B6594 /* NSDateFormatter+STTwitter.m in Sources */,

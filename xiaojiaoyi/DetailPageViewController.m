@@ -36,7 +36,7 @@
 -(DetailPageContentViewController*) contentViewAtIndex:(NSUInteger)index
 {
     DetailPageContentViewController *contentVC=[self.storyboard instantiateViewControllerWithIdentifier:@"DetailPageContentController"];
-    contentVC.image=
+    //contentVC.image=self.i
     contentVC.contentImage = _images[index];
     contentVC.contentTitle = _titles[index];
     contentVC.index = index;

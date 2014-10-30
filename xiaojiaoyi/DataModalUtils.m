@@ -214,7 +214,6 @@ static DataModalUtils* singleton;
             }
             //NSLog(@"document at path %@ is opened",doc);
         }];
-
     }
     else if(doc.documentState==UIDocumentStateEditingDisabled){
         NSLog(@"managed document disabled, try later");
@@ -226,6 +225,19 @@ static DataModalUtils* singleton;
 //    }
     return doc;
 }
+
+-(BOOL)deleteMyDealStoredDataWithDealId:(NSString*)dealId
+{
+    NSURL* url = [self.myDealsDataURL URLByAppendingPathComponent:dealId];
+    BOOL isDir = YES;
+    if([[NSFileManager defaultManager] fileExistsAtPath:url.path isDirectory:&isDir]){
+        return [[NSFileManager defaultManager] removeItemAtURL:url error:NULL];
+    }
+    else
+        return YES;
+    
+}
+
 -(void)contextChanged:(NSNotification*)notification
 {
     NSLog(@"context changed");

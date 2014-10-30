@@ -15,7 +15,7 @@
 @interface MyDealViewController ()
 
 @property (nonatomic) UITabBarController *tabController;
-
+@property (nonatomic) BOOL myDealListEditingMode;
 @end
 
 @implementation MyDealViewController
@@ -31,8 +31,8 @@
         _navigationBar.frame = CGRectMake(0,0,self.view.frame.size.width,NAVIGATION_BAR_HEIGHT);
         UINavigationItem * item = [[UINavigationItem alloc] init];
         UIBarButtonItem *leftBarButton = [[UIBarButtonItem alloc] initWithTitle:@"back" style:UIBarButtonItemStylePlain target:self.mainVC action:@selector(backToCenterViewFromMyDealView)];
-        UIBarButtonItem *rightBarButton = [[UIBarButtonItem alloc] initWithTitle:@"main page" style:UIBarButtonItemStylePlain target:self.mainVC action:@selector(backToCenterViewFromMyDealView)];
-        
+        //UIBarButtonItem *rightBarButton = [[UIBarButtonItem alloc] initWithTitle:@"main page" style:UIBarButtonItemStylePlain target:self.mainVC action:@selector(backToCenterViewFromMyDealView)];
+        UIBarButtonItem *rightBarButton = [[UIBarButtonItem alloc] initWithTitle:@"edit" style:UIBarButtonItemStylePlain target:self action:@selector(editTableView:)];
         item.leftBarButtonItem = leftBarButton;
         
         item.rightBarButtonItem = rightBarButton;
@@ -44,6 +44,31 @@
     return _navigationBar;
 }
 
+-(void)editTableView:(UIBarButtonItem*)sender
+{
+//    NSLog(@"edit table view %@",self.tabController);
+//    NSLog(@"edit table selected view is %@",self.tabController.selectedViewController);
+//    NSLog(@"selected index is %ld",self.tabController.selectedIndex);
+    if(self.tabController.selectedViewController==self.myDealListController){
+
+        //there must be at least one cell in the table view
+        if(self.myDealListController.tableView.visibleCells.count==0){
+            return;
+        }
+        [self.myDealListController editButtonClicked];
+        self.myDealListEditingMode = self.myDealListEditingMode?NO:YES;
+        sender.tintColor=self.myDealListEditingMode?[UIColor redColor]:[UIColor blueColor];
+        
+//        if(self.myDealListController.tableView.editing){
+//            //[self.myDealListController.tableView setEditing:NO animated:YES];
+//            nil;
+//        }
+//        else{
+//            nil;
+//            //[self.myDealListController.tableView setEditing:YES animated:YES];
+//        }
+    }
+}
 -(MyDealListViewController*)myDealListController
 {
     if(!_myDealListController){
@@ -103,6 +128,7 @@
     self.view.backgroundColor = [UIColor greenColor];
     [self tabController];
     [self navigationBar];
+    self.myDealListEditingMode = NO;
     //NSLog(@"MyDealView has deal:%@",self.newDeal);
 }
 - (void)viewDidLoad
@@ -122,15 +148,6 @@
     // Dispose of any resources that can be recreated.
 }
 
-/*
-#pragma mark - Navigation
 
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
-{
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
-}
-*/
 
 @end

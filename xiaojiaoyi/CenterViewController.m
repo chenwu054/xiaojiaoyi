@@ -163,6 +163,7 @@
 //    return _toolBar;
 //    
 //}
+
 //-(void)showPostActionSheet
 //{
 //    UIActionSheet *actionSheet= [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:@"cancel" destructiveButtonTitle:nil otherButtonTitles:@"Sell deal",@"Buy deal", nil];

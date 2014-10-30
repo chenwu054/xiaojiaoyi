@@ -27,8 +27,9 @@
 -(void)insertMyDeal:(Deal*)deal;
 
 -(void)updateUserId:(NSString*)userId;
-
 -(NSURL*)myDealsDataURL;
+
+-(BOOL)deleteMyDealStoredDataWithDealId:(NSString*)dealId;
 
 @end
 

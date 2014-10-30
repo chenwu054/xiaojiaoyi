@@ -188,7 +188,7 @@
 
 -(void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
 {
-    NSLog(@"sell deal view alert view buttonIndex is %ld",buttonIndex);
+    //NSLog(@"sell deal view alert view buttonIndex is %ld",buttonIndex);
     if(buttonIndex==0)
         return;
     else if(buttonIndex==1){
@@ -342,7 +342,6 @@
         }
     }
     
-    
 }
 //---------------------------------------
 -(void)savePhotosToDisk
@@ -389,7 +388,6 @@
     }
     if(!self.dealBaseFolder){
         self.dealBaseFolder = [[self.utils myDealsDataURL] URLByAppendingPathComponent:self.myNewDeal.deal_id];
-        
     }
     [[NSFileManager defaultManager] removeItemAtURL:self.dealBaseFolder error:NULL];
     
@@ -412,13 +410,13 @@
     self.dealBaseFolder=nil;
     
     //[self backButton];
-    // Do any additional setup after loading the view.
+
 }
 
 - (void)didReceiveMemoryWarning
 {
     [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
+    
 }
 
 /*
