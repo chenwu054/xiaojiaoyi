@@ -22,22 +22,24 @@
 }
 -(void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event
 {
+    
     [super touchesBegan:touches withEvent:event];
     //!!let the next responder respond to the touches! otherwise will not move horizontall;
     //NSLog(@"cell-----------------------");
-    //NSLog(@"cell touch began");
+    //NSLog(@"collection view cell touch began");
     [self.nextResponder touchesBegan:touches withEvent:event];
     
 }
-
-
 -(void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event
 {
+    [super touchesMoved:touches withEvent:event];
+    
     [self.nextResponder touchesMoved:touches withEvent:event];
 }
 -(void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event
 {
     //NSLog(@"cell touch ended");
+    [super touchesEnded:touches withEvent:event];
     [self.nextResponder touchesEnded:touches withEvent:event];
 }
 -(void)touchesCancelled:(NSSet *)touches withEvent:(UIEvent *)event

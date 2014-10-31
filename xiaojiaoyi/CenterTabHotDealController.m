@@ -292,14 +292,25 @@
 -(void)leftButtonClicked:(id)sender
 {
     //NSLog(@"left button clicked");
+    if(self.mainVC.mainContainerView.frame.origin.x!=0){
+        [self.mainVC reset];
+    }
+    
 }
 -(void)topButtonClicked:(id)sender
 {
-   //NSLog(@"top button clicked");
+    //NSLog(@"top button clicked");
+    if(self.mainVC.mainContainerView.frame.origin.x!=0){
+        [self.mainVC reset];
+    }
 }
 -(void)bottomButtonClicked:(id)sender
 {
     //NSLog(@"bottom button clicked");
+    if(self.mainVC.mainContainerView.frame.origin.x!=0){
+        [self.mainVC reset];
+    }
+    
 }
 
 

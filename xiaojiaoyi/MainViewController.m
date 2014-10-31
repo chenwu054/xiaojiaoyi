@@ -24,7 +24,7 @@
 @property (nonatomic) BOOL allowBeforePageView;
 
 @property (nonatomic) UIView* centerContainerView;
-@property (nonatomic) UIView* mainContainerView;
+
 
 @property (nonatomic) DataModalUtils* utils;
 
@@ -634,7 +634,8 @@
 */
 -(void) reset
 {
-    [self resetWithCenterView:[self peekViewStack]];
+    //[self resetWithCenterView:[self peekViewStack]];
+    [self resetWithCenterView:self.mainContainerView];
 }
 -(void)resetWithCenterView:(UIView*)centerView
 {

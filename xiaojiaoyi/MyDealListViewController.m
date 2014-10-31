@@ -293,6 +293,30 @@
 -(void)deleteButtonClicked:(UIButton*)sender
 {
     NSLog(@"delete button clicked");
+    UIView* superview = sender.superview;
+    while (![superview isKindOfClass:[UITableViewCell class]]) {
+        superview = superview.superview;
+    }
+    if([superview isKindOfClass:[UITableViewCell class]]){
+        EditTableCellView* editView = [self findEditTableCellViewByCell:(UITableViewCell*)superview];
+        NSIndexPath* indexPath = editView.indexPath;
+        
+        Deal* deal = [self.fetchedResultsController objectAtIndexPath:indexPath];
+        [self.fetchedResultsController.managedObjectContext deleteObject:deal];
+        //delete local data
+        NSString*dealId = deal.deal_id;
+        
+        BOOL deleted = [self.utils deleteMyDealStoredDataWithDealId:dealId];
+        if(deleted){
+            NSLog(@"stored my deal data is deleted");
+        }
+        else{
+            NSLog(@"stored my deal data is deletion failed! at deal id = %@",dealId);
+        }
+
+    }
+        //save the deletion
+    // [self.fetchedResultsController.managedObjectContext save:NULL];
     
 }
 
@@ -363,7 +387,7 @@
 
 -(void)cellPanned:(UIPanGestureRecognizer*)gesture
 {
-    NSLog(@"calling pan");
+    //NSLog(@"calling pan");
     if([gesture.view isKindOfClass:[EditTableCellView class]]){
         EditTableCellView* view = (EditTableCellView*)gesture.view;
         CGPoint translation = [gesture translationInView:view];

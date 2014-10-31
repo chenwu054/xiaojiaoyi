@@ -44,6 +44,7 @@
 @property (nonatomic) CategoryCollectionViewController* categoryViewControllerOne;
 @property (nonatomic) CategoryCollectionViewController* categoryViewControllerTwo;
 
+@property (nonatomic) UIView* mainContainerView;
 @property (nonatomic) UIToolbar* toolBar;
 
 -(UIPanGestureRecognizer*)getPanGestureRecognizer;

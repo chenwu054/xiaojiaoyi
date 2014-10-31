@@ -185,7 +185,7 @@ static DataModalUtils* singleton;
     NSURL* filePath = [self.myDealsURL URLByAppendingPathComponent:userId isDirectory:NO];
     UIManagedDocument* doc = self.managedDocumentDictionary[userId];
     
-    NSLog(@"T");
+    //NSLog(@"T");
     if(!doc){
         doc= [[UIManagedDocument alloc] initWithFileURL:filePath];
         doc.persistentStoreOptions=@{NSMigratePersistentStoresAutomaticallyOption: @YES, NSInferMappingModelAutomaticallyOption: @YES};
