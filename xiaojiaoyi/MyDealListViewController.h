@@ -9,7 +9,9 @@
 #import <UIKit/UIKit.h>
 #import "DataModalUtils.h"
 #import "EditTableCellView.h"
-#import "MyDealPassGestureView.h"
+//#import "MyDealPassGestureView.h"
+#import "DealSummaryEditViewController.h"
+
 
 @interface MyDealListViewController : UIViewController <UITableViewDataSource,UITableViewDelegate,NSFetchedResultsControllerDelegate>
 
@@ -18,5 +20,7 @@
 @property (nonatomic) UITableView *tableView;
 
 -(void)editButtonClicked;
+-(void)setup;
+
 
 @end

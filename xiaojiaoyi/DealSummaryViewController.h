@@ -14,8 +14,8 @@
 
 @interface DealSummaryViewController : UIViewController <UIPageViewControllerDataSource,UIPageViewControllerDelegate,UIAlertViewDelegate>
 
-@property (nonatomic) NSString* conditionStr;
-@property (nonatomic) NSString* descriptionStr;
+//@property (nonatomic) NSString* conditionStr;
+//@property (nonatomic) NSString* descriptionStr;
 @property (nonatomic) NSDate* expireDate;
 @property (nonatomic) BOOL cancelDeal;
 

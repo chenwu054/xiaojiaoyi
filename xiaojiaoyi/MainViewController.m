@@ -72,9 +72,12 @@
         else if(indexPath.row==1){
             
             __block UIView *lastView = [self peekViewStack];
+            //[self.navigationController pushViewController:self.myDealViewController animated:YES];
             
             [self resetWithCenterView:self.mainContainerView inDuration:0.5 withCompletion:^(BOOL finished) {
                 
+                //[self.navigationController pushViewController:self.myDealViewController animated:YES];
+            
                 if(lastView == self.centerViewController.view){
                     [lastView removeFromSuperview];
                     [self.centerContainerView addSubview:self.myDealViewController.view];//!!!
@@ -143,6 +146,9 @@
         sellDealViewController.myNewDeal=newDeal;
         //NSLog(@"%@",newDeal);
         //sellDealViewController.newDeal=newDeal;
+    }
+    else if([segue.identifier isEqualToString:@"MyDealListPushSegue"]){
+        NSLog(@"equal to my deal list push segue");
     }
 }
 
@@ -731,7 +737,10 @@
     [super viewDidLoad];
     [self setup];
     self.isReset = true;
-
+    //NSLog(@"self storyboard %@",self.storyboard);
+    //self.navigationController=nil;
+   // NSLog(@"self navigation controller %@",self.navigationController);
+    //[self.navigationController setNavigationBarHidden:YES];
 
 }
 

@@ -44,7 +44,10 @@
 @property (nonatomic) UIActivityIndicatorView* spinner;
 
 @property (nonatomic) BOOL editingMode;
+@property (nonatomic) DealObject* transferDealObject;
 
+//@property (nonatomic) UINavigationController* navigationVC;
+//@property (nonatomic) DealSummaryEditViewController* dealSummaryEditVC;
 
 @end
 
@@ -66,7 +69,6 @@
         NSLog(@"insert new record!");
         
     }
-    
     
 //    UITableView *tableView = self.tableView;
 //    
@@ -535,8 +537,47 @@
 }
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-
+    Deal* deal = [self.fetchedResultsController objectAtIndexPath:indexPath];
+    DealObject* dealObject=[[DealObject alloc] init];
+    //0. deal_id
+    dealObject.deal_id = deal.deal_id;
+    //1. title
+    dealObject.title = deal.title;
+    //2. price
+    dealObject.price = deal.price;
+    //3. condition
+    dealObject.condition = deal.condition;
+    //4. describe
+    dealObject.describe = deal.describe;
+    //5. shipping
+    dealObject.shipping = deal.shipping;
+    //6. exchange
+    dealObject.exchange = deal.exchange;
+    //7. create_date
+    dealObject.create_date = deal.create_date;
+    //8. expire_date
+    dealObject.expire_date = deal.expire_date;
+    //9. sound url
+    dealObject.sound_url = deal.sound_url;
+    //10. photoURL
+    dealObject.photoURL = deal.photoURL;
+    
+    for (int i=0; i<dealObject.photoURL.count; i++) {
+        nil;
+        //NSLog(@"photo is %@",dealObject.photoURL[i]);
+    }
+    self.transferDealObject = dealObject;
+    
+    [self performSegueWithIdentifier:@"DealSummaryEditModalSegue" sender:self];
+    //self.dealSummaryEditVC.myNewDeal=self.transferDealObject;
+    //[self presentViewController:self.dealSummaryEditVC animated:YES completion:nil];
+    
     NSLog(@"selected cell");
+    
+    //self.navigationVC setro
+    //[self.navigationVC pushViewController:self.dealSummaryEditVC animated:YES];
+    //NSLog(@"self.navigation controller is %@",self.navigationController);
+    //[self.navigationController pushViewController:self.dealSummaryEditVC animated:YES];
 }
 -(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
@@ -680,6 +721,7 @@
         [self.spinner startAnimating];
         self.pullDownImageView.hidden = YES;
         [self fetchDealsFromCoreData];
+    
         if(offsetY > -2){
             [self.spinner stopAnimating];
         }
@@ -691,9 +733,22 @@
     
 }
 
+-(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
+{
+    NSLog(@"segue is %@",segue.identifier);
+
+    if([segue.identifier isEqualToString:@"DealSummaryEditModalSegue"]){
+        if([segue.destinationViewController isKindOfClass:[DealSummaryEditViewController class]]){
+            DealSummaryEditViewController* dealSummaryEditVC=(DealSummaryEditViewController*)segue.destinationViewController;
+            dealSummaryEditVC.myNewDeal = self.transferDealObject;
+            
+        }
+    }
+}
+
 
 #pragma mark - setup
-- (NSFetchedResultsController *)fetchedResultsController {
+-(NSFetchedResultsController *)fetchedResultsController{
     if (!_fetchedResultsController) {
         _fetchedResultsController=[[NSFetchedResultsController alloc] initWithFetchRequest:self.request managedObjectContext:self.context sectionNameKeyPath:nil cacheName:nil];
         _fetchedResultsController.delegate = self;
@@ -831,6 +886,21 @@
     }
     return _spinner;
 }
+//-(UINavigationController*)navigationVC
+//{
+//    if(!_navigationVC){
+//        _navigationVC=[[UINavigationController alloc] init];
+//    }
+//    return _navigationVC;
+//}
+
+//-(DealSummaryEditViewController*)dealSummaryEditVC
+//{
+//    if(!_dealSummaryEditVC){
+//        _dealSummaryEditVC = [[DealSummaryEditViewController alloc] init];
+//    }
+//    return _dealSummaryEditVC;
+//}
 -(void)setup
 {
     [self.view addSubview:self.tableView];
@@ -839,13 +909,16 @@
 //    [button addTarget:self action:@selector(buttonClicked:) forControlEvents:UIControlEventTouchUpInside];
 //    [self.view addSubview:button];
     [self.tableView addSubview:self.pullDownView];
+    _userHasChanged=NO;
+    //self.view.backgroundColor=[UIColor redColor];
+    self.editingMode = NO;
+    
     
 }
 -(void)buttonClicked:(UIButton*)sender
 {
     NSLog(@"button clicked");
     [self.fetchedResultsController performFetch:NULL];
-    
     [self.tableView reloadData];
     
 }
@@ -858,13 +931,19 @@
 }
 
 #pragma  mark - life cycle methods
+-(BOOL)shouldPerformSegueWithIdentifier:(NSString *)identifier sender:(id)sender
+{
+    NSLog(@"should perform segue with identifier: %@",identifier);
+    NSLog(@"sender is %@",sender);
+    return  YES;
+}
 - (void)viewDidLoad
 {
     [super viewDidLoad];
     [self setup];
-    _userHasChanged=NO;
-    self.view.backgroundColor=[UIColor redColor];
-    self.editingMode = NO;
+    
+    //NSLog(@"deal list view navigation view controller %@",self.navigationController);
+    //[self.navigationController setNavigationBarHidden:NO];
 
 }
 

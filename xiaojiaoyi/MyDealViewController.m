@@ -72,7 +72,10 @@
 -(MyDealListViewController*)myDealListController
 {
     if(!_myDealListController){
-        _myDealListController=[[MyDealListViewController alloc] init];
+        //_myDealListController=[[MyDealListViewController alloc] init];
+        //VERY IMPORTANT!! Without the UIStoryboard initiation, it will not recognize the segue!!
+        _myDealListController=[[UIStoryboard storyboardWithName:@"Main_iPhone" bundle:nil] instantiateViewControllerWithIdentifier:@"MyDealListViewController"];
+        [_myDealListController setup];
         _myDealListController.title = @"My deals";
     }
     return _myDealListController;
@@ -136,6 +139,8 @@
     [super viewDidLoad];
     //self.view.frame = [UIScreen mainScreen].bounds;
     [self setup];
+    NSLog(@"my deal view storyboard %@",self.storyboard);
+    //[self presentViewController:self.myDealListController animated:YES completion:nil];
     
     //_parentView = [[GestureView alloc] init];
     //_parentView.frame = [UIScreen mainScreen].bounds;

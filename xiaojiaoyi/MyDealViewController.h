@@ -15,6 +15,7 @@
 #import "Deal.h"
 
 @class MainViewController;
+@class MyDealListViewController;
 
 @interface MyDealViewController : UIViewController <UITabBarControllerDelegate>
 

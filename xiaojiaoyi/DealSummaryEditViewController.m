@@ -1,12 +1,12 @@
 //
-//  DealSummaryViewController.m
+//  DealSummaryEditViewController.m
 //  xiaojiaoyi
 //
-//  Created by chen on 10/21/14.
+//  Created by chen on 11/1/14.
 //  Copyright (c) 2014 com.practice. All rights reserved.
 //
 
-#import "DealSummaryViewController.h"
+#import "DealSummaryEditViewController.h"
 
 #define NAVIGATION_BAR_HEIGHT 60
 #define CONTROL_BUTTON_HEIGHT 50
@@ -27,7 +27,7 @@
 #define DESCRIPTION_LABEL_HEIGHT 60
 #define MAP_BUTTON_HEIGHT 70
 
-@interface DealSummaryViewController ()
+@interface DealSummaryEditViewController ()
 @property (nonatomic) UIScrollView *mainView;
 @property (nonatomic) UIPageViewController* pageVC;
 @property (nonatomic) NSArray* photos;
@@ -73,7 +73,7 @@
 @property (nonatomic) DataModalUtils* utils;
 @end
 
-@implementation DealSummaryViewController
+@implementation DealSummaryEditViewController
 
 #pragma mark - components setup
 -(DataModalUtils*)utils
@@ -102,6 +102,11 @@
         _pageVC.doubleSided = true;
         
         DetailPageContentViewController *startingVC = [self contentViewAtIndex:0];
+//        NSMutableArray *contentArray = [[NSMutableArray alloc] init];
+//        if(startingVC){
+//            [contentArray addObject:startingVC];
+//        }
+
         NSArray * contentArray=@[startingVC];
         [_pageVC setViewControllers:contentArray direction:UIPageViewControllerNavigationDirectionForward animated:NO completion:nil];
     }
@@ -168,7 +173,7 @@
         _containerView.frame=CGRectMake(CONTAINER_VIEW_MARGIN, PAGE_VIEW_HEIGHT+10, self.view.frame.size.width-CONTAINER_VIEW_MARGIN*2, self.mapButton.frame.origin.y+self.mapButton.frame.size.height+CONTAINER_VIEW_MARGIN);
         _containerView.backgroundColor=[UIColor whiteColor];
         _containerView.layer.cornerRadius=5.0;
-
+        
     }
     return _containerView;
 }
@@ -201,7 +206,7 @@
     if(!_userProfileLabel){
         _userProfileLabel=[[UILabel alloc] initWithFrame:CGRectMake(self.userProfileButton.frame.origin.x+self.userProfileButton.frame.size.width+5, 0, USER_PROFILE_LABEL_WIDTH, PROFILE_HEIGHT)];
         _userProfileLabel.attributedText=[[NSAttributedString alloc] initWithString:self.myNewDeal.user_id_created?self.myNewDeal.user_id_created:@"" attributes:@{NSFontAttributeName:[UIFont fontWithName:@"Arial" size:14.0],NSForegroundColorAttributeName:[UIColor blackColor]}];
-
+        
         _userProfileLabel.numberOfLines=1;
         [_userProfileLabel adjustsFontSizeToFitWidth];
     }
@@ -409,12 +414,27 @@
     if(self.myNewDeal){
         self.cancelDeal=NO;
     }
+    if(self.myNewDeal.photos){
+        self.photos=self.myNewDeal.photos;
+    }
+    else if(self.myNewDeal.photoURL){
+        NSMutableArray* photos = [[NSMutableArray alloc] init];
+        for(NSString* url in self.myNewDeal.photoURL){
+            NSData* imageData = [NSData dataWithContentsOfFile:url];
+            UIImage* image = [UIImage imageWithData:imageData];
+            [photos addObject:image];
+        }
+        self.photos = photos;
+    }
+    else{
+        NSLog(@"!!!ERROR: in DealSummaryEditViewController, there is no snapshots to be shown!");
+    }
     [self pageVC];
     [self.view addSubview:self.mainView];
     [self.mainView addSubview:self.containerView];
     
     self.mainView.contentSize=CGSizeMake(self.view.frame.size.width, self.containerView.frame.origin.y+self.containerView.frame.size.height+CONTROL_BUTTON_HEIGHT);
-
+    
     [self.view addSubview:self.cancelButton];
     [self.view addSubview:self.confirmButton];
 }
@@ -531,7 +551,7 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    self.photos=self.myNewDeal.photos;
+    
     [self setup];
     for(int i=0; i<self.myNewDeal.photoURL.count;i++){
         nil;
@@ -547,7 +567,6 @@
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
 }
-
 
 
 @end

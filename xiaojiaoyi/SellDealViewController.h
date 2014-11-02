@@ -15,6 +15,8 @@
 #import "MainViewController.h"
 
 @class CenterViewController;
+@class MainViewController;
+
 @interface SellDealViewController : UIViewController <UIAlertViewDelegate,UINavigationControllerDelegate,UIImagePickerControllerDelegate>
 
 @property (nonatomic) UIButton *backButton;
