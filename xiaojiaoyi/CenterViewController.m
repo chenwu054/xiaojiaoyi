@@ -69,6 +69,20 @@
     }
     return _superVC;
 }
+//-(MyDealViewController*)myDealViewController
+//{
+//    if(!_myDealViewController){
+//        _myDealViewController = [[MyDealViewController alloc] init];
+//        _myDealViewController.mainVC = _superVC;
+//        NSLog(@"setting main vc in centerview %@",_superVC);
+//        UIPanGestureRecognizer *myDealPan = [_superVC getPanGestureRecognizer];
+//        [_myDealViewController.view addGestureRecognizer:myDealPan];
+//        
+//        UITapGestureRecognizer *myDealTap = [_superVC getTapGestureRecognizer];
+//        [_myDealViewController.view addGestureRecognizer:myDealTap];
+//    }
+//    return _myDealViewController;
+//}
 -(SellDealViewController*)sellDealController
 {
     if(!_sellDealController){
@@ -91,7 +105,7 @@
     if(!_centerTabHotDealController){
         _centerTabHotDealController=[[CenterTabHotDealController alloc] init];
         _centerTabHotDealController.title = @"Hot Deals";
-        _centerTabHotDealController.mainVC = self.superVC;
+        _centerTabHotDealController.mainVC = _superVC;
     }
     return _centerTabHotDealController;
 }
@@ -277,7 +291,13 @@
     
 }
 
-#pragma mark - collection view
+#pragma mark - segue methods
+-(void)pushMyDealViewController
+{
+    
+    //[self pushViewController:self.myDealViewController animated:YES];
+    
+}
 -(void) prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
 {
     //NSLog(@"calling center view prepare for segue %ld,%ld",[segue.identifier isEqualToString:@"SellDealSegue"], [[segue destinationViewController] isKindOfClass:[MyDealViewController class]]);
@@ -340,8 +360,11 @@
     //NSLog(@"default GR count is %ld",self.view.gestureRecognizers.count);
     //self.view.frame = [UIScreen mainScreen].bounds;
     //NSLog(@"center view is %@",self.view);
-
+    
     [self tabController];
+
+    //[self myDealViewController];
+    
     //[self toolBar];
 	//[self setupGestureRecognizer];
     

@@ -44,7 +44,7 @@
 @property (nonatomic) UIActivityIndicatorView* spinner;
 
 @property (nonatomic) BOOL editingMode;
-@property (nonatomic) DealObject* transferDealObject;
+
 
 //@property (nonatomic) UINavigationController* navigationVC;
 //@property (nonatomic) DealSummaryEditViewController* dealSummaryEditVC;
@@ -568,7 +568,11 @@
     }
     self.transferDealObject = dealObject;
     
-    [self performSegueWithIdentifier:@"DealSummaryEditModalSegue" sender:self];
+    
+    //[self performSegueWithIdentifier:@"DealSummaryEditModalSegue" sender:self];
+    
+    [self.mainVC performSegueWithIdentifier:@"DealSummaryEditPushSegue" sender:self];
+    NSLog(@"self.mainVC is %@",self.mainVC);
     //self.dealSummaryEditVC.myNewDeal=self.transferDealObject;
     //[self presentViewController:self.dealSummaryEditVC animated:YES completion:nil];
     

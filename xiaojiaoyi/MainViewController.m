@@ -25,13 +25,14 @@
 
 @property (nonatomic) UIView* centerContainerView;
 
-
+//@property (nonatomic) MainViewController* instance;
 @property (nonatomic) DataModalUtils* utils;
+
 
 @end
 
 @implementation MainViewController
-
+static MainViewController* instance;
 
 #pragma mark - table view delegate methods
 
@@ -77,7 +78,11 @@
             [self resetWithCenterView:self.mainContainerView inDuration:0.5 withCompletion:^(BOOL finished) {
                 
                 //[self.navigationController pushViewController:self.myDealViewController animated:YES];
-            
+                //[self.centerViewController pushMyDealViewController];
+                
+                //[self.navigationVC pushViewController:self.myDealViewController animated:YES];
+                //NSLog(@"navigation vc push view controller");
+                
                 if(lastView == self.centerViewController.view){
                     [lastView removeFromSuperview];
                     [self.centerContainerView addSubview:self.myDealViewController.view];//!!!
@@ -113,6 +118,13 @@
             }];
             
         }
+        else if(indexPath.row==2){
+            [self resetWithCenterView:self.mainContainerView inDuration:0.2 withCompletion:^(BOOL finished) {
+                nil;
+            }];
+            
+            [self performSegueWithIdentifier:@"SettingsPushSegue" sender:self];
+        }
         else {
             [self resetWithCenterView:self.mainContainerView];
         }
@@ -127,10 +139,23 @@
     //NSLog(@"main controller did select table view at index path: %ld,%ld",indexPath.section,indexPath.row);
     //[_menuViewController tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath];
 }
-
+-(void)customPushViewController:(UIViewController*)viewController
+{
+    //[self pushViewController:viewController animated:YES];
+    nil;
+    
+}
+-(void)customPopViewController
+{
+    nil;
+    //NSLog(@"top vc is %@",self.topViewController);
+    //[self popViewControllerAnimated:YES];
+    
+}
 -(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
 {
-    NSLog(@"!!!prepare for segue in Main View");
+    //NSLog(@"!!!prepare for segue in Main View");
+    //NSLog(@"segue is %@ and sender is %@",segue.identifier,sender);
     if([segue.identifier isEqualToString:@"SellDealSegue"] && [[segue destinationViewController] isKindOfClass:[SellDealViewController class]]){
         
         SellDealViewController *sellDealViewController = (SellDealViewController*)segue.destinationViewController;
@@ -149,7 +174,22 @@
     }
     else if([segue.identifier isEqualToString:@"MyDealListPushSegue"]){
         NSLog(@"equal to my deal list push segue");
+        NSLog(@"sender is %@",sender);
     }
+    else if ([segue.identifier isEqualToString:@"SettingsPushSegue"]){
+        
+        SettingsViewController* settingsVC = (SettingsViewController*)segue.destinationViewController;
+        settingsVC.mainVC=self;
+        
+    }
+    else if([segue.identifier isEqualToString:@"DealSummaryEditPushSegue"]){
+        if([segue.destinationViewController isKindOfClass:[DealSummaryEditViewController class]]){
+            DealSummaryEditViewController* dealSummaryEditVC = (DealSummaryEditViewController*)segue.destinationViewController;
+            dealSummaryEditVC.myNewDeal = ((MyDealListViewController*)sender).transferDealObject;
+            
+        }
+    }
+    
 }
 
 #pragma mark - gesture recognizer setup
@@ -198,6 +238,7 @@
 }
 //=============setup ================
 #pragma mark - sub-controllers setup
+
 -(DataModalUtils*)utils
 {
     if(!_utils){
@@ -227,13 +268,15 @@
 //Adding one recognizer to multiple views will invalidate the recognizer and no view will response to the gesture.
 -(void)setup
 {
+    //1. setup main container in order to add the
     [self.view addSubview:self.mainContainerView];
     [self.mainContainerView addSubview:self.centerContainerView];
     [self.mainContainerView addSubview:self.toolBar];
     
-    [self centerViewController];
     //add to center container view;
+    [self centerViewController];
     [self.centerContainerView addSubview:_centerViewController.view];
+    
     //[self setupCenterViewController];
     [self menuViewController];
     [self.view addSubview:_menuViewController.view];
@@ -254,15 +297,24 @@
     [self.pageVC setViewControllers:_pages direction:UIPageViewControllerNavigationDirectionReverse animated:YES completion:nil];
     
 }
+-(SettingsViewController*)settingsViewController
+{
+    if(!_settingsViewController){
+        _settingsViewController = [[SettingsViewController alloc] init];
+        _settingsViewController.view.frame=CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height);
+    }
+    return _settingsViewController;
+}
+
 -(CenterViewController*)centerViewController
 {
     //[self setupGestureRecognizer];
     if(!_centerViewController){
         _centerViewController =[self.storyboard instantiateViewControllerWithIdentifier:@"CenterTabBarControllerSB"];
         _centerViewController.superVC = self;
-        [self addChildViewController:_centerViewController];
+        //[self addChildViewController:_centerViewController];
         //[self.view addSubview:_centerViewController.view];
-        [_centerViewController didMoveToParentViewController:self];
+        //[_centerViewController didMoveToParentViewController:self];
         
         //_viewController.delegate = self;
         //[self.navigationController pushViewController:_viewController animated:YES];
@@ -312,6 +364,8 @@
     if(!_myDealViewController){
         _myDealViewController = [[MyDealViewController alloc] init];
         _myDealViewController.mainVC = self;
+        //NSLog(@"in main view myDealVC mainvc is %@",_myDealViewController.mainVC);
+        _myDealViewController.view.backgroundColor=[UIColor magentaColor];
         UIPanGestureRecognizer *myDealPan = [self getPanGestureRecognizer];
         [_myDealViewController.view addGestureRecognizer:myDealPan];
         
@@ -419,11 +473,32 @@
     }
 }
 
-
+//==============navigation controller delegate
+#pragma mark - navigation view controller delegate
 -(IBAction)unwindFromSellDealSegue:(UIStoryboardSegue*)sender
 {
     NSLog(@"calling unwind from sell deal segue in center view controller");
     [self reset];
+}
+
+//UINavigation view controller delegate methods
+-(void)navigationController:(UINavigationController *)navigationController didShowViewController:(UIViewController *)viewController animated:(BOOL)animated
+{
+    //NSLog(@"navigation view did show %@",viewController);
+
+    
+}
+-(void)navigationController:(UINavigationController *)navigationController willShowViewController:(UIViewController *)viewController animated:(BOOL)animated
+{
+    //NSLog(@"navigation view controller will show %@",viewController);
+    if([viewController isKindOfClass:[MainViewController class]]){
+        MainViewController* m = (MainViewController*)viewController;
+        [m.navigationController setNavigationBarHidden:YES];
+    }
+    else{
+        [viewController.navigationController setNavigationBarHidden:NO];
+        
+    }
 }
 
 
@@ -737,10 +812,14 @@
     [super viewDidLoad];
     [self setup];
     self.isReset = true;
+    //self.delegate=self;
+    
     //NSLog(@"self storyboard %@",self.storyboard);
     //self.navigationController=nil;
    // NSLog(@"self navigation controller %@",self.navigationController);
-    //[self.navigationController setNavigationBarHidden:YES];
+    [self.navigationController setNavigationBarHidden:YES];
+    self.navigationController.delegate=self;
+    
 
 }
 
@@ -750,15 +829,6 @@
     // Dispose of any resources that can be recreated.
 }
 
-/*
-#pragma mark - Navigation
 
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
-{
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
-}
-*/
 
 @end

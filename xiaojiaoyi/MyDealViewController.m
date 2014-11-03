@@ -30,7 +30,7 @@
         _navigationBar = [[UINavigationBar alloc] init];
         _navigationBar.frame = CGRectMake(0,0,self.view.frame.size.width,NAVIGATION_BAR_HEIGHT);
         UINavigationItem * item = [[UINavigationItem alloc] init];
-        UIBarButtonItem *leftBarButton = [[UIBarButtonItem alloc] initWithTitle:@"back" style:UIBarButtonItemStylePlain target:self.mainVC action:@selector(backToCenterViewFromMyDealView)];
+        UIBarButtonItem *leftBarButton = [[UIBarButtonItem alloc] initWithTitle:@"back" style:UIBarButtonItemStylePlain target:_mainVC action:@selector(backToCenterViewFromMyDealView)];
         //UIBarButtonItem *rightBarButton = [[UIBarButtonItem alloc] initWithTitle:@"main page" style:UIBarButtonItemStylePlain target:self.mainVC action:@selector(backToCenterViewFromMyDealView)];
         UIBarButtonItem *rightBarButton = [[UIBarButtonItem alloc] initWithTitle:@"edit" style:UIBarButtonItemStylePlain target:self action:@selector(editTableView:)];
         item.leftBarButtonItem = leftBarButton;
@@ -75,6 +75,8 @@
         //_myDealListController=[[MyDealListViewController alloc] init];
         //VERY IMPORTANT!! Without the UIStoryboard initiation, it will not recognize the segue!!
         _myDealListController=[[UIStoryboard storyboardWithName:@"Main_iPhone" bundle:nil] instantiateViewControllerWithIdentifier:@"MyDealListViewController"];
+        _myDealListController.mainVC= _mainVC;
+        //NSLog(@"in MyDealVC setting mainVC in myDealVC:%@",_mainVC);
         [_myDealListController setup];
         _myDealListController.title = @"My deals";
     }
@@ -139,7 +141,6 @@
     [super viewDidLoad];
     //self.view.frame = [UIScreen mainScreen].bounds;
     [self setup];
-    NSLog(@"my deal view storyboard %@",self.storyboard);
     //[self presentViewController:self.myDealListController animated:YES completion:nil];
     
     //_parentView = [[GestureView alloc] init];

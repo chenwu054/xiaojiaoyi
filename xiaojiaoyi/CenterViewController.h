@@ -26,8 +26,9 @@
 @class MainViewController;
 @class CenterTabHotDealController;
 @class SellDealViewController;
+@class MyDealViewController;
 
-@interface CenterViewController : UINavigationController <DataFetcherDelegate,UITabBarControllerDelegate,UIToolbarDelegate,UIActionSheetDelegate,UIGestureRecognizerDelegate,UINavigationControllerDelegate, UIImagePickerControllerDelegate>
+@interface CenterViewController : UIViewController <DataFetcherDelegate,UITabBarControllerDelegate,UIToolbarDelegate,UIActionSheetDelegate,UIGestureRecognizerDelegate,UINavigationControllerDelegate, UIImagePickerControllerDelegate>
 @property (weak, nonatomic) IBOutlet UIButton *yelpButton;
 @property (strong,nonatomic) OADataFetcher *dataFetcher;
 @property (nonatomic) NSString* term;
@@ -51,6 +52,9 @@
 @property (nonatomic) MainViewController *superVC;
 @property (nonatomic) SellDealViewController *sellDealController;
 
+//@property (nonatomic) MyDealViewController* myDealViewController;
 @property (nonatomic) DataModalUtils* utils;
+
+-(void)pushMyDealViewController;
 
 @end

@@ -15,12 +15,15 @@
 #import "MyDealViewController.h"
 #import "CategoryCollectionViewController.h"
 #import "DataModalUtils.h"
+#import "SettingsViewController.h"
+#import "DealSummaryEditViewController.h"
 
 @class CenterViewController;
 @class MyDealViewController;
 @class CategoryCollectionViewController;
+@class SettingsViewController;
 
-@protocol MenuNavigationDelegate <NSObject,UIPageViewControllerDataSource,UIPageViewControllerDelegate,UIToolbarDelegate,UIActionSheetDelegate>
+@protocol MenuNavigationDelegate <NSObject,UIPageViewControllerDataSource,UIPageViewControllerDelegate,UIToolbarDelegate,UIActionSheetDelegate,UINavigationControllerDelegate>
 
 -(void) slideLeftAll;
 -(void) slideRightAll;
@@ -33,7 +36,7 @@
 
 @end
 
-@interface MainViewController : UINavigationController <MenuNavigationDelegate,UITableViewDelegate>
+@interface MainViewController : UIViewController <MenuNavigationDelegate,UITableViewDelegate>
 
 @property (nonatomic) NSInteger* currentUserId;
 
@@ -44,10 +47,20 @@
 @property (nonatomic) CategoryCollectionViewController* categoryViewControllerOne;
 @property (nonatomic) CategoryCollectionViewController* categoryViewControllerTwo;
 
+//@property (nonatomic) UINavigationController* navigationVC;
+@property (nonatomic) SettingsViewController* settingsViewController;
+
 @property (nonatomic) UIView* mainContainerView;
 @property (nonatomic) UIToolbar* toolBar;
 
+//+(MainViewController*)sharedInstance;
+
+-(void)customPushViewController:(UIViewController*)viewController;
+-(void)customPopViewController;
+
 -(UIPanGestureRecognizer*)getPanGestureRecognizer;
+-(UITapGestureRecognizer*)getTapGestureRecognizer;
+
 -(void)backToCenterViewFromMyDealView;
 -(void)backToCenterViewFromCategoryView;
 

@@ -8,7 +8,7 @@
 
 #import "DealSummaryEditViewController.h"
 
-#define NAVIGATION_BAR_HEIGHT 60
+#define NAVIGATION_BAR_HEIGHT 65
 #define CONTROL_BUTTON_HEIGHT 50
 #define PAGE_VIEW_HEIGHT 250
 #define PROFILE_HEIGHT 40
@@ -26,6 +26,9 @@
 #define INFO_BUTTON_CORNER_RADIUS 20.0
 #define DESCRIPTION_LABEL_HEIGHT 60
 #define MAP_BUTTON_HEIGHT 70
+
+#define SHARE_COLLECTION_VIEW_HEIGHT 100
+#define SHARE_BUTTON_WIDTH 50
 
 @interface DealSummaryEditViewController ()
 @property (nonatomic) UIScrollView *mainView;
@@ -64,18 +67,93 @@
 @property (nonatomic) UIButton* mapButton;
 @property (nonatomic) UIColor* infoButtonFrameColor;
 
-@property (nonatomic) UIButton* cancelButton;
-@property (nonatomic) UIButton* confirmButton;
-@property (nonatomic) UIAlertView* alertView;
-
+@property (nonatomic) UIButton* deleteButton;
+@property (nonatomic) UIButton* shareButton;
+@property (nonatomic) UIAlertView* deleteAlertView;
 @property (nonatomic) UIView* titleView;
 
+@property (nonatomic) UIView* shareCollectionView;
 @property (nonatomic) DataModalUtils* utils;
+@property (nonatomic) UIButton* ggButton;
+@property (nonatomic) UIButton* fbButton;
+@property (nonatomic) UIButton* twButton;
+@property (nonatomic) UIButton* lkButton;
 @end
 
 @implementation DealSummaryEditViewController
 
 #pragma mark - components setup
+-(UIButton*)ggButton
+{
+    if(!_ggButton){
+        _ggButton=[[UIButton alloc] init];
+    }
+    return _ggButton;
+}
+-(UIButton*)twButton
+{
+    if(!_twButton){
+        _twButton = [[UIButton alloc] init];
+    }
+    return _twButton;
+}
+-(UIButton*)lkButton
+{
+    if(!_lkButton){
+        _lkButton = [[UIButton alloc] init];
+    }
+    return _lkButton;
+}
+-(UIButton*)fbButton
+{
+    if(!_fbButton){
+        _fbButton = [[UIButton alloc] init];
+    }
+    return _fbButton;
+}
+-(UIView*)shareCollectionView
+{
+    if(!_shareCollectionView){
+        _shareCollectionView=[[UIView alloc] initWithFrame:CGRectMake(0, self.view.frame.size.height,self.view.frame.size.width, SHARE_COLLECTION_VIEW_HEIGHT)];
+        _shareCollectionView.backgroundColor = [UIColor colorWithWhite:0.4 alpha:0.4];
+        CGFloat sep = (_shareCollectionView.frame.size.width - 4*SHARE_BUTTON_WIDTH)/5;
+        CGFloat heightMargin = (_shareCollectionView.frame.size.height - SHARE_BUTTON_WIDTH)/2;
+        self.fbButton.frame= CGRectMake(sep, heightMargin, SHARE_BUTTON_WIDTH, SHARE_BUTTON_WIDTH);
+        [self.fbButton setImage:[[UIImage imageNamed:@"facebook.png"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate] forState:UIControlStateNormal];
+        [self.fbButton setTintAdjustmentMode:UIViewTintAdjustmentModeAutomatic];
+        self.fbButton.tintColor = [UIColor blueColor];
+        self.fbButton.backgroundColor=[UIColor whiteColor];
+        self.fbButton.layer.cornerRadius = 10.0;
+        [self.fbButton addTarget:self action:@selector(fbButtonClicked:) forControlEvents:UIControlEventTouchUpInside];
+        
+        self.twButton.frame=CGRectMake(sep*2 + 1*SHARE_BUTTON_WIDTH, heightMargin, SHARE_BUTTON_WIDTH, SHARE_BUTTON_WIDTH);
+        [self.twButton setImage:[[UIImage imageNamed:@"twitter.png"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate] forState:UIControlStateNormal];
+        self.twButton.backgroundColor=[UIColor whiteColor];
+        self.twButton.layer.cornerRadius = 10.0;
+        [self.twButton addTarget:self action:@selector(twButtonClicked:) forControlEvents:UIControlEventTouchUpInside];
+        
+        self.ggButton.frame=CGRectMake(sep*3 + 2*SHARE_BUTTON_WIDTH, heightMargin, SHARE_BUTTON_WIDTH, SHARE_BUTTON_WIDTH);
+        [self.ggButton setImage:[[UIImage imageNamed:@"googlePlus.png"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate] forState:UIControlStateNormal];
+        self.ggButton.tintColor = [UIColor redColor];
+        self.ggButton.backgroundColor= [UIColor whiteColor];
+        self.ggButton.layer.cornerRadius = 10.0;
+        [self.ggButton addTarget:self action:@selector(ggButtonClicked:) forControlEvents:UIControlEventTouchUpInside];
+        
+        self.lkButton.frame=CGRectMake(sep*4 + 3*SHARE_BUTTON_WIDTH, heightMargin, SHARE_BUTTON_WIDTH, SHARE_BUTTON_WIDTH);
+        [self.lkButton setImage:[[UIImage imageNamed:@"linkedin.png"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate] forState:UIControlStateNormal];
+        self.lkButton.backgroundColor = [UIColor whiteColor];
+        self.lkButton.layer.cornerRadius = 10.0;
+        [self.lkButton addTarget:self action:@selector(lkButtonClicked:) forControlEvents:UIControlEventTouchUpInside];
+        
+        [_shareCollectionView addSubview:self.fbButton];
+        [_shareCollectionView addSubview:self.ggButton];
+        [_shareCollectionView addSubview:self.twButton];
+        [_shareCollectionView addSubview:self.lkButton];
+        
+        [_shareCollectionView addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(shareCollectionViewTapped:)]];
+    }
+    return _shareCollectionView;
+}
 -(DataModalUtils*)utils
 {
     if(!_utils){
@@ -367,47 +445,47 @@
     return _mapButton;
 }
 //------cancel and confirm button---------
--(UIButton*)cancelButton
+-(UIButton*)deleteButton
 {
-    if(!_cancelButton){
+    if(!_deleteButton){
         //_cancelButton=[[UIButton alloc] init];
-        _cancelButton=[UIButton buttonWithType:UIButtonTypeCustom];
-        _cancelButton.frame = CGRectMake(0, self.view.frame.size.height-CONTROL_BUTTON_HEIGHT, self.view.frame.size.width/2, CONTROL_BUTTON_HEIGHT);
-        UIImage* image = [UIImage imageNamed:@"cross.png"];
+        _deleteButton=[UIButton buttonWithType:UIButtonTypeCustom];
+        _deleteButton.frame = CGRectMake(0, self.view.frame.size.height-CONTROL_BUTTON_HEIGHT, self.view.frame.size.width/2, CONTROL_BUTTON_HEIGHT);
+        UIImage* image = [UIImage imageNamed:@"trash.png"];
         image = [image imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];//always tint
         //[_cancelButton setImage:[UIImage imageNamed:@"cross.png"] forState:UIControlStateNormal];
-        [_cancelButton setImage:image forState:UIControlStateNormal];
-        _cancelButton.imageView.contentMode=UIViewContentModeScaleAspectFit;
-        _cancelButton.tintColor=[UIColor redColor];
+        [_deleteButton setImage:image forState:UIControlStateNormal];
+        _deleteButton.imageView.contentMode=UIViewContentModeScaleAspectFit;
+        _deleteButton.tintColor=[UIColor redColor];
         //_cancelButton.tintColor=
-        _cancelButton.backgroundColor=[UIColor whiteColor];
-        _cancelButton.imageEdgeInsets=UIEdgeInsetsMake(5, 0, 5, 0);
-        [_cancelButton addTarget:self action:@selector(cancelButtonClicked:) forControlEvents:UIControlEventTouchUpInside];
+        _deleteButton.backgroundColor=[UIColor whiteColor];
+        _deleteButton.imageEdgeInsets=UIEdgeInsetsMake(5, 0, 5, 0);
+        [_deleteButton addTarget:self action:@selector(cancelButtonClicked:) forControlEvents:UIControlEventTouchUpInside];
     }
-    _cancelButton.tintColor=[UIColor redColor];
-    return _cancelButton;
+    return _deleteButton;
 }
--(UIButton*)confirmButton
+-(UIButton*)shareButton
 {
-    if(!_confirmButton){
-        _confirmButton=[[UIButton alloc] initWithFrame:CGRectMake(self.view.frame.size.width/2, self.view.frame.size.height-CONTROL_BUTTON_HEIGHT, self.view.frame.size.width/2, CONTROL_BUTTON_HEIGHT)];
-        UIImage* image = [UIImage imageNamed:@"correct.png"];
+    if(!_shareButton){
+        _shareButton=[[UIButton alloc] initWithFrame:CGRectMake(self.view.frame.size.width/2, self.view.frame.size.height-CONTROL_BUTTON_HEIGHT, self.view.frame.size.width/2, CONTROL_BUTTON_HEIGHT)];
+        UIImage* image = [UIImage imageNamed:@"share.png"];
         image = [image imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
-        [_confirmButton setImage:image forState:UIControlStateNormal];
+        [_shareButton setImage:image forState:UIControlStateNormal];
         //[_confirmButton setImage:[UIImage imageNamed:@"correct.png"] forState:UIControlStateNormal];
-        _confirmButton.tintColor=[UIColor greenColor];
-        _confirmButton.backgroundColor=[UIColor whiteColor];
-        _confirmButton.imageView.contentMode=UIViewContentModeScaleAspectFit;
-        [_confirmButton addTarget:self action:@selector(confirmButtonClicked:) forControlEvents:UIControlEventTouchUpInside];
+        _shareButton.tintColor=[UIColor greenColor];
+        _shareButton.backgroundColor=[UIColor whiteColor];
+        _shareButton.imageView.contentMode=UIViewContentModeScaleAspectFit;
+        _shareButton.imageEdgeInsets=UIEdgeInsetsMake(5, 0, 5, 0);
+        [_shareButton addTarget:self action:@selector(shareButtonClicked:) forControlEvents:UIControlEventTouchUpInside];
     }
-    return _confirmButton;
+    return _shareButton;
 }
--(UIAlertView*)alertView
+-(UIAlertView*)deleteAlertView
 {
-    if(!_alertView){
-        _alertView=[[UIAlertView alloc] initWithTitle:nil message:@"Are you sure to delete the deal?" delegate:self cancelButtonTitle:@"NO" otherButtonTitles:@"YES", nil];
+    if(!_deleteAlertView){
+        _deleteAlertView=[[UIAlertView alloc] initWithTitle:nil message:@"Are you sure to delete the deal?" delegate:self cancelButtonTitle:@"NO" otherButtonTitles:@"YES", nil];
     }
-    return _alertView;
+    return _deleteAlertView;
 }
 -(void)setup
 {
@@ -435,12 +513,47 @@
     
     self.mainView.contentSize=CGSizeMake(self.view.frame.size.width, self.containerView.frame.origin.y+self.containerView.frame.size.height+CONTROL_BUTTON_HEIGHT);
     
-    [self.view addSubview:self.cancelButton];
-    [self.view addSubview:self.confirmButton];
+    [self.view addSubview:self.deleteButton];
+    [self.view addSubview:self.shareButton];
+    [self.view addSubview:self.shareCollectionView];
+    
+    [self.view addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapped:)]];
+    
 }
 
 
 #pragma mark - button clicked methods
+-(void)fbButtonClicked:(UIButton*)sender
+{
+    NSLog(@"fb button clicked");
+}
+-(void)twButtonClicked:(UIButton*)sender
+{
+    NSLog(@"tw button clicked");
+}
+-(void)ggButtonClicked:(UIButton*)sender
+{
+    NSLog(@"gg button clicked");
+}
+-(void)lkButtonClicked:(UIButton*)sender
+{
+    NSLog(@"lk button clicked");
+}
+
+-(void)shareCollectionViewTapped:(UITapGestureRecognizer*)gesture
+{
+    nil;
+    
+}
+-(void)tapped:(UITapGestureRecognizer*)gesture
+{
+    NSLog(@"tapped");
+    
+    [UIView animateKeyframesWithDuration:0.2 delay:0.0 options:UIViewKeyframeAnimationOptionBeginFromCurrentState animations:^{
+        self.shareCollectionView.frame =CGRectMake(0, self.view.frame.size.height, self.view.frame.size.width, SHARE_COLLECTION_VIEW_HEIGHT);
+        
+    } completion:nil];
+}
 -(void)userProfileButtonClicked:(UIButton*)sender
 {
     
@@ -459,28 +572,14 @@
 }
 -(void)cancelButtonClicked:(UIButton*)sender
 {
-    [self.alertView show];
+    [self.deleteAlertView show];
 }
--(void)confirmButtonClicked:(UIButton*)sender
+-(void)shareButtonClicked:(UIButton*)sender
 {
-    NSManagedObjectContext* context = [self.utils getMyDealsContextWithUserId:self.utils.userId];
-    Deal* deal = [NSEntityDescription insertNewObjectForEntityForName:@"Deal" inManagedObjectContext:context];
-    deal.deal_id=self.myNewDeal.deal_id;
-    deal.title=self.myNewDeal.title;
-    deal.price=self.myNewDeal.price;
-    deal.condition=self.myNewDeal.condition;
-    deal.describe=self.myNewDeal.describe;
-    deal.shipping=self.myNewDeal.shipping;
-    deal.exchange=self.myNewDeal.exchange;
-    deal.create_date=self.myNewDeal.create_date;
-    deal.expire_date=self.myNewDeal.expire_date;
-    deal.sound_url=self.myNewDeal.sound_url?self.myNewDeal.sound_url:nil;
-    deal.photoURL=self.myNewDeal.photoURL;
-    if(![context save:NULL]){
-        NSLog(@"new deal correctly saved to core data");
-    }
-    self.cancelDeal=NO;
-    [self performSegueWithIdentifier:@"DealSummaryUnwindSegue" sender:self];
+    [UIView animateKeyframesWithDuration:0.2 delay:0.0 options:UIViewKeyframeAnimationOptionBeginFromCurrentState animations:^{
+        self.shareCollectionView.frame = CGRectMake(0, self.view.frame.size.height - SHARE_COLLECTION_VIEW_HEIGHT, self.view.frame.size.width, SHARE_COLLECTION_VIEW_HEIGHT);
+        
+    } completion:nil];
     
 }
 
@@ -551,15 +650,8 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    
     [self setup];
-    for(int i=0; i<self.myNewDeal.photoURL.count;i++){
-        nil;
-        //NSLog(@"url is %@",self.myNewDeal.photoURL[i]);
-    }
-    //NSLog(@"summary view: %@",self.myNewDeal);
-    
-    // Do any additional setup after loading the view.
+
 }
 
 - (void)didReceiveMemoryWarning

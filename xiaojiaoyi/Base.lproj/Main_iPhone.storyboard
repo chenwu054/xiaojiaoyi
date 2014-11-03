@@ -1,10 +1,29 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="5056" systemVersion="13E28" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" initialViewController="W5n-st-bzJ">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="5056" systemVersion="13E28" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" initialViewController="2G6-8C-HCg">
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="3733"/>
     </dependencies>
     <scenes>
-        <!--Center View Controller - Item-->
+        <!--Settings View Controller-->
+        <scene sceneID="Jai-gi-2Rz">
+            <objects>
+                <viewController id="tRs-Su-8kn" customClass="SettingsViewController" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="nT9-kC-yvg"/>
+                        <viewControllerLayoutGuide type="bottom" id="atw-bN-kbF"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="VEZ-7E-mTH">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                    </view>
+                    <navigationItem key="navigationItem" id="9pa-8V-eHt"/>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="UrJ-si-oM7" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-515" y="1124"/>
+        </scene>
+        <!--Center View Controller-->
         <scene sceneID="ufC-wZ-h7g">
             <objects>
                 <viewController storyboardIdentifier="CenterTabBarControllerSB" id="vXZ-lx-hvc" customClass="CenterViewController" sceneMemberID="viewController">
@@ -17,14 +36,13 @@
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                     </view>
-                    <tabBarItem key="tabBarItem" title="Item" id="UQq-tJ-TsB"/>
                     <navigationItem key="navigationItem" id="5qH-K5-ao3">
                         <barButtonItem key="leftBarButtonItem" title="login" id="joc-4t-N06"/>
                     </navigationItem>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="x5A-6p-PRh" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-273" y="-4"/>
+            <point key="canvasLocation" x="299" y="362"/>
         </scene>
         <!--Sell Deal View Controller-->
         <scene sceneID="YlS-co-7bw">
@@ -96,7 +114,7 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="3Qo-NL-tj1" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <exit id="c7E-p0-hjb" userLabel="Exit" sceneMemberID="exit"/>
             </objects>
-            <point key="canvasLocation" x="1212" y="4"/>
+            <point key="canvasLocation" x="870" y="-80"/>
         </scene>
         <!--Edit Image View Controller-->
         <scene sceneID="VhF-JV-FWj">
@@ -148,7 +166,7 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="XAw-dn-Zrt" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <exit id="jEB-Gr-n3E" userLabel="Exit" sceneMemberID="exit"/>
             </objects>
-            <point key="canvasLocation" x="1243" y="-566"/>
+            <point key="canvasLocation" x="803" y="-650"/>
         </scene>
         <!--Deal Intro Controller-->
         <scene sceneID="vI4-XG-i0k">
@@ -192,7 +210,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dMX-GL-LlX" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="918" y="-1275"/>
+            <point key="canvasLocation" x="500" y="-1361"/>
         </scene>
         <!--Deal Description View Controller-->
         <scene sceneID="K0J-EN-mtr">
@@ -226,7 +244,7 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="erq-G3-KsJ" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <exit id="uof-Wg-FgI" userLabel="Exit" sceneMemberID="exit"/>
             </objects>
-            <point key="canvasLocation" x="1730" y="165"/>
+            <point key="canvasLocation" x="1329" y="105"/>
         </scene>
         <!--Deal Summary View Controller-->
         <scene sceneID="JSN-c1-yfV">
@@ -248,7 +266,7 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Lrh-g9-RPj" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <exit id="69C-2I-n8f" userLabel="Exit" sceneMemberID="exit"/>
             </objects>
-            <point key="canvasLocation" x="2136" y="165"/>
+            <point key="canvasLocation" x="1743" y="113"/>
         </scene>
         <!--Login View Controller-->
         <scene sceneID="oef-u6-tbJ">
@@ -538,7 +556,7 @@
                 </collectionViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="zuo-wz-DGq" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-413" y="1958"/>
+            <point key="canvasLocation" x="-719" y="1954"/>
         </scene>
         <!--Center Tab Nearby Deal Controller-->
         <scene sceneID="bY0-Uh-GF0">
@@ -556,7 +574,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="mfL-1u-Htz" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-986" y="685"/>
+            <point key="canvasLocation" x="-2164" y="1116"/>
         </scene>
         <!--Center Tab Buddy Deal Controller-->
         <scene sceneID="WDW-uP-jzc">
@@ -574,7 +592,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="TjJ-K6-BBQ" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-429" y="-666"/>
+            <point key="canvasLocation" x="-1801" y="1116"/>
         </scene>
         <!--Detail Page View Controller-->
         <scene sceneID="sbM-E4-8Om">
@@ -613,7 +631,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="soi-Tf-P4a" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="87" y="1774"/>
+            <point key="canvasLocation" x="-219" y="1770"/>
         </scene>
         <!--Map View Controller-->
         <scene sceneID="3Su-4f-XBh">
@@ -652,7 +670,7 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="DKL-Af-wl0" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <exit id="Bzd-Ki-TEQ" userLabel="Exit" sceneMemberID="exit"/>
             </objects>
-            <point key="canvasLocation" x="549" y="1970"/>
+            <point key="canvasLocation" x="243" y="1966"/>
         </scene>
         <!--Test Core Data View Controller-->
         <scene sceneID="Sxt-Bz-Hrx">
@@ -696,7 +714,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="TXM-XX-DOm" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-1801" y="698"/>
+            <point key="canvasLocation" x="-2533" y="1116"/>
         </scene>
         <!--Detail Page Content View Controller-->
         <scene sceneID="M1G-pH-Rt5">
@@ -723,7 +741,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Cke-qY-pBg" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="71" y="2422"/>
+            <point key="canvasLocation" x="-235" y="2418"/>
         </scene>
         <!--My Deal List View Controller-->
         <scene sceneID="3Rc-UT-gU7">
@@ -745,7 +763,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="gIW-4O-fz6" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-246" y="625"/>
+            <point key="canvasLocation" x="-566" y="474"/>
         </scene>
         <!--Deal Summary Edit View Controller-->
         <scene sceneID="rII-4W-pym">
@@ -764,7 +782,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="FYi-jH-OdU" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="184" y="614"/>
+            <point key="canvasLocation" x="-59" y="317"/>
         </scene>
         <!--Main View Controller-->
         <scene sceneID="Vh5-Nw-Egc">
@@ -782,11 +800,13 @@
                     <navigationItem key="navigationItem" id="3EO-IT-qMB"/>
                     <connections>
                         <segue destination="qi8-pb-Aes" kind="modal" identifier="SellDealSegue" id="1YG-ao-61j"/>
+                        <segue destination="tRs-Su-8kn" kind="push" identifier="SettingsPushSegue" id="XPa-Ji-jJ2"/>
+                        <segue destination="DRP-Tu-Csc" kind="push" identifier="DealSummaryEditPushSegue" id="NJP-W0-New"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="2fk-Q5-OYb" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-861" y="-12"/>
+            <point key="canvasLocation" x="-1001" y="50"/>
         </scene>
         <!--My Deal View Controller - Title-->
         <scene sceneID="utn-gS-mCR">
@@ -817,7 +837,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="8f0-4E-Ssu" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-579" y="664"/>
+            <point key="canvasLocation" x="-1145" y="1097"/>
         </scene>
         <!--User Menu Controller-->
         <scene sceneID="WHE-5m-lGy">
@@ -944,7 +964,25 @@
                     </connections>
                 </searchDisplayController>
             </objects>
-            <point key="canvasLocation" x="-1351" y="522"/>
+            <point key="canvasLocation" x="-1343" y="-718"/>
+        </scene>
+        <!--Navigation Controller-->
+        <scene sceneID="VGj-2q-au8">
+            <objects>
+                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="2G6-8C-HCg" sceneMemberID="viewController">
+                    <toolbarItems/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="3Zt-Sd-5SN">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <nil name="viewControllers"/>
+                    <connections>
+                        <segue destination="W5n-st-bzJ" kind="relationship" relationship="rootViewController" id="LUk-LL-9uK"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="tID-3w-Igb" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-1627" y="40"/>
         </scene>
     </scenes>
     <simulatedMetricsContainer key="defaultSimulatedMetrics">
@@ -952,4 +990,7 @@
         <simulatedOrientationMetrics key="orientation"/>
         <simulatedScreenMetrics key="destination" type="retina4"/>
     </simulatedMetricsContainer>
+    <inferredMetricsTieBreakers>
+        <segue reference="NJP-W0-New"/>
+    </inferredMetricsTieBreakers>
 </document>

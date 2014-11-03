@@ -145,6 +145,12 @@
 		74CBCF0C19F6B9C200049AA0 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 74CBCF0B19F6B9C200049AA0 /* AVFoundation.framework */; };
 		74CBCF0E19F6FA8C00049AA0 /* play.png in Resources */ = {isa = PBXBuildFile; fileRef = 74CBCF0D19F6FA8C00049AA0 /* play.png */; };
 		74CBCF1119F76A3C00049AA0 /* DealSummaryViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 74CBCF1019F76A3C00049AA0 /* DealSummaryViewController.m */; };
+		74DADB611A071BA200E2BA0F /* SettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 74DADB601A071BA200E2BA0F /* SettingsViewController.m */; };
+		74DADB641A07467D00E2BA0F /* share.png in Resources */ = {isa = PBXBuildFile; fileRef = 74DADB631A07467D00E2BA0F /* share.png */; };
+		74DADB661A0748F400E2BA0F /* facebook.png in Resources */ = {isa = PBXBuildFile; fileRef = 74DADB651A0748F400E2BA0F /* facebook.png */; };
+		74DADB681A07490600E2BA0F /* twitter.png in Resources */ = {isa = PBXBuildFile; fileRef = 74DADB671A07490600E2BA0F /* twitter.png */; };
+		74DADB6A1A07492100E2BA0F /* linkedin.png in Resources */ = {isa = PBXBuildFile; fileRef = 74DADB691A07492100E2BA0F /* linkedin.png */; };
+		74DADB6C1A07493200E2BA0F /* googlePlus.png in Resources */ = {isa = PBXBuildFile; fileRef = 74DADB6B1A07493200E2BA0F /* googlePlus.png */; };
 		74FD860D19E380B7000EC4C2 /* UIView+GestureView.m in Sources */ = {isa = PBXBuildFile; fileRef = 74FD860C19E380B7000EC4C2 /* UIView+GestureView.m */; };
 		74FD861019E392FF000EC4C2 /* GestureView.m in Sources */ = {isa = PBXBuildFile; fileRef = 74FD860F19E392FF000EC4C2 /* GestureView.m */; };
 		74FD861319E43DC7000EC4C2 /* GestureCollectionView.m in Sources */ = {isa = PBXBuildFile; fileRef = 74FD861219E43DC7000EC4C2 /* GestureCollectionView.m */; };
@@ -382,6 +388,13 @@
 		74CBCF0D19F6FA8C00049AA0 /* play.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = play.png; path = "../../../../../../Downloads/ios7-icons-1/png/play.png"; sourceTree = "<group>"; };
 		74CBCF0F19F76A3C00049AA0 /* DealSummaryViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DealSummaryViewController.h; sourceTree = "<group>"; };
 		74CBCF1019F76A3C00049AA0 /* DealSummaryViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DealSummaryViewController.m; sourceTree = "<group>"; };
+		74DADB5F1A071BA200E2BA0F /* SettingsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SettingsViewController.h; sourceTree = "<group>"; };
+		74DADB601A071BA200E2BA0F /* SettingsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SettingsViewController.m; sourceTree = "<group>"; };
+		74DADB631A07467D00E2BA0F /* share.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = share.png; sourceTree = "<group>"; };
+		74DADB651A0748F400E2BA0F /* facebook.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = facebook.png; sourceTree = "<group>"; };
+		74DADB671A07490600E2BA0F /* twitter.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = twitter.png; sourceTree = "<group>"; };
+		74DADB691A07492100E2BA0F /* linkedin.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = linkedin.png; sourceTree = "<group>"; };
+		74DADB6B1A07493200E2BA0F /* googlePlus.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = googlePlus.png; sourceTree = "<group>"; };
 		74FD860B19E380B7000EC4C2 /* UIView+GestureView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIView+GestureView.h"; sourceTree = "<group>"; };
 		74FD860C19E380B7000EC4C2 /* UIView+GestureView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView+GestureView.m"; sourceTree = "<group>"; };
 		74FD860E19E392FF000EC4C2 /* GestureView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GestureView.h; sourceTree = "<group>"; };
@@ -438,6 +451,7 @@
 		74065AE319C7E2DD0033DA71 /* images */ = {
 			isa = PBXGroup;
 			children = (
+				74DADB621A07467200E2BA0F /* social */,
 				745256A11A01AB2300A12020 /* upArrow.png */,
 				745256A21A01AB2300A12020 /* downArrow.png */,
 				740C850D19F81A4A00D3A178 /* delivery.png */,
@@ -581,14 +595,16 @@
 			isa = PBXGroup;
 			children = (
 				745257041A06AE2700A12020 /* unimplemented */,
-				740A2E7C19C53E4600D87965 /* MainViewController.h */,
-				740A2E7D19C53E4600D87965 /* MainViewController.m */,
-				74B9328419AAEB4E003B6594 /* CenterViewController.h */,
-				74B9328519AAEB4E003B6594 /* CenterViewController.m */,
 				740A2E7619C49B4F00D87965 /* MenuTableController.h */,
 				740A2E7719C49B4F00D87965 /* MenuTableController.m */,
 				741FB5EE19DF541400EA6D5B /* UserMenuController.h */,
 				741FB5EF19DF541400EA6D5B /* UserMenuController.m */,
+				74DADB5F1A071BA200E2BA0F /* SettingsViewController.h */,
+				74DADB601A071BA200E2BA0F /* SettingsViewController.m */,
+				740A2E7C19C53E4600D87965 /* MainViewController.h */,
+				740A2E7D19C53E4600D87965 /* MainViewController.m */,
+				74B9328419AAEB4E003B6594 /* CenterViewController.h */,
+				74B9328519AAEB4E003B6594 /* CenterViewController.m */,
 				74A88CB819FD63FB00872C26 /* EditTableCellView.h */,
 				74A88CB919FD63FB00872C26 /* EditTableCellView.m */,
 				7452569E19FF2FB500A12020 /* MyDealPassGestureView.h */,
@@ -838,6 +854,18 @@
 			name = objects;
 			sourceTree = "<group>";
 		};
+		74DADB621A07467200E2BA0F /* social */ = {
+			isa = PBXGroup;
+			children = (
+				74DADB631A07467D00E2BA0F /* share.png */,
+				74DADB6B1A07493200E2BA0F /* googlePlus.png */,
+				74DADB691A07492100E2BA0F /* linkedin.png */,
+				74DADB671A07490600E2BA0F /* twitter.png */,
+				74DADB651A0748F400E2BA0F /* facebook.png */,
+			);
+			name = social;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -920,6 +948,8 @@
 				74CBCF0719F5793F00049AA0 /* speak.png in Resources */,
 				74B721A519F0A8BB000B3892 /* cross.png in Resources */,
 				741FB5F419DF5E5F00EA6D5B /* home60.png in Resources */,
+				74DADB681A07490600E2BA0F /* twitter.png in Resources */,
+				74DADB6C1A07493200E2BA0F /* googlePlus.png in Resources */,
 				74B721B419F2272B000B3892 /* rotateCounterClock.png in Resources */,
 				74065AE719C7E2DD0033DA71 /* apple image.jpg in Resources */,
 				74B9328319AAEB4E003B6594 /* Main_iPad.storyboard in Resources */,
@@ -930,10 +960,12 @@
 				74B9328019AAEB4E003B6594 /* Main_iPhone.storyboard in Resources */,
 				741FB60919E11B0200EA6D5B /* add63.png in Resources */,
 				740C850E19F81A4A00D3A178 /* delivery.png in Resources */,
+				74DADB6A1A07492100E2BA0F /* linkedin.png in Resources */,
 				74CBCF0319F5716200049AA0 /* backArrow.png in Resources */,
 				74065AE819C7E2DD0033DA71 /* facebook.jpg in Resources */,
 				74065AE919C7E2DD0033DA71 /* google.jpg in Resources */,
 				74B721B119F20180000B3892 /* trash.png in Resources */,
+				74DADB641A07467D00E2BA0F /* share.png in Resources */,
 				749366F419CB3E67003B3108 /* twitter small icon.jpg in Resources */,
 				745256A41A01AB2300A12020 /* downArrow.png in Resources */,
 				74CBCF0E19F6FA8C00049AA0 /* play.png in Resources */,
@@ -942,6 +974,7 @@
 				74B721B519F2272B000B3892 /* rotateClock.png in Resources */,
 				74B721BD19F22B60000B3892 /* rotate.png in Resources */,
 				74B9327719AAEB4E003B6594 /* InfoPlist.strings in Resources */,
+				74DADB661A0748F400E2BA0F /* facebook.png in Resources */,
 				741FB60619E11AF800EA6D5B /* zoom22.png in Resources */,
 				741FB60A19E11B0200EA6D5B /* web11.png in Resources */,
 				74CBCF0519F5791300049AA0 /* keyboard.png in Resources */,
@@ -973,6 +1006,7 @@
 				740A2E7419C29BAA00D87965 /* CollectionViewDownloadOperation.m in Sources */,
 				74CB84E119BA15FA00579432 /* hmac.c in Sources */,
 				74CB84F719BBCC0400579432 /* NSMutableURLRequest+Parameters.m in Sources */,
+				74DADB611A071BA200E2BA0F /* SettingsViewController.m in Sources */,
 				740A2E7E19C53E4600D87965 /* MainViewController.m in Sources */,
 				74FD860D19E380B7000EC4C2 /* UIView+GestureView.m in Sources */,
 				74B932A619AAEC55003B6594 /* LoginViewController.m in Sources */,

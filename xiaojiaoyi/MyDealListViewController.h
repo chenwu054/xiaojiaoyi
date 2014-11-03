@@ -11,13 +11,17 @@
 #import "EditTableCellView.h"
 //#import "MyDealPassGestureView.h"
 #import "DealSummaryEditViewController.h"
+#import "MainViewController.h"
 
+@class MainViewController;
 
 @interface MyDealListViewController : UIViewController <UITableViewDataSource,UITableViewDelegate,NSFetchedResultsControllerDelegate>
 
+@property (nonatomic) MainViewController* mainVC;
 
 @property (nonatomic) NSString* userId;
 @property (nonatomic) UITableView *tableView;
+@property (nonatomic) DealObject* transferDealObject;
 
 -(void)editButtonClicked;
 -(void)setup;
