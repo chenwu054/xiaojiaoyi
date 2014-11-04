@@ -578,8 +578,6 @@
     
     NSLog(@"selected cell");
     
-    //self.navigationVC setro
-    //[self.navigationVC pushViewController:self.dealSummaryEditVC animated:YES];
     //NSLog(@"self.navigation controller is %@",self.navigationController);
     //[self.navigationController pushViewController:self.dealSummaryEditVC animated:YES];
 }

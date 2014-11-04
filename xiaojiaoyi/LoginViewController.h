@@ -16,6 +16,8 @@
 #import "MyFBSessionTokenCachingStrategy.h"
 #import "SessionManager.h"
 
+#import "UserObject.h"
+
 @interface LoginViewController : UIViewController <FBLoginViewDelegate,UIAlertViewDelegate,UIActionSheetDelegate,NSXMLParserDelegate,GPPSignInDelegate>
 
 //@property (nonatomic) MyOAuthLoginType currentLoginType;

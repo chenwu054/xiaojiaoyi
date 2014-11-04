@@ -9,6 +9,7 @@
 #import <UIKit/UIKit.h>
 #import "MyFBSessionTokenCachingStrategy.h"
 #import "SessionManager.h"
+#import "UserObject.h"
 
 @interface xjyAppDelegate : UIResponder <UIApplicationDelegate>
 
@@ -19,5 +20,10 @@
 
 -(void) sessionStateChanged:(FBSession*) session state:(FBSessionState)state error:(NSError*) error;
 
+-(UserObject*)loadUserObjectFromUserDefault;
+-(void)updateUserObjectInUserDefault:(UserObject*)user;
+
+-(UserObject*)loadUserObjectFromFile;
+-(void)updateUserObjectToFile:(UserObject*)user;
 
 @end

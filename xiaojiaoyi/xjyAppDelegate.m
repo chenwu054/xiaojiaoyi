@@ -139,4 +139,23 @@
     return [FBAppCall handleOpenURL:url sourceApplication:sourceApplication withSession:[SessionManager fbSession]] || [GPPURLHandler handleURL:url sourceApplication:sourceApplication annotation:annotation];
 }
 
+-(UserObject*)loadUserObjectFromUserDefault
+{
+    return  nil;
+}
+-(void)updateUserObjectInUserDefault:(UserObject*)user
+{
+    return;
+}
+
+-(UserObject*)loadUserObjectFromFile
+{
+    return nil;
+}
+-(void)updateUserObjectToFile:(UserObject*)user
+{
+    
+}
+
+
 @end

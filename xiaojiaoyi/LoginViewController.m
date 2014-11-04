@@ -595,15 +595,45 @@ static NSString * const kClientId = @"100128444749-l3hh0v0as5n6t4rnp3maciodja4oa
             FBSession.activeSession = [SessionManager fbSession];
             [FBRequestConnection startForMeWithCompletionHandler:^(FBRequestConnection *connection, id result, NSError *error) {
                 NSDictionary * dict = (NSDictionary *)result;
+//                for(NSString* key in dict){
+//                    NSLog(@"key:%@, value:%@",key,dict[key]);
+//                }
                 NSString * idStr = [dict valueForKey:@"id"];
-                NSLog(@"id is %@ ", idStr);
+                //NSLog(@"id is %@ ", idStr);
                 
                 //download the profile data
                 //check internet, if suddenly no internet for fetching profile picture, still login but no profile picture/or use local cache.
                 NSURLSession *urlSession = [NSURLSession sharedSession];
-                NSURL * url = [NSURL URLWithString:[NSString stringWithFormat:@"http://graph.facebook.com/%@/picture",idStr]];
+                
+                //update the current user Info and write to userDefaults and file
+                MyFBSessionTokenCachingStrategy* strategy = [SessionManager myFBTokenCachingStrategy];
+                FBAccessTokenData* tokenInfo = [strategy fetchFBAccessTokenData];
+                NSString* urlString = [NSString stringWithFormat:@"http://graph.facebook.com/%@/picture",idStr];
+                NSURL * url = [NSURL URLWithString:urlString];
+                NSMutableDictionary* fbNewInfo = [[NSMutableDictionary alloc] init];
+                [fbNewInfo setObject:urlString forKey:@"fbProfileURL"];
+                [fbNewInfo setObject:[NSNumber numberWithBool:YES] forKey:@"fbLogin"];
+                [fbNewInfo setObject:idStr forKey:@"fbID"];
+                [fbNewInfo setObject:dict[@"name"] forKey:@"fbUsername"];
+                NSString* accessToken = tokenInfo.accessToken;
+                if(accessToken){
+                    [fbNewInfo setObject:accessToken forKey:@"fbAccessToken"];
+                }
+                NSDate* expireDate =tokenInfo.expirationDate;
+                if(expireDate){
+                    [fbNewInfo setObject:expireDate forKey:@"fbExpireDate"];
+                }
+                [UserObject updateCurrentUserWithNewInfo:fbNewInfo];
+                [UserObject updateUserObjectToFile:nil];
+                //[UserObject updateUserObjectInUserDefaults:nil];
+                
+                // download the user profile image
                 NSURLSessionDataTask *task = [urlSession dataTaskWithURL:url completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
                     UIImage *image = [UIImage imageWithData:data];
+                    
+                    //write the image file to local disk
+                    [data writeToURL:[UserObject currentUserFBProfileURL] atomically:YES];
+                    //
                     UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(2, 0, _profileView.frame.size.height, _profileView.frame.size.height)];
                     imageView.image = image;
                     [_profileView addSubview:imageView];
@@ -729,6 +759,11 @@ static NSString * const kClientId = @"100128444749-l3hh0v0as5n6t4rnp3maciodja4oa
 }
 
 #pragma mark UI gesture recognizer methods
+-(void)spinnerTapped:(UITapGestureRecognizer*)gesture
+{
+    NSLog(@"spinner tapped");
+    
+}
 - (IBAction)tapOutsideToDismissKeyboard:(id)sender
 {
     //NSLog(@"tap gesture recognized");
@@ -797,12 +832,16 @@ static NSString * const kClientId = @"100128444749-l3hh0v0as5n6t4rnp3maciodja4oa
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    //load user profile from user default or disk
+    
     // Do any additional setup after loading the view.
     //UI components
     _spinner = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
     [_spinner setCenter:CGPointMake(self.view.frame.size.width/2.0, self.view.frame.size.height/2.0)];
     _spinner.frame = self.view.frame;
     _spinner.backgroundColor = [UIColor colorWithWhite:0.5 alpha:0.4];
+    [_spinner addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(spinnerTapped:)]];
+    
     [self.view addSubview:_spinner];
     
     _twSession = [SessionManager twSession];

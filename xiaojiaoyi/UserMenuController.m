@@ -11,6 +11,8 @@
 #define TABLEVIEW_CELL_HEIGHT 50.0
 #define SLIDE_PANEL_WIDTH 40.0
 
+#define CELL_IMAGE_HEIGHT_MARGIN 10
+
 @interface UserMenuController ()
 
 
@@ -57,7 +59,9 @@
         cell.textLabel.text = _userMenuList[indexPath.row];
         cell.textLabel.backgroundColor = [UIColor clearColor];
         //set image
+        cell.imageView.frame= CGRectMake(10, CELL_IMAGE_HEIGHT_MARGIN, cell.frame.size.height-2*CELL_IMAGE_HEIGHT_MARGIN, cell.frame.size.height-2*CELL_IMAGE_HEIGHT_MARGIN);
         cell.imageView.image = [UIImage imageNamed:@"home60.png"];
+        //cell.imageView.image.size =CGSizeMake(cell.frame.size.height-2*CELL_IMAGE_HEIGHT_MARGIN, cell.frame.size.height-2*CELL_IMAGE_HEIGHT_MARGIN);
         //cell.imageView.frame = CGRectMake(0, 0, 20,20);
         
         //to set background color to transparent

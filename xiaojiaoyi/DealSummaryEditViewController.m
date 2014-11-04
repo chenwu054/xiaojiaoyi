@@ -522,10 +522,84 @@
 }
 
 
-#pragma mark - button clicked methods
+#pragma mark - share methods
+-(void)uploadPhotos
+{
+    for(int i=0;i<self.photos.count;i++){
+        UIImage* image = self.photos[i];
+        [SessionManager uploadImage:image withCompletionHandler:^(FBRequestConnection *connection, id result, NSError *error) {
+            if(!error) {
+                // Log the uri of the staged image
+                NSLog(@"Successfuly staged image with staged URI: %@", [result objectForKey:@"uri"]);
+                
+                // Further code to post the OG story goes here
+                
+            } else {
+                // An error occurred
+                NSLog(@"Error staging an image: %@", error);
+            }
+            
+        }];
+    }
+    
+}
+-(void)getFBPermission
+{
+    [SessionManager requestPublicActionPermissionWithCompletionHandler:^(FBSession *session, NSError *error) {
+        __block NSString *alertText;
+        __block NSString *alertTitle;
+        if (!error) {
+            if ([FBSession.activeSession.permissions indexOfObject:@"publish_actions"] == NSNotFound){
+                // Permission not granted, tell the user we will not publish
+                alertTitle = @"Permission not granted";
+                alertText = @"Your action will not be published to Facebook.";
+                [[[UIAlertView alloc] initWithTitle:alertTitle
+                                            message:alertText
+                                           delegate:self
+                                  cancelButtonTitle:@"OK!"
+                                  otherButtonTitles:nil] show];
+            } else {
+                // Permission granted, publish the OG story
+                NSLog(@"granted publish permission");
+                [self uploadPhotos];
+                // start publish using open graph
+                
+            }
+            
+        } else {
+            NSLog(@"request publish_actions permission with error:%@",error);
+            // There was an error, handle it
+            // See https://developers.facebook.com/docs/ios/errors/
+        }
+        
+    }];
+}
 -(void)fbButtonClicked:(UIButton*)sender
 {
-    NSLog(@"fb button clicked");
+    UserObject* user = [UserObject currentUser];
+    if(!user.fbLogin){
+        [[[UIAlertView alloc] initWithTitle:nil message:@"facebook account not logged in" delegate:self cancelButtonTitle:@"ok" otherButtonTitles: nil] show];
+    }
+    else{
+        [SessionManager checkFBPermissionsWithCompletionHandler:^(FBRequestConnection *connection, id result, NSError *error) {
+            if(!error){
+                NSDictionary *permissions= [(NSArray *)[result data] objectAtIndex:0];
+                if(!permissions[@"publish_actions"]){
+                    [self getFBPermission];
+                }
+                else{
+                    [self uploadPhotos];
+                }
+//                for(NSString* k in permissions){
+//                    NSLog(@"k:%@ value:%@",k,permissions[k]);
+//                }
+            }
+            
+        }];
+        nil;
+    }
+    //NSLog(@"fb button clicked");
+    
 }
 -(void)twButtonClicked:(UIButton*)sender
 {

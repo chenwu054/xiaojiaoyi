@@ -243,7 +243,6 @@ static NSDictionary* lkSession;
     //cannot create from this state
     [session openFromAccessTokenData:data completionHandler:^(FBSession *session, FBSessionState status, NSError *error) {
         handler(session,status,error);
-
     }];
 }
 +(void) loginFacebook
@@ -272,6 +271,52 @@ static NSDictionary* lkSession;
             handler(session,status,error);
         }];
     }
+}
+
++(void)uploadImage:(UIImage*)image withCompletionHandler:(void(^)(FBRequestConnection *connection, id result, NSError *error))handler
+{
+    [FBRequestConnection startForUploadStagingResourceWithImage:image completionHandler:^(FBRequestConnection *connection, id result, NSError *error) {
+        
+        handler(connection,result,error);
+    }];
+}
++(void)checkFBPermissionsWithCompletionHandler:(void(^)(FBRequestConnection *connection, id result, NSError *error))handler
+{
+    FBSession.activeSession = [self fbSession];
+    [FBRequestConnection startWithGraphPath:@"/me/permissions"
+                          completionHandler:^(FBRequestConnection *connection, id result, NSError *error) {
+                              //__block NSString *alertText;
+                              //__block NSString *alertTitle;
+//                              if (!error){
+//                                  NSDictionary *permissions= [(NSArray *)[result data] objectAtIndex:0];
+//                                  NSLog(@"permissions are %@",permissions);
+//                                  if (![permissions objectForKey:@"public_profile"]){
+//                                      // Publish permissions not found, ask for publish_actions
+//                                      //[self requestPublishPermissions];
+//                                      
+//                                  } else {
+//                                      // Publish permissions found, publish the OG story
+//                                      //[self publishStory];
+//                                  }
+//                                  
+//                              } else {
+//                                  // There was an error, handle it
+//                                  // See https://developers.facebook.com/docs/ios/errors/
+//                              }
+                              handler(connection,result,error);
+                              
+                          }];
+}
++(void)requestPublicActionPermissionWithCompletionHandler:(void(^)(FBSession* session, NSError* error))handler
+{
+    FBSession.activeSession = [self fbSession];
+    [FBSession.activeSession requestNewPublishPermissions:[NSArray arrayWithObject:@"publish_actions"]
+                                          defaultAudience:FBSessionDefaultAudienceFriends
+                                        completionHandler:^(FBSession *session, NSError *error) {
+                                            
+                                            handler(session,error);
+                                            
+                                        }];
 }
 
 +(void)checkFBPermissions

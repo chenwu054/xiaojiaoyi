@@ -151,6 +151,7 @@
 		74DADB681A07490600E2BA0F /* twitter.png in Resources */ = {isa = PBXBuildFile; fileRef = 74DADB671A07490600E2BA0F /* twitter.png */; };
 		74DADB6A1A07492100E2BA0F /* linkedin.png in Resources */ = {isa = PBXBuildFile; fileRef = 74DADB691A07492100E2BA0F /* linkedin.png */; };
 		74DADB6C1A07493200E2BA0F /* googlePlus.png in Resources */ = {isa = PBXBuildFile; fileRef = 74DADB6B1A07493200E2BA0F /* googlePlus.png */; };
+		74DADB6F1A07DDAC00E2BA0F /* UserObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 74DADB6E1A07DDAC00E2BA0F /* UserObject.m */; };
 		74FD860D19E380B7000EC4C2 /* UIView+GestureView.m in Sources */ = {isa = PBXBuildFile; fileRef = 74FD860C19E380B7000EC4C2 /* UIView+GestureView.m */; };
 		74FD861019E392FF000EC4C2 /* GestureView.m in Sources */ = {isa = PBXBuildFile; fileRef = 74FD860F19E392FF000EC4C2 /* GestureView.m */; };
 		74FD861319E43DC7000EC4C2 /* GestureCollectionView.m in Sources */ = {isa = PBXBuildFile; fileRef = 74FD861219E43DC7000EC4C2 /* GestureCollectionView.m */; };
@@ -395,6 +396,8 @@
 		74DADB671A07490600E2BA0F /* twitter.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = twitter.png; sourceTree = "<group>"; };
 		74DADB691A07492100E2BA0F /* linkedin.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = linkedin.png; sourceTree = "<group>"; };
 		74DADB6B1A07493200E2BA0F /* googlePlus.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = googlePlus.png; sourceTree = "<group>"; };
+		74DADB6D1A07DDAC00E2BA0F /* UserObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UserObject.h; sourceTree = "<group>"; };
+		74DADB6E1A07DDAC00E2BA0F /* UserObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UserObject.m; sourceTree = "<group>"; };
 		74FD860B19E380B7000EC4C2 /* UIView+GestureView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIView+GestureView.h"; sourceTree = "<group>"; };
 		74FD860C19E380B7000EC4C2 /* UIView+GestureView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView+GestureView.m"; sourceTree = "<group>"; };
 		74FD860E19E392FF000EC4C2 /* GestureView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GestureView.h; sourceTree = "<group>"; };
@@ -511,8 +514,6 @@
 		740C855119F886E300D3A178 /* DataModel */ = {
 			isa = PBXGroup;
 			children = (
-				740C854B19F886B300D3A178 /* User.h */,
-				740C854C19F886B300D3A178 /* User.m */,
 				740C854819F886B200D3A178 /* OAuthToken.h */,
 				740C854919F886B200D3A178 /* OAuthToken.m */,
 				740C855219F8874E00D3A178 /* DataModalUtils.h */,
@@ -520,7 +521,11 @@
 				7452569819FDE08E00A12020 /* DealObject.h */,
 				7452569919FDE08E00A12020 /* DealObject.m */,
 				749E6CF019FDB52F00D1816A /* Deal.h */,
+				740C854B19F886B300D3A178 /* User.h */,
+				740C854C19F886B300D3A178 /* User.m */,
 				749E6CF119FDB52F00D1816A /* Deal.m */,
+				74DADB6D1A07DDAC00E2BA0F /* UserObject.h */,
+				74DADB6E1A07DDAC00E2BA0F /* UserObject.m */,
 			);
 			name = DataModel;
 			sourceTree = "<group>";
@@ -545,6 +550,10 @@
 		745257041A06AE2700A12020 /* unimplemented */ = {
 			isa = PBXGroup;
 			children = (
+				7452569E19FF2FB500A12020 /* MyDealPassGestureView.h */,
+				7452569F19FF2FB500A12020 /* MyDealPassGestureView.m */,
+				74DADB5F1A071BA200E2BA0F /* SettingsViewController.h */,
+				74DADB601A071BA200E2BA0F /* SettingsViewController.m */,
 				74A88CA619FC0DE600872C26 /* FriendDealListViewController.h */,
 				74A88CA719FC0DE600872C26 /* FriendDealListViewController.m */,
 				74A88CA319FC0DB700872C26 /* BoughtDealListViewController.h */,
@@ -560,10 +569,10 @@
 				74CB84D319B588F700579432 /* OAuthViewController.m */,
 				749366F819CDE688003B3108 /* TWSession.h */,
 				749366F919CDE688003B3108 /* TWSession.m */,
-				7493296119D74382003A2388 /* SessionManager.h */,
-				7493296219D74382003A2388 /* SessionManager.m */,
 				7493294B19D27622003A2388 /* MyFBSessionTokenCachingStrategy.h */,
 				7493294C19D27622003A2388 /* MyFBSessionTokenCachingStrategy.m */,
+				7493296119D74382003A2388 /* SessionManager.h */,
+				7493296219D74382003A2388 /* SessionManager.m */,
 				74B932A419AAEC55003B6594 /* LoginViewController.h */,
 				74B932A519AAEC55003B6594 /* LoginViewController.m */,
 			);
@@ -595,26 +604,22 @@
 			isa = PBXGroup;
 			children = (
 				745257041A06AE2700A12020 /* unimplemented */,
+				745257011A05ACD700A12020 /* DealSummaryEditViewController.h */,
+				745257021A05ACD700A12020 /* DealSummaryEditViewController.m */,
+				74A88CA019FC0D8F00872C26 /* MyDealListViewController.h */,
+				74A88CA119FC0D8F00872C26 /* MyDealListViewController.m */,
 				740A2E7619C49B4F00D87965 /* MenuTableController.h */,
 				740A2E7719C49B4F00D87965 /* MenuTableController.m */,
 				741FB5EE19DF541400EA6D5B /* UserMenuController.h */,
 				741FB5EF19DF541400EA6D5B /* UserMenuController.m */,
-				74DADB5F1A071BA200E2BA0F /* SettingsViewController.h */,
-				74DADB601A071BA200E2BA0F /* SettingsViewController.m */,
 				740A2E7C19C53E4600D87965 /* MainViewController.h */,
 				740A2E7D19C53E4600D87965 /* MainViewController.m */,
 				74B9328419AAEB4E003B6594 /* CenterViewController.h */,
 				74B9328519AAEB4E003B6594 /* CenterViewController.m */,
 				74A88CB819FD63FB00872C26 /* EditTableCellView.h */,
 				74A88CB919FD63FB00872C26 /* EditTableCellView.m */,
-				7452569E19FF2FB500A12020 /* MyDealPassGestureView.h */,
-				7452569F19FF2FB500A12020 /* MyDealPassGestureView.m */,
 				74B7219719EC857B000B3892 /* MyDealViewController.h */,
 				74B7219819EC857B000B3892 /* MyDealViewController.m */,
-				74A88CA019FC0D8F00872C26 /* MyDealListViewController.h */,
-				74A88CA119FC0D8F00872C26 /* MyDealListViewController.m */,
-				745257011A05ACD700A12020 /* DealSummaryEditViewController.h */,
-				745257021A05ACD700A12020 /* DealSummaryEditViewController.m */,
 			);
 			name = MainPage;
 			sourceTree = "<group>";
@@ -674,11 +679,11 @@
 			children = (
 				74CB84D919BA15FA00579432 /* OAuth */,
 				740A2E6E19C299D200D87965 /* CollectionView */,
-				749366FB19CE75F1003B3108 /* Login */,
 				740C855119F886E300D3A178 /* DataModel */,
 				741FB5FE19E0BE2E00EA6D5B /* CenterVC */,
-				74B721AC19F0C5FE000B3892 /* MainPage */,
 				74B721AB19F0C5D6000B3892 /* MakeDeal */,
+				749366FB19CE75F1003B3108 /* Login */,
+				74B721AC19F0C5FE000B3892 /* MainPage */,
 				740C855719F959F200D3A178 /* TestCoreDataViewController.h */,
 				740C855819F959F200D3A178 /* TestCoreDataViewController.m */,
 				74B7219A19EE0F3A000B3892 /* CategoryCollectionViewController.h */,
@@ -694,7 +699,6 @@
 				74B9327E19AAEB4E003B6594 /* Main_iPhone.storyboard */,
 				74B9327B19AAEB4E003B6594 /* xjyAppDelegate.h */,
 				74B9327C19AAEB4E003B6594 /* xjyAppDelegate.m */,
-				741FB5F119DF567700EA6D5B /* UserMenuCategory.plist */,
 				740C850F19F87CAC00D3A178 /* DataModel.xcdatamodeld */,
 				74B9328719AAEB4E003B6594 /* Images.xcassets */,
 				74065AE319C7E2DD0033DA71 /* images */,
@@ -707,6 +711,7 @@
 		74B9327319AAEB4E003B6594 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				741FB5F119DF567700EA6D5B /* UserMenuCategory.plist */,
 				74B9328119AAEB4E003B6594 /* Main_iPad.storyboard */,
 				74B9327419AAEB4E003B6594 /* xiaojiaoyi-Info.plist */,
 				74B9327519AAEB4E003B6594 /* InfoPlist.strings */,
@@ -1070,6 +1075,7 @@
 				74FE265A19CA72A300801CA1 /* MapViewController.m in Sources */,
 				74A88CA819FC0DE600872C26 /* FriendDealListViewController.m in Sources */,
 				74B7219C19EE0F3A000B3892 /* CategoryCollectionViewController.m in Sources */,
+				74DADB6F1A07DDAC00E2BA0F /* UserObject.m in Sources */,
 				741FB5FD19E0899800EA6D5B /* CenterTabNearbyDealController.m in Sources */,
 				74B9331419AD8695003B6594 /* STHTTPRequest.m in Sources */,
 				74B7218919E83845000B3892 /* CenterCollectionViewFlowLayout.m in Sources */,

@@ -7,7 +7,10 @@
 //
 
 #import "DealSummaryViewController.h"
-
+#import "UserObject.h"
+#import "LoginViewController.h"
+#import "SessionManager.h"
+#import "MyFBSessionTokenCachingStrategy.h"
 
 
 @interface DealSummaryEditViewController : UIViewController <UIPageViewControllerDataSource,UIPageViewControllerDelegate>

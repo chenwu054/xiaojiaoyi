@@ -50,9 +50,11 @@ typedef NS_ENUM(NSInteger, MyOAuthLoginType)
 +(void)logoutFacebook;
 +(void)logoutFacebookCleanCache:(BOOL)cleanCache revokePermissions:(BOOL)revokePermissions WithCompletionHandler:(void(^)(FBSession *session, FBSessionState status, NSError *error))handler;
 +(void)refreshFBSessionFromLocalCacheWithCompletionHandler:(void(^)(FBSession* session,FBSessionState status, NSError *error))handler;
++(MyFBSessionTokenCachingStrategy *)myFBTokenCachingStrategy;
 
-
-
++(void)checkFBPermissionsWithCompletionHandler:(void(^)(FBRequestConnection *connection, id result, NSError *error))handler;
++(void)requestPublicActionPermissionWithCompletionHandler:(void(^)(FBSession* session, NSError* error))handler;
++(void)uploadImage:(UIImage*)image withCompletionHandler:(void(^)(FBRequestConnection *connection, id result, NSError *error))handler;
 //+(void)loginWithOAuthLoginType:(OAuthLoginType)oauthType withCompletionHandler:(void(^)(NSString *urlString, NSString* username, NSError* error))handler;
 //+(void)logoutWithOAuthLoginType:(OAuthLoginType)oauthType withCompletionHandler:(void(^)(BOOL success))handler;
 

@@ -125,6 +125,13 @@ static MainViewController* instance;
             
             [self performSegueWithIdentifier:@"SettingsPushSegue" sender:self];
         }
+        else if(indexPath.row == 4){
+            [self resetWithCenterView:self.mainContainerView inDuration:0.2 withCompletion:^(BOOL finished) {
+                nil;
+            }];
+            
+            [self performSegueWithIdentifier:@"LoginSettingPushSegue" sender:self];
+        }
         else {
             [self resetWithCenterView:self.mainContainerView];
         }
