@@ -729,6 +729,75 @@ static NSString * const kClientId = @"100128444749-l3hh0v0as5n6t4rnp3maciodja4oa
 
 - (IBAction)onLoginButtonClicked:(id)sender
 {
+    FBSession* session = [FBSession activeSession];
+    NSLog(@"fbsession initial state is %ld",session.state);
+    
+//    [FBSession openActiveSessionWithReadPermissions:@[@"public_profile"] allowLoginUI:NO completionHandler:nil];
+//    session = [FBSession activeSession];
+//    NSLog(@"after open with read permission fbsession state is %ld",session.state);
+//    
+//    [FBSession openActiveSessionWithAllowLoginUI:NO];
+//    session=[FBSession activeSession];
+//    NSLog(@"after open with allow login UI:NO state is %ld",session.state);
+
+    
+//    FBAccessTokenData* tokenData  = [FBAccessTokenData createTokenFromDictionary:[[SessionManager myFBTokenCachingStrategy] getFBAccessTokenDataDictionary]];
+    
+    FBAccessTokenData* tokenData  = [[SessionManager myFBTokenCachingStrategy] fetchFBAccessTokenData];
+    if(session.state ==FBSessionStateClosedLoginFailed || session.state==FBSessionStateClosed){
+        NSLog(@"session state is closed!");
+        session = [[FBSession alloc] initWithAppID:nil permissions:@[@"public_profile"] urlSchemeSuffix:nil tokenCacheStrategy:[SessionManager myFBTokenCachingStrategy]];
+    }
+    if(session.state==FBSessionStateCreated){
+        NSLog(@"session state is then created!");
+        //note: this method only works when the state is created
+        [session openFromAccessTokenData:tokenData completionHandler:^(FBSession *session, FBSessionState status, NSError *error) {
+            if(status!=FBSessionStateOpen && status!=FBSessionStateOpenTokenExtended){
+                NSLog(@"!!! ERROR: open FB session failed");
+            }
+            else{
+                NSLog(@"FB session is opened successfully!");
+            }
+        }];
+    }
+    else if(session.state==FBSessionStateCreatedTokenLoaded){
+        //this opens the fession too!!
+        [session openWithCompletionHandler:^(FBSession *session, FBSessionState status, NSError *error) {
+            if(status!=FBSessionStateOpen && status!=FBSessionStateOpenTokenExtended){
+                NSLog(@"!!! ERROR: open FB session failed in login view");
+            }
+            else{
+                NSLog(@"FB session is opened successfully!");
+            }
+        }];
+        
+        //this opens fb session too!
+//        [session openWithBehavior:FBSessionLoginBehaviorWithNoFallbackToWebView completionHandler:^(FBSession *session, FBSessionState status, NSError *error) {
+//            if(status==FBSessionStateClosedLoginFailed){
+//                NSLog(@"login failed closed");
+//            }
+//            if(status==FBSessionStateOpen){
+//                NSLog(@"login opened successfully!");
+//            }
+//            
+//        }];
+        
+        //this method will open the login dialog for login if initial state is created, will NOT open is initial state is tokenLoaded
+//        [session openWithCompletionHandler:^(FBSession *session, FBSessionState status, NSError *error) {
+//            NSLog(@"after open with completion handler:");
+//            if(error){
+//                NSLog(@"error is %@",error);
+//            }
+//            else{
+//                NSLog(@"state is %ld",session.state);
+//            }
+//        }];
+    }
+    if(session.state == FBSessionStateOpen || session.state==FBSessionStateOpenTokenExtended){
+        [UserObject currentUser].fbLogin=YES;
+    }
+
+    
 //    [SessionManager refreshFBSessionFromLocalCacheWithCompletionHandler:^(FBSession *session, FBSessionState status, NSError *error) {
 //        NSLog(@"3. the session is %@",session);
 //    }];
@@ -747,8 +816,8 @@ static NSString * const kClientId = @"100128444749-l3hh0v0as5n6t4rnp3maciodja4oa
 //temparorily used as enumerator of files
 - (IBAction)onForgetPasswordButtonClicked:(id)sender
 {
-    [SessionManager loginFacebook];
-    
+    //[SessionManager loginFacebook];
+    NSLog(@"session state is %ld",[FBSession activeSession].state);
     NSLog(@"forget password button clicked");
 }
 

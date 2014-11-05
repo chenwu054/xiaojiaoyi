@@ -78,11 +78,19 @@
 @property (nonatomic) UIButton* fbButton;
 @property (nonatomic) UIButton* twButton;
 @property (nonatomic) UIButton* lkButton;
+@property (nonatomic) NSMutableArray* uploadPhotoURI;
 @end
 
 @implementation DealSummaryEditViewController
 
 #pragma mark - components setup
+-(NSMutableArray*)uploadPhotoURI
+{
+    if(!_uploadPhotoURI){
+        _uploadPhotoURI = [[NSMutableArray alloc] init];
+    }
+    return _uploadPhotoURI;
+}
 -(UIButton*)ggButton
 {
     if(!_ggButton){
@@ -523,22 +531,257 @@
 
 
 #pragma mark - share methods
+-(void)createFBGraphObject
+{
+
+    NSLog(@"starting to create graph object");
+    NSMutableDictionary<FBOpenGraphObject>* object= [FBGraphObject openGraphObjectForPost];
+    object.provisionedForPost=YES;
+    object[@"title"]=[NSString stringWithFormat:@"%@,%d",self.myNewDeal.title,rand()%100];
+    object[@"description"]=self.myNewDeal.describe;
+    object[@"type"]=@"xiaojiaoyi:item";
+    object[@"url"] = @"http://exampleurl.com/idk";
+    NSMutableArray* urls= [[NSMutableArray alloc] init];
+    for(int i=0;i<self.uploadPhotoURI.count;i++){
+        NSDictionary* dict = [[NSDictionary alloc] initWithObjects:@[@"false",self.uploadPhotoURI[i]] forKeys:@[@"user_generated",@"url"]];
+        [urls addObject:dict];
+    }
+    object[@"image"]=urls;
+    object[@"retailer_item_id"]=@"random_retailID";
+    object[@"price"]=self.myNewDeal.price;
+    object[@"availability"]=@"true";
+    object[@"condition"]=@"new";
+
+    for(int i=0;i<self.uploadPhotoURI.count;i++){
+        nil;
+        // NSLog(@"uri to be uploaded:%@",self.uploadPhotoURI[i]);
+    }
+    [FBRequestConnection startForPostOpenGraphObject:object completionHandler:^(FBRequestConnection *connection, id result, NSError *error) {
+        if(!error){
+            NSString* objectId=[result objectForKey:@"id"];
+            NSLog(@"objId is %@",objectId);
+        }
+        else{
+            NSLog(@"posting graph error!:%@",error);
+        }
+    }];
+    
+    //===========================================
+//    NSMutableDictionary<FBGraphObject> *object = [FBGraphObject openGraphObjectForPostWithType:nil title:@"Sample Item"
+//                                            image:@"https://fbstatic-a.akamaihd.net/images/devsite/attachment_blank.png"
+//                                              url:@"http://samples.ogp.me/612460332144487"
+//                                      description:@"this is a description"];
+    
+//    [FBRequestConnection startForPostWithGraphPath:@"me/objects/product.item"
+//                                       graphObject:object
+//                                 completionHandler:^(FBRequestConnection *connection,
+//                                                     id result,
+//                                                     NSError *error) {
+//                                     // handle the result
+//                                     if(!error){
+//                                         NSString* objectId=[result objectForKey:@"id"];
+//                                         NSLog(@"objId is %@",objectId);
+//                                     }
+//                                     else{
+//                                         NSLog(@"posting graph error!:%@",error);
+//                                     }
+//
+//                                 }];
+    
+    
+    
+//    NSDictionary *params = [NSDictionary dictionaryWithObjectsAndKeys:
+//                            @"337462276428867", @"fb:app_id",
+//                            @"xiaojiaoyi.item", @"og:type",
+//                            @"Put your own URL to the object here", @"og:url",
+//                            @"Sample Item", @"og:title",
+//                            @"https://fbstatic-a.akamaihd.net/images/devsite/attachment_blank.png", @"og:image",
+//                            @"randome sample id", @"product:retailer_item_id",
+//                            @"Sample Shipping Cost: ", @"product:shipping_cost:amount",
+//                            @"Sample Shipping Cost: ", @"product:shipping_cost:currency",
+//                            @"Sample Shipping Weight: Value", @"product:shipping_weight:value",
+//                            @"Sample Shipping Weight: Units", @"product:shipping_weight:units",
+//                            @"Sample Sale Price: ", @"product:sale_price:amount",
+//                            @"Sample Sale Price: ", @"product:sale_price:currency",
+//                            @"Sample Sale Price Dates: Start", @"product:sale_price_dates:start",
+//                            @"Sample Sale Price Dates: End", @"product:sale_price_dates:end",
+//                            @"Sample Availability", @"product:availability",
+//                            @"Sample Condition", @"product:condition",
+//                            nil
+//                            ];
+//
+//    [FBRequestConnection startForPostWithGraphPath:@"me/objects/product.item"
+//                                       graphObject:object
+//                                 completionHandler:^(FBRequestConnection *connection,
+//                                                     id result,
+//                                                     NSError *error) {
+//                                     if(!error){
+//                                         NSString* objectId=[result objectForKey:@"id"];
+//                                         NSLog(@"objId is %@",objectId);
+//                                     }
+//                                     else{
+//                                         NSLog(@"posting graph error!:%@",error);
+//                                     }
+
+//                                     // handle the result
+//                                 }];
+    
+//    [FBRequestConnection startWithGraphPath:@"/me/objects/xiaojiaoyi.item"
+//                                 parameters:params
+//                                 HTTPMethod:@"POST"
+//                          completionHandler:^(FBRequestConnection *connection, id result, NSError *error) {
+//                              
+//                              if(!error){
+//                                  NSString* objectId=[result objectForKey:@"id"];
+//                                  NSLog(@"objId is %@",objectId);
+//                              }
+//                              else{
+//                                  NSLog(@"posting graph error!:%@",error);
+//                              }
+//                              /* handle the result */
+//                          }];
+    
+    
+}
+
+-(void)shareFBWithShareDialog
+{
+    NSLog(@"in share FB with Share Dialog");
+    id<FBGraphObject> object = [FBGraphObject openGraphObjectForPostWithType:@"xiaojiaoyi:dish"
+                                            title:self.myNewDeal.title
+                                            image:self.uploadPhotoURI[0] //@"http://i.imgur.com/g3Qc1HN.png"
+                                              url:@"http://example.com/roasted_pumpkin_seeds"
+                                      description:self.myNewDeal.describe];
+    // Create an action
+    id<FBOpenGraphAction> action = (id<FBOpenGraphAction>)[FBGraphObject graphObject];
+    
+    
+    NSMutableArray* urls= [[NSMutableArray alloc] init];
+    for(int i=0;i<self.uploadPhotoURI.count;i++){
+        NSDictionary* dict = [[NSDictionary alloc] initWithObjects:@[@"true",self.uploadPhotoURI[i]] forKeys:@[@"user_generated",@"url"]];
+        [urls addObject:dict];
+    }
+    NSArray* image = @[@{@"url": self.uploadPhotoURI[0], @"user_generated": @"true"}];
+    // Set image on the action
+    [action setObject:image forKey:@"image"];
+    
+    // Link the object to the action
+    [action setObject:object forKey:@"dish"];
+    
+    // Tag one or multiple users using the users' ids
+    //[action setTags:@[<user-ids>]];
+    
+    // Tag a place using the place's id
+//    id<FBGraphPlace> place = (id<FBGraphPlace>)[FBGraphObject graphObject];
+//    [place setId:@"141887372509674"]; // Facebook Seattle
+//    [action setPlace:place];
+    
+    // Dismiss the image picker off the screen
+    //[self dismissViewControllerAnimated:YES completion:nil];
+    
+    // Check if the Facebook app is installed and we can present the share dialog
+    FBOpenGraphActionParams *params = [[FBOpenGraphActionParams alloc] init];
+    params.action = action;
+    params.actionType = @"xiaojiaoyi:eat";
+    
+    NSLog(@"before dialog");
+    // If the Facebook app is installed and we can present the share dialog
+    if([FBDialogs canPresentShareDialogWithOpenGraphActionParams:params]) {
+        // Show the share dialog
+        [FBDialogs presentShareDialogWithOpenGraphAction:action
+                                              actionType:@"xiaojiaoyi:eat"
+                                     previewPropertyName:@"dish"
+                                                 handler:^(FBAppCall *call, NSDictionary *results, NSError *error) {
+                                                     if(error) {
+                                                         // An error occurred, we need to handle the error
+                                                         // See: https://developers.facebook.com/docs/ios/errors
+                                                         NSLog(@"Error publishing story: %@", error.description);
+                                                     } else {
+                                                         // Success
+                                                         NSLog(@"result %@", results);
+                                                     }
+                                                 }];
+        
+        // If the Facebook app is NOT installed and we can't present the share dialog
+    } else {
+        // FALLBACK: publish just a link using the Feed dialog
+        
+        // Put together the dialog parameters
+        NSMutableDictionary *params = [NSMutableDictionary dictionaryWithObjectsAndKeys:
+                                       self.myNewDeal.title, @"name",
+                                      [self.myNewDeal.price stringValue], @"caption",
+                                       self.myNewDeal.describe, @"description",
+                                       @"http://example.com/roasted_pumpkin_seeds", @"link",
+                                       @"http://i.imgur.com/g3Qc1HN.png", @"picture",
+                                       nil];
+        
+        // Show the feed dialog
+        [FBWebDialogs presentFeedDialogModallyWithSession:nil
+                                               parameters:params
+                                                  handler:^(FBWebDialogResult result, NSURL *resultURL, NSError *error) {
+                                                      if (error) {
+                                                          // An error occurred, we need to handle the error
+                                                          // See: https://developers.facebook.com/docs/ios/errors
+                                                          NSLog(@"Error publishing story: %@", error.description);
+                                                      } else {
+                                                          if (result == FBWebDialogResultDialogNotCompleted) {
+                                                              // User cancelled.
+                                                              NSLog(@"User cancelled.");
+                                                          } else {
+                                                              // Handle the publish feed callback
+                                                              NSDictionary *urlParams = [self parseURLParams:[resultURL query]];
+                                                              
+                                                              if (![urlParams valueForKey:@"post_id"]) {
+                                                                  // User cancelled.
+                                                                  NSLog(@"User cancelled.");
+                                                                  
+                                                              } else {
+                                                                  // User clicked the Share button
+                                                                  NSString *result = [NSString stringWithFormat: @"Posted story, id: %@", [urlParams valueForKey:@"post_id"]];
+                                                                  NSLog(@"result %@", result);
+                                                              }
+                                                          }
+                                                      }
+                                                  }];
+        
+    }
+}
+// A function for parsing URL parameters.
+- (NSDictionary*)parseURLParams:(NSString *)query {
+    NSArray *pairs = [query componentsSeparatedByString:@"&"];
+    NSMutableDictionary *params = [[NSMutableDictionary alloc] init];
+    for (NSString *pair in pairs) {
+        NSArray *kv = [pair componentsSeparatedByString:@"="];
+        NSString *val =
+        [kv[1] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+        params[kv[0]] = val;
+    }
+    return params;
+}
+
+
 -(void)uploadPhotos
 {
+    if(self.uploadPhotoURI.count>0){
+        [self.uploadPhotoURI removeAllObjects];
+    }
     for(int i=0;i<self.photos.count;i++){
         UIImage* image = self.photos[i];
         [SessionManager uploadImage:image withCompletionHandler:^(FBRequestConnection *connection, id result, NSError *error) {
             if(!error) {
                 // Log the uri of the staged image
-                NSLog(@"Successfuly staged image with staged URI: %@", [result objectForKey:@"uri"]);
-                
+                NSString* uri =[result objectForKey:@"uri"];
+                NSLog(@"Successfuly staged image with staged URI: %@", uri);
+                [self.uploadPhotoURI addObject:uri];
                 // Further code to post the OG story goes here
-                
             } else {
                 // An error occurred
                 NSLog(@"Error staging an image: %@", error);
             }
-            
+            if(self.uploadPhotoURI.count==self.photos.count){
+                //[self createFBGraphObject];
+                [self shareFBWithShareDialog];
+            }
         }];
     }
     
@@ -576,7 +819,9 @@
 }
 -(void)fbButtonClicked:(UIButton*)sender
 {
+    
     UserObject* user = [UserObject currentUser];
+    
     if(!user.fbLogin){
         [[[UIAlertView alloc] initWithTitle:nil message:@"facebook account not logged in" delegate:self cancelButtonTitle:@"ok" otherButtonTitles: nil] show];
     }
@@ -594,7 +839,7 @@
 //                    NSLog(@"k:%@ value:%@",k,permissions[k]);
 //                }
             }
-            
+            NSLog(@"done checking permissions!");
         }];
         nil;
     }

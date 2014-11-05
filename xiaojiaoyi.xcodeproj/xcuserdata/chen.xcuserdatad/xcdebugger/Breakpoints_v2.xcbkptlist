@@ -680,11 +680,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "xiaojiaoyi/MyFBSessionTokenCachingStrategy.m"
-            timestampString = "433445214.235358"
+            timestampString = "436810715.954511"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "74"
-            endingLineNumber = "74"
+            startingLineNumber = "81"
+            endingLineNumber = "81"
             landmarkName = "-clearToken"
             landmarkType = "5">
          </BreakpointContent>
@@ -696,11 +696,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "xiaojiaoyi/MyFBSessionTokenCachingStrategy.m"
-            timestampString = "433445214.235358"
+            timestampString = "436810715.954511"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "80"
-            endingLineNumber = "80">
+            startingLineNumber = "87"
+            endingLineNumber = "87">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -710,11 +710,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "xiaojiaoyi/MyFBSessionTokenCachingStrategy.m"
-            timestampString = "433445214.235358"
+            timestampString = "436810715.954511"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "95"
-            endingLineNumber = "95">
+            startingLineNumber = "102"
+            endingLineNumber = "102">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -724,11 +724,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "xiaojiaoyi/MyFBSessionTokenCachingStrategy.m"
-            timestampString = "433445214.235358"
+            timestampString = "436810715.954511"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "105"
-            endingLineNumber = "105">
+            startingLineNumber = "112"
+            endingLineNumber = "112">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -738,11 +738,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "xiaojiaoyi/MyFBSessionTokenCachingStrategy.m"
-            timestampString = "433445214.235358"
+            timestampString = "436810715.954511"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "89"
-            endingLineNumber = "89">
+            startingLineNumber = "96"
+            endingLineNumber = "96">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -784,11 +784,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "xiaojiaoyi/SessionManager.m"
-            timestampString = "436775287.219719"
+            timestampString = "436816921.171378"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "330"
-            endingLineNumber = "330"
+            startingLineNumber = "336"
+            endingLineNumber = "336"
             landmarkName = "+checkFBPermissions"
             landmarkType = "5">
          </BreakpointContent>
@@ -800,11 +800,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "xiaojiaoyi/SessionManager.m"
-            timestampString = "436775287.219719"
+            timestampString = "436816921.171378"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "415"
-            endingLineNumber = "415"
+            startingLineNumber = "421"
+            endingLineNumber = "421"
             landmarkName = "@implementation SessionManager"
             landmarkType = "3">
          </BreakpointContent>
@@ -816,11 +816,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "xiaojiaoyi/SessionManager.m"
-            timestampString = "436775287.219719"
+            timestampString = "436816921.171378"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "390"
-            endingLineNumber = "390"
+            startingLineNumber = "396"
+            endingLineNumber = "396"
             landmarkName = "+logoutFacebookCleanCache:revokePermissions:WithCompletionHandler:"
             landmarkType = "5">
          </BreakpointContent>
@@ -832,11 +832,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "xiaojiaoyi/SessionManager.m"
-            timestampString = "436775287.219719"
+            timestampString = "436816921.171378"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "290"
-            endingLineNumber = "290"
+            startingLineNumber = "296"
+            endingLineNumber = "296"
             landmarkName = "+checkFBPermissionsWithCompletionHandler:"
             landmarkType = "5">
          </BreakpointContent>
@@ -848,11 +848,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "xiaojiaoyi/SessionManager.m"
-            timestampString = "436775287.219719"
+            timestampString = "436816921.171378"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "322"
-            endingLineNumber = "322"
+            startingLineNumber = "328"
+            endingLineNumber = "328"
             landmarkName = "+checkFBPermissions"
             landmarkType = "5">
          </BreakpointContent>
@@ -880,11 +880,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "xiaojiaoyi/LoginViewController.m"
-            timestampString = "436770031.496472"
+            timestampString = "436815127.601701"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "905"
-            endingLineNumber = "905"
+            startingLineNumber = "974"
+            endingLineNumber = "974"
             landmarkName = "-viewDidLoad"
             landmarkType = "5">
          </BreakpointContent>
@@ -2826,11 +2826,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "xiaojiaoyi/DealSummaryEditViewController.m"
-            timestampString = "436775287.219719"
+            timestampString = "436856825.449587"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "727"
-            endingLineNumber = "727"
+            startingLineNumber = "972"
+            endingLineNumber = "972"
             landmarkName = "-viewDidLoad"
             landmarkType = "5">
          </BreakpointContent>
@@ -2992,6 +2992,22 @@
             startingLineNumber = "608"
             endingLineNumber = "608"
             landmarkName = "-testFBLogin"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "xiaojiaoyi/DealSummaryEditViewController.m"
+            timestampString = "436856825.449587"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "650"
+            endingLineNumber = "650"
+            landmarkName = "-shareFBWithShareDialog"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>

@@ -17,5 +17,5 @@
 -(instancetype) initWithFilePath:(NSString *)filepath andFileName:(NSString*)filename;
 
 - (FBAccessTokenData *)fetchFBAccessTokenData;
-
+-(NSDictionary*)getFBAccessTokenDataDictionary;
 @end

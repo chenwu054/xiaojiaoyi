@@ -64,11 +64,18 @@ static NSString* kFilename = @"TokenInfo.plist";
 - (FBAccessTokenData *)fetchFBAccessTokenData
 {
     NSDictionary *tokenInformation = [self readData];
+//    for(NSString* k in tokenInformation){
+//        NSLog(@"k:%@, v:%@",k,tokenInformation[k]);
+//    }
     if (nil == tokenInformation) {
         return nil;
     } else {
         return [FBAccessTokenData createTokenFromDictionary:tokenInformation];
     }
+}
+-(NSDictionary*)getFBAccessTokenDataDictionary
+{
+    return [self readData];
 }
 
 - (void)clearToken

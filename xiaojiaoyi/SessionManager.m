@@ -189,7 +189,11 @@ static NSDictionary* lkSession;
 #pragma mark - facebook methods
 +(FBSession *)fbSession
 {
-    return [self fbSessionWithRecreate:NO];
+    if(!fbSession && ![FBSession activeSession] || ![FBSession activeSession].state!=FBSessionStateOpen){
+        fbSession = [self fbSessionWithRecreate:NO];
+    }
+    
+    return fbSession;
 }
 
 +(FBSession *)fbSessionWithRecreate:(BOOL)recreate
@@ -282,7 +286,9 @@ static NSDictionary* lkSession;
 }
 +(void)checkFBPermissionsWithCompletionHandler:(void(^)(FBRequestConnection *connection, id result, NSError *error))handler
 {
-    FBSession.activeSession = [self fbSession];
+    if([FBSession activeSession].state!=FBSessionStateOpen&&[FBSession activeSession].state!=FBSessionStateOpenTokenExtended){
+        FBSession.activeSession = [self fbSession];
+    }
     [FBRequestConnection startWithGraphPath:@"/me/permissions"
                           completionHandler:^(FBRequestConnection *connection, id result, NSError *error) {
                               //__block NSString *alertText;
