@@ -7,6 +7,8 @@
 //
 
 #import "MyFBSessionTokenCachingStrategy.h"
+
+#define USER_DEFAULT_CACHE_KEY @"FBAccessTokenInformationKey"
 static NSString* kFilename = @"TokenInfo.plist";
 
 @implementation MyFBSessionTokenCachingStrategy

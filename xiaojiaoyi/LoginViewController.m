@@ -32,9 +32,9 @@
 #define LK_REQUEST_TOKEN @"request_token"
 #define LK_CALLBACK_CODE @"callback_code"
 
-#define PROFILE_VIEW_HEIGHT 30;
-#define PROFILE_VIEW_WIDTH 130;
-#define PROFILE_SEPARATION (PROFILE_VIEW_WIDTH-4*PROFILE_VIEW_HEIGHT)/5;
+#define PROFILE_VIEW_HEIGHT 30
+#define PROFILE_VIEW_WIDTH 130
+#define PROFILE_SEPARATION (PROFILE_VIEW_WIDTH-4*PROFILE_VIEW_HEIGHT)/5
 
 @interface LoginViewController () <UITextFieldDelegate>
 @property (weak, nonatomic) IBOutlet UITextField *loginUsernameTextField;
@@ -244,10 +244,6 @@ static NSString * const kClientId = @"100128444749-l3hh0v0as5n6t4rnp3maciodja4oa
     [[[UIAlertView alloc] initWithTitle:nil message:message delegate:nil cancelButtonTitle:@"ok" otherButtonTitles:nil] show];
     
 }
-
-
-
-
 //======================================
 #pragma mark - twitter login methods
 -(void)twitterLoginButtonClicked:(UIButton*)sender
@@ -570,89 +566,124 @@ static NSString * const kClientId = @"100128444749-l3hh0v0as5n6t4rnp3maciodja4oa
 #pragma mark - FB login methods
 - (IBAction)fbLoginButtonClicked:(id)sender {
     //NSLog(@"fb button clicked");
-    if(!_isFBLoggedin){
-        [self testFBLogin];
+    if(![UserObject currentUser].fbLogin){
+        [self fbLogin];
     }
     else{
         [self testFBLogout];
     }
 }
 
--(void) testFBLogin
+-(void)forceFBLogin
 {
-    [SessionManager loginFacebookWithCompletionHandler:^(FBSession *session, FBSessionState status, NSError *error) {
-        //NSLog(@"session state is %@",session);
-        if(status != FBSessionStateOpen && status != FBSessionStateOpenTokenExtended){
-            NSLog(@"FB login failed or logged out");
-        }
-        else{
-            [_fbButton setTitle:@"logout" forState:UIControlStateNormal];
-            [_fbButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
-            _isFBLoggedin = YES;
-            
-            [_spinner startAnimating];
-            //FB request to get the profile information.
-            FBSession.activeSession = [SessionManager fbSession];
-            [FBRequestConnection startForMeWithCompletionHandler:^(FBRequestConnection *connection, id result, NSError *error) {
-                NSDictionary * dict = (NSDictionary *)result;
-//                for(NSString* key in dict){
-//                    NSLog(@"key:%@, value:%@",key,dict[key]);
-//                }
-                NSString * idStr = [dict valueForKey:@"id"];
-                //NSLog(@"id is %@ ", idStr);
-                
-                //download the profile data
-                //check internet, if suddenly no internet for fetching profile picture, still login but no profile picture/or use local cache.
-                NSURLSession *urlSession = [NSURLSession sharedSession];
-                
-                //update the current user Info and write to userDefaults and file
-                MyFBSessionTokenCachingStrategy* strategy = [SessionManager myFBTokenCachingStrategy];
-                FBAccessTokenData* tokenInfo = [strategy fetchFBAccessTokenData];
-                NSString* urlString = [NSString stringWithFormat:@"http://graph.facebook.com/%@/picture",idStr];
-                NSURL * url = [NSURL URLWithString:urlString];
-                NSMutableDictionary* fbNewInfo = [[NSMutableDictionary alloc] init];
-                [fbNewInfo setObject:urlString forKey:@"fbProfileURL"];
-                [fbNewInfo setObject:[NSNumber numberWithBool:YES] forKey:@"fbLogin"];
-                [fbNewInfo setObject:idStr forKey:@"fbID"];
-                [fbNewInfo setObject:dict[@"name"] forKey:@"fbUsername"];
-                NSString* accessToken = tokenInfo.accessToken;
-                if(accessToken){
-                    [fbNewInfo setObject:accessToken forKey:@"fbAccessToken"];
+    
+}
+-(void) fbLogin
+{
+    if([[UserObject currentUser] fbLogin]){
+        return;
+    }
+    [self trySilentOpenFBSessionWithCompletionHandler:^(FBSession *session, FBSessionState status, NSError *error) {
+        if(error || !(session.state & FB_SESSIONSTATEOPENBIT)){
+            [SessionManager loginFacebookWithCompletionHandler:^(FBSession *session, FBSessionState status, NSError *error) {
+                //NSLog(@"session state is %@",session);
+                if(!(status & FB_SESSIONSTATEOPENBIT)){
+                    NSLog(@"FB login failed or logged out");
                 }
-                NSDate* expireDate =tokenInfo.expirationDate;
-                if(expireDate){
-                    [fbNewInfo setObject:expireDate forKey:@"fbExpireDate"];
+                else{
+                    //user has login
+                    [_fbButton setTitle:@"logout" forState:UIControlStateNormal];
+                    [_fbButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+                    _isFBLoggedin = YES;
+                    //FB request to get the profile information.
+                    if([FBSession activeSession]!=[SessionManager fbSession]){
+                        [FBSession setActiveSession:[SessionManager fbSession]];
+                    }
+                    
+                    [_spinner startAnimating];
+                    //fetch the profile !
+                    [FBRequestConnection startForMeWithCompletionHandler:^(FBRequestConnection *connection, id result, NSError *error) {
+                        //1. parse result
+                        NSDictionary * dict = (NSDictionary *)result;
+                        //                for(NSString* key in dict){
+                        //                    NSLog(@"key:%@, value:%@",key,dict[key]);
+                        //                }
+                        NSString * idStr = [dict valueForKey:@"id"]; //NSLog(@"id is %@ ", idStr);
+                        NSString* pictureURLString =[NSString stringWithFormat:@"http://graph.facebook.com/%@/picture",idStr];
+                        NSURL * imageURL = [NSURL URLWithString:pictureURLString];
+                        
+                        
+                        //2. download the profile data
+                        //check internet, if suddenly no internet for fetching profile picture, still login but no profile picture/or use local cache.
+                        NSURLSession *urlSession = [NSURLSession sharedSession];
+                        // download the user profile image
+                        NSURLSessionDataTask *task = [urlSession dataTaskWithURL:imageURL completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
+                            UIImage *image = [UIImage imageWithData:data];
+                            //write the image file to local disk
+                            [self postFBProfileImage:image];
+                            [data writeToURL:[UserObject currentUserFBProfileURL] atomically:YES];
+                        }];
+                        [task resume];
+                    
+                        
+                        //3. update the current user Info and write to userDefaults and file
+                        //MyFBSessionTokenCachingStrategy* strategy = [SessionManager myFBTokenCachingStrategy];
+                        //FBAccessTokenData* tokenInfo = [strategy fetchFBAccessTokenData];
+                        
+                        //get the access token info from the session, the same as the myFBTokenCachingStrategy;
+                        FBAccessTokenData* tokenInfo = session.accessTokenData;
+                        NSMutableDictionary* fbNewInfo = [[NSMutableDictionary alloc] init];
+                        [fbNewInfo setObject:pictureURLString forKey:@"fbProfileURL"];
+                        [fbNewInfo setObject:[NSNumber numberWithBool:YES] forKey:@"fbLogin"];
+                        [fbNewInfo setObject:idStr forKey:@"fbID"];
+                        [fbNewInfo setObject:dict[@"name"] forKey:@"fbUsername"];
+                        NSString* accessToken = tokenInfo.accessToken;
+                        if(accessToken){
+                            [fbNewInfo setObject:accessToken forKey:@"fbAccessToken"];
+                        }
+                        NSDate* expireDate =tokenInfo.expirationDate;
+                        if(expireDate){
+                            [fbNewInfo setObject:expireDate forKey:@"fbExpireDate"];
+                        }
+                        [UserObject updateCurrentUserWithNewInfo:fbNewInfo];
+                        [UserObject updateUserObjectToFile:nil];
+                        //[UserObject updateUserObjectInUserDefaults:nil];
+                    }];
                 }
-                [UserObject updateCurrentUserWithNewInfo:fbNewInfo];
-                [UserObject updateUserObjectToFile:nil];
-                //[UserObject updateUserObjectInUserDefaults:nil];
-                
-                // download the user profile image
-                NSURLSessionDataTask *task = [urlSession dataTaskWithURL:url completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
-                    UIImage *image = [UIImage imageWithData:data];
-                    
-                    //write the image file to local disk
-                    [data writeToURL:[UserObject currentUserFBProfileURL] atomically:YES];
-                    //
-                    UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(2, 0, _profileView.frame.size.height, _profileView.frame.size.height)];
-                    imageView.image = image;
-                    [_profileView addSubview:imageView];
-                    [_spinner stopAnimating];
-                    
-                    //should write to local file and cache it.
-                }];
-                [task resume];
-                
             }];
+            
+            
         }
     }];
+    
+    
 }
-
+-(void)removeFBProfile
+{
+    NSArray* subviews = [self.profileView subviews];
+    for(UIView *view in subviews){
+        if(view.frame.origin.x>=0 && view.frame.origin.x< PROFILE_VIEW_HEIGHT){
+            [view removeFromSuperview];
+            break;
+        }
+    }
+}
+-(void)postFBProfileImage:(UIImage*)image
+{
+    UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, _profileView.frame.size.height, _profileView.frame.size.height)];
+    imageView.image = image;
+    [_profileView addSubview:imageView];
+    
+    if([_spinner isAnimating])
+        [_spinner stopAnimating];
+}
 -(void)testFBLogout
 {
     [self showFBActionSheet];
     
 }
+
+
 -(void)fbLogoutUpdate:(FBSession*) session
 {
     if(session.state != FBSessionStateOpen && session.state != FBSessionStateOpenTokenExtended){
@@ -683,6 +714,14 @@ static NSString * const kClientId = @"100128444749-l3hh0v0as5n6t4rnp3maciodja4oa
         }];
     }
     else if(buttonIndex == 3){
+        NSUserDefaults*defaults =[NSUserDefaults standardUserDefaults];
+        NSDictionary* dict = [defaults objectForKey:@"FBAccessTokenInformationKey"];
+        if(!dict){
+            NSLog(@"dict is null");
+        }
+        for(NSString* k in dict){
+            NSLog(@"k:%@ and v:%@",k,dict[k]);
+        }
         return;
     }
    // NSLog(@"action sheet at %ld is clicked",buttonIndex);
@@ -692,6 +731,12 @@ static NSString * const kClientId = @"100128444749-l3hh0v0as5n6t4rnp3maciodja4oa
 {
     UIActionSheet * aSheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:nil otherButtonTitles:@"logout",@"logout & clean cache",@"logout & revoke permissions", nil];
     [aSheet showInView:self.view];
+}
+
+-(void)fbSetup
+{
+    [self trySilentOpenFBSession];
+    
 }
 
 - (void) loginViewFetchedUserInfo:(FBLoginView *)loginView user:(id<FBGraphUser>)user
@@ -707,58 +752,125 @@ static NSString * const kClientId = @"100128444749-l3hh0v0as5n6t4rnp3maciodja4oa
     
 }
 
-//=====================================================================
-#pragma mark - UI component respond
-- (void) textFieldDidEndEditing:(UITextField *)sender
+
+
+-(void)updateFBLoginButton
 {
-    if(sender == self.loginUsernameTextField){
-        [sender resignFirstResponder];
-    }
-    else if(sender == self.loginPasswordTextField){
-        [sender resignFirstResponder];
+    if([SessionManager fbSession].state & FB_SESSIONSTATEOPENBIT){
+        NSLog(@"update FB login Button to logoug");
+        [_fbButton setTitle:@"logout" forState:UIControlStateNormal];
+        [_fbButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+        [UserObject currentUser].fbLogin=YES;
     }
     else{
-        NSLog(@"text field did end editing: invalid text field");
+        NSLog(@"update FB login Button to Login");
+        [_fbButton setTitle:@"login" forState:UIControlStateNormal];
+        [_fbButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+        [UserObject currentUser].fbLogin=NO;
     }
 }
--(BOOL) textFieldShouldReturn:(UITextField *)sender
+
+-(UIImage*)trySilentLoadFBProfile
 {
-    [sender resignFirstResponder];
-    return YES;
+    NSURL* fbURL =[UserObject currentUserFBProfileURL];
+    if(![[NSFileManager defaultManager] fileExistsAtPath:fbURL.path]){
+        return nil;
+    }
+    return [UIImage imageWithContentsOfFile:fbURL.path];
 }
-
-- (IBAction)onLoginButtonClicked:(id)sender
+-(void)trySilentOpenFBSession
 {
-    FBSession* session = [FBSession activeSession];
-    NSLog(@"fbsession initial state is %ld",session.state);
+    [self trySilentOpenFBSessionWithCompletionHandler:nil];
+}
+-(void)trySilentOpenFBSessionWithCompletionHandler:(void(^)(FBSession* session, FBSessionState status, NSError*error))handler
+{
     
-//    [FBSession openActiveSessionWithReadPermissions:@[@"public_profile"] allowLoginUI:NO completionHandler:nil];
-//    session = [FBSession activeSession];
-//    NSLog(@"after open with read permission fbsession state is %ld",session.state);
-//    
-//    [FBSession openActiveSessionWithAllowLoginUI:NO];
-//    session=[FBSession activeSession];
-//    NSLog(@"after open with allow login UI:NO state is %ld",session.state);
-
-    
-//    FBAccessTokenData* tokenData  = [FBAccessTokenData createTokenFromDictionary:[[SessionManager myFBTokenCachingStrategy] getFBAccessTokenDataDictionary]];
-    
-    FBAccessTokenData* tokenData  = [[SessionManager myFBTokenCachingStrategy] fetchFBAccessTokenData];
+    FBSession* session = [SessionManager fbSession];
+    NSLog(@"fbsession initial state is %ld has handler",session.state);
+    //1. if initial state is closed or login failed, NOTE:no need to worry about StateOpening
     if(session.state ==FBSessionStateClosedLoginFailed || session.state==FBSessionStateClosed){
         NSLog(@"session state is closed!");
-        session = [[FBSession alloc] initWithAppID:nil permissions:@[@"public_profile"] urlSchemeSuffix:nil tokenCacheStrategy:[SessionManager myFBTokenCachingStrategy]];
+        FBSession* newSession = [[FBSession alloc] initWithAppID:nil permissions:@[@"public_profile"] urlSchemeSuffix:nil tokenCacheStrategy:[SessionManager myFBTokenCachingStrategy]];
+        [FBSession setActiveSession:newSession];
+        session=[FBSession activeSession];
     }
+    //2. if initial state is created
+    FBAccessTokenData* tokenData  = [[SessionManager myFBTokenCachingStrategy] fetchFBAccessTokenData];
     if(session.state==FBSessionStateCreated){
         NSLog(@"session state is then created!");
         //note: this method only works when the state is created
-        [session openFromAccessTokenData:tokenData completionHandler:^(FBSession *session, FBSessionState status, NSError *error) {
-            if(status!=FBSessionStateOpen && status!=FBSessionStateOpenTokenExtended){
-                NSLog(@"!!! ERROR: open FB session failed");
-            }
-            else{
-                NSLog(@"FB session is opened successfully!");
-            }
-        }];
+        NSLog(@"session is %@",session);
+        if(tokenData.accessToken && tokenData.accessToken.length>5){
+            [session openFromAccessTokenData:tokenData completionHandler:^(FBSession *session, FBSessionState status, NSError *error) {
+                if(status!=FBSessionStateOpen && status!=FBSessionStateOpenTokenExtended){
+                    NSLog(@"!!! ERROR: open FB session failed");
+                }
+                else{
+                    NSLog(@"FB session is opened successfully!");
+                }
+                UIImage* image = [self trySilentLoadFBProfile];
+                
+                //load the user profile
+                [self postFBProfileImage:image];
+                
+                //notify the app that FB user is logged in
+                if(session.state == FBSessionStateOpen || session.state==FBSessionStateOpenTokenExtended){
+                    [UserObject currentUser].fbLogin=YES;
+                    [FBSession setActiveSession:session];
+                }
+                [self updateFBLoginButton];
+                if(handler){
+                    handler(session,status,error);
+                }
+                
+            }];
+        }
+        else{
+            [session openWithCompletionHandler:^(FBSession *session, FBSessionState status, NSError *error) {
+                if(status!=FBSessionStateOpen && status!=FBSessionStateOpenTokenExtended){
+                    NSLog(@"!!! ERROR: open FB session failed");
+                }
+                else{
+                    NSLog(@"FB session is opened successfully!");
+                }
+                UIImage* image = [self trySilentLoadFBProfile];
+                
+                //load the user profile
+                [self postFBProfileImage:image];
+                
+                //notify the app that FB user is logged in
+                if(session.state == FBSessionStateOpen || session.state==FBSessionStateOpenTokenExtended){
+                    [UserObject currentUser].fbLogin=YES;
+                    [FBSession setActiveSession:session];
+                }
+                [self updateFBLoginButton];
+                
+                if(handler){
+                    handler(session,status,error);
+                }
+            }];
+            
+//            [session openWithBehavior:FBSessionLoginBehaviorWithFallbackToWebView completionHandler:^(FBSession *session, FBSessionState status, NSError *error) {
+//                if(status!=FBSessionStateOpen && status!=FBSessionStateOpenTokenExtended){
+//                    NSLog(@"!!! ERROR: open FB session failed");
+//                }
+//                else{
+//                    NSLog(@"FB session is opened successfully!");
+//                }
+//                UIImage* image = [self trySilentLoadFBProfile];
+//                
+//                //load the user profile
+//                [self postFBProfileImage:image];
+//                
+//                //notify the app that FB user is logged in
+//                if(session.state == FBSessionStateOpen || session.state==FBSessionStateOpenTokenExtended){
+//                    [UserObject currentUser].fbLogin=YES;
+//                    [FBSession setActiveSession:session];
+//                }
+//                [self updateFBLoginButton];
+//                handler(session,status,error);
+//            }];
+        }
     }
     else if(session.state==FBSessionStateCreatedTokenLoaded){
         //this opens the fession too!!
@@ -767,37 +879,66 @@ static NSString * const kClientId = @"100128444749-l3hh0v0as5n6t4rnp3maciodja4oa
                 NSLog(@"!!! ERROR: open FB session failed in login view");
             }
             else{
+                //load user profile
+                [self postFBProfileImage:[self trySilentLoadFBProfile]];
                 NSLog(@"FB session is opened successfully!");
             }
+            //fb user login
+            if(session.state == FBSessionStateOpen || session.state==FBSessionStateOpenTokenExtended){
+                [UserObject currentUser].fbLogin=YES;
+                [FBSession setActiveSession:session];
+
+            }
+            [self updateFBLoginButton];
+            if(handler)
+                handler(session,status,error);
         }];
-        
         //this opens fb session too!
-//        [session openWithBehavior:FBSessionLoginBehaviorWithNoFallbackToWebView completionHandler:^(FBSession *session, FBSessionState status, NSError *error) {
-//            if(status==FBSessionStateClosedLoginFailed){
-//                NSLog(@"login failed closed");
-//            }
-//            if(status==FBSessionStateOpen){
-//                NSLog(@"login opened successfully!");
-//            }
-//            
-//        }];
+        //        [session openWithBehavior:FBSessionLoginBehaviorWithNoFallbackToWebView completionHandler:^(FBSession *session, FBSessionState status, NSError *error) {
+        //            if(status==FBSessionStateClosedLoginFailed){
+        //                NSLog(@"login failed closed");
+        //            }
+        //            if(status==FBSessionStateOpen){
+        //                NSLog(@"login opened successfully!");
+        //            }
+        //
+        //        }];
         
         //this method will open the login dialog for login if initial state is created, will NOT open is initial state is tokenLoaded
-//        [session openWithCompletionHandler:^(FBSession *session, FBSessionState status, NSError *error) {
-//            NSLog(@"after open with completion handler:");
-//            if(error){
-//                NSLog(@"error is %@",error);
-//            }
-//            else{
-//                NSLog(@"state is %ld",session.state);
-//            }
-//        }];
+        //        [session openWithCompletionHandler:^(FBSession *session, FBSessionState status, NSError *error) {
+        //            NSLog(@"after open with completion handler:");
+        //            if(error){
+        //                NSLog(@"error is %@",error);
+        //            }
+        //            else{
+        //                NSLog(@"state is %ld",session.state);
+        //            }
+        //        }];
     }
+    
+    if(session.state == FBSessionStateOpen||session.state==FBSessionStateOpenTokenExtended){
+        [FBSession setActiveSession:session];
+    }
+    //    [FBSession openActiveSessionWithReadPermissions:@[@"public_profile"] allowLoginUI:NO completionHandler:nil];
+    //    session = [FBSession activeSession];
+    //    NSLog(@"after open with read permission fbsession state is %ld",session.state);
+    //
+    //    [FBSession openActiveSessionWithAllowLoginUI:NO];
+    //    session=[FBSession activeSession];
+    //    NSLog(@"after open with allow login UI:NO state is %ld",session.state);
+    
+    //    FBAccessTokenData* tokenData  = [FBAccessTokenData createTokenFromDictionary:[[SessionManager myFBTokenCachingStrategy] getFBAccessTokenDataDictionary]];
+}
+
+
+- (IBAction)onLoginButtonClicked:(id)sender
+{
+    [self trySilentOpenFBSession];
+    FBSession* session = [FBSession activeSession];
     if(session.state == FBSessionStateOpen || session.state==FBSessionStateOpenTokenExtended){
         [UserObject currentUser].fbLogin=YES;
     }
 
-    
 //    [SessionManager refreshFBSessionFromLocalCacheWithCompletionHandler:^(FBSession *session, FBSessionState status, NSError *error) {
 //        NSLog(@"3. the session is %@",session);
 //    }];
@@ -809,7 +950,10 @@ static NSString * const kClientId = @"100128444749-l3hh0v0as5n6t4rnp3maciodja4oa
 // this method is temporarily used for revoking FB permissions
 - (IBAction)onRegisterButtonClicked:(id)sender
 {
-    [SessionManager logoutFacebook];
+   // [SessionManager logoutFacebook];
+    
+    FBSession * session = [FBSession activeSession];
+    NSLog(@"session.state is %ld",session.state);
     
 }
 
@@ -841,7 +985,25 @@ static NSString * const kClientId = @"100128444749-l3hh0v0as5n6t4rnp3maciodja4oa
     if([self.loginPasswordTextField isFirstResponder])
         [self.loginPasswordTextField resignFirstResponder];
 }
-
+//=====================================================================
+#pragma mark - UI component respond
+- (void) textFieldDidEndEditing:(UITextField *)sender
+{
+    if(sender == self.loginUsernameTextField){
+        [sender resignFirstResponder];
+    }
+    else if(sender == self.loginPasswordTextField){
+        [sender resignFirstResponder];
+    }
+    else{
+        NSLog(@"text field did end editing: invalid text field");
+    }
+}
+-(BOOL) textFieldShouldReturn:(UITextField *)sender
+{
+    [sender resignFirstResponder];
+    return YES;
+}
 
 //=================================================================
 #pragma mark - login logic
@@ -965,7 +1127,7 @@ static NSString * const kClientId = @"100128444749-l3hh0v0as5n6t4rnp3maciodja4oa
     _isFBLoggedin =NO;
     _fbButton.titleLabel.text = @"login";
     
-    //[self FBSetup];
+    [self fbSetup];
     //[self openSessionWithAllowLoginUI:NO];
     
     /*

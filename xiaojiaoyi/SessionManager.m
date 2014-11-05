@@ -44,7 +44,7 @@
 static TWSession* twSession;
 static FBSession* fbSession;
 static NSDictionary* lkSession;
-
+static MyFBSessionTokenCachingStrategy* myFBTokenCachingStrategy;
 
 #pragma mark - login flow methods
 +(BOOL)openSessionWithOAuthLoginType:(MyOAuthLoginType)oauthType
@@ -189,49 +189,37 @@ static NSDictionary* lkSession;
 #pragma mark - facebook methods
 +(FBSession *)fbSession
 {
-    if(!fbSession && ![FBSession activeSession] || ![FBSession activeSession].state!=FBSessionStateOpen){
-        fbSession = [self fbSessionWithRecreate:NO];
+    if(!fbSession){
+        MyFBSessionTokenCachingStrategy * strategy = [SessionManager myFBTokenCachingStrategy];
+        fbSession = [[FBSession alloc] initWithAppID:@APP_ID permissions:@[@"public_profile"] urlSchemeSuffix:nil tokenCacheStrategy:strategy];
+//        fbSession = [self fbSessionWithRecreate:NO];
+        [FBSession setActiveSession:fbSession];
     }
-    
     return fbSession;
 }
 
 +(FBSession *)fbSessionWithRecreate:(BOOL)recreate
 {
     //static FBSession* fbSession;
-    
-        if(!fbSession || recreate){
-            fbSession = [self createFBSession];
-        }
-    
+    if(recreate){
+        fbSession = [self createFBSession];
+    }
     return fbSession;
 }
-
++(FBSession *)createFBSession
+{
+    MyFBSessionTokenCachingStrategy * strategy = [SessionManager myFBTokenCachingStrategy];
+    FBSession * session = [[FBSession alloc] initWithAppID:@APP_ID permissions:@[@"public_profile"] urlSchemeSuffix:nil tokenCacheStrategy:strategy];
+    return session;
+}
 +(MyFBSessionTokenCachingStrategy *)myFBTokenCachingStrategy
 {
-    static MyFBSessionTokenCachingStrategy* myFBTokenCachingStrategy;
-    {
-        if(!myFBTokenCachingStrategy){
-            myFBTokenCachingStrategy=[self createMyTokenCachingStrategy];
-        }
+    if(!myFBTokenCachingStrategy){
+        myFBTokenCachingStrategy=[[MyFBSessionTokenCachingStrategy alloc] initWithFilePath:[self getFileDirWithOAuthType:FACEBOOK] andFileName:@TOKEN_FILE_NAME];
     }
     return myFBTokenCachingStrategy;
 }
 
-+(FBSession *) createFBSession
-{
-    MyFBSessionTokenCachingStrategy * strategy = [self createMyTokenCachingStrategy];
-    FBSession * session = [[FBSession alloc] initWithAppID:@APP_ID permissions:@[@"public_profile"] urlSchemeSuffix:nil tokenCacheStrategy:strategy];
-    
-    return session;
-    
-}
-+(MyFBSessionTokenCachingStrategy*)createMyTokenCachingStrategy
-{
-    MyFBSessionTokenCachingStrategy *strategy = [[MyFBSessionTokenCachingStrategy alloc]
-                                                 initWithFilePath:[self getFileDirWithOAuthType:FACEBOOK] andFileName:@TOKEN_FILE_NAME];
-    return strategy;
-}
 //this handler is executed every time a session state is changed.
 +(void)refreshFBSessionFromLocalCacheWithCompletionHandler:(void(^)(FBSession* session,FBSessionState status, NSError *error))handler
 {
@@ -253,7 +241,6 @@ static NSDictionary* lkSession;
 {
     //[self printCurrentSessionWithSignature:@"***"];
     [self loginFacebookWithCompletionHandler:nil];
-    
 }
 
 +(void)loginFacebookWithCompletionHandler:(void(^)(FBSession *session, FBSessionState status, NSError *error))handler
@@ -265,8 +252,8 @@ static NSDictionary* lkSession;
         return;
     }
     if(session.state == FBSessionStateClosed || session.state == FBSessionStateClosedLoginFailed){
-        //session = [self createFBSession];
-        session = [self fbSessionWithRecreate:YES];
+        session = [self createFBSession];
+        //session = [self fbSessionWithRecreate:YES];
     }
     if(session.state != FBSessionStateOpen && session.state != FBSessionStateOpenTokenExtended){
         //NSLog(@"session is not open, about to open");
@@ -289,29 +276,10 @@ static NSDictionary* lkSession;
     if([FBSession activeSession].state!=FBSessionStateOpen&&[FBSession activeSession].state!=FBSessionStateOpenTokenExtended){
         FBSession.activeSession = [self fbSession];
     }
-    [FBRequestConnection startWithGraphPath:@"/me/permissions"
-                          completionHandler:^(FBRequestConnection *connection, id result, NSError *error) {
-                              //__block NSString *alertText;
-                              //__block NSString *alertTitle;
-//                              if (!error){
-//                                  NSDictionary *permissions= [(NSArray *)[result data] objectAtIndex:0];
-//                                  NSLog(@"permissions are %@",permissions);
-//                                  if (![permissions objectForKey:@"public_profile"]){
-//                                      // Publish permissions not found, ask for publish_actions
-//                                      //[self requestPublishPermissions];
-//                                      
-//                                  } else {
-//                                      // Publish permissions found, publish the OG story
-//                                      //[self publishStory];
-//                                  }
-//                                  
-//                              } else {
-//                                  // There was an error, handle it
-//                                  // See https://developers.facebook.com/docs/ios/errors/
-//                              }
-                              handler(connection,result,error);
+    [FBRequestConnection startWithGraphPath:@"/me/permissions" completionHandler:^(FBRequestConnection *connection, id result, NSError *error) {
+        handler(connection,result,error);
                               
-                          }];
+     }];
 }
 +(void)requestPublicActionPermissionWithCompletionHandler:(void(^)(FBSession* session, NSError* error))handler
 {
@@ -385,23 +353,25 @@ static NSDictionary* lkSession;
 
 +(void) logoutFacebookCleanCache:(BOOL)cleanCache revokePermissions:(BOOL)revokePermissions WithCompletionHandler:(void(^)(FBSession *session, FBSessionState status, NSError *error))handler
 {
-    FBSession * currentSession = [self fbSession];
+    FBSession * currentSession = [SessionManager fbSession];
     if(revokePermissions){
-        [self revokeFBPermissionsWithCompletionHandler:^{
-            if(cleanCache){
-                [currentSession closeAndClearTokenInformation];
-            }
-            else{
-                [currentSession close];
-            }
-            //VERY ESSENTIAL!!! everytime user logs out, will delete the session and create a new one.
-            [self fbSessionWithRecreate:YES];
-            handler(currentSession,currentSession.state,NULL);
-        }];
+        if(currentSession.state & FB_SESSIONSTATEOPENBIT){
+            [self revokeFBPermissionsWithCompletionHandler:^{
+                if(cleanCache){
+                    [currentSession closeAndClearTokenInformation];
+                }
+                else{
+                    [currentSession close];
+                }
+                //VERY ESSENTIAL!!! everytime user logs out, will delete the session and create a new one.
+                [self fbSessionWithRecreate:YES];
+                handler(currentSession,currentSession.state,NULL);
+            }];
+        }
     }
     else{
         NSLog(@"the session is%@", currentSession);
-        if(currentSession.state == FBSessionStateOpenTokenExtended || currentSession.state == FBSessionStateOpen){
+        if(currentSession.state & FB_SESSIONSTATEOPENBIT){
             if(cleanCache){
                 [currentSession closeAndClearTokenInformation];
             }
