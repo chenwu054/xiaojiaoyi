@@ -197,6 +197,10 @@ static MyFBSessionTokenCachingStrategy* myFBTokenCachingStrategy;
     }
     return fbSession;
 }
++(void)setFBSession:(FBSession*)newSession
+{
+    fbSession = newSession;
+}
 
 +(FBSession *)fbSessionWithRecreate:(BOOL)recreate
 {
@@ -246,13 +250,15 @@ static MyFBSessionTokenCachingStrategy* myFBTokenCachingStrategy;
 +(void)loginFacebookWithCompletionHandler:(void(^)(FBSession *session, FBSessionState status, NSError *error))handler
 {
     //[self printCurrentSessionWithSignature:@"***"];
-    FBSession * session = [self fbSession];
+    FBSession * session = [SessionManager fbSession];// [self fbSession];
     if(session.state == FBSessionStateOpen || session.state == FBSessionStateOpenTokenExtended){
         handler(session,session.state,NULL);
         return;
     }
     if(session.state == FBSessionStateClosed || session.state == FBSessionStateClosedLoginFailed){
         session = [self createFBSession];
+        [FBSession setActiveSession:session];
+        [SessionManager setFBSession:session];
         //session = [self fbSessionWithRecreate:YES];
     }
     if(session.state != FBSessionStateOpen && session.state != FBSessionStateOpenTokenExtended){
@@ -364,8 +370,9 @@ static MyFBSessionTokenCachingStrategy* myFBTokenCachingStrategy;
                     [currentSession close];
                 }
                 //VERY ESSENTIAL!!! everytime user logs out, will delete the session and create a new one.
-                [self fbSessionWithRecreate:YES];
-                handler(currentSession,currentSession.state,NULL);
+                //[self fbSessionWithRecreate:YES];
+                if(handler)
+                    handler(currentSession,currentSession.state,NULL);
             }];
         }
     }
@@ -379,9 +386,10 @@ static MyFBSessionTokenCachingStrategy* myFBTokenCachingStrategy;
                 [currentSession close];
             }
             //VERY ESSENTIAL!!! everytime user logs out, will delete the session and create a new one.
-            [self fbSessionWithRecreate:YES];
+            //[self fbSessionWithRecreate:YES];
         }
-        handler(currentSession,currentSession.state,NULL);
+        if(handler)
+            handler(currentSession,currentSession.state,NULL);
     }
 }
 

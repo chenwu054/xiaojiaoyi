@@ -45,6 +45,7 @@ typedef NS_ENUM(NSInteger, MyOAuthLoginType)
 
 //facebook methods
 +(FBSession *)fbSession;
++(void)setFBSession:(FBSession*)newSession;
 +(void)loginFacebook;
 +(void)loginFacebookWithCompletionHandler:(void(^)(FBSession *session, FBSessionState status, NSError *error))handler;
 +(void)logoutFacebook;

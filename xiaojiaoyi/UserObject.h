@@ -61,5 +61,7 @@
 +(NSURL*)currentUserGGProfileURL;
 +(NSURL*)currentUserTWProfileURL;
 +(NSURL*)currentUserFBProfileURL;
++(NSURL*)currentUserInfoURL;
++(NSURL*)currentUserURL;
 
 @end
