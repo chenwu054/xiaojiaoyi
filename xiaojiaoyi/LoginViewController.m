@@ -73,6 +73,8 @@
 @property (nonatomic) BOOL isFBLoggedin;
 @property (nonatomic) MyFBSessionTokenCachingStrategy *myFBTokenCachingStrategy;
 @property (nonatomic) BOOL toLogoutFB;
+@property (nonatomic) UIActionSheet* fbLogoutActionSheet;
+
 //twitter properties
 @property (nonatomic) BOOL isTWLoggedin;
 @property (nonatomic) NSString *twRedirectURL;
@@ -245,11 +247,13 @@ static NSString * const kClientId = @"100128444749-l3hh0v0as5n6t4rnp3maciodja4oa
     [[[UIAlertView alloc] initWithTitle:nil message:message delegate:nil cancelButtonTitle:@"ok" otherButtonTitles:nil] show];
     
 }
-//======================================
+
+
+//=============Twitter methods=========================
 #pragma mark - twitter login methods
 -(void)twitterLoginButtonClicked:(UIButton*)sender
 {
-    if(!_isTWLoggedin)
+    if(![UserObject currentUser].twLogin)
     {
         //1. load local cache
         [SessionManager loadTWSession];
@@ -260,6 +264,7 @@ static NSString * const kClientId = @"100128444749-l3hh0v0as5n6t4rnp3maciodja4oa
             
             [_twitterLoginButton setTitle:@"logout twitter" forState:UIControlStateNormal];
             _isTWLoggedin=YES;
+            [UserObject currentUser].twLogin=YES;//TODO: update the currentUser;
             [self updateTwitterUserInfoWithImageURL:userImageURL withTrialNumber:0];
         }
         //2. startTWLoginByRequestToken
@@ -288,12 +293,12 @@ static NSString * const kClientId = @"100128444749-l3hh0v0as5n6t4rnp3maciodja4oa
         if(success){
             _isTwitter = YES;
             _isLinkedin = NO;
-            _twRedirectURL = [NSString stringWithFormat:TWITTER_AUTHENTICATE_URL_FORMAT,_twSession.request_token];
-            //NSLog(@"the redirect url is %@",_redirectURL);
+            self.twRedirectURL = [NSString stringWithFormat:TWITTER_AUTHENTICATE_URL_FORMAT,_twSession.request_token];
+            //NSLog(@"the redirect url is %@",self.twRedirectURL);
             //using a block to call the twitter login
             // should also do the UIKit thing in the main thread!
             dispatch_async(dispatch_get_main_queue(),^{
-                [self performSegueWithIdentifier:@"Linkedin segue" sender:self];
+                [self performSegueWithIdentifier:@"LoginModalSegue" sender:self];
             });
         }
         //TODO: error handling
@@ -309,7 +314,7 @@ static NSString * const kClientId = @"100128444749-l3hh0v0as5n6t4rnp3maciodja4oa
 
     //user cancelled
     if(_isTwitter && _twSession.oauth_verifier){
-        [_spinner startAnimating];
+        [self.spinner startAnimating];
         [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
         [self getTWAccessTokenAtTrial:0];
     }
@@ -413,19 +418,21 @@ static NSString * const kClientId = @"100128444749-l3hh0v0as5n6t4rnp3maciodja4oa
     [task resume];
 }
 
+
 #pragma mark - LinkedIn & Twitter
 
 -(void) prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
 {
-    if([segue.identifier isEqualToString:@"Linkedin segue"]){
+    if([segue.identifier isEqualToString:@"LoginModalSegue"]){
         //NSLog(@"about to segue");
         if([segue.destinationViewController isKindOfClass:[OAuthViewController class]]){
             OAuthViewController *webViewController = (OAuthViewController*)segue.destinationViewController;
+            webViewController.superVC=self;
             if(_isTwitter){
                 webViewController.isLinkedin=NO;
                 webViewController.isTwitter=YES;
                 //NSLog(@"the redirect URL is %@",_redirectURL);
-                webViewController.requestURL=_twRedirectURL;
+                webViewController.requestURL=self.twRedirectURL;
                 
             }
             else{
@@ -566,7 +573,7 @@ static NSString * const kClientId = @"100128444749-l3hh0v0as5n6t4rnp3maciodja4oa
 
 //====================================================================
 #pragma mark - FB login methods
-- (IBAction)fbLoginButtonClicked:(id)sender {
+- (IBAction)fbLoginButtonClicked:(id)sender{
     //NSLog(@"fb button clicked");
     if(![UserObject currentUser].fbLogin){
         self.toLogoutFB=NO;
@@ -574,14 +581,10 @@ static NSString * const kClientId = @"100128444749-l3hh0v0as5n6t4rnp3maciodja4oa
     }
     else{
         self.toLogoutFB=YES;
-        [self testFBLogout];
+        [self fbLogout];
     }
 }
 
--(void)forceFBLogin
-{
-    
-}
 -(UIImage*)trySilentLoadFBProfile
 {
     NSURL* fbURL =[UserObject currentUserFBProfileURL];
@@ -598,10 +601,10 @@ static NSString * const kClientId = @"100128444749-l3hh0v0as5n6t4rnp3maciodja4oa
 {
     
     FBSession* session = [SessionManager fbSession];
-    NSLog(@"silent:fbsession initial state is %ld has handler",session.state);
+    ////NSLog(@"silent:fbsession initial state is %ld has handler",session.state);
     //1. if initial state is closed or login failed, NOTE:no need to worry about StateOpening
     if(session.state ==FBSessionStateClosedLoginFailed || session.state==FBSessionStateClosed){
-        NSLog(@"session state is closed!");
+        ////NSLog(@"session state is closed!");
         FBSession* newSession = [[FBSession alloc] initWithAppID:nil permissions:@[@"public_profile"] urlSchemeSuffix:nil tokenCacheStrategy:[SessionManager myFBTokenCachingStrategy]];
         [FBSession setActiveSession:newSession];
         session=[FBSession activeSession];
@@ -610,7 +613,7 @@ static NSString * const kClientId = @"100128444749-l3hh0v0as5n6t4rnp3maciodja4oa
     //2. if initial state is created
     FBAccessTokenData* tokenData  = [[SessionManager myFBTokenCachingStrategy] fetchFBAccessTokenData];
     if(session.state==FBSessionStateCreated){
-        NSLog(@"silent: session state is then created!");
+        ////NSLog(@"silent: session state is then created!");
         //note: this method only works when the state is created
         //NSLog(@"session is %@",session);
         if(tokenData.accessToken && tokenData.accessToken.length>5){
@@ -640,7 +643,7 @@ static NSString * const kClientId = @"100128444749-l3hh0v0as5n6t4rnp3maciodja4oa
             }];
         }
         else{
-            NSLog(@"silent in else!");
+            ////NSLog(@"silent in else!");
             if(handler)
                 handler(session,session.state,NULL);
             
@@ -667,16 +670,16 @@ static NSString * const kClientId = @"100128444749-l3hh0v0as5n6t4rnp3maciodja4oa
         }
     }
     else if(session.state==FBSessionStateCreatedTokenLoaded){
-        NSLog(@"silent: in created token loaded");
+        ////NSLog(@"silent: in created token loaded");
         //this opens the fession too!!
         [session openWithCompletionHandler:^(FBSession *session, FBSessionState status, NSError *error) {
             if(status!=FBSessionStateOpen && status!=FBSessionStateOpenTokenExtended){
-                NSLog(@"!!! ERROR: open FB session failed in login view");
+                ////NSLog(@"!!! ERROR: open FB session failed in login view");
             }
             else{
                 //load user profile
                 [self postFBProfileImage:[self trySilentLoadFBProfile]];
-                NSLog(@"FB session is opened successfully!");
+                ////NSLog(@"FB session is opened successfully!");
             }
             //fb user login
             if(session.state == FBSessionStateOpen || session.state==FBSessionStateOpenTokenExtended){
@@ -750,12 +753,12 @@ static NSString * const kClientId = @"100128444749-l3hh0v0as5n6t4rnp3maciodja4oa
             self.toLogoutFB=NO;
             return;
         }
-        NSLog(@"handler :session state is %ld",status);
+        ////NSLog(@"handler :session state is %ld",status);
         if(error || !(session.state & FB_SESSIONSTATEOPENBIT)){
-            NSLog(@"handler: session2 state is %ld",status);
+            ////NSLog(@"handler: session2 state is %ld",status);
             
             [SessionManager loginFacebookWithCompletionHandler:^(FBSession *session, FBSessionState status, NSError *error) {
-                NSLog(@"handler's handler:");
+                
                 if(!(status & FB_SESSIONSTATEOPENBIT)){
                     NSLog(@"FB login failed or logged out");
                 }
@@ -837,6 +840,7 @@ static NSString * const kClientId = @"100128444749-l3hh0v0as5n6t4rnp3maciodja4oa
 {
     NSString* file = [SessionManager myFBTokenCachingStrategy].file;
     NSDictionary* info = [NSDictionary dictionaryWithContentsOfFile:file];
+    //1. find the fb access token data to get url
     NSString * idStr = [info valueForKey:@"com.facebook.sdk:TokenInformationUserFBIDKey"]; //NSLog(@"id is %@ ", idStr);
     NSURL* url = nil;
     if(idStr && idStr.length>1){
@@ -844,6 +848,7 @@ static NSString * const kClientId = @"100128444749-l3hh0v0as5n6t4rnp3maciodja4oa
         url = [NSURL URLWithString:pictureURLString];
     }
     else{
+        //find the current user's data
         NSDictionary* dict = [NSDictionary dictionaryWithContentsOfURL:[UserObject currentUserInfoURL]];
         if(dict){
             url = [NSURL URLWithString:dict[@"fbProfileURL"]];
@@ -899,13 +904,11 @@ static NSString * const kClientId = @"100128444749-l3hh0v0as5n6t4rnp3maciodja4oa
     if([_spinner isAnimating])
         [_spinner stopAnimating];
 }
--(void)testFBLogout
+-(void)fbLogout
 {
-    [self showFBActionSheet];
-    
+    //[self showFBActionSheet];
+    [self.fbLogoutActionSheet showInView:self.view];
 }
-
-
 -(void)fbLogoutUpdate:(FBSession*) session
 {
     if(session.state != FBSessionStateOpen && session.state != FBSessionStateOpenTokenExtended){
@@ -918,56 +921,62 @@ static NSString * const kClientId = @"100128444749-l3hh0v0as5n6t4rnp3maciodja4oa
 }
 -(void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex
 {
-    if(buttonIndex == 3){
-        //NSUserDefaults*defaults =[NSUserDefaults standardUserDefaults];
-        //NSDictionary* dict = [defaults objectForKey:@"FBAccessTokenInformationKey"];
-        //        if(!dict){
-        //            NSLog(@"dict is null");
-        //        }
-        //        for(NSString* k in dict){
-        //            NSLog(@"k:%@ and v:%@",k,dict[k]);
-        //        }
-        return;
-    }
-    else if(buttonIndex == 0){
-        [SessionManager logoutFacebookCleanCache:NO revokePermissions:NO WithCompletionHandler:^(FBSession *session, FBSessionState status, NSError *error) {
-            if([self.spinner isAnimating])
-                [self.spinner stopAnimating];
-            if(!([SessionManager fbSession].state & FB_SESSIONSTATEOPENBIT)){
-                [UserObject currentUser].fbLogin = NO;
-            }
-            [self updateFBLoginButton];
-        }];
-    }
-    else if(buttonIndex == 1){
-        [SessionManager logoutFacebookCleanCache:YES revokePermissions:NO WithCompletionHandler:^(FBSession *session, FBSessionState status, NSError *error) {
-            if([self.spinner isAnimating])
-                [self.spinner stopAnimating];
-            if(!([SessionManager fbSession].state & FB_SESSIONSTATEOPENBIT)){
-                [UserObject currentUser].fbLogin = NO;
-            }
-            [self updateFBLoginButton];
-        }];
-    }
-    else if(buttonIndex == 2){
-        [_spinner startAnimating];
-        [SessionManager logoutFacebookCleanCache:YES revokePermissions:YES WithCompletionHandler:^(FBSession *session, FBSessionState status, NSError *error) {
-            if([self.spinner isAnimating])
-                [self.spinner stopAnimating];
-            if(!([SessionManager fbSession].state & FB_SESSIONSTATEOPENBIT)){
-                [UserObject currentUser].fbLogin = NO;
-            }
-            [self updateFBLoginButton];
-        }];
-    }
-    
-   // NSLog(@"action sheet at %ld is clicked",buttonIndex);
-}
+    if(actionSheet==self.fbLogoutActionSheet){
+        if(buttonIndex == 3){
+            //NSUserDefaults*defaults =[NSUserDefaults standardUserDefaults];
+            //NSDictionary* dict = [defaults objectForKey:@"FBAccessTokenInformationKey"];
+            //        if(!dict){
+            //            NSLog(@"dict is null");
+            //        }
+            //        for(NSString* k in dict){
+            //            NSLog(@"k:%@ and v:%@",k,dict[k]);
+            //        }
+            return;
+        }
+        else if(buttonIndex == 0){
+            [SessionManager logoutFacebookCleanCache:NO revokePermissions:NO WithCompletionHandler:^(FBSession *session, FBSessionState status, NSError *error) {
+                if([self.spinner isAnimating])
+                    [self.spinner stopAnimating];
+                if(!([SessionManager fbSession].state & FB_SESSIONSTATEOPENBIT)){
+                    [UserObject currentUser].fbLogin = NO;
+                }
+                [self updateFBLoginButton];
+            }];
+        }
+        else if(buttonIndex == 1){
+            [SessionManager logoutFacebookCleanCache:YES revokePermissions:NO WithCompletionHandler:^(FBSession *session, FBSessionState status, NSError *error) {
+                if([self.spinner isAnimating])
+                    [self.spinner stopAnimating];
+                if(!([SessionManager fbSession].state & FB_SESSIONSTATEOPENBIT)){
+                    [UserObject currentUser].fbLogin = NO;
+                }
+                [self updateFBLoginButton];
+            }];
+        }
+        else if(buttonIndex == 2){
+            [_spinner startAnimating];
+            [SessionManager logoutFacebookCleanCache:YES revokePermissions:YES WithCompletionHandler:^(FBSession *session, FBSessionState status, NSError *error) {
+                if([self.spinner isAnimating])
+                    [self.spinner stopAnimating];
+                if(!([SessionManager fbSession].state & FB_SESSIONSTATEOPENBIT)){
+                    [UserObject currentUser].fbLogin = NO;
+                }
+                [self updateFBLoginButton];
+            }];
+        }
 
--(void)showFBActionSheet
+    }
+    else{
+        
+    }
+
+}
+-(UIActionSheet*)fbLogoutActionSheet
 {
-    UIActionSheet * aSheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:nil otherButtonTitles:@"logout",@"logout & clean cache",@"logout & revoke permissions", nil];
-    [aSheet showInView:self.view];
+    if(!_fbLogoutActionSheet){
+        _fbLogoutActionSheet =[[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:nil otherButtonTitles:@"logout",@"logout & clean cache",@"logout & revoke permissions", nil];
+    }
+    return _fbLogoutActionSheet;
 }
 
 -(void)fbSetup
@@ -979,7 +988,7 @@ static NSString * const kClientId = @"100128444749-l3hh0v0as5n6t4rnp3maciodja4oa
 -(void)updateFBLoginButton
 {
     if([SessionManager fbSession].state & FB_SESSIONSTATEOPENBIT){
-        NSLog(@"update FB login Button to logoug");
+        ////NSLog(@"update FB login Button to logoug");
         [_fbButton setTitle:@"logout" forState:UIControlStateNormal];
         [_fbButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
         [UserObject currentUser].fbLogin=YES;
@@ -999,7 +1008,7 @@ static NSString * const kClientId = @"100128444749-l3hh0v0as5n6t4rnp3maciodja4oa
         }
     }
     else{
-        NSLog(@"update FB login Button to Login");
+        ////NSLog(@"update FB login Button to Login");
         [_fbButton setTitle:@"login" forState:UIControlStateNormal];
         [_fbButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
         [UserObject currentUser].fbLogin=NO;
@@ -1020,7 +1029,7 @@ static NSString * const kClientId = @"100128444749-l3hh0v0as5n6t4rnp3maciodja4oa
 //}
 
 
-
+//======================native UI methods=========================
 #pragma mark - native UI methods
 
 - (IBAction)onLoginButtonClicked:(id)sender

@@ -184,13 +184,16 @@ static NSString* twUserProfilePath = @"/1.1/users/show.json";
         if(httpResponse.statusCode==200){
             NSString *string = [NSString stringWithUTF8String:[data bytes]];
             NSMutableDictionary *dict = [self parseResponseData:string];
-            _request_token = [dict valueForKey:@"oauth_token"];
-            _request_token_secret = [dict valueForKey:@"oauth_token_secret"];
+            self.request_token = [dict valueForKey:@"oauth_token"];
+            self.request_token_secret = [dict valueForKey:@"oauth_token_secret"];
             //NSLog(@"request token is %@, request token secret is %@",_request_token, _request_token_secret);
             //NSLog(@"the response body is %@", [NSString stringWithUTF8String:[data bytes]]);
             completionTask(YES, response, error);
         }
+        else{
         //TODO: error handling
+            completionTask(NO, response, error);
+        }
     }];
     [task resume];
 }

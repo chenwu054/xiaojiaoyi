@@ -350,7 +350,7 @@
                                 </state>
                                 <connections>
                                     <action selector="linkedinButtonClicked:" destination="txc-aV-psd" eventType="touchUpInside" id="L9v-Zz-dTj"/>
-                                    <segue destination="RFV-O6-0x5" kind="modal" identifier="Linkedin segue" id="Yzy-zB-qqw"/>
+                                    <segue destination="RFV-O6-0x5" kind="modal" identifier="LoginModalSegue" id="Yzy-zB-qqw"/>
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ETE-3K-lMJ">
@@ -421,10 +421,20 @@
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
                             <webView contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Pct-eU-KOE">
-                                <rect key="frame" x="0.0" y="63" width="320" height="505"/>
+                                <rect key="frame" x="0.0" y="58" width="320" height="510"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                 <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                             </webView>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="moj-qK-wCR">
+                                <rect key="frame" x="252" y="25" width="48" height="30"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <state key="normal" title="Cancel">
+                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <connections>
+                                    <action selector="cancelButtonClicked:" destination="RFV-O6-0x5" eventType="touchUpInside" id="YiR-pZ-5zN"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                     </view>
@@ -433,7 +443,7 @@
                     </navigationItem>
                     <connections>
                         <outlet property="webView" destination="Pct-eU-KOE" id="4tT-UN-ylo"/>
-                        <segue destination="EZw-Mw-Xno" kind="unwind" identifier="unwind Linkedin segue" unwindAction="done:" id="ljV-Ke-196"/>
+                        <segue destination="EZw-Mw-Xno" kind="unwind" identifier="LoginUnwindSegue" unwindAction="done:" id="ljV-Ke-196"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="1vG-v3-TFb" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -866,24 +876,6 @@
             </objects>
             <point key="canvasLocation" x="-1638" y="-1498"/>
         </scene>
-        <!--Navigation Controller-->
-        <scene sceneID="Hls-R3-igx">
-            <objects>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="CWl-L3-K0X" userLabel="First Responder" sceneMemberID="firstResponder"/>
-                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="xQw-ON-jHA" sceneMemberID="viewController">
-                    <toolbarItems/>
-                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="RFT-BQ-g6m">
-                        <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
-                        <autoresizingMask key="autoresizingMask"/>
-                    </navigationBar>
-                    <nil name="viewControllers"/>
-                    <connections>
-                        <segue destination="txc-aV-psd" kind="relationship" relationship="rootViewController" id="Nws-2P-sMS"/>
-                    </connections>
-                </navigationController>
-            </objects>
-            <point key="canvasLocation" x="-1278" y="-984"/>
-        </scene>
         <!--Menu Table Controller-->
         <scene sceneID="KcO-Qt-azY">
             <objects>
@@ -988,7 +980,4 @@
         <simulatedOrientationMetrics key="orientation"/>
         <simulatedScreenMetrics key="destination" type="retina4"/>
     </simulatedMetricsContainer>
-    <inferredMetricsTieBreakers>
-        <segue reference="8NQ-Gn-z5y"/>
-    </inferredMetricsTieBreakers>
 </document>

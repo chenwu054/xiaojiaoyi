@@ -22,10 +22,9 @@
 @property (nonatomic) NSString* screen_name;
 @property (nonatomic) NSString* user_name;
 @property (nonatomic) NSString* user_image_url;
+@property (nonatomic) NSDate* expireDate;
 
 @property (nonatomic) OAToken* accessToken;
-
-
 
 
 -(void) getRequestTokenWithCompletionTask:(void (^)(BOOL success, NSURLResponse *response, NSError *error))completionTask;

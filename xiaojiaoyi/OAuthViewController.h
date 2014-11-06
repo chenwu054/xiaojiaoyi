@@ -16,4 +16,6 @@
 @property (nonatomic) BOOL isLinkedin;
 @property (nonatomic) BOOL isFacebook;
 
+@property (nonatomic) LoginViewController* superVC;
+
 @end

@@ -565,12 +565,12 @@
 		749366FB19CE75F1003B3108 /* Login */ = {
 			isa = PBXGroup;
 			children = (
-				74CB84D219B588F700579432 /* OAuthViewController.h */,
-				74CB84D319B588F700579432 /* OAuthViewController.m */,
-				749366F819CDE688003B3108 /* TWSession.h */,
-				749366F919CDE688003B3108 /* TWSession.m */,
 				7493294B19D27622003A2388 /* MyFBSessionTokenCachingStrategy.h */,
 				7493294C19D27622003A2388 /* MyFBSessionTokenCachingStrategy.m */,
+				749366F819CDE688003B3108 /* TWSession.h */,
+				749366F919CDE688003B3108 /* TWSession.m */,
+				74CB84D219B588F700579432 /* OAuthViewController.h */,
+				74CB84D319B588F700579432 /* OAuthViewController.m */,
 				7493296119D74382003A2388 /* SessionManager.h */,
 				7493296219D74382003A2388 /* SessionManager.m */,
 				74B932A419AAEC55003B6594 /* LoginViewController.h */,

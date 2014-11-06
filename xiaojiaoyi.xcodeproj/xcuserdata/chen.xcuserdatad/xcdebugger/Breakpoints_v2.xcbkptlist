@@ -648,11 +648,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "xiaojiaoyi/OAuthViewController.m"
-            timestampString = "433809220.7043"
+            timestampString = "436989430.569495"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "70"
-            endingLineNumber = "70"
+            startingLineNumber = "86"
+            endingLineNumber = "86"
             landmarkName = "-webView:shouldStartLoadWithRequest:navigationType:"
             landmarkType = "5">
          </BreakpointContent>
@@ -832,11 +832,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "xiaojiaoyi/LoginViewController.m"
-            timestampString = "436950470.767823"
+            timestampString = "436985495.75227"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "420"
-            endingLineNumber = "420"
+            startingLineNumber = "426"
+            endingLineNumber = "426"
             landmarkName = "-prepareForSegue:sender:"
             landmarkType = "5">
          </BreakpointContent>
@@ -848,11 +848,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "xiaojiaoyi/LoginViewController.m"
-            timestampString = "436950864.570052"
+            timestampString = "436988114.876998"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1227"
-            endingLineNumber = "1227"
+            startingLineNumber = "1236"
+            endingLineNumber = "1236"
             landmarkName = "-viewDidLoad"
             landmarkType = "5">
          </BreakpointContent>
@@ -880,11 +880,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "xiaojiaoyi/OAuthViewController.m"
-            timestampString = "433809754.703935"
+            timestampString = "436989430.569495"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "83"
-            endingLineNumber = "83"
+            startingLineNumber = "99"
+            endingLineNumber = "99"
             landmarkName = "-webView:shouldStartLoadWithRequest:navigationType:"
             landmarkType = "5">
          </BreakpointContent>
@@ -896,11 +896,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "xiaojiaoyi/OAuthViewController.m"
-            timestampString = "433809220.7043"
+            timestampString = "436987978.823473"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "52"
-            endingLineNumber = "52"
+            startingLineNumber = "57"
+            endingLineNumber = "57"
             landmarkName = "-webView:shouldStartLoadWithRequest:navigationType:"
             landmarkType = "5">
          </BreakpointContent>
@@ -912,11 +912,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "xiaojiaoyi/LoginViewController.m"
-            timestampString = "436950470.767823"
+            timestampString = "436985495.75227"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "318"
-            endingLineNumber = "318"
+            startingLineNumber = "323"
+            endingLineNumber = "323"
             landmarkName = "-done:"
             landmarkType = "5">
          </BreakpointContent>
@@ -928,11 +928,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "xiaojiaoyi/LoginViewController.m"
-            timestampString = "436950864.570052"
+            timestampString = "436988114.876998"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "495"
-            endingLineNumber = "495"
+            startingLineNumber = "502"
+            endingLineNumber = "502"
             landmarkName = "-getLKUserProfilePicture"
             landmarkType = "5">
          </BreakpointContent>
@@ -944,11 +944,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "xiaojiaoyi/LoginViewController.m"
-            timestampString = "436950864.570052"
+            timestampString = "436988114.876998"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "538"
-            endingLineNumber = "538"
+            startingLineNumber = "545"
+            endingLineNumber = "545"
             landmarkName = "-downloadUserProfilePicture:"
             landmarkType = "5">
          </BreakpointContent>
@@ -960,11 +960,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "xiaojiaoyi/LoginViewController.m"
-            timestampString = "436950470.767823"
+            timestampString = "436983877.124545"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "159"
-            endingLineNumber = "159"
+            startingLineNumber = "161"
+            endingLineNumber = "161"
             landmarkName = "-updateGGButton"
             landmarkType = "5">
          </BreakpointContent>
@@ -976,11 +976,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "xiaojiaoyi/LoginViewController.m"
-            timestampString = "436950470.767823"
+            timestampString = "436983877.124545"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "143"
-            endingLineNumber = "143"
+            startingLineNumber = "145"
+            endingLineNumber = "145"
             landmarkName = "-ggLoginButtonClicked:"
             landmarkType = "5">
          </BreakpointContent>
@@ -992,11 +992,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "xiaojiaoyi/LoginViewController.m"
-            timestampString = "436950470.767823"
+            timestampString = "436983877.124545"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "109"
-            endingLineNumber = "109"
+            startingLineNumber = "111"
+            endingLineNumber = "111"
             landmarkName = "-removeProfileViewOfOAuthType:"
             landmarkType = "5">
          </BreakpointContent>
@@ -1008,11 +1008,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "xiaojiaoyi/LoginViewController.m"
-            timestampString = "436950470.767823"
+            timestampString = "436983877.124545"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "219"
-            endingLineNumber = "219"
+            startingLineNumber = "221"
+            endingLineNumber = "221"
             landmarkName = "-setGGUserProfilePicture:"
             landmarkType = "5">
          </BreakpointContent>
@@ -2938,11 +2938,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "xiaojiaoyi/LoginViewController.m"
-            timestampString = "436950864.570052"
+            timestampString = "436988114.876998"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "753"
-            endingLineNumber = "753"
+            startingLineNumber = "756"
+            endingLineNumber = "756"
             landmarkName = "-fbLogin"
             landmarkType = "5">
          </BreakpointContent>
@@ -2954,11 +2954,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "xiaojiaoyi/LoginViewController.m"
-            timestampString = "436950864.570052"
+            timestampString = "436988114.876998"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "571"
-            endingLineNumber = "571"
+            startingLineNumber = "578"
+            endingLineNumber = "578"
             landmarkName = "-fbLoginButtonClicked:"
             landmarkType = "5">
          </BreakpointContent>
@@ -2970,11 +2970,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "xiaojiaoyi/LoginViewController.m"
-            timestampString = "436950864.570052"
+            timestampString = "436988114.876998"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "757"
-            endingLineNumber = "757"
+            startingLineNumber = "760"
+            endingLineNumber = "760"
             landmarkName = "-fbLogin"
             landmarkType = "5">
             <Locations>
@@ -3016,11 +3016,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "xiaojiaoyi/LoginViewController.m"
-            timestampString = "436950864.570052"
+            timestampString = "436988114.876998"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "759"
-            endingLineNumber = "759"
+            startingLineNumber = "762"
+            endingLineNumber = "762"
             landmarkName = "-fbLogin"
             landmarkType = "5">
          </BreakpointContent>
@@ -3032,11 +3032,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "xiaojiaoyi/LoginViewController.m"
-            timestampString = "436950864.570052"
+            timestampString = "436988114.876998"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "754"
-            endingLineNumber = "754"
+            startingLineNumber = "757"
+            endingLineNumber = "757"
             landmarkName = "-fbLogin"
             landmarkType = "5">
          </BreakpointContent>
@@ -3048,11 +3048,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "xiaojiaoyi/LoginViewController.m"
-            timestampString = "436950864.570052"
+            timestampString = "436988114.876998"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "749"
-            endingLineNumber = "749"
+            startingLineNumber = "752"
+            endingLineNumber = "752"
             landmarkName = "-fbLogin"
             landmarkType = "5">
          </BreakpointContent>
@@ -3064,11 +3064,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "xiaojiaoyi/LoginViewController.m"
-            timestampString = "436950864.570052"
+            timestampString = "436988114.876998"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "744"
-            endingLineNumber = "744"
+            startingLineNumber = "747"
+            endingLineNumber = "747"
             landmarkName = "-fbLogin"
             landmarkType = "5">
          </BreakpointContent>
@@ -3080,11 +3080,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "xiaojiaoyi/LoginViewController.m"
-            timestampString = "436950864.570052"
+            timestampString = "436988114.876998"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "838"
-            endingLineNumber = "838"
+            startingLineNumber = "841"
+            endingLineNumber = "841"
             landmarkName = "-fetchFBUserProfileAndUpdate"
             landmarkType = "5">
          </BreakpointContent>
@@ -3096,11 +3096,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "xiaojiaoyi/LoginViewController.m"
-            timestampString = "436950864.570052"
+            timestampString = "436988114.876998"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "852"
-            endingLineNumber = "852"
+            startingLineNumber = "857"
+            endingLineNumber = "857"
             landmarkName = "-fetchFBUserProfileAndUpdate"
             landmarkType = "5">
          </BreakpointContent>
@@ -3112,11 +3112,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "xiaojiaoyi/LoginViewController.m"
-            timestampString = "436950864.570052"
+            timestampString = "436988114.876998"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "611"
-            endingLineNumber = "611"
+            startingLineNumber = "614"
+            endingLineNumber = "614"
             landmarkName = "-trySilentOpenFBSessionWithCompletionHandler:"
             landmarkType = "5">
          </BreakpointContent>
@@ -3128,11 +3128,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "xiaojiaoyi/LoginViewController.m"
-            timestampString = "436950864.570052"
+            timestampString = "436988114.876998"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "764"
-            endingLineNumber = "764"
+            startingLineNumber = "767"
+            endingLineNumber = "767"
             landmarkName = "-fbLogin"
             landmarkType = "5">
          </BreakpointContent>
@@ -3144,11 +3144,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "xiaojiaoyi/LoginViewController.m"
-            timestampString = "436950864.570052"
+            timestampString = "436988114.876998"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "601"
-            endingLineNumber = "601"
+            startingLineNumber = "604"
+            endingLineNumber = "604"
             landmarkName = "-trySilentOpenFBSessionWithCompletionHandler:"
             landmarkType = "5">
          </BreakpointContent>
@@ -3176,12 +3176,76 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "xiaojiaoyi/LoginViewController.m"
-            timestampString = "436950864.570052"
+            timestampString = "436988114.876998"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "569"
-            endingLineNumber = "569"
+            startingLineNumber = "576"
+            endingLineNumber = "576"
             landmarkName = "-fbLoginButtonClicked:"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "xiaojiaoyi/Crytpo/TWSession.m"
+            timestampString = "436987121.670947"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "169"
+            endingLineNumber = "169"
+            landmarkName = "-getRequestTokenWithCompletionTask:"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "xiaojiaoyi/Crytpo/TWSession.m"
+            timestampString = "436987140.50374"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "183"
+            endingLineNumber = "183"
+            landmarkName = "-getRequestTokenWithCompletionTask:"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "xiaojiaoyi/OAuthViewController.m"
+            timestampString = "436989430.569495"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "76"
+            endingLineNumber = "76"
+            landmarkName = "-webView:shouldStartLoadWithRequest:navigationType:"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "xiaojiaoyi/OAuthViewController.m"
+            timestampString = "436989430.569495"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "78"
+            endingLineNumber = "78"
+            landmarkName = "-webView:shouldStartLoadWithRequest:navigationType:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>

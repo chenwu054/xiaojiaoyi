@@ -141,7 +141,7 @@ static MyFBSessionTokenCachingStrategy* myFBTokenCachingStrategy;
 +(void)loadTWSession
 {
     NSDictionary* dict = [self readTWSessionCache];
-    TWSession *currentSession = [self twSession];
+    TWSession *currentSession = [SessionManager twSession];
     currentSession.access_token = [dict valueForKey:@"access_token"];
     currentSession.access_token_secret = [dict valueForKey:@"access_token_secret"];
     currentSession.request_token = [dict valueForKey:@"request_token"];
@@ -185,7 +185,7 @@ static MyFBSessionTokenCachingStrategy* myFBTokenCachingStrategy;
     
 }
 
-
+//================Facebook methods============================================
 #pragma mark - facebook methods
 +(FBSession *)fbSession
 {

@@ -31,6 +31,11 @@
      */
     [self.webView loadRequest:request];
 }
+- (IBAction)cancelButtonClicked:(id)sender
+{
+    [self performSegueWithIdentifier:@"LoginUnwindSegue" sender:self];
+    
+}
 
 #pragma mark - UIWebView delegate methods
 /*
@@ -42,7 +47,7 @@
 {
     NSString * requestStr = [request description];
     NSString * url = [request.URL description];
-    //NSLog(@"about to send request : %@ ",requestStr);
+    NSLog(@"about to send request : %@ ",requestStr);
     //TODO: take care of all the corner cases!
     
     /*
@@ -56,18 +61,29 @@
             NSString *data = arr[1];
             NSRange cancelRange = [data rangeOfString:@"Cancel"];
             if(cancelRange.location != NSNotFound){
-                [self performSegueWithIdentifier:@"unwind Linkedin segue" sender:self];
+                [self performSegueWithIdentifier:@"LoginUnwindSegue" sender:self];
                 return NO;
             }
             dict = [self parseResponseData:data];
             if([dict valueForKey:@"oauth_verifier"]!=nil){
-                LoginViewController *loginVC = (LoginViewController *)[self presentingViewController];
+                //LoginViewController *loginVC = (LoginViewController *)[self presentingViewController];
                 
-                loginVC.twSession.oauth_verifier_token=[dict valueForKey:@"oauth_token"];
+                //NSLog(@"loginVC is %@",loginVC);
+                self.superVC.twSession.oauth_verifier_token=[dict valueForKey:@"oauth_token"];
                 //loginVC.twitterOAuthToken = [dict valueForKey:@"oauth_token"];
-                loginVC.twSession.oauth_verifier=[dict valueForKey:@"oauth_verifier"];
+                self.superVC.twSession.oauth_verifier=[dict valueForKey:@"oauth_verifier"];
                 //loginVC.twitterOAuthTokenVerifier = [dict valueForKey:@"oauth_verifier"];
-                [self performSegueWithIdentifier:@"unwind Linkedin segue" sender:self];
+                //NSLog(@"visible %d",self.superVC.navigationController.visibleViewController == self);
+                
+                if([self.superVC.navigationController.visibleViewController isKindOfClass:[self class]]){
+                    [self.superVC dismissViewControllerAnimated:YES completion:nil];
+                    NSLog(@"performing segue");
+//                    dispatch_async(dispatch_get_main_queue(), ^{
+//                        [self performSegueWithIdentifier:@"LoginUnwindSegue" sender:self];
+//                    });
+//                    [self cancelButtonClicked:nil];
+                }
+                
                 return NO;
             }
         }
