@@ -38,6 +38,10 @@
 }
 
 #pragma mark - UIWebView delegate methods
+-(void)webViewDidFinishLoad:(UIWebView *)webView
+{
+    
+}
 /*
  this method is used whenever the user clicks something in the webview causing the webview to send an HTTP request or redirect.
  this method is called before the request is send, therefore, the request can be replaced.
@@ -47,7 +51,29 @@
 {
     NSString * requestStr = [request description];
     NSString * url = [request.URL description];
+    NSLog(@"------------------");
     NSLog(@"about to send request : %@ ",requestStr);
+    NSLog(@"method %@",[request HTTPMethod]);
+    NSDictionary* headers = [request allHTTPHeaderFields];
+    for(NSString* k in headers){
+        NSLog(@"k is%@ and v is %@",k,headers[k]);
+        
+    }
+    if([request HTTPBody]){
+        
+       // NSData* baseData = [[NSData alloc] initWithBase64EncodedData:[request HTTPBody] options:0];
+        NSString* baesString = [[NSString alloc] initWithData:[request HTTPBody] encoding:NSUTF8StringEncoding];
+
+        NSLog(@"base string is %@",baesString);
+        
+    }
+    else{
+        NSLog(@"body is null");
+    }
+    
+    
+    //NSLog(@"body is %@", [[NSString alloc] initWithData:[request HTTPBody] encoding:NSUTF8StringEncoding]);
+    
     //TODO: take care of all the corner cases!
     
     /*
@@ -57,7 +83,13 @@
     if(_isTwitter){
         NSArray *arr = [url componentsSeparatedByString:@"?"];
         NSMutableDictionary *dict = nil;
-        if([requestStr rangeOfString:@"authenticate"].location!=NSNotFound){
+        if([requestStr rangeOfString:@"logout"].location!=NSNotFound){
+            NSLog(@"found logout!");
+            request=[[NSURLRequest alloc] initWithURL:[NSURL URLWithString:@"https://mobile.twitter.com/session/new"]];
+            
+            return YES;
+        }
+        else if([requestStr rangeOfString:@"authenticate"].location!=NSNotFound){
             NSLog(@"found authenticate key word!!");
             return  YES;
         }
@@ -83,14 +115,14 @@
                 //});
                 //[self.superVC dismissViewControllerAnimated:YES completion:nil];
                 
-                [self performSegueWithIdentifier:@"LoginUnwindSegue" sender:self];
+                //[self performSegueWithIdentifier:@"LoginUnwindSegue" sender:self];
                 
                 NSLog(@"performed after alert view");
                 return NO;
             }
         }
        
-        return NO;
+        return YES;
     }
     //Linkedin login
     /*

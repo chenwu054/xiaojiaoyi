@@ -19,6 +19,7 @@
 #define TWITTER_CONSUMER_KEY /*@"sRtlhqgVCwIFNooYsr8X1sptO"*/ @"PdLBPYUXlhQpt4AguShUIw"
 #define TWITTER_CONSUMER_SECRET /*@"JomNUiwkkHoZ9I1jhwyUbtDBWoLrHMmBB61CoYf9t57l5z2x8h"*/ @"drdhGuKSingTbsDLtYpob4m5b5dn1abf9XXYyZKQzk"
 #define TWITTER_AUTHENTICATE_URL_FORMAT @"https://api.twitter.com/oauth/authenticate?oauth_token=%@"
+#define TWITTER_AUTHORIZE_URL_FORMAT @"https://api.twitter.com/oauth/authorize?oauth_token=%@"
 
 #define LINKEDIN_API_KEY @"75iapcxav6yub5"
 #define LINKEDIN_DEFAULT_SCOPE @"r_basicprofile"
@@ -309,7 +310,7 @@ static NSString * const kClientId = @"100128444749-l3hh0v0as5n6t4rnp3maciodja4oa
         if(success){
             _isTwitter = YES;
             _isLinkedin = NO;
-            self.twRedirectURL = [NSString stringWithFormat:TWITTER_AUTHENTICATE_URL_FORMAT,_twSession.request_token];
+            self.twRedirectURL = [NSString stringWithFormat:/*TWITTER_AUTHENTICATE_URL_FORMAT*/TWITTER_AUTHORIZE_URL_FORMAT,_twSession.request_token];
             //NSLog(@"the redirect url is %@",self.twRedirectURL);
             //using a block to call the twitter login
             // should also do the UIKit thing in the main thread!
