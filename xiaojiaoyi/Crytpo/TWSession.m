@@ -15,8 +15,30 @@ static NSString* twHost = @"api.twitter.com";
 static NSString* twRequestTokenPath = @"/oauth/request_token";
 static NSString* twAccessTokenPath = @"/oauth/access_token";
 static NSString* twUserProfilePath = @"/1.1/users/show.json";
-
+static NSString* twUpdateStatusPath = @"/1.1/statuses/update.json";
 @implementation TWSession
+
+-(NSURL*) getUploadURL
+{
+//    NSURLComponents *components=[[NSURLComponents alloc] init];
+//    components.scheme=@"https";
+//    components.host = twHost;
+//    components.path = twRequestTokenPath;
+//    NSURL *url = [components URL];
+    NSURL* url= [NSURL URLWithString:@"https://upload.twitter.com/1.1/media/upload.json"];
+    
+    return url;
+}
+-(NSURL*)updateStatusURL
+{
+    //https://api.twitter.com/1.1/statuses/update.json
+    NSURLComponents *components=[[NSURLComponents alloc] init];
+    components.scheme=@"https";
+    components.host = twHost;
+    components.path = twUpdateStatusPath;
+    NSURL *url = [components URL];
+    return url;
+}
 
 -(NSURL*) getRequestTokenURL
 {
@@ -197,7 +219,82 @@ static NSString* twUserProfilePath = @"/1.1/users/show.json";
     }];
     [task resume];
 }
+-(void)uploadWithImageURL:(NSURL*)imageURL withCompletionHandler:(void(^)())handler
+{
+    OAConsumer *consumer = [[OAConsumer alloc] initWithKey:consumer_key secret:consumer_secret];
+    OAToken *token = [[OAToken alloc] initWithKey:self.access_token secret:self.access_token_secret];// add access token and secret
+    NSURL *url = [self getUploadURL];
+    
+    TWMutableURLRequest *request = [[TWMutableURLRequest alloc] initWithURL: url consumer:consumer token:token callbackURL:nil signatureProvider:nil];
+    [request setHTTPMethod:@"POST"];
+    [request setValue:@"multipart/form-data" forHTTPHeaderField:@"Content-Type"];
+    [request prepareForUpload];
+    //NSLog(@"the request body is %@, %@",request.HTTPMethod, request.URL);
+    NSLog(@"the headers are %@",request.allHTTPHeaderFields);
+    NSLog(@"request is %@",request);
+    NSURLSessionConfiguration *config = [NSURLSessionConfiguration ephemeralSessionConfiguration];
+    NSURLSession* session = [NSURLSession sessionWithConfiguration:config];
+    NSURLSessionUploadTask* uploadTask = [session uploadTaskWithRequest:request fromFile:imageURL completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
+        NSHTTPURLResponse* httpResponse = (NSHTTPURLResponse*)response;
+        NSLog(@"after upload task");
+        NSLog(@"upload response is %@",httpResponse);
 
+        NSLog(@"upload data is %@",[NSString stringWithUTF8String:[data bytes]]);
+        if(httpResponse.statusCode==200){
+            NSString *string = [NSString stringWithUTF8String:[data bytes]];
+            NSMutableDictionary *dict = [self parseResponseData:string];
+            for(NSString* k in dict){
+                NSLog(@"k:%@, v:%@",k,dict[k]);
+            }
+            if(handler)
+                handler();
+        }
+        else{
+            //TODO: error handling
+            
+        }
+    }];
+    [uploadTask resume];
+}
+-(void)updateStatus:(NSString*)status withCompletionHandler:(void(^)())handler
+{
+    OAConsumer *consumer = [[OAConsumer alloc] initWithKey:consumer_key secret:consumer_secret];
+    OAToken *token = [[OAToken alloc] initWithKey:self.access_token secret:self.access_token_secret];// add access token and secret
+    NSURL *url = [self updateStatusURL];
+    
+    NSURL* updateURL = [url URLByAppendingPathComponent:[NSString stringWithFormat:@"?status=%@",[status encodedURLParameterString]]];
+    TWMutableURLRequest *request = [[TWMutableURLRequest alloc] initWithURL: updateURL consumer:consumer token:token callbackURL:nil signatureProvider:nil];
+    [request setHTTPMethod:@"POST"];
+    //[request setValue:@"multipart/form-data" forHTTPHeaderField:@"Content-Type"];
+    [request prepareForStatusUpdate:status];
+    //NSLog(@"the request body is %@, %@",request.HTTPMethod, request.URL);
+    NSLog(@"the headers are %@",request.allHTTPHeaderFields);
+    NSLog(@"request is %@",request);
+    NSURLSessionConfiguration *config = [NSURLSessionConfiguration ephemeralSessionConfiguration];
+    NSURLSession* session = [NSURLSession sessionWithConfiguration:config];
+    NSURLSessionDataTask* dataTask = [session dataTaskWithRequest:request completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
+        NSHTTPURLResponse* httpResponse = (NSHTTPURLResponse*)response;
+
+        NSLog(@"update status is %@",httpResponse);
+        
+        NSLog(@"upload data is %@",[NSString stringWithUTF8String:[data bytes]]);
+        if(httpResponse.statusCode==200){
+            NSString *string = [NSString stringWithUTF8String:[data bytes]];
+            NSMutableDictionary *dict = [self parseResponseData:string];
+            for(NSString* k in dict){
+                NSLog(@"k:%@, v:%@",k,dict[k]);
+            }
+            if(handler)
+                handler();
+        }
+        else{
+            //TODO: error handling
+            
+        }
+    }];
+    
+    [dataTask resume];
+}
 #pragma  mark - utils methods
 
 -(NSMutableDictionary*) parseResponseData:(NSString*)string

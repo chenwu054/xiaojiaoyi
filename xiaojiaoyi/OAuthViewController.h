@@ -9,7 +9,7 @@
 #import <UIKit/UIKit.h>
 #import "LoginViewController.h"
 
-@interface OAuthViewController : UIViewController <UIWebViewDelegate,NSURLConnectionDelegate>
+@interface OAuthViewController : UIViewController <UIWebViewDelegate,NSURLConnectionDelegate,UIAlertViewDelegate>
 @property (strong, nonatomic) NSString * requestURL;
 
 @property (nonatomic) BOOL isTwitter;

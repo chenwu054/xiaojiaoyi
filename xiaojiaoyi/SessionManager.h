@@ -26,6 +26,7 @@ typedef NS_ENUM(NSInteger, MyOAuthLoginType)
 +(BOOL)refreshSession:(MyOAuthLoginType)oauthType withCompletionHandler:(void(^)(BOOL success))handler;
 +(NSArray *)getUsernameAndImageURLWithOAuthType:(MyOAuthLoginType)oauthType;
 +(BOOL)writeUsername:(NSString*)username imageURL:(NSString*)imageURL forOAuthType:(MyOAuthLoginType)oauthType;
++(NSString*)getFileInfoPathWithOAuthLoginType:(MyOAuthLoginType)oauthType;
 
 //linkedin methods
 +(BOOL)writeLKSessionCache:(NSDictionary*)session;

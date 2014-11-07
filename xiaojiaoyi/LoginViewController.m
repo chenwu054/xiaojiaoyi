@@ -45,6 +45,8 @@
 @property (weak, nonatomic) IBOutlet UIButton *loginLinkedinButton;
 
 @property (weak, nonatomic) IBOutlet UILabel *loginProceedLabel;
+@property (nonatomic) UIActivityIndicatorView* spinner;
+
 //@property (nonatomic,weak) UITapGestureRecognizer *tapRecognizer;
 //@property (weak,nonatomic) FBLoginView *fbLoginView;
 //@property  (nonatomic) IBOutlet FBLoginView *fbLoginView;
@@ -78,7 +80,7 @@
 //twitter properties
 @property (nonatomic) BOOL isTWLoggedin;
 @property (nonatomic) NSString *twRedirectURL;
-
+@property (nonatomic) UIActionSheet* twLogoutActionSheet;
 
 @end
 
@@ -91,7 +93,7 @@ static NSString * const kClientId = @"100128444749-l3hh0v0as5n6t4rnp3maciodja4oa
 -(void)removeProfileViewOfOAuthType:(MyOAuthLoginType)oauthType
 {
     CGFloat lowerBound;
-    CGFloat width = _profileView.frame.size.height;
+    CGFloat width = self.profileView.frame.size.height;
     switch (oauthType) {
         case FACEBOOK:
             lowerBound = 0 * width;
@@ -114,7 +116,7 @@ static NSString * const kClientId = @"100128444749-l3hh0v0as5n6t4rnp3maciodja4oa
         CGFloat originX = view.frame.origin.x;
         if(originX >= lowerBound && originX - lowerBound <= width){
             [view removeFromSuperview];
-            return;
+            //return;
         }
     }
 }
@@ -160,12 +162,12 @@ static NSString * const kClientId = @"100128444749-l3hh0v0as5n6t4rnp3maciodja4oa
     _ggSignIn = [self getGGSignIn];
     if(_ggSignIn.authentication){
         //NSLog(@"update google button after sign in");
-        [_ggLoginButton setTitle:@"sign out" forState:UIControlStateNormal];
+        [_ggLoginButton setTitle:@"Logout Google+" forState:UIControlStateNormal];
         _isGGLoggedin = YES;
     }
     else{
         //NSLog(@"update google button after sign out");
-        [_ggLoginButton setTitle:@"sign in" forState:UIControlStateNormal];
+        [_ggLoginButton setTitle:@"Login Google+" forState:UIControlStateNormal];
         [self setGGUserProfilePicture:nil];
         _isGGLoggedin=NO;
     }
@@ -251,6 +253,20 @@ static NSString * const kClientId = @"100128444749-l3hh0v0as5n6t4rnp3maciodja4oa
 
 //=============Twitter methods=========================
 #pragma mark - twitter login methods
+-(void)trySilentLoginTwitter
+{
+    [SessionManager loadTWSession];
+    TWSession *twSession = [SessionManager twSession];
+    if(twSession.access_token && twSession.access_token.length>0){
+        
+        [UserObject loadUserObjectFromFileToCurrentUser];
+        UserObject* user = [UserObject currentUser];
+        if(user.twLogin){
+            [self.twitterLoginButton setTitle:@"Logout Twitter" forState:UIControlStateNormal];
+            [self postTWProfileWithCachedProfile];
+        }
+    }
+}
 -(void)twitterLoginButtonClicked:(UIButton*)sender
 {
     if(![UserObject currentUser].twLogin)
@@ -259,13 +275,14 @@ static NSString * const kClientId = @"100128444749-l3hh0v0as5n6t4rnp3maciodja4oa
         [SessionManager loadTWSession];
         TWSession *twSession = [SessionManager twSession];
         if(twSession.access_token){
-            NSString *userImageURL = twSession.user_image_url;
+            //NSString *userImageURL = twSession.user_image_url;
             //NSLog(@"the cached user image url is %@",userImageURL);
             
-            [_twitterLoginButton setTitle:@"logout twitter" forState:UIControlStateNormal];
-            _isTWLoggedin=YES;
+            [self.twitterLoginButton setTitle:@"Logout Twitter" forState:UIControlStateNormal];
+            //_isTWLoggedin=YES;
             [UserObject currentUser].twLogin=YES;//TODO: update the currentUser;
-            [self updateTwitterUserInfoWithImageURL:userImageURL withTrialNumber:0];
+            [self postTWProfileWithCachedProfile];
+            //[self fetchAndUpdateTwitterUserInfoWithImageURL:userImageURL withTrialNumber:0];
         }
         //2. startTWLoginByRequestToken
         else
@@ -277,17 +294,16 @@ static NSString * const kClientId = @"100128444749-l3hh0v0as5n6t4rnp3maciodja4oa
     }
     
 }
-
--(void)logoutTW
+-(UIActionSheet*)twLogoutActionSheet
 {
-    [self removeProfileViewOfOAuthType:TWITTER];
-    [_twitterLoginButton setTitle:@"login with Twitter" forState:UIControlStateNormal];
-    _isTWLoggedin = NO;
+    if(!_twLogoutActionSheet){
+        _twLogoutActionSheet=[[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:@"cancel" destructiveButtonTitle:nil otherButtonTitles:@"Log out",@"Log out and clear cache", nil];
+    }
+    return _twLogoutActionSheet;
 }
+
 -(void)startTWLoginByRequestToken
 {
-    if(!_twSession)
-        _twSession = [SessionManager twSession];
     
     [_twSession getRequestTokenWithCompletionTask:^(BOOL success, NSURLResponse *response, NSError *error){
         if(success){
@@ -298,6 +314,9 @@ static NSString * const kClientId = @"100128444749-l3hh0v0as5n6t4rnp3maciodja4oa
             //using a block to call the twitter login
             // should also do the UIKit thing in the main thread!
             dispatch_async(dispatch_get_main_queue(),^{
+                //[self.navigationController pushViewController:<#(UIViewController *)#> animated:<#(BOOL)#>]
+                
+                //[self performSegueWithIdentifier:@"LoginWebViewPushSegue" sender:self];
                 [self performSegueWithIdentifier:@"LoginModalSegue" sender:self];
             });
         }
@@ -311,9 +330,8 @@ static NSString * const kClientId = @"100128444749-l3hh0v0as5n6t4rnp3maciodja4oa
 //twitter unwind method
 -(IBAction)done:(UIStoryboardSegue *)segue
 {
-
     //user cancelled
-    if(_isTwitter && _twSession.oauth_verifier){
+    if(_isTwitter && self.twSession.oauth_verifier){
         [self.spinner startAnimating];
         [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
         [self getTWAccessTokenAtTrial:0];
@@ -326,40 +344,52 @@ static NSString * const kClientId = @"100128444749-l3hh0v0as5n6t4rnp3maciodja4oa
     }
 }
 
+//fetch the Access Token after User successfully logged in and call fetch image once get the access token
 -(void) getTWAccessTokenAtTrial:(NSInteger)numberOfTrial{
     if(numberOfTrial >= _twLoginRetryLimit){
         NSLog(@"error: exceeded trial limit and did not get user profile");
         [_spinner stopAnimating];
         [[[UIAlertView alloc] initWithTitle:@"check your internet connection"
-                                    message:@"Could not obtain access token, please try again"
+                                    message:@"Could not obtain access token, please try again later"
                                    delegate:nil
                           cancelButtonTitle:@"ok" otherButtonTitles: nil] show];
         //stop UI animation
         return;
     }
-    else if(_twSession.oauth_verifier_token && _twSession.oauth_verifier){
+    else if(self.twSession.oauth_verifier_token && self.twSession.oauth_verifier){
         //send request for access_token
-        [_twSession getAccessTokenWithOAuthToken:_twSession.oauth_verifier_token andOAuthVerifier:_twSession.oauth_verifier withCompletionTask:^(NSURLResponse *response, NSError *error,NSString* accessToken, NSString * accessTokenSecret, NSString* screen_name, NSString* user_id){
+        [self.twSession getAccessTokenWithOAuthToken:self.twSession.oauth_verifier_token andOAuthVerifier:self.twSession.oauth_verifier withCompletionTask:^(NSURLResponse *response, NSError *error,NSString* accessToken, NSString * accessTokenSecret, NSString* screen_name, NSString* user_id){
             //NSLog(@"in login view accessToken is %@, access secret is %@, screen name is %@, user_id is %@",accessToken,accessTokenSecret,screen_name,user_id);
             //if successful
             if(!error && user_id && screen_name){
-                _twSession.access_token = accessToken;
-                _twSession.access_token_secret  = accessTokenSecret;
+                self.twSession.access_token = accessToken;
+                self.twSession.access_token_secret  = accessTokenSecret;
                 
                 //trigger another task to get the user profile. Only after getting the user profile data or it reaches the maximum _twLoginRetryLimit, will the it stop requesting for the user's profile.
-                [_twSession getUserProfileByScreenName:screen_name andUserId:user_id withCompletionTask:^(NSURLResponse *response, NSError *error,NSString *name, NSString *URLString) {
+                [self.twSession getUserProfileByScreenName:screen_name andUserId:user_id withCompletionTask:^(NSURLResponse *response, NSError *error,NSString *name, NSString *URLString) {
                     //NSLog(@"in the last user profile completion task");
                     NSHTTPURLResponse * httpResponse = (NSHTTPURLResponse*)response;
                     //success
                     if(httpResponse.statusCode == 200 && !error && name){
                         
-                        _twSession.user_name = name;
-                        _twSession.user_image_url = URLString;
-                        [_spinner stopAnimating];
-                        [self showAlertViewWithTitle:@"Login" Message:@"You have successfully logged in with Twitter!"];
+                        self.twSession.user_name = name;
+                        self.twSession.user_image_url = URLString;
+                        
+                        dispatch_async(dispatch_get_main_queue(), ^{
+                            [self.spinner stopAnimating];
+                            [self showAlertViewWithTitle:@"Login" Message:@"You have successfully logged in with Twitter!"];
+                        });
+                        
                         [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
-                        [self updateTwitterUserInfoWithImageURL:_twSession.user_image_url withTrialNumber:0];
-                        _isTWLoggedin=YES;
+                        [UserObject currentUser].twLogin=YES;
+                        [self fetchAndUpdateTwitterUserInfoWithImageURL:self.twSession.user_image_url withTrialNumber:0];
+                        [UserObject currentUser].twUsername = self.twSession.user_name;
+                        [UserObject currentUser].twProfileURL = self.twSession.user_image_url;
+                        [UserObject currentUser].twAccessToken = self.twSession.access_token;
+                        [UserObject updateUserObjectToFile:nil];
+                        
+                        //_isTWLoggedin=YES;
+                        //cache the twitter session
                         [SessionManager writeTWSessionCache:nil];
                         [_twitterLoginButton setTitle:@"logout twitter" forState:UIControlStateNormal];
                         NSLog(@"got user profile!!!");
@@ -378,24 +408,24 @@ static NSString * const kClientId = @"100128444749-l3hh0v0as5n6t4rnp3maciodja4oa
         
     }
 }
-
--(void) updateTwitterUserInfoWithImageURL:(NSString*)imageURL withTrialNumber:(NSInteger)num
+//make API call to download the image from imageURL and post onto profileView
+-(void)fetchAndUpdateTwitterUserInfoWithImageURL:(NSString*)imageURL withTrialNumber:(NSInteger)num
 {
     if(num>_twLoginRetryLimit){
-        NSLog(@"ERROR: failed to download the user image");
-        [_spinner stopAnimating];
+        NSLog(@"!!! ERROR: failed to download the user image");
+        [self.spinner stopAnimating];
         return;
     }
     NSURLSession * session = [NSURLSession sharedSession];
-    [_spinner startAnimating];
+    [self.spinner startAnimating];
     //may need to remove existing twitter profile picture first
     NSURLSessionDownloadTask *task = [session downloadTaskWithURL:[NSURL URLWithString:imageURL] completionHandler:^(NSURL *localFileLocation, NSURLResponse *response, NSError *error) {
         if(!error){
-            CGRect profileFrame=[_profileView frame];
+            
             NSData *imageData=[NSData dataWithContentsOfURL:localFileLocation];
             UIImage * image = [UIImage imageWithData:imageData];
             if(!image){
-                [self updateTwitterUserInfoWithImageURL:imageURL withTrialNumber:num+1];
+                [self fetchAndUpdateTwitterUserInfoWithImageURL:imageURL withTrialNumber:num+1];
                 return;
             }
             //NSLog(@"the image is %@ and url is %@",userImage.image,localFileLocation);
@@ -403,27 +433,82 @@ static NSString * const kClientId = @"100128444749-l3hh0v0as5n6t4rnp3maciodja4oa
                 //remove current profile picture
                 //[self removeProfileViewOfOAuthType:TWITTER];
                 // add new picture
-                UIImageView *userImage = [[UIImageView alloc] initWithFrame:CGRectMake((2*2.0 + profileFrame.size.height), 0, profileFrame.size.height,profileFrame.size.height)];
-                userImage.layer.cornerRadius = 5.0f;
-                userImage.image=image;
-                [_profileView addSubview:userImage];
-                [_spinner stopAnimating];
+                [self postTWProfileWithImage:image];
                 
                 //!!write to local file
                 //[SessionManager writeProfileImage:imageData];
             });
+            
+            //write to cached location!
+            NSURL* url = [UserObject currentUserTWProfileURL];
+            [imageData writeToURL:url atomically:YES];
+            
         }
     }];
 
     [task resume];
 }
+-(void)postTWProfileWithCachedProfile
+{
+    NSURL* url = [UserObject currentUserTWProfileURL];
+    if([[NSFileManager defaultManager] fileExistsAtPath:url.path]){
+        [self postTWProfileWithImage:[UIImage imageWithContentsOfFile:url.path]];
+    }
+    
+}
+-(void)postTWProfileWithImage:(UIImage*)image
+{
+    
+    CGFloat width = self.profileView.frame.size.height;
+    UIImageView *userImage = [[UIImageView alloc] initWithFrame:CGRectMake((2.0 + width), 0, width,width)];
+    userImage.layer.cornerRadius = 5.0f;
+    userImage.image=image;
+    [self.profileView addSubview:userImage];
+    
+    if([self.spinner isAnimating])
+        [self.spinner stopAnimating];
+}
 
+-(void)logoutTW
+{
+    [self.twLogoutActionSheet showInView:self.view];
+    
+//    //1. remove the twitter profile picture
+//    [self removeProfileViewOfOAuthType:TWITTER];
+//    //2. reset the twitter login button
+//    [_twitterLoginButton setTitle:@"login with Twitter" forState:UIControlStateNormal];
+//    //3. UserObject.currentUser set twitter not login
+//    [UserObject currentUser].twLogin=NO;
+////    [UserObject clearUserTwitterInfo];
+////    [UserObject updateUserObjectToFile:nil];
+////    [UserObject clearUserTWProfile];
+    
+}
+-(void)logoutTWAndClearCache:(BOOL)clearCache
+{
+    //1. remove the twitter profile picture
+    [self removeProfileViewOfOAuthType:TWITTER];
+    //2. reset the twitter login button
+    [_twitterLoginButton setTitle:@"login Twitter" forState:UIControlStateNormal];
+    //3. UserObject.currentUser set twitter not login
+    [UserObject currentUser].twLogin=NO;
+    if(clearCache){
+        //1. UserObject's cache
+        [UserObject clearUserTwitterInfo];
+        [UserObject updateUserObjectToFile:nil];
+        [UserObject clearUserTWProfile];
+        
+        //2.Twitter/LoginToken.plist
+        [SessionManager clearTwitterLocalCache];
+    }
+    
+}
 
 #pragma mark - LinkedIn & Twitter
 
 -(void) prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
 {
-    if([segue.identifier isEqualToString:@"LoginModalSegue"]){
+    if([segue.identifier isEqualToString:@"LoginModalSegue"] || [segue.identifier isEqualToString:@"LoginWebViewPushSegue"]){
         //NSLog(@"about to segue");
         if([segue.destinationViewController isKindOfClass:[OAuthViewController class]]){
             OAuthViewController *webViewController = (OAuthViewController*)segue.destinationViewController;
@@ -431,7 +516,7 @@ static NSString * const kClientId = @"100128444749-l3hh0v0as5n6t4rnp3maciodja4oa
             if(_isTwitter){
                 webViewController.isLinkedin=NO;
                 webViewController.isTwitter=YES;
-                //NSLog(@"the redirect URL is %@",_redirectURL);
+                NSLog(@"the redirect URL is %@",_redirectURL);
                 webViewController.requestURL=self.twRedirectURL;
                 
             }
@@ -571,7 +656,72 @@ static NSString * const kClientId = @"100128444749-l3hh0v0as5n6t4rnp3maciodja4oa
 
 
 
-//====================================================================
+//========================Action sheet ====================================
+-(void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex
+{
+    if(actionSheet==self.twLogoutActionSheet){
+        if(buttonIndex == 0){
+            [self logoutTWAndClearCache:NO];
+        }
+        else if(buttonIndex == 1){
+            [self logoutTWAndClearCache:YES];
+        }
+        else{
+            return;
+        }
+    }
+    else if(actionSheet==self.fbLogoutActionSheet){
+        if(buttonIndex == 3){
+            //NSUserDefaults*defaults =[NSUserDefaults standardUserDefaults];
+            //NSDictionary* dict = [defaults objectForKey:@"FBAccessTokenInformationKey"];
+            //        if(!dict){
+            //            NSLog(@"dict is null");
+            //        }
+            //        for(NSString* k in dict){
+            //            NSLog(@"k:%@ and v:%@",k,dict[k]);
+            //        }
+            return;
+        }
+        else if(buttonIndex == 0){
+            [SessionManager logoutFacebookCleanCache:NO revokePermissions:NO WithCompletionHandler:^(FBSession *session, FBSessionState status, NSError *error) {
+                if([self.spinner isAnimating])
+                    [self.spinner stopAnimating];
+                if(!([SessionManager fbSession].state & FB_SESSIONSTATEOPENBIT)){
+                    [UserObject currentUser].fbLogin = NO;
+                }
+                [self updateFBLoginButton];
+            }];
+        }
+        else if(buttonIndex == 1){
+            [SessionManager logoutFacebookCleanCache:YES revokePermissions:NO WithCompletionHandler:^(FBSession *session, FBSessionState status, NSError *error) {
+                if([self.spinner isAnimating])
+                    [self.spinner stopAnimating];
+                if(!([SessionManager fbSession].state & FB_SESSIONSTATEOPENBIT)){
+                    [UserObject currentUser].fbLogin = NO;
+                }
+                [self updateFBLoginButton];
+            }];
+        }
+        else if(buttonIndex == 2){
+            [_spinner startAnimating];
+            [SessionManager logoutFacebookCleanCache:YES revokePermissions:YES WithCompletionHandler:^(FBSession *session, FBSessionState status, NSError *error) {
+                if([self.spinner isAnimating])
+                    [self.spinner stopAnimating];
+                if(!([SessionManager fbSession].state & FB_SESSIONSTATEOPENBIT)){
+                    [UserObject currentUser].fbLogin = NO;
+                }
+                [self updateFBLoginButton];
+            }];
+        }
+        
+    }
+    else{
+    
+    }
+}
+
+
+
 #pragma mark - FB login methods
 - (IBAction)fbLoginButtonClicked:(id)sender{
     //NSLog(@"fb button clicked");
@@ -912,71 +1062,12 @@ static NSString * const kClientId = @"100128444749-l3hh0v0as5n6t4rnp3maciodja4oa
 -(void)fbLogoutUpdate:(FBSession*) session
 {
     if(session.state != FBSessionStateOpen && session.state != FBSessionStateOpenTokenExtended){
-        [_fbButton setTitle:@"login" forState:UIControlStateNormal];
-        [_fbButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+        [_fbButton setTitle:@"Login Facebook" forState:UIControlStateNormal];
+        [_fbButton setTitleColor:[UIColor blueColor] forState:UIControlStateNormal];
         _isFBLoggedin = NO;
     }
     else
         NSLog(@"logout failed");
-}
--(void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex
-{
-    if(actionSheet==self.fbLogoutActionSheet){
-        if(buttonIndex == 3){
-            //NSUserDefaults*defaults =[NSUserDefaults standardUserDefaults];
-            //NSDictionary* dict = [defaults objectForKey:@"FBAccessTokenInformationKey"];
-            //        if(!dict){
-            //            NSLog(@"dict is null");
-            //        }
-            //        for(NSString* k in dict){
-            //            NSLog(@"k:%@ and v:%@",k,dict[k]);
-            //        }
-            return;
-        }
-        else if(buttonIndex == 0){
-            [SessionManager logoutFacebookCleanCache:NO revokePermissions:NO WithCompletionHandler:^(FBSession *session, FBSessionState status, NSError *error) {
-                if([self.spinner isAnimating])
-                    [self.spinner stopAnimating];
-                if(!([SessionManager fbSession].state & FB_SESSIONSTATEOPENBIT)){
-                    [UserObject currentUser].fbLogin = NO;
-                }
-                [self updateFBLoginButton];
-            }];
-        }
-        else if(buttonIndex == 1){
-            [SessionManager logoutFacebookCleanCache:YES revokePermissions:NO WithCompletionHandler:^(FBSession *session, FBSessionState status, NSError *error) {
-                if([self.spinner isAnimating])
-                    [self.spinner stopAnimating];
-                if(!([SessionManager fbSession].state & FB_SESSIONSTATEOPENBIT)){
-                    [UserObject currentUser].fbLogin = NO;
-                }
-                [self updateFBLoginButton];
-            }];
-        }
-        else if(buttonIndex == 2){
-            [_spinner startAnimating];
-            [SessionManager logoutFacebookCleanCache:YES revokePermissions:YES WithCompletionHandler:^(FBSession *session, FBSessionState status, NSError *error) {
-                if([self.spinner isAnimating])
-                    [self.spinner stopAnimating];
-                if(!([SessionManager fbSession].state & FB_SESSIONSTATEOPENBIT)){
-                    [UserObject currentUser].fbLogin = NO;
-                }
-                [self updateFBLoginButton];
-            }];
-        }
-
-    }
-    else{
-        
-    }
-
-}
--(UIActionSheet*)fbLogoutActionSheet
-{
-    if(!_fbLogoutActionSheet){
-        _fbLogoutActionSheet =[[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:nil otherButtonTitles:@"logout",@"logout & clean cache",@"logout & revoke permissions", nil];
-    }
-    return _fbLogoutActionSheet;
 }
 
 -(void)fbSetup
@@ -989,7 +1080,7 @@ static NSString * const kClientId = @"100128444749-l3hh0v0as5n6t4rnp3maciodja4oa
 {
     if([SessionManager fbSession].state & FB_SESSIONSTATEOPENBIT){
         ////NSLog(@"update FB login Button to logoug");
-        [_fbButton setTitle:@"logout" forState:UIControlStateNormal];
+        [_fbButton setTitle:@"Logout Facebook" forState:UIControlStateNormal];
         [_fbButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
         [UserObject currentUser].fbLogin=YES;
         NSArray* subview = [self.profileView subviews];
@@ -1015,6 +1106,14 @@ static NSString * const kClientId = @"100128444749-l3hh0v0as5n6t4rnp3maciodja4oa
         [self removeFBProfile];
     }
 }
+-(UIActionSheet*)fbLogoutActionSheet
+{
+    if(!_fbLogoutActionSheet){
+        _fbLogoutActionSheet =[[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:nil otherButtonTitles:@"logout",@"logout & clean cache",@"logout & revoke permissions", nil];
+    }
+    return _fbLogoutActionSheet;
+}
+
 //- (void) loginViewFetchedUserInfo:(FBLoginView *)loginView user:(id<FBGraphUser>)user
 //{
 //    
@@ -1052,16 +1151,25 @@ static NSString * const kClientId = @"100128444749-l3hh0v0as5n6t4rnp3maciodja4oa
 {
    // [SessionManager logoutFacebook];
     
-    FBSession * session = [FBSession activeSession];
-    NSLog(@"session.state is %ld",session.state);
-    [self fetchFBUserProfileAndUpdate];
+//    FBSession * session = [FBSession activeSession];
+//    NSLog(@"session.state is %ld",session.state);
+//    [self fetchFBUserProfileAndUpdate];
+    TWSession* session = [SessionManager twSession];
+    [session updateStatus:@"this is a new status" withCompletionHandler:nil];
+    
 }
+
 
 //temparorily used as enumerator of files
 - (IBAction)onForgetPasswordButtonClicked:(id)sender
 {
+    TWSession* session = [SessionManager twSession];
+    NSLog(@"access key %@ and secret:%@",session.access_token,session.access_token_secret);
+    
+    [session uploadWithImageURL:[UserObject currentUserFBProfileURL] withCompletionHandler:nil];
+    
     //[SessionManager loginFacebook];
-    NSLog(@"session state is %ld",[FBSession activeSession].state);
+   // NSLog(@"session state is %ld",[FBSession activeSession].state);
     //NSLog(@"forget password button clicked");
 }
 
@@ -1160,22 +1268,32 @@ static NSString * const kClientId = @"100128444749-l3hh0v0as5n6t4rnp3maciodja4oa
 
 //=================================================================
 #pragma mark - view controller lifecycle methods
+-(UIActivityIndicatorView*)spinner
+{
+    if(!_spinner){
+        _spinner = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
+        [_spinner setCenter:CGPointMake(self.view.frame.size.width/2.0, self.view.frame.size.height/2.0)];
+        _spinner.frame = self.view.frame;
+        _spinner.backgroundColor = [UIColor colorWithWhite:0.5 alpha:0.4];
+        [_spinner addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(spinnerTapped:)]];
+        [self.view addSubview:_spinner];
+    }
+    return _spinner;
+}
+-(void)setup
+{
+    self.twSession = [SessionManager twSession];
+    
+    [self spinner];
+    
+    [self trySilentLoginTwitter];
+}
 - (void)viewDidLoad
 {
     [super viewDidLoad];
     //load user profile from user default or disk
-    
-    // Do any additional setup after loading the view.
+
     //UI components
-    _spinner = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
-    [_spinner setCenter:CGPointMake(self.view.frame.size.width/2.0, self.view.frame.size.height/2.0)];
-    _spinner.frame = self.view.frame;
-    _spinner.backgroundColor = [UIColor colorWithWhite:0.5 alpha:0.4];
-    [_spinner addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(spinnerTapped:)]];
-    
-    [self.view addSubview:_spinner];
-    
-    _twSession = [SessionManager twSession];
     
     /*
      login button setup
@@ -1235,7 +1353,7 @@ static NSString * const kClientId = @"100128444749-l3hh0v0as5n6t4rnp3maciodja4oa
      */
     _isLKLogggedin = NO;
     
-    
+    [self setup];
 }
 
 -(NSMutableDictionary*) parseResponseData:(NSString*)string

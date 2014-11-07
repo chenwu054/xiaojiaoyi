@@ -38,7 +38,6 @@
 
 //facebook properties
 
-@property (nonatomic) UIActivityIndicatorView *spinner;
 
 //- (void)setOAuthToken:(NSString *)token oauthVerifier:(NSString *)verifier;
 

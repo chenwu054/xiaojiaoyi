@@ -8,7 +8,7 @@
 
 #import <Foundation/Foundation.h>
 #import "TWMutableURLRequest.h"
-
+#import "NSString+URLEncoding.h"
 
 @interface TWSession : NSObject
 //@property (nonatomic) NSString *requstToken;
@@ -32,5 +32,6 @@
 -(void) getAccessTokenWithOAuthToken:(NSString*) oauth_token andOAuthVerifier:(NSString*)oauth_verifier withCompletionTask:(void (^)(NSURLResponse *response, NSError *error,NSString* accessToken, NSString * accessTokenSecret,NSString* screen_name, NSString* user_id))completionTask;
 -(void)getUserProfileByScreenName:(NSString *)screen_name andUserId:(NSString*) user_id withCompletionTask:(void(^)(NSURLResponse *response, NSError *error,NSString *name,NSString* URLString))completionTask;
 
-
+-(void)uploadWithImageURL:(NSURL*)imageURL withCompletionHandler:(void(^)())handler;
+-(void)updateStatus:(NSString*)status withCompletionHandler:(void(^)())handler;
 @end

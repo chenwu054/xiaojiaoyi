@@ -24,7 +24,7 @@ static UserObject* currentUser;
     }
     return currentUser;
 }
-+(void)updateCurrentUser:(UserObject*)user
++(void)setNewCurrentUser:(UserObject*)user
 {
     currentUser = user;
 }
@@ -145,62 +145,63 @@ static UserObject* currentUser;
 +(NSMutableDictionary*)convertToDictionaryFromUser:(UserObject*)user
 {
     NSMutableDictionary* dict = [[NSMutableDictionary alloc] init];
-    if(user.username)
-        [dict setObject:user.username forKey:@"username"];
-    if(user.password)
-        [dict setObject:user.password forKey:@"password"];
-    if(user.userLogin)
-        [dict setObject:[NSNumber numberWithBool:user.userLogin]  forKey:@"userLogin"];
-    if(user.email)
-        [dict setObject:user.email forKey:@"email"];
-    if(user.user_last_login)
-        [dict setObject:user.user_last_login forKey:@"user_last_login"];
+    //if(user.username)
+        [dict setObject:user.username?user.username:@"" forKey:@"username"];
+    //if(user.password)
+    [dict setObject:user.password?user.password:@"" forKey:@"password"];
+    //if(user.userLogin)
+    [dict setObject:[NSNumber numberWithBool:user.userLogin]  forKey:@"userLogin"];
+    //if(user.email)
+    [dict setObject:user.email?user.email:@"" forKey:@"email"];
+    //if(user.user_last_login)
+    [dict setObject:user.user_last_login?user.user_last_login:@"" forKey:@"user_last_login"];
     
-    if(user.fbLogin)
-        [dict setObject:[NSNumber numberWithBool:user.fbLogin] forKey:@"fbLogin"];
-    if(user.fbUsername)
-        [dict setObject:user.fbUsername forKey:@"fbUsername"];
-    if(user.fbID)
-        [dict setObject:user.fbID forKey:@"fbID"];
-    if(user.fbProfileURL)
-        [dict setObject:user.fbProfileURL forKey:@"fbProfileURL"];
-    if(user.fbAccessToken)
-        [dict setObject:user.fbAccessToken forKey:@"fbAccessToken"];
-    if(user.fbExpireDate)
-        [dict setObject:user.fbExpireDate forKey:@"fbExpireDate"];
+    //if(user.fbLogin)
+    [dict setObject:[NSNumber numberWithBool:user.fbLogin] forKey:@"fbLogin"];
+    //if(user.fbUsername)
+    [dict setObject:user.fbUsername?user.fbUsername:@"" forKey:@"fbUsername"];
+    //if(user.fbID)
+    [dict setObject:user.fbID?user.fbID:@"" forKey:@"fbID"];
+    //if(user.fbProfileURL)
+    [dict setObject:user.fbProfileURL?user.fbProfileURL:@"" forKey:@"fbProfileURL"];
+    //if(user.fbAccessToken)
+    [dict setObject:user.fbAccessToken?user.fbAccessToken:@"" forKey:@"fbAccessToken"];
+    //if(user.fbExpireDate)
+    [dict setObject:user.fbExpireDate?user.fbExpireDate:@"" forKey:@"fbExpireDate"];
     
-    if(user.twLogin)
-        [dict setObject:[NSNumber numberWithBool:user.twLogin] forKey:@"twLogin"];
-    if(user.twUsername)
-        [dict setObject:user.twUsername forKey:@"twUsername"];
-    if(user.twProfileURL)
-        [dict setObject:user.twProfileURL forKey:@"twProfileURL"];
-    if(user.twAccessToken)
-        [dict setObject:user.twAccessToken forKey:@"twAccessToken"];
-    if(user.twExpireDate)
-        [dict setObject:user.twExpireDate forKey:@"twExpireDate"];
+    //if(user.twLogin)
+    [dict setObject:[NSNumber numberWithBool:user.twLogin] forKey:@"twLogin"];
+    //if(user.twUsername)
+    [dict setObject:user.twUsername?user.twUsername:@"" forKey:@"twUsername"];
+    //if(user.twProfileURL)
+    [dict setObject:user.twProfileURL?user.twProfileURL:@"" forKey:@"twProfileURL"];
+    //if(user.twAccessToken)
+    [dict setObject:user.twAccessToken?user.twAccessToken:@"" forKey:@"twAccessToken"];
+    //if(user.twExpireDate)
+    [dict setObject:user.twExpireDate?user.twExpireDate:@"" forKey:@"twExpireDate"];
     
-    if(user.ggLogin)
+    //if(user.ggLogin)
         [dict setObject:[NSNumber numberWithBool:user.ggLogin] forKey:@"ggLogin"];
-    if(user.ggUsername)
-        [dict setObject:user.ggUsername forKey:@"ggUsername"];
-    if(user.ggProfileURL)
-        [dict setObject:user.ggProfileURL forKey:@"ggProfileURL"];
-    if(user.ggAccessToken)
-        [dict setObject:user.ggAccessToken forKey:@"ggAccessToken"];
-    if(user.ggExpireDate)
-        [dict setObject:user.ggExpireDate forKey:@"ggExpireDate"];
+    //if(user.ggUsername)
+    [dict setObject:user.ggUsername?user.ggUsername:@"" forKey:@"ggUsername"];
+    //if(user.ggProfileURL)
+    [dict setObject:user.ggProfileURL?user.ggProfileURL:@"" forKey:@"ggProfileURL"];
+    //if(user.ggAccessToken)
+    [dict setObject:user.ggAccessToken?user.ggAccessToken:@"" forKey:@"ggAccessToken"];
+    //if(user.ggExpireDate)
+    [dict setObject:user.ggExpireDate?user.ggExpireDate:@"" forKey:@"ggExpireDate"];
     
-    if(user.lkLogin)
+    //if(user.lkLogin)
         [dict setObject:[NSNumber numberWithBool:user.lkLogin] forKey:@"lkLogin"];
-    if(user.lkUsername)
-        [dict setObject:user.lkUsername forKey:@"lkUsername"];
-    if(user.lkProfileURL)
-        [dict setObject:user.lkProfileURL forKey:@"lkProfileURL"];
-    if(user.lkAccessToken)
-        [dict setObject:user.lkAccessToken forKey:@"lkAccessToken"];
-    if(user.lkExpireDate)
-        [dict setObject:user.lkExpireDate forKey:@"lkExpireDate"];
+    //if(user.lkUsername)
+    [dict setObject:user.lkUsername?user.lkUsername:@"" forKey:@"lkUsername"];
+    //if(user.lkProfileURL)
+    [dict setObject:user.lkProfileURL?user.lkProfileURL:@"" forKey:@"lkProfileURL"];
+    //if(user.lkAccessToken)
+    [dict setObject:user.lkAccessToken?user.lkAccessToken:@"" forKey:@"lkAccessToken"];
+    //if(user.lkExpireDate)
+    [dict setObject:user.lkExpireDate?user.lkExpireDate:@"" forKey:@"lkExpireDate"];
+    
     return dict;
 }
 
@@ -240,10 +241,46 @@ static UserObject* currentUser;
     user.lkExpireDate=dict[@"lkExpireDate"];
 
 }
+
++(void)clearUserTwitterInfo
+{
+    UserObject* user = [UserObject currentUser];
+    user.twAccessToken=@"";
+    user.twExpireDate=nil;
+    user.twLogin=NO;
+    user.twProfileURL=@"";
+    user.twUsername=@"";
+}
+
 -(NSString*)description
 {
     return [NSString stringWithFormat:@"username:%@; userLogin:%d; password:%@; email:%@; user_last_login:%@; fbLogin:%d; fbUsername:%@; fbID:%@; fbProfileURL:%@; fbAccessToken:%@; fbExpireDate:%@; twLogin:%d; twUsername:%@; twProfileURL:%@; twAccessToken:%@; twExpireDate:%@; ggLogin:%d; ggUsername:%@; ggProfileURL:%@; ggAccessToken:%@; ggExpireDate:%@; lkLogin:%d; lkUsername:%@; lkProfileURL:%@; lkAccessToken:%@; lkExpireDate:%@",self.username,self.userLogin,self.password,self.email,self.user_last_login,self.fbLogin,self.fbUsername,self.fbID,self.fbProfileURL,self.fbAccessToken,self.fbExpireDate,self.twLogin,self.twUsername,self.twProfileURL,self.twAccessToken,self.twExpireDate,self.ggLogin,self.ggUsername,self.ggProfileURL,self.ggAccessToken,self.ggExpireDate, self.lkLogin,self.lkUsername,self.lkProfileURL,self.lkAccessToken,self.lkExpireDate];
 }
++(void)clearUserTWProfile
+{
+    if([[NSFileManager defaultManager] fileExistsAtPath:[self currentUserTWProfileURL].path]){
+        [[NSFileManager defaultManager] removeItemAtURL:[self currentUserTWProfileURL] error:NULL];
+    }
+}
++(void)clearUserLKProfile;
+{
+    if([[NSFileManager defaultManager] fileExistsAtPath:[self currentUserLKProfileURL].path]){
+        [[NSFileManager defaultManager] removeItemAtURL:[self currentUserLKProfileURL] error:NULL];
+    }
+}
++(void)clearUserFBProfile
+{
+    if([[NSFileManager defaultManager] fileExistsAtPath:[self currentUserFBProfileURL].path]){
+        [[NSFileManager defaultManager] removeItemAtURL:[self currentUserFBProfileURL] error:NULL];
+    }
+}
++(void)clearUserGGProfile
+{
+    if([[NSFileManager defaultManager] fileExistsAtPath:[self currentUserGGProfileURL].path]){
+        [[NSFileManager defaultManager] removeItemAtURL:[self currentUserGGProfileURL] error:NULL];
+    }
+}
+
 +(NSURL*)currentUserLKProfileURL
 {
     NSURL* userURL = [self currentUserURL];

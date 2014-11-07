@@ -332,20 +332,11 @@
                                     <action selector="onForgetPasswordButtonClicked:" destination="txc-aV-psd" eventType="touchUpInside" id="j5O-9C-5bX"/>
                                 </connections>
                             </button>
-                            <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="ksW-mO-BlC" userLabel="login with FB" customClass="UIButton">
-                                <rect key="frame" x="20" y="390" width="130" height="60"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
-                                <accessibility key="accessibilityConfiguration" label="facebook"/>
-                                <connections>
-                                    <action selector="fbLoginButtonClicked:" destination="txc-aV-psd" eventType="touchUpInside" id="p99-JZ-f1W"/>
-                                </connections>
-                            </view>
                             <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="E8a-Xi-ULz">
                                 <rect key="frame" x="20" y="470" width="130" height="60"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
-                                <state key="normal" title="Log in with LinkedIn">
+                                <state key="normal" title="Login LinkedIn">
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
                                 <connections>
@@ -357,9 +348,20 @@
                                 <rect key="frame" x="170" y="390" width="130" height="60"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
-                                <state key="normal" title="Log in with Twitter">
+                                <state key="normal" title="Login Twitter">
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="p9d-rQ-ipU">
+                                <rect key="frame" x="20" y="390" width="130" height="60"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
+                                <state key="normal" title="Login Facebook">
+                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <connections>
+                                    <action selector="fbLoginButtonClicked:" destination="txc-aV-psd" eventType="touchUpInside" id="0e8-IB-hEo"/>
+                                </connections>
                             </button>
                             <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="M8k-4N-4dD">
                                 <rect key="frame" x="20" y="300" width="280" height="70"/>
@@ -370,7 +372,7 @@
                                 <rect key="frame" x="170" y="470" width="130" height="60"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
-                                <state key="normal" title="Button">
+                                <state key="normal" title="Login Google+">
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
                                 <connections>
@@ -386,7 +388,7 @@
                     </view>
                     <navigationItem key="navigationItem" id="abN-bU-ORx"/>
                     <connections>
-                        <outlet property="fbButton" destination="ksW-mO-BlC" id="Hxl-US-3Dg"/>
+                        <outlet property="fbButton" destination="p9d-rQ-ipU" id="bsx-ZZ-cQN"/>
                         <outlet property="ggLoginButton" destination="eii-PW-Ice" id="g46-QB-kHW"/>
                         <outlet property="loginForgetPasswordButton" destination="AK1-8Q-IuI" id="BDR-zx-FuO"/>
                         <outlet property="loginLinkedinButton" destination="E8a-Xi-ULz" id="6DN-uU-79l"/>
@@ -397,6 +399,7 @@
                         <outlet property="loginUsernameTextField" destination="I6u-G6-fnq" id="VkJ-Ew-LtY"/>
                         <outlet property="profileView" destination="M8k-4N-4dD" id="BXD-ht-HMF"/>
                         <outlet property="twitterLoginButton" destination="ETE-3K-lMJ" id="MbJ-iY-czr"/>
+                        <segue destination="RFV-O6-0x5" kind="push" identifier="LoginWebViewPushSegue" id="khJ-NP-QXu"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Zmh-fH-8nA" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -449,7 +452,7 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="1vG-v3-TFb" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <exit id="EZw-Mw-Xno" userLabel="Exit" sceneMemberID="exit"/>
             </objects>
-            <point key="canvasLocation" x="-295" y="-1633"/>
+            <point key="canvasLocation" x="-289" y="-1047"/>
         </scene>
         <!--Center Tab Hot Deal Controller-->
         <scene sceneID="OOc-8b-VUl">
@@ -980,4 +983,7 @@
         <simulatedOrientationMetrics key="orientation"/>
         <simulatedScreenMetrics key="destination" type="retina4"/>
     </simulatedMetricsContainer>
+    <inferredMetricsTieBreakers>
+        <segue reference="khJ-NP-QXu"/>
+    </inferredMetricsTieBreakers>
 </document>

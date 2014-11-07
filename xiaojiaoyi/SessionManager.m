@@ -124,8 +124,12 @@ static MyFBSessionTokenCachingStrategy* myFBTokenCachingStrategy;
 +(BOOL)clearTwitterLocalCache
 {
     NSString *file = [self getFilePathWithOAuthLoginType:TWITTER withFilename:@TOKEN_FILE_NAME];
-    NSDictionary * nilDict = nil;
-    return [nilDict writeToFile:file atomically:YES];
+    //NSDictionary * nilDict = nil;
+    //return [nilDict writeToFile:file atomically:YES];
+    if([[NSFileManager defaultManager] fileExistsAtPath:file]){
+        return [[NSFileManager defaultManager] removeItemAtPath:file error:NULL];
+    }
+    return YES;
 }
 +(BOOL)writeProfileImage:(NSData *)imageData
 {
@@ -181,7 +185,9 @@ static MyFBSessionTokenCachingStrategy* myFBTokenCachingStrategy;
 }
 +(void)clearUpTWSession
 {
-    
+    NSString* path = [self getFileInfoPathWithOAuthLoginType:TWITTER];
+    NSLog(@"about to clear tw session at %@",path);
+    [[NSFileManager defaultManager] removeItemAtPath:path error:NULL];
     
 }
 
@@ -437,7 +443,10 @@ static MyFBSessionTokenCachingStrategy* myFBTokenCachingStrategy;
     else
         return nil;
 }
-
++(NSString*)getFileInfoPathWithOAuthLoginType:(MyOAuthLoginType)oauthType
+{
+    return [self getFilePathWithOAuthLoginType:oauthType withFilename:@PROFILE_FILE_NAME];
+}
 +(NSString*)getFilePathWithOAuthLoginType:(MyOAuthLoginType)oauthType withFilename:(NSString*)filename
 {
     NSString *dir = [self getFileDirWithOAuthType:oauthType];

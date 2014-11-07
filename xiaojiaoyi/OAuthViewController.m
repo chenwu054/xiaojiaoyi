@@ -57,7 +57,11 @@
     if(_isTwitter){
         NSArray *arr = [url componentsSeparatedByString:@"?"];
         NSMutableDictionary *dict = nil;
-        if(arr.count>1){
+        if([requestStr rangeOfString:@"authenticate"].location!=NSNotFound){
+            NSLog(@"found authenticate key word!!");
+            return  YES;
+        }
+        else if(arr.count>1){
             NSString *data = arr[1];
             NSRange cancelRange = [data rangeOfString:@"Cancel"];
             if(cancelRange.location != NSNotFound){
@@ -70,24 +74,23 @@
                 
                 //NSLog(@"loginVC is %@",loginVC);
                 self.superVC.twSession.oauth_verifier_token=[dict valueForKey:@"oauth_token"];
-                //loginVC.twitterOAuthToken = [dict valueForKey:@"oauth_token"];
                 self.superVC.twSession.oauth_verifier=[dict valueForKey:@"oauth_verifier"];
-                //loginVC.twitterOAuthTokenVerifier = [dict valueForKey:@"oauth_verifier"];
+
                 //NSLog(@"visible %d",self.superVC.navigationController.visibleViewController == self);
                 
-                if([self.superVC.navigationController.visibleViewController isKindOfClass:[self class]]){
-                    [self.superVC dismissViewControllerAnimated:YES completion:nil];
-                    NSLog(@"performing segue");
-//                    dispatch_async(dispatch_get_main_queue(), ^{
-//                        [self performSegueWithIdentifier:@"LoginUnwindSegue" sender:self];
-//                    });
-//                    [self cancelButtonClicked:nil];
-                }
+                //dispatch_async(dispatch_get_main_queue(), ^{
+                    //[[[UIAlertView alloc] initWithTitle:nil message:@"Thank you for signing in Twitter!" delegate:self cancelButtonTitle:@"OK" otherButtonTitles: nil] show];
+                //});
+                //[self.superVC dismissViewControllerAnimated:YES completion:nil];
                 
+                [self performSegueWithIdentifier:@"LoginUnwindSegue" sender:self];
+                
+                NSLog(@"performed after alert view");
                 return NO;
             }
         }
-        return YES;
+       
+        return NO;
     }
     //Linkedin login
     /*
@@ -121,7 +124,10 @@
     }
     return YES;
 }
-
+-(void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
+{
+    [self performSegueWithIdentifier:@"LoginUnwindSegue" sender:self];
+}
 
 
 #pragma mark - view controller lifecycle methods
@@ -137,7 +143,7 @@
 //            }
 //        }
 //    }
-    //NSLog(@"the identifier: %@",segue.identifier);
+    NSLog(@"performing unwind segue the identifier: %@",segue.identifier);
     //NSLog(@"destination controller: %@",segue.destinationViewController);
     
 }

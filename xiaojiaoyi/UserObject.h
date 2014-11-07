@@ -44,7 +44,7 @@
 @property (nonatomic) NSDate* lkExpireDate;
 
 +(UserObject*)currentUser;
-+(void)updateCurrentUser:(UserObject*)user;
+//+(void)updateCurrentUser:(UserObject*)user;
 +(void)updateCurrentUserWithNewInfo:(NSDictionary*)dict;
 
 +(UserObject*)loadUserObjectFromUserDefaults;
@@ -57,11 +57,19 @@
 +(NSMutableDictionary*)convertToDictionaryFromUser:(UserObject*)user;
 +(void)convertToUser:(UserObject*)user FromDictionary:(NSDictionary*)dict;
 
++(void)clearUserTwitterInfo;
+
 +(NSURL*)currentUserLKProfileURL;
 +(NSURL*)currentUserGGProfileURL;
 +(NSURL*)currentUserTWProfileURL;
 +(NSURL*)currentUserFBProfileURL;
 +(NSURL*)currentUserInfoURL;
 +(NSURL*)currentUserURL;
+
++(void)clearUserTWProfile;
++(void)clearUserLKProfile;
++(void)clearUserFBProfile;
++(void)clearUserGGProfile;
+
 
 @end
