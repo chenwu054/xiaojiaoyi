@@ -34,4 +34,5 @@
 
 -(void)uploadWithImageURL:(NSURL*)imageURL withCompletionHandler:(void(^)())handler;
 -(void)updateStatus:(NSString*)status withCompletionHandler:(void(^)())handler;
+-(void)requestUserTimeline;
 @end

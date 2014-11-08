@@ -8,15 +8,38 @@
 
 #import "TWSession.h"
 
-static NSString* consumer_key = @"sRtlhqgVCwIFNooYsr8X1sptO";
-static NSString* consumer_secret=@"JomNUiwkkHoZ9I1jhwyUbtDBWoLrHMmBB61CoYf9t57l5z2x8h";
+static NSString* consumer_key = @"ho97OlaynFXBYuN4mYIdVBZUb";
+static NSString* consumer_secret=@"VCkBTcmJjSw4ACRWWfgNM4pWEXwwwpJskoCavy3kqx1LYf64Zl";
 static NSString* callbackURL=@"http://localhost.xiaojiaoyi.com";
 static NSString* twHost = @"api.twitter.com";
 static NSString* twRequestTokenPath = @"/oauth/request_token";
 static NSString* twAccessTokenPath = @"/oauth/access_token";
 static NSString* twUserProfilePath = @"/1.1/users/show.json";
 static NSString* twUpdateStatusPath = @"/1.1/statuses/update.json";
+static NSString* twRequestTimelinePath=@"/1.1/statuses/user_timeline.json";
 @implementation TWSession
+
+-(NSURL*)getTimelineURLWithUserId:(NSString*)userId andScreenName:(NSString*)screenName;
+{
+    NSURLComponents *components=[[NSURLComponents alloc] init];
+    components.scheme=@"https";
+    components.host = twHost;
+    components.path = twRequestTimelinePath;
+    components.query=[NSString stringWithFormat:@"user_id=%@&screen_name=%@",userId,screenName];
+    NSURL *url = [components URL];
+    return url;
+
+}
+-(NSURL*)updateStatusURLWithStatus:(NSString*)status
+{
+    NSURLComponents *components=[[NSURLComponents alloc] init];
+    components.scheme=@"https";
+    components.host = twHost;
+    components.path = twUpdateStatusPath;
+    components.query=[NSString stringWithFormat:@"status=%@&display_coordinates=false",status];
+    NSURL *url = [components URL];
+    return url;
+}
 
 -(NSURL*) getUploadURL
 {
@@ -29,17 +52,6 @@ static NSString* twUpdateStatusPath = @"/1.1/statuses/update.json";
     
     return url;
 }
--(NSURL*)updateStatusURL
-{
-    //https://api.twitter.com/1.1/statuses/update.json
-    NSURLComponents *components=[[NSURLComponents alloc] init];
-    components.scheme=@"https";
-    components.host = twHost;
-    components.path = twUpdateStatusPath;
-    NSURL *url = [components URL];
-    return url;
-}
-
 -(NSURL*) getRequestTokenURL
 {
     NSURLComponents *components=[[NSURLComponents alloc] init];
@@ -256,16 +268,59 @@ static NSString* twUpdateStatusPath = @"/1.1/statuses/update.json";
     }];
     [uploadTask resume];
 }
+
+-(void)requestUserTimeline
+{
+    OAConsumer *consumer = [[OAConsumer alloc] initWithKey:consumer_key secret:consumer_secret];
+    OAToken *token = [[OAToken alloc] initWithKey:self.access_token secret:self.access_token_secret];// add access token and secret
+    NSURL *url = [self getTimelineURLWithUserId:self.user_id_str andScreenName:self.screen_name];
+    
+    //NSURL* updateURL = [url URLByAppendingPathComponent:[NSString stringWithFormat:@"?status=%@&display_coordinates=false",status]];
+    TWMutableURLRequest *request = [[TWMutableURLRequest alloc] initWithURL: url consumer:consumer token:token callbackURL:nil signatureProvider:nil];
+    [request setHTTPMethod:@"GET"];
+    //[request setValue:@"multipart/form-data" forHTTPHeaderField:@"Content-Type"];
+    [request prepareForTimelineWithUserId:self.user_id_str andScreenName:self.screen_name];
+    
+    //NSLog(@"the request body is %@, %@",request.HTTPMethod, request.URL);
+    NSLog(@"the headers are %@",request.allHTTPHeaderFields);
+    NSLog(@"request is %@",request);
+    NSURLSessionConfiguration *config = [NSURLSessionConfiguration ephemeralSessionConfiguration];
+    NSURLSession* session = [NSURLSession sessionWithConfiguration:config];
+    NSURLSessionDataTask* dataTask = [session dataTaskWithRequest:request completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
+        NSHTTPURLResponse* httpResponse = (NSHTTPURLResponse*)response;
+        
+        NSLog(@"request user timeline response is %@",httpResponse);
+        //NSLog(@"request user timeline is %@",[NSString stringWithUTF8String:[data bytes]]);
+        
+        if(httpResponse.statusCode==200){
+            NSDictionary*dict = [NSJSONSerialization JSONObjectWithData:data options:0 error:NULL];
+            //NSLog(@"dict is%@",dict);
+            for(NSString* k in dict){
+                NSDictionary* info = (NSDictionary*)k;
+                NSLog(@"text is \"%@\"",info[@"text"]);
+            }
+            //NSLog(@"text is %@",[dict objectForKey:@"text"]);
+        }
+        else{
+            //TODO: error handling
+            
+        }
+    }];
+    
+    [dataTask resume];
+}
+
 -(void)updateStatus:(NSString*)status withCompletionHandler:(void(^)())handler
 {
     OAConsumer *consumer = [[OAConsumer alloc] initWithKey:consumer_key secret:consumer_secret];
     OAToken *token = [[OAToken alloc] initWithKey:self.access_token secret:self.access_token_secret];// add access token and secret
-    NSURL *url = [self updateStatusURL];
+    NSURL *url = [self updateStatusURLWithStatus:status];
     
-    NSURL* updateURL = [url URLByAppendingPathComponent:[NSString stringWithFormat:@"?status=%@",[status encodedURLParameterString]]];
-    TWMutableURLRequest *request = [[TWMutableURLRequest alloc] initWithURL: updateURL consumer:consumer token:token callbackURL:nil signatureProvider:nil];
+    //NSURL* updateURL = [url URLByAppendingPathComponent:[NSString stringWithFormat:@"?status=%@&display_coordinates=false",status]];
+    TWMutableURLRequest *request = [[TWMutableURLRequest alloc] initWithURL: url consumer:consumer token:token callbackURL:nil signatureProvider:nil];
     [request setHTTPMethod:@"POST"];
     //[request setValue:@"multipart/form-data" forHTTPHeaderField:@"Content-Type"];
+    
     [request prepareForStatusUpdate:status];
     //NSLog(@"the request body is %@, %@",request.HTTPMethod, request.URL);
     NSLog(@"the headers are %@",request.allHTTPHeaderFields);
@@ -274,13 +329,12 @@ static NSString* twUpdateStatusPath = @"/1.1/statuses/update.json";
     NSURLSession* session = [NSURLSession sessionWithConfiguration:config];
     NSURLSessionDataTask* dataTask = [session dataTaskWithRequest:request completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
         NSHTTPURLResponse* httpResponse = (NSHTTPURLResponse*)response;
-
-        NSLog(@"update status is %@",httpResponse);
-        
-        NSLog(@"upload data is %@",[NSString stringWithUTF8String:[data bytes]]);
+        //NSLog(@"update status is %@",httpResponse);
+        NSLog(@"update status is %@",[NSString stringWithUTF8String:[data bytes]]);
         if(httpResponse.statusCode==200){
-            NSString *string = [NSString stringWithUTF8String:[data bytes]];
-            NSMutableDictionary *dict = [self parseResponseData:string];
+            NSDictionary*dict = [NSJSONSerialization JSONObjectWithData:data options:0 error:NULL];
+//            NSString *string = [NSString stringWithUTF8String:[data bytes]];
+//            NSMutableDictionary *dict = [self parseResponseData:string];
             for(NSString* k in dict){
                 NSLog(@"k:%@, v:%@",k,dict[k]);
             }
@@ -295,6 +349,8 @@ static NSString* twUpdateStatusPath = @"/1.1/statuses/update.json";
     
     [dataTask resume];
 }
+
+
 #pragma  mark - utils methods
 
 -(NSMutableDictionary*) parseResponseData:(NSString*)string

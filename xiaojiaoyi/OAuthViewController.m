@@ -51,29 +51,28 @@
 {
     NSString * requestStr = [request description];
     NSString * url = [request.URL description];
-    NSLog(@"------------------");
-    NSLog(@"about to send request : %@ ",requestStr);
-    NSLog(@"method %@",[request HTTPMethod]);
-    NSDictionary* headers = [request allHTTPHeaderFields];
-    for(NSString* k in headers){
-        NSLog(@"k is%@ and v is %@",k,headers[k]);
-        
-    }
-    if([request HTTPBody]){
-        
-       // NSData* baseData = [[NSData alloc] initWithBase64EncodedData:[request HTTPBody] options:0];
-        NSString* baesString = [[NSString alloc] initWithData:[request HTTPBody] encoding:NSUTF8StringEncoding];
-
-        NSLog(@"base string is %@",baesString);
-        
-    }
-    else{
-        NSLog(@"body is null");
-    }
     
+//    NSLog(@"------------------");
+//    NSLog(@"about to send request : %@ ",requestStr);
+//    NSLog(@"method %@",[request HTTPMethod]);
+//    NSDictionary* headers = [request allHTTPHeaderFields];
+//    for(NSString* k in headers){
+//        NSLog(@"k is%@ and v is %@",k,headers[k]);
+//        
+//    }
+//    if([request HTTPBody]){
+//        
+//       // NSData* baseData = [[NSData alloc] initWithBase64EncodedData:[request HTTPBody] options:0];
+//        NSString* baesString = [[NSString alloc] initWithData:[request HTTPBody] encoding:NSUTF8StringEncoding];
+//
+//        NSLog(@"base string is %@",baesString);
+//        
+//    }
+//    else{
+//        NSLog(@"body is null");
+//    }
     
     //NSLog(@"body is %@", [[NSString alloc] initWithData:[request HTTPBody] encoding:NSUTF8StringEncoding]);
-    
     //TODO: take care of all the corner cases!
     
     /*

@@ -1156,7 +1156,10 @@ static NSString * const kClientId = @"100128444749-l3hh0v0as5n6t4rnp3maciodja4oa
 //    NSLog(@"session.state is %ld",session.state);
 //    [self fetchFBUserProfileAndUpdate];
     TWSession* session = [SessionManager twSession];
-    [session updateStatus:@"this is a new status" withCompletionHandler:nil];
+    int r = arc4random()%256;
+    //VERY IMPORTANT!!! CAN NOT have Special characters in the status such as :()!* etc.
+    [session updateStatus:[NSString stringWithFormat:@"this is a new status%d",r] withCompletionHandler:nil];
+    //[session requestUserTimeline];
     
 }
 
