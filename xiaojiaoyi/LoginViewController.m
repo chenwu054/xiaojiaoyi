@@ -65,6 +65,8 @@
 @property (nonatomic) GPPSignIn *ggSignIn;
 @property (nonatomic) BOOL isGGLoggedin;
 @property (nonatomic) GPPSignInButton *ggSignInButton;
+@property (nonatomic) UIActionSheet* ggActionSheet;
+@property (nonatomic) BOOL ggButtonClicked;
 
 //linkedin private properties
 @property (nonatomic) BOOL isLKLogggedin;
@@ -122,37 +124,60 @@ static NSString * const kClientId = @"100128444749-l3hh0v0as5n6t4rnp3maciodja4oa
     }
 }
 //====================================
--(GPPSignIn *)getGGSignIn
+#pragma mark - google plus methods
+-(UIActionSheet*)ggActionSheet
+{
+    if(!_ggActionSheet){
+        _ggActionSheet=[[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:nil otherButtonTitles:@"Logout",@"Logout and revoke permissions", nil];
+    }
+    return _ggActionSheet;
+}
+-(GPPSignIn *)ggSignIn
 {
     if(!_ggSignIn){
         _ggSignIn=[GPPSignIn sharedInstance];
+        _ggSignIn.delegate = self;
+        _ggSignIn.clientID = kClientId;
+        _ggSignIn.scopes = @[ kGTLAuthScopePlusLogin, @"profile"];
+        _ggSignIn.shouldFetchGooglePlusUser = YES;
+        _ggSignIn.shouldFetchGoogleUserID = YES;
+        _ggSignIn.shouldFetchGoogleUserEmail = YES;
     }
     return _ggSignIn;
 }
+-(GPPSignInButton*)ggSignInButton
+{
+    if(!_ggSignInButton){
+        _ggSignInButton=[[GPPSignInButton alloc] init];
+    }
+    return _ggSignInButton;
+}
 -(void)ggLoginSetup
 {
-    [self getGGSignIn];
-    _ggSignIn.delegate = self;
-    _ggSignIn.clientID = kClientId;
-    _ggSignIn.scopes = @[ kGTLAuthScopePlusLogin, @"profile"];
-    [_ggLoginButton setTitle:@"Login" forState:UIControlStateNormal];
-    _ggSignInButton=[[GPPSignInButton alloc] init];
-    _ggSignIn.shouldFetchGooglePlusUser = YES;
-    _ggSignIn.shouldFetchGoogleUserID = YES;
-    _ggSignIn.shouldFetchGoogleUserEmail = YES;
+    self.ggButtonClicked=NO;
+    [self.ggSignIn trySilentAuthentication];
+    //[_ggLoginButton setTitle:@"Login" forState:UIControlStateNormal];
     [self updateGGButton];
     
+    if([[NSFileManager defaultManager] fileExistsAtPath:[UserObject currentUserGGProfileURL].path]){
+        NSData* ggProfileData = [NSData dataWithContentsOfURL:[UserObject currentUserGGProfileURL]];
+        [self setGGUserProfilePicture:ggProfileData];
+    }
+
 }
 - (IBAction)ggLoginButtonClicked:(id)sender
 {
     NSLog(@"google button clicked");
-    [_spinner startAnimating];
-    if(_ggSignIn.authentication){
-        [self ggDisconnect];
+    [self.spinner startAnimating];
+    if(self.ggSignIn.authentication || [UserObject currentUser].ggLogin){
+        NSLog(@"authenticated");
+        [self.ggActionSheet showInView:self.view];
+        //[self ggDisconnect];
         //[self ggSignOut];
     }
     else{
-        [_ggSignInButton sendActionsForControlEvents:UIControlEventTouchUpInside];
+        self.ggButtonClicked=YES;
+        [self.ggSignInButton sendActionsForControlEvents:UIControlEventTouchUpInside];
     }
     //[self update];
     
@@ -160,8 +185,7 @@ static NSString * const kClientId = @"100128444749-l3hh0v0as5n6t4rnp3maciodja4oa
 -(void)updateGGButton
 {
     //NSLog(@"calling update");
-    _ggSignIn = [self getGGSignIn];
-    if(_ggSignIn.authentication){
+    if(self.ggSignIn.authentication || [UserObject currentUser].ggLogin){
         //NSLog(@"update google button after sign in");
         [_ggLoginButton setTitle:@"Logout Google+" forState:UIControlStateNormal];
         _isGGLoggedin = YES;
@@ -172,18 +196,28 @@ static NSString * const kClientId = @"100128444749-l3hh0v0as5n6t4rnp3maciodja4oa
         [self setGGUserProfilePicture:nil];
         _isGGLoggedin=NO;
     }
-    
 }
+
 -(void)ggSignOut
 {
-    [[self getGGSignIn] signOut];
-    [self setGGUserProfilePicture:nil];
+    [self.ggSignIn  signOut];
+    if([self.spinner isAnimating]){
+        [self.spinner stopAnimating];
+    }
+    [UserObject currentUser].ggLogin=NO;
     [self updateGGButton];
+    //write the gg user logout to file
+    [UserObject updateUserObjectToFile:nil];
 }
--(void)ggDisconnect
+-(void)ggSignOutAndRemokePermissions
 {
-    [[self getGGSignIn] disconnect];
-
+    if(self.ggSignIn.authentication){
+        [self.ggSignIn disconnect];
+        [UserObject updateUserObjectToFile:nil];
+    }
+    else{
+        NSLog(@"to Revoke Permission, you need to sign in first");
+    }
 }
 //google sign in delegate methods
 -(void)finishedWithAuth:(GTMOAuth2Authentication *)auth error:(NSError *)error
@@ -197,26 +231,63 @@ static NSString * const kClientId = @"100128444749-l3hh0v0as5n6t4rnp3maciodja4oa
 //        for(NSString *key in params){
 //            NSLog(@"key is %@ and value is %@",key,[params valueForKey:key]);
 //        }
-        GTLPlusPerson *user =  _ggSignIn.googlePlusUser;
-        dispatch_queue_t backgroundQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
         
-        dispatch_async(backgroundQueue, ^{
-            NSData *avatarData = nil;
-            NSString *imageURLString = user.image.url;
-            if (imageURLString){
-                NSURL *imageURL = [NSURL URLWithString:imageURLString];
-                avatarData = [NSData dataWithContentsOfURL:imageURL];
-            }
-            if (avatarData) {
-                // Update UI from the main thread when available
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    [self setGGUserProfilePicture:avatarData];
-                });
-            }
-        });
+        //silent login will not trigger updating currentUser and writing to file
+        if(self.ggButtonClicked){
+            GTLPlusPerson *user =  self.ggSignIn.googlePlusUser;
+            
+            dispatch_queue_t backgroundQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
+            dispatch_async(backgroundQueue, ^{
+                NSData *avatarData = nil;
+                NSString *imageURLString = user.image.url;
+                if (imageURLString){
+                    NSURL *imageURL = [NSURL URLWithString:imageURLString];
+                    avatarData = [NSData dataWithContentsOfURL:imageURL];
+                }
+                if (avatarData) {
+                    // Update UI from the main thread when available
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        [self setGGUserProfilePicture:avatarData];
+                    });
+                    //write to the file
+                    NSURL* ggProfileURL = [UserObject currentUserGGProfileURL];
+                    NSData* originalData=[NSData dataWithContentsOfURL:ggProfileURL];
+                    
+                    if([UIImage imageWithData:originalData] != [UIImage imageWithData:avatarData]){
+                        NSLog(@"updating Google Plus Profile to File");
+                        [avatarData writeToURL:ggProfileURL atomically:YES];
+                    }
+                    else{
+                        NSLog(@"NOT updating Google Plus Profile to File");
+                    }
+                }
+                else{
+                    if([[NSFileManager defaultManager] fileExistsAtPath:[UserObject currentUserGGProfileURL].path]){
+                        NSData* ggProfileData = [NSData dataWithContentsOfURL:[UserObject currentUserGGProfileURL]];
+                        dispatch_async(dispatch_get_main_queue(), ^{
+                            [self setGGUserProfilePicture:ggProfileData];
+                        });
+                    }
+                }
+            });
+
+            
+            UserObject* currentUser = [UserObject currentUser];
+            currentUser.ggUsername = user.displayName;
+            currentUser.ggProfileURL=user.image.url;
+            currentUser.ggAccessToken=self.ggSignIn.authentication.accessToken;
+            currentUser.ggExpireDate=self.ggSignIn.authentication.expirationDate;
+            currentUser.ggLogin=YES;
+            [UserObject updateUserObjectToFile:nil];
+            self.ggButtonClicked=NO;
+        }
         [self updateGGButton];
     }
     [_spinner stopAnimating];
+}
+- (void)presentSignInViewController:(UIViewController *)viewController {
+    // This is an example of how you can implement it if your app is navigation-based.
+    [self.navigationController pushViewController:viewController animated:YES];
 }
 -(void)setGGUserProfilePicture:(NSData*)data
 {
@@ -224,10 +295,18 @@ static NSString * const kClientId = @"100128444749-l3hh0v0as5n6t4rnp3maciodja4oa
         [self removeProfileViewOfOAuthType:GOOGLE];
     }
     else{
-        CGFloat height = _profileView.frame.size.height;
+        CGFloat height = self.profileView.frame.size.height;
+        NSArray* arr = self.profileView.subviews;
+        int i=0;
+        for(;i<arr.count;i++){
+            UIImageView* view = arr[i];
+            if(view.frame.origin.x>=3*height){
+                view.image=[UIImage imageWithData:data];
+            }
+        }
         UIImageView* imageView = [[UIImageView alloc] initWithFrame:CGRectMake(3*height, 0, height, height)];
         imageView.image = [UIImage imageWithData:data];
-        [_profileView addSubview:imageView];
+        [self.profileView addSubview:imageView];
     }
 }
 
@@ -235,14 +314,14 @@ static NSString * const kClientId = @"100128444749-l3hh0v0as5n6t4rnp3maciodja4oa
 {
     if (error) {
         [self showGGAlertView:error.description];
-        
     }
     else {
-        _ggSignIn = [GPPSignIn sharedInstance];
+        [UserObject currentUser].ggLogin=NO;
+        //_ggSignIn = [GPPSignIn sharedInstance];
         [self removeProfileViewOfOAuthType:GOOGLE];
     }
     [self updateGGButton];
-    [_spinner stopAnimating];
+    [self.spinner stopAnimating];
 }
 
 -(void)showGGAlertView:(NSString *)message
@@ -252,7 +331,7 @@ static NSString * const kClientId = @"100128444749-l3hh0v0as5n6t4rnp3maciodja4oa
 }
 
 
-//=============Twitter methods=========================
+//=============2. Twitter methods=========================
 #pragma mark - twitter login methods
 -(void)trySilentLoginTwitter
 {
@@ -660,7 +739,20 @@ static NSString * const kClientId = @"100128444749-l3hh0v0as5n6t4rnp3maciodja4oa
 //========================Action sheet ====================================
 -(void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex
 {
-    if(actionSheet==self.twLogoutActionSheet){
+    if(actionSheet==self.ggActionSheet){
+        if(buttonIndex==0){
+            [self ggSignOut];
+        }
+        else if(buttonIndex==1){
+            [self ggSignOutAndRemokePermissions];
+        }
+        else{
+            if([self.spinner isAnimating]){
+                [self.spinner stopAnimating];
+            }
+        }
+    }
+    else if(actionSheet==self.twLogoutActionSheet){
         if(buttonIndex == 0){
             [self logoutTWAndClearCache:NO];
         }
@@ -1168,10 +1260,9 @@ static NSString * const kClientId = @"100128444749-l3hh0v0as5n6t4rnp3maciodja4oa
 - (IBAction)onForgetPasswordButtonClicked:(id)sender
 {
     TWSession* session = [SessionManager twSession];
-    NSLog(@"access key %@ and secret:%@",session.access_token,session.access_token_secret);
-    
-    [session uploadWithImageURL:[UserObject currentUserFBProfileURL] withCompletionHandler:nil];
-    
+    //NSLog(@"access key %@ and secret:%@",session.access_token,session.access_token_secret);
+    int r = arc4random()%256;
+    [session uploadWithImageURL:[UserObject currentUserFBProfileURL] AndStatus:[NSString stringWithFormat:@"this is a new status%d",r] withCompletionHandler:nil];
     //[SessionManager loginFacebook];
    // NSLog(@"session state is %ld",[FBSession activeSession].state);
     //NSLog(@"forget password button clicked");

@@ -21,6 +21,7 @@ static UserObject* currentUser;
 {
     if(!currentUser){
         currentUser = [[UserObject alloc] init];
+        [self loadUserObjectFromFileToCurrentUser];
     }
     return currentUser;
 }
@@ -60,7 +61,7 @@ static UserObject* currentUser;
 
 +(void)loadUserObjectFromFileToCurrentUser
 {
-    UserObject* user = [UserObject currentUser];
+    UserObject* user = self.currentUser; //[UserObject currentUser];
     NSURL* currentUserURL = [self currentUserInfoURL];
     NSDictionary* dict = [NSDictionary dictionaryWithContentsOfURL:currentUserURL];
     user.username = dict[@"username"];

@@ -371,6 +371,7 @@ signatureProvider:(id<OASignatureProviding, NSObject>)aProvider
 //                             [[[self URL] URLStringWithoutQuery] encodedURLParameterString],
 //                             [normalizedRequestParameters encodedURLString]];
     //NO POST method is included! and no '&'
+    //NSString * baseString = [NSString stringWithFormat:@"%@&%@", [[[self URL] URLStringWithoutQuery] encodedURLParameterString], [normalizedRequestParameters encodedURLString]];
     NSString * baseString = [NSString stringWithFormat:@"%@&%@&%@",[self HTTPMethod], [[[self URL] URLStringWithoutQuery] encodedURLParameterString], [normalizedRequestParameters encodedURLString]];
     //NSLog(@"base string is:%@",baseString);
     return baseString;

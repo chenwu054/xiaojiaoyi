@@ -11,7 +11,8 @@
 #import "LoginViewController.h"
 #import "SessionManager.h"
 #import "MyFBSessionTokenCachingStrategy.h"
-
+#import <GoogleOpenSource/GoogleOpenSource.h>
+#import <GooglePlus/GooglePlus.h>
 
 @interface DealSummaryEditViewController : UIViewController <UIPageViewControllerDataSource,UIPageViewControllerDelegate>
 

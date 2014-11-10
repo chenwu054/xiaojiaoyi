@@ -852,7 +852,49 @@
 }
 -(void)ggButtonClicked:(UIButton*)sender
 {
-    NSLog(@"gg button clicked");
+    GPPSignIn* signIn = [GPPSignIn sharedInstance];
+    if(signIn.authentication){
+        id<GPPNativeShareBuilder> shareBuilder = [[GPPShare sharedInstance] nativeShareDialog];
+        
+        // The share preview, which includes the title, description, and a thumbnail,
+        // is generated from the page at the specified URL location.
+        //[shareBuilder setURLToShare:[NSURL URLWithString:@"https://www.example.com/restaurant/sf/1234567/"]];
+        
+        
+        NSString* shipping = self.myNewDeal.shipping?@"provide shipping":@"exclude shipping";
+        NSString* exchange = self.myNewDeal.exchange?@"willing to exchange":@"no exchange";
+        NSString* dealDescription=[NSString stringWithFormat:@"new deal: %@\r\ndescription: %@\r\nprice: %@\r\ncondition: %@\r\nexpire on: %@\r\n%@\r\n%@\r\n",self.myNewDeal.title,self.myNewDeal.describe,self.myNewDeal.price,self.myNewDeal.condition,self.myNewDeal.expire_date,shipping,exchange];
+        [shareBuilder setPrefillText:dealDescription];
+        
+        // This line passes the string "rest=1234567" to your native application
+        // if somebody opens the link on a supported mobile device
+        //[shareBuilder setContentDeepLinkID:@"rest=1234567"];
+        
+        // This method creates a call-to-action button with the label "RSVP".
+        // - URL specifies where people will go if they click the button on a platform
+        // that doesn't support deep linking.
+        // - deepLinkID specifies the deep-link identifier that is passed to your native
+        // application on platforms that do support deep linking
+//        [shareBuilder setCallToActionButtonWithLabel:@"RSVP"
+//                                                 URL:[NSURL URLWithString:@"https://www.example.com/reservation/4815162342/"]
+//                                          deepLinkID:@"rsvp=4815162342"];
+ 
+        NSString* filename = self.myNewDeal.photoURL[0];
+        if([[NSFileManager defaultManager] fileExistsAtPath:filename]){
+            [shareBuilder attachImage:[UIImage imageWithContentsOfFile:filename]];
+            [shareBuilder open];
+        }
+        else{
+            [[[UIAlertView alloc] initWithTitle:nil message:@"there is no photo of the deal!" delegate:self cancelButtonTitle:@"OK" otherButtonTitles: nil] show];
+        }
+        
+        //this setTitle:description:thumbnailURL requires a content deep-link ID
+        //[shareBuilder setTitle:self.myNewDeal.title description:self.myNewDeal.describe thumbnailURL:[NSURL URLWithString:filename]];
+    }
+    else{
+        [[[UIAlertView alloc] initWithTitle:nil message:@"You are not signed in with Google+" delegate:self cancelButtonTitle:@"OK" otherButtonTitles: nil] show];
+    }
+    //NSLog(@"gg button clicked");
 }
 -(void)lkButtonClicked:(UIButton*)sender
 {
