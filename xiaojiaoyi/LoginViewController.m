@@ -32,6 +32,7 @@
 #define LK_EXPIRES_IN @"expires_in"
 #define LK_REQUEST_TOKEN @"request_token"
 #define LK_CALLBACK_CODE @"callback_code"
+#define LK_PROFILE_URL @"pictureUrl"
 
 #define PROFILE_VIEW_HEIGHT 30
 #define PROFILE_VIEW_WIDTH 130
@@ -73,6 +74,7 @@
 @property (nonatomic) NSString *lkAccessToken;
 @property (nonatomic) NSString *lkExpiresIn;
 @property (nonatomic) NSMutableDictionary* lkParams;
+@property (nonatomic) UIActionSheet* lkLogoutActionSheet;
 
 //facebook properties
 @property (nonatomic) BOOL isFBLoggedin;
@@ -113,11 +115,11 @@ static NSString * const kClientId = @"100128444749-l3hh0v0as5n6t4rnp3maciodja4oa
         default:
             return;
     }
-    NSArray *subviews = [_profileView subviews];
+    NSArray *subviews = [self.profileView subviews];
     for(int i=0;i<subviews.count;i++){
         UIView *view = subviews[i];
         CGFloat originX = view.frame.origin.x;
-        if(originX >= lowerBound && originX - lowerBound <= width){
+        if(originX >= lowerBound && originX - lowerBound < width){
             [view removeFromSuperview];
             //return;
         }
@@ -251,15 +253,15 @@ static NSString * const kClientId = @"100128444749-l3hh0v0as5n6t4rnp3maciodja4oa
                     });
                     //write to the file
                     NSURL* ggProfileURL = [UserObject currentUserGGProfileURL];
-                    NSData* originalData=[NSData dataWithContentsOfURL:ggProfileURL];
+//                    NSData* originalData=[NSData dataWithContentsOfURL:ggProfileURL];
                     
-                    if([UIImage imageWithData:originalData] != [UIImage imageWithData:avatarData]){
-                        NSLog(@"updating Google Plus Profile to File");
+//                    if([UIImage imageWithData:originalData] != [UIImage imageWithData:avatarData]){
+//                        NSLog(@"updating Google Plus Profile to File");
                         [avatarData writeToURL:ggProfileURL atomically:YES];
-                    }
-                    else{
-                        NSLog(@"NOT updating Google Plus Profile to File");
-                    }
+//                    }
+//                    else{
+//                        NSLog(@"NOT updating Google Plus Profile to File");
+//                    }
                 }
                 else{
                     if([[NSFileManager defaultManager] fileExistsAtPath:[UserObject currentUserGGProfileURL].path]){
@@ -271,7 +273,6 @@ static NSString * const kClientId = @"100128444749-l3hh0v0as5n6t4rnp3maciodja4oa
                 }
             });
 
-            
             UserObject* currentUser = [UserObject currentUser];
             currentUser.ggUsername = user.displayName;
             currentUser.ggProfileURL=user.image.url;
@@ -302,9 +303,10 @@ static NSString * const kClientId = @"100128444749-l3hh0v0as5n6t4rnp3maciodja4oa
             UIImageView* view = arr[i];
             if(view.frame.origin.x>=3*height){
                 view.image=[UIImage imageWithData:data];
+                return;
             }
         }
-        UIImageView* imageView = [[UIImageView alloc] initWithFrame:CGRectMake(3*height, 0, height, height)];
+        UIImageView* imageView = [[UIImageView alloc] initWithFrame:CGRectMake(3*height+2*PROFILE_SEPARATION, 0, height, height)];
         imageView.image = [UIImage imageWithData:data];
         [self.profileView addSubview:imageView];
     }
@@ -407,22 +409,7 @@ static NSString * const kClientId = @"100128444749-l3hh0v0as5n6t4rnp3maciodja4oa
     }];
 }
 
-//twitter unwind method
--(IBAction)done:(UIStoryboardSegue *)segue
-{
-    //user cancelled
-    if(_isTwitter && self.twSession.oauth_verifier){
-        [self.spinner startAnimating];
-        [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
-        [self getTWAccessTokenAtTrial:0];
-    }
-    else if(_isLinkedin && _lkCallbackCode){
-        //
-        //NSLog(@"going to call request access_token");
-        [self getLKAccessTokenWithCode];
-        
-    }
-}
+
 
 //fetch the Access Token after User successfully logged in and call fetch image once get the access token
 -(void) getTWAccessTokenAtTrial:(NSInteger)numberOfTrial{
@@ -585,6 +572,24 @@ static NSString * const kClientId = @"100128444749-l3hh0v0as5n6t4rnp3maciodja4oa
 }
 
 #pragma mark - LinkedIn & Twitter
+//twitter unwind method
+-(IBAction)done:(UIStoryboardSegue *)segue
+{
+    //user cancelled
+    if(_isTwitter && self.twSession.oauth_verifier){
+        [self.spinner startAnimating];
+        [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
+        [self getTWAccessTokenAtTrial:0];
+    }
+    else if(self.isLinkedin && self.lkCallbackCode){
+        //
+        //NSLog(@"going to call request access_token");
+        [self.lkParams setObject:self.lkCallbackCode forKey:LK_CALLBACK_CODE];
+        
+        [self getLKAccessTokenWithCode];
+        
+    }
+}
 
 -(void) prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
 {
@@ -593,21 +598,23 @@ static NSString * const kClientId = @"100128444749-l3hh0v0as5n6t4rnp3maciodja4oa
         if([segue.destinationViewController isKindOfClass:[OAuthViewController class]]){
             OAuthViewController *webViewController = (OAuthViewController*)segue.destinationViewController;
             webViewController.superVC=self;
-            if(_isTwitter){
+            if(self.isTwitter){
                 webViewController.isLinkedin=NO;
                 webViewController.isTwitter=YES;
                 NSLog(@"the redirect URL is %@",_redirectURL);
                 webViewController.requestURL=self.twRedirectURL;
                 
             }
-            else{
-                if(!_isLKLogggedin){
-                    _isLinkedin=YES;
-                    _isTwitter = NO;
+            else if(self.isLinkedin){
+                NSLog(@"linkedin login prepare for segue");
+                
+//                if(!_isLKLogggedin){
+                    self.isLinkedin=YES;
+                    self.isTwitter = NO;
                     webViewController.isTwitter=NO;
                     webViewController.isLinkedin=YES;
                     webViewController.requestURL = [NSString stringWithFormat:@"https://www.linkedin.com/uas/oauth2/authorization?response_type=code&client_id=%@&scope=%@&state=%@&redirect_uri=%@",LINKEDIN_API_KEY,LINKEDIN_DEFAULT_SCOPE,LINKEDIN_DEFAULT_STATE,LINKEDIN_REDIRECT_URL];
-                }
+//                }
             }
 
         }
@@ -617,30 +624,49 @@ static NSString * const kClientId = @"100128444749-l3hh0v0as5n6t4rnp3maciodja4oa
 
 //==============================================================
 #pragma mark - linkedin methods
+-(UIActionSheet*)lkLogoutActionSheet
+{
+    if(!_lkLogoutActionSheet){
+        _lkLogoutActionSheet=[[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:nil otherButtonTitles:@"Logout",@"Logout and clear cache", nil];
+    }
+    return _lkLogoutActionSheet;
+}
+-(NSMutableDictionary*)lkParams
+{
+    if(!_lkParams){
+        _lkParams = [[NSMutableDictionary alloc] init];
+    }
+    return _lkParams;
+}
 -(void)getLKAccessTokenWithCode
 {
     //NSLog(@"calling the lk request access token");
-    NSString *accessTokenRequest = [NSString stringWithFormat:@"https://www.linkedin.com/uas/oauth2/accessToken?grant_type=authorization_code&code=%@&redirect_uri=%@&client_id=%@&client_secret=%@",_lkCallbackCode,LINKEDIN_REDIRECT_URL,LINKEDIN_API_KEY,LINKEDIN_SECRET];
+    NSString *accessTokenRequest = [NSString stringWithFormat:@"https://www.linkedin.com/uas/oauth2/accessToken?grant_type=authorization_code&code=%@&redirect_uri=%@&client_id=%@&client_secret=%@",self.lkCallbackCode,LINKEDIN_REDIRECT_URL,LINKEDIN_API_KEY,LINKEDIN_SECRET];
     NSURLSession * session = [NSURLSession sharedSession];
     NSURLSessionDataTask * task = [session dataTaskWithURL:[NSURL URLWithString:accessTokenRequest] completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
         //put UI code on main thread
-        NSDictionary * result = [NSJSONSerialization JSONObjectWithData:data options:0 error:NULL];
-        _lkExpiresIn =[result valueForKeyPath:@"expires_in"];
-        _lkAccessToken =[result valueForKeyPath:@"access_token"];
-        //NSLog(@"expires_in is %@, access_token is %@",_lkExpiresIn,_lkAccessToken);
-        _lkParams = [[NSMutableDictionary alloc] initWithObjectsAndKeys:_lkExpiresIn,LK_EXPIRES_IN,
-                                _lkAccessToken,LK_ACCESS_TOKEN,
-                                _lkCallbackCode,LK_CALLBACK_CODE,
-                                nil];
-        [self getLKUserProfile];
-        [self getLKUserProfilePicture];
-        
+        if(error){
+            NSLog(@"ERROR: fetching Linkedin access token");
+        }
+        else{
+            NSDictionary * result = [NSJSONSerialization JSONObjectWithData:data options:0 error:NULL];
+            self.lkExpiresIn =[result valueForKeyPath:@"expires_in"];
+            self.lkAccessToken =[result valueForKeyPath:@"access_token"];
+            //NSLog(@"expires_in is %@, access_token is %@",_lkExpiresIn,_lkAccessToken);
+            [self.lkParams setObject:self.lkAccessToken forKey:LK_ACCESS_TOKEN];
+            NSDate* today = [NSDate date];
+            NSDate* expireDate = [today dateByAddingTimeInterval:[self.lkExpiresIn doubleValue]];
+            [self.lkParams setObject:expireDate forKey:LK_EXPIRES_IN];
+            
+            [self getLKUserProfile];
+            [self getLKUserProfilePicture];
+        }
     }];
     [task resume];
 }
 -(void)getLKUserProfile
 {
-    NSString *urlStr =[NSString stringWithFormat:@"https://api.linkedin.com/v1/people/~?format=json&oauth2_access_token=%@",_lkAccessToken];
+    NSString *urlStr =[NSString stringWithFormat:@"https://api.linkedin.com/v1/people/~?format=json&oauth2_access_token=%@",self.lkAccessToken];
     //NSLog(@"the url is %@",urlStr);
     NSURLSession * session = [NSURLSession sharedSession];
     NSURLSessionDataTask * task = [session dataTaskWithURL:[NSURL URLWithString:urlStr] completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
@@ -648,9 +674,13 @@ static NSString * const kClientId = @"100128444749-l3hh0v0as5n6t4rnp3maciodja4oa
             //NSString * result = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
             //NSLog(@"the result is %@",result);
             NSDictionary *userData = [NSJSONSerialization JSONObjectWithData:data options:0 error:NULL];
-            NSLog(@"user data is %@",userData);
-            [_lkParams addEntriesFromDictionary:userData];
+            //NSLog(@"user data is %@",userData);
+            [self.lkParams addEntriesFromDictionary:userData];
             
+            if([self.lkParams valueForKey:LK_PROFILE_URL]){
+                //NSLog(@"calling update UserObject linkedin from profile");
+                [self updateCurrentUserLKInfo];
+            }
         }
         
     }];
@@ -663,19 +693,20 @@ static NSString * const kClientId = @"100128444749-l3hh0v0as5n6t4rnp3maciodja4oa
         [_spinner startAnimating];
     });
     //NSString *userURL = [userData valueForKey:@"siteStandardProfileRequest"];
-    NSString *urlStr=[NSString stringWithFormat:@"https://api.linkedin.com/v1/people/~:(%@)?format=json&oauth2_access_token=%@",@"picture-url",_lkAccessToken];
+    NSString *urlStr=[NSString stringWithFormat:@"https://api.linkedin.com/v1/people/~:(%@)?format=json&oauth2_access_token=%@",@"picture-url",self.lkAccessToken];
     //NSLog(@"the url string for profile picture is %@",urlStr);
     NSURLSession * session = [NSURLSession sharedSession];
     NSURLSessionDataTask *task = [session dataTaskWithURL:[NSURL URLWithString:urlStr] completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
         if(!error){
             NSDictionary * result = [NSJSONSerialization JSONObjectWithData:data options:0 error:NULL];
-            [_lkParams addEntriesFromDictionary:result];
+            [self.lkParams addEntriesFromDictionary:result];
+            
             NSString *userPicURL = [result valueForKey:@"pictureUrl"];
             [self downloadUserProfilePicture:userPicURL];
             //NSLog(@"result is %@",result);
         }
         else{
-            NSLog(@"error is %@",error);
+            NSLog(@"!!!error is %@",error);
         }
         
     }];
@@ -683,22 +714,28 @@ static NSString * const kClientId = @"100128444749-l3hh0v0as5n6t4rnp3maciodja4oa
 }
 -(void)downloadUserProfilePicture:(NSString *)userPicURL
 {
-    NSString *urlStr=userPicURL;
     //NSLog(@"the url string for profile picture is %@",urlStr);
     //[_spinner startAnimating];
     NSURLSession * session = [NSURLSession sharedSession];
-    NSURLSessionDataTask *task = [session dataTaskWithURL:[NSURL URLWithString:urlStr] completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
+    NSURLSessionDataTask *task = [session dataTaskWithURL:[NSURL URLWithString:userPicURL] completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
         
         if(!error){
-            CGFloat height = _profileView.frame.size.height;
             dispatch_async(dispatch_get_main_queue(), ^{
                 UIImage *image = [UIImage imageWithData:data];
+                [self addLinkedinProfileWithImage:image];
                 
-                UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(2*2.0 + 2*height, 0, height, height)];
-                imageView.image = image;
-                [_profileView addSubview:imageView];
                 [_spinner stopAnimating];
             });
+            //write to local lkProfile file
+            NSURL* lkProfileURL= [UserObject currentUserLKProfileURL];
+            [data writeToURL:lkProfileURL atomically:YES];
+            if([self.lkParams objectForKey:@"firstname"]){
+               // NSLog(@"calling update UserObject linkedin from profile picture");
+                [self updateCurrentUserLKInfo];
+            }
+//            for(NSString* k in self.lkParams){
+//                NSLog(@"k:%@ and v:%@",k,_lkParams[k]);
+//            }
         }
         else{
             NSLog(@"error is %@",error);
@@ -710,36 +747,133 @@ static NSString * const kClientId = @"100128444749-l3hh0v0as5n6t4rnp3maciodja4oa
     }];
     [task resume];
 }
-
+-(void)addLinkedinProfileWithImage:(UIImage*)image
+{
+    NSArray* views = self.profileView.subviews;
+    CGFloat height = self.profileView.frame.size.height;
+    int i=0;
+    for(;i<views.count;i++){
+        UIImageView* view = views[i];
+        if(view.frame.origin.x>=height*2 && view.frame.origin.x<height*3){
+            view.image=image;
+        }
+    }
+    if(i == views.count){
+        UIImageView* lkView = [[UIImageView alloc] initWithFrame:CGRectMake(height*2+2, 0, height, height)];
+        lkView.image=image;
+        [self.profileView addSubview:lkView];
+    }
+    if([self.spinner isAnimating]){
+       [self.spinner stopAnimating];
+    }
+}
+-(void)updateCurrentUserLKInfo
+{
+    UserObject* user = [UserObject currentUser];
+    user.lkLogin=YES;
+    user.lkAccessToken=self.lkParams[LK_ACCESS_TOKEN];
+    user.lkExpireDate=self.lkParams[LK_EXPIRES_IN];
+    user.lkProfileURL=self.lkParams[LK_PROFILE_URL];
+    user.lkUsername=[NSString stringWithFormat:@"%@ %@",self.lkParams[@"firstName"],self.lkParams[@"lastName"]];
+    [UserObject updateUserObjectToFile:nil];
+    
+}
+-(void)trySilentLoginLinkedin
+{
+    UserObject*user=  [UserObject currentUser];
+    if(user.lkLogin){
+        UIImage* image = [UIImage imageWithContentsOfFile:[UserObject currentUserLKProfileURL].path];
+        [self addLinkedinProfileWithImage:image];
+    }
+    [self updateLKButton];
+    
+}
 -(void)linkedinLoginTask
 {
     [_loginLinkedinButton setTitle:@"logout" forState:UIControlStateNormal];
     _isLKLogggedin = YES;
     
 }
--(void)refreshLKAccessToken
+-(void)updateLKButton
 {
-    
+    UserObject* user = [UserObject currentUser];
+    if(user.lkLogin){
+        [self.loginLinkedinButton setTitle:@"Logout Linkedin" forState:UIControlStateNormal];
+        
+    }
+    else{
+        [self.loginLinkedinButton setTitle:@"Login Linkedin" forState:UIControlStateNormal];
+    }
 }
 - (IBAction)linkedinButtonClicked:(id)sender
 {
-    if(_isLKLogggedin){
-        [_loginLinkedinButton setTitle:@"login Linkedin" forState:UIControlStateNormal];
-        _isLKLogggedin = NO;
+    UserObject* user = [UserObject currentUser];
+    if(user.lkLogin){
+        [self.lkLogoutActionSheet showInView:self.view];
+//        [self.loginLinkedinButton setTitle:@"login Linkedin" forState:UIControlStateNormal];
+        
     }
     else{
-        _isLinkedin=YES;
-        _isTwitter = NO;
+        //segue is set by storyboard
+        //[self performSegueWithIdentifier:@"LoginModalSegue" sender:self];
+        self.isLinkedin=YES;
+        self.isTwitter = NO;
+        [self performSegueWithIdentifier:@"LoginModalSegue" sender:self];
+        
     }
     
+//    if(_isLKLogggedin){
+//        
+//    }
+//    else{
+//        
+//    }
+    
 }
-
+-(void)linkedinLogout
+{
+    if([UserObject currentUser].lkLogin){
+        [UserObject currentUser].lkLogin=NO;
+        [self removeProfileViewOfOAuthType:LINKEDIN];
+        if([self.spinner isAnimating]){
+            [self.spinner stopAnimating];
+        }
+        [UserObject updateUserObjectToFile:nil];
+        [self updateLKButton];
+    }
+    else{
+        NSLog(@"warning: linkedin user is NOT logged in before logging out ");
+    }
+}
+-(void)linkedinLogoutAndClearCache
+{
+    if([UserObject currentUser].lkLogin){
+        [UserObject currentUser].lkLogin=NO;
+        [UserObject updateUserObjectToFile:nil];
+        [self removeProfileViewOfOAuthType:LINKEDIN];
+        [self updateLKButton];
+    }
+    else{
+        NSLog(@"warning: linkedin user is NOT logged in before logging out ");
+    }
+}
 
 
 //========================Action sheet ====================================
 -(void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex
 {
-    if(actionSheet==self.ggActionSheet){
+    if(actionSheet==self.lkLogoutActionSheet){
+        if(buttonIndex==0){
+            [self linkedinLogout];
+        }
+        else if(buttonIndex==1){
+            [self linkedinLogoutAndClearCache];
+        }
+        else{
+            [self.spinner stopAnimating];
+        }
+    }
+    else if(actionSheet==self.ggActionSheet){
         if(buttonIndex==0){
             [self ggSignOut];
         }
@@ -1377,19 +1511,18 @@ static NSString * const kClientId = @"100128444749-l3hh0v0as5n6t4rnp3maciodja4oa
 }
 -(void)setup
 {
-    self.twSession = [SessionManager twSession];
-    
     [self spinner];
-    
+    self.twSession = [SessionManager twSession];
+    [self fbSetup];
+
     [self trySilentLoginTwitter];
+    [self trySilentLoginLinkedin];
 }
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    //load user profile from user default or disk
-
-    //UI components
     
+    //UI components
     /*
      login button setup
      */
@@ -1422,7 +1555,6 @@ static NSString * const kClientId = @"100128444749-l3hh0v0as5n6t4rnp3maciodja4oa
      */
     [self ggLoginSetup];
     
-    
     /*
      Twitter login
      */
@@ -1431,22 +1563,6 @@ static NSString * const kClientId = @"100128444749-l3hh0v0as5n6t4rnp3maciodja4oa
     [_twitterLoginButton addTarget:self action:@selector(twitterLoginButtonClicked:) forControlEvents:UIControlEventTouchUpInside];
     _twLoginRetryLimit = 5;
     _isTWLoggedin = NO;
-    /*
-     fb login view
-     */
-
-    //xjyAppDelegate * app = [UIApplication sharedApplication].delegate;
-    //app.sessionManager=_sessionManager;
-    _isFBLoggedin =NO;
-    _fbButton.titleLabel.text = @"login";
-    
-    [self fbSetup];
-    //[self openSessionWithAllowLoginUI:NO];
-    
-    /*
-     Linkedin login
-     */
-    _isLKLogggedin = NO;
     
     [self setup];
 }

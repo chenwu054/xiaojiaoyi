@@ -341,7 +341,6 @@
                                 </state>
                                 <connections>
                                     <action selector="linkedinButtonClicked:" destination="txc-aV-psd" eventType="touchUpInside" id="L9v-Zz-dTj"/>
-                                    <segue destination="RFV-O6-0x5" kind="modal" identifier="LoginModalSegue" id="Yzy-zB-qqw"/>
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ETE-3K-lMJ">
@@ -400,6 +399,7 @@
                         <outlet property="profileView" destination="M8k-4N-4dD" id="BXD-ht-HMF"/>
                         <outlet property="twitterLoginButton" destination="ETE-3K-lMJ" id="MbJ-iY-czr"/>
                         <segue destination="RFV-O6-0x5" kind="push" identifier="LoginWebViewPushSegue" id="khJ-NP-QXu"/>
+                        <segue destination="RFV-O6-0x5" kind="modal" identifier="LoginModalSegue" id="NR2-6Y-CKQ"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Zmh-fH-8nA" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -984,6 +984,6 @@
         <simulatedScreenMetrics key="destination" type="retina4"/>
     </simulatedMetricsContainer>
     <inferredMetricsTieBreakers>
-        <segue reference="khJ-NP-QXu"/>
+        <segue reference="NR2-6Y-CKQ"/>
     </inferredMetricsTieBreakers>
 </document>

@@ -79,7 +79,7 @@
      Upon successful authorization by the user, the url will be redirected by Twitter to the callback URL with oauth_token and oauth_verifier included in the request.
      This url is intercepted and segue back to LoginViewController for further steps with oauth_token and verifer passed
      */
-    if(_isTwitter){
+    if(self.isTwitter){
         NSArray *arr = [url componentsSeparatedByString:@"?"];
         NSMutableDictionary *dict = nil;
         if([requestStr rangeOfString:@"logout"].location!=NSNotFound){
@@ -128,28 +128,33 @@
      upon successful authorization by the user, the url will be redirected by Linkedin to a new URL indicating auth code and state.
      This url is intercepted and replaced by a new url requesting for access token.
      */
-    else if(_isLinkedin){
-        //NSLog(@"the request str is %@",requestStr);
+    else if(self.isLinkedin){
+        NSLog(@"the request str is %@",requestStr);
+        
         NSRange xjyRange = [requestStr rangeOfString:@"https://www.linkedin.com"];
+        //NSRange xjyRange = [requestStr rangeOfString:@"http://xiaojiaoyi_linkedin_redirecturl"];
+        
+        //TODO: take care of cancel and error senarios
         if(xjyRange.location == NSNotFound){
             NSArray *info = [requestStr componentsSeparatedByString:@"?"];
             
             if(info.count>1){
                 NSMutableDictionary * data = [self parseResponseData:info[1]];
                 if([data valueForKey:@"error"]){
-                    [self performSegueWithIdentifier:@"unwind Linkedin segue" sender:self];
+                    [self performSegueWithIdentifier:@"LoginUnwindSegue" sender:self];
+                    [[[UIAlertView alloc] initWithTitle:nil message:@"Linkedin login failed" delegate:self cancelButtonTitle:@"OK" otherButtonTitles: nil] show];
+                    
                     return NO;
                 }
                 else{
                     NSString *code= [data valueForKeyPath:@"code"];
                     NSString *state = [data valueForKeyPath:@"state"];
-                    LoginViewController *loginVC= (LoginViewController*)[self presentingViewController];
-                    loginVC.lkCallbackCode = code;
-                    loginVC.lkCallbackState = state;
-                    [self performSegueWithIdentifier:@"unwind Linkedin segue" sender:self];
+                    //LoginViewController *loginVC= (LoginViewController*)[self presentingViewController];
+                    self.superVC.lkCallbackCode = code;
+                    self.superVC.lkCallbackState = state;
+                    [self performSegueWithIdentifier:@"LoginUnwindSegue" sender:self];
                     return NO;
                 }
-                
             }
         }
     }
@@ -157,6 +162,7 @@
 }
 -(void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
 {
+    
     [self performSegueWithIdentifier:@"LoginUnwindSegue" sender:self];
 }
 
