@@ -44,9 +44,10 @@ signatureProvider:(id<OASignatureProviding, NSObject>)aProvider
         timestamp:(NSString *)aTimestamp;
 
 - (void)prepare;
-- (void)prepareForUpload;
+- (void)prepareForUploadWithStatus:(NSString*)status;
 -(void)prepareForStatusUpdate:(NSString*)status;
 -(void)prepareForTimelineWithUserId:(NSString*)userId andScreenName:(NSString*)screenName;
+- (void)prepareForUploadWithStatus:(NSString*)status AndMediaIds:(NSString*)ids;
 
 - (void)prepareForAccessTokenWithTokenParams:(NSMutableDictionary*)tokenParams andBodyParams:(NSMutableDictionary*)bodyParams;
 - (void)prepareForAccessTokenWithTokenParams:(NSMutableDictionary*)tokenParams andQueryParams:(NSMutableDictionary*)queryParams;

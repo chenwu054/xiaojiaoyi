@@ -32,7 +32,9 @@
 -(void) getAccessTokenWithOAuthToken:(NSString*) oauth_token andOAuthVerifier:(NSString*)oauth_verifier withCompletionTask:(void (^)(NSURLResponse *response, NSError *error,NSString* accessToken, NSString * accessTokenSecret,NSString* screen_name, NSString* user_id))completionTask;
 -(void)getUserProfileByScreenName:(NSString *)screen_name andUserId:(NSString*) user_id withCompletionTask:(void(^)(NSURLResponse *response, NSError *error,NSString *name,NSString* URLString))completionTask;
 
--(void)uploadWithImageURL:(NSURL*)imageURL AndStatus:(NSString*)status withCompletionHandler:(void(^)())handler;
+-(void)uploadWithImageURL:(NSURL*)imageURL AndStatus:(NSString*)status withCompletionHandler:(void(^)(NSString* idString, NSError* error))handler;
 -(void)updateStatus:(NSString*)status withCompletionHandler:(void(^)())handler;
+-(void)updateStatus:(NSString*)status withMediaIds:(NSArray*)ids andCompletionHandler:(void(^)())handler;
+
 -(void)requestUserTimeline;
 @end

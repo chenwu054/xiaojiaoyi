@@ -8,8 +8,8 @@
 
 #import "TWSession.h"
 
-static NSString* consumer_key = @"ho97OlaynFXBYuN4mYIdVBZUb";
-static NSString* consumer_secret=@"VCkBTcmJjSw4ACRWWfgNM4pWEXwwwpJskoCavy3kqx1LYf64Zl";
+static NSString* consumer_key = @"eO2RHCHsWxGMlPxUF7T9lTUyF";
+static NSString* consumer_secret=@"ffPXZC6JhhLYL52M4TU4DOSqABHSz9pQtvZnaQvPXThEiqimZW";
 static NSString* callbackURL=@"http://localhost.xiaojiaoyi.com";
 static NSString* twHost = @"api.twitter.com";
 static NSString* twUploadHost=@"upload.twitter.com";
@@ -33,6 +33,17 @@ static NSString* twUploadMediaPath=@"/1.1/statuses/update_with_media.json";
     return url;
 
 }
+-(NSURL*)updateStatusURLWithStatus:(NSString*)status andMediaIds:(NSString*)ids
+{
+    NSURLComponents *components=[[NSURLComponents alloc] init];
+    components.scheme=@"https";
+    components.host = twHost;
+    components.path = twUpdateStatusPath;
+    components.query=[NSString stringWithFormat:@"status=%@&media_ids=%@",status,ids];
+    NSURL *url = [components URL];
+    return url;
+}
+
 -(NSURL*)updateStatusURLWithStatus:(NSString*)status
 {
     NSURLComponents *components=[[NSURLComponents alloc] init];
@@ -235,7 +246,7 @@ static NSString* twUploadMediaPath=@"/1.1/statuses/update_with_media.json";
     }];
     [task resume];
 }
--(void)uploadWithImageURL:(NSURL*)imageURL AndStatus:(NSString*)status withCompletionHandler:(void(^)())handler
+-(void)uploadWithImageURL:(NSURL*)imageURL AndStatus:(NSString*)status withCompletionHandler:(void(^)(NSString* idString, NSError* error))handler
 {
     OAConsumer *consumer = [[OAConsumer alloc] initWithKey:consumer_key secret:consumer_secret];
     OAToken *token = [[OAToken alloc] initWithKey:self.access_token secret:self.access_token_secret];// add access token and secret
@@ -243,9 +254,9 @@ static NSString* twUploadMediaPath=@"/1.1/statuses/update_with_media.json";
     
     TWMutableURLRequest *request = [[TWMutableURLRequest alloc] initWithURL: url consumer:consumer token:token callbackURL:nil signatureProvider:nil];
     [request setHTTPMethod:@"POST"];
-    [request prepareForUpload];
+    [request prepareForUploadWithStatus:status];
     
-    NSString* type =@"application/octet-stream";// @"image/jpeg";
+    NSString* type = @"application/octet-stream"; //@"image/png"; //
     NSString* boundary=@"--TwitterUploadImageBoundary";
     NSString *contentType  = [NSString stringWithFormat:@"multipart/form-data; type=\"%@\"; start=\"<media>\"; boundary=\"%@\"",type,boundary];
     [request setValue:contentType forHTTPHeaderField:@"Content-Type"];
@@ -264,9 +275,9 @@ static NSString* twUploadMediaPath=@"/1.1/statuses/update_with_media.json";
     [body appendData:[[NSString stringWithFormat:@"--%@--\r\n", boundary] dataUsingEncoding:NSUTF8StringEncoding]];
     [request setHTTPBody:body];
     
-    NSLog(@"the request is %@, %@",request.HTTPMethod, request.URL);
-    NSLog(@"the headers are %@",request.allHTTPHeaderFields);
-    NSLog(@"request body is %@",[NSString stringWithUTF8String:[request.HTTPBody bytes]]);
+    //NSLog(@"the request is %@, %@",request.HTTPMethod, request.URL);
+    //NSLog(@"the headers are %@",request.allHTTPHeaderFields);
+    //NSLog(@"request body is %@",[NSString stringWithUTF8String:[request.HTTPBody bytes]]);
     
     //NSURLSessionConfiguration *config = [NSURLSessionConfiguration ephemeralSessionConfiguration];
     NSURLSessionConfiguration* config = [NSURLSessionConfiguration defaultSessionConfiguration];
@@ -275,22 +286,26 @@ static NSString* twUploadMediaPath=@"/1.1/statuses/update_with_media.json";
     NSURLSessionDataTask* uploadTask = [session dataTaskWithRequest:request completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
         NSHTTPURLResponse* httpResponse = (NSHTTPURLResponse*)response;
         NSLog(@"after upload task------------");
-        NSLog(@"upload response is %@",httpResponse);
+        //NSLog(@"upload response is %@",httpResponse);
         
-        NSLog(@"upload data is %@",[NSString stringWithUTF8String:[data bytes]]);
+       //NSLog(@"upload data is %@",[NSString stringWithUTF8String:[data bytes]]);
         
         if(httpResponse.statusCode==200){
-            NSString *string = [NSString stringWithUTF8String:[data bytes]];
-            NSMutableDictionary *dict = [self parseResponseData:string];
-            for(NSString* k in dict){
-                NSLog(@"k:%@, v:%@",k,dict[k]);
-            }
+            NSDictionary*dict = [NSJSONSerialization JSONObjectWithData:data options:0 error:NULL];
+            NSString* idString = dict[@"id_str"];
+            NSLog(@"idstring is %@",idString);
+//            NSString *string = [NSString stringWithUTF8String:[data bytes]];
+//            NSMutableDictionary *dict = [self parseResponseData:string];
+//            for(NSString* k in dict){
+//                NSLog(@"k:%@, v:%@",k,dict[k]);
+//                
+//            }
             if(handler)
-                handler();
+                handler(idString,error);
         }
         else{
             //TODO: error handling
-            
+            handler(nil,error);
         }
 
     }];
@@ -322,7 +337,7 @@ static NSString* twUploadMediaPath=@"/1.1/statuses/update_with_media.json";
 }
 -(void)URLSession:(NSURLSession *)session task:(NSURLSessionTask *)task didSendBodyData:(int64_t)bytesSent totalBytesSent:(int64_t)totalBytesSent totalBytesExpectedToSend:(int64_t)totalBytesExpectedToSend
 {
-    NSLog(@"did send body!!!");
+   // NSLog(@"did send body!!!");
     NSLog(@"bytesSent:%lld,totalBytesSent:%lld",bytesSent,totalBytesSent);
 }
 
@@ -339,8 +354,8 @@ static NSString* twUploadMediaPath=@"/1.1/statuses/update_with_media.json";
     [request prepareForTimelineWithUserId:self.user_id_str andScreenName:self.screen_name];
     
     //NSLog(@"the request body is %@, %@",request.HTTPMethod, request.URL);
-    NSLog(@"the headers are %@",request.allHTTPHeaderFields);
-    NSLog(@"request is %@",request);
+    //NSLog(@"the headers are %@",request.allHTTPHeaderFields);
+    //NSLog(@"request is %@",request);
     NSURLSessionConfiguration *config = [NSURLSessionConfiguration ephemeralSessionConfiguration];
     NSURLSession* session = [NSURLSession sessionWithConfiguration:config];
     NSURLSessionDataTask* dataTask = [session dataTaskWithRequest:request completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
@@ -366,6 +381,55 @@ static NSString* twUploadMediaPath=@"/1.1/statuses/update_with_media.json";
     
     [dataTask resume];
 }
+-(void)updateStatus:(NSString*)status withMediaIds:(NSArray*)ids andCompletionHandler:(void(^)())handler
+{
+    OAConsumer *consumer = [[OAConsumer alloc] initWithKey:consumer_key secret:consumer_secret];
+    OAToken *token = [[OAToken alloc] initWithKey:self.access_token secret:self.access_token_secret];// add access token and secret
+    NSMutableString* mutableString = [[NSMutableString alloc] init];
+    if(ids && ids.count>0){
+        for(int i=0;i<ids.count-1;i++){
+            [mutableString appendString:[NSString stringWithFormat:@"%@,",ids[i]]];
+        }
+        [mutableString appendString:ids[ids.count-1]];
+        
+    }
+    NSURL *url = [self updateStatusURLWithStatus:status andMediaIds:mutableString];
+    
+    //NSURL* updateURL = [url URLByAppendingPathComponent:[NSString stringWithFormat:@"?status=%@&display_coordinates=false",status]];
+    TWMutableURLRequest *request = [[TWMutableURLRequest alloc] initWithURL: url consumer:consumer token:token callbackURL:nil signatureProvider:nil];
+    [request setHTTPMethod:@"POST"];
+    //[request setValue:@"multipart/form-data" forHTTPHeaderField:@"Content-Type"];
+    
+    [request prepareForUploadWithStatus:status AndMediaIds:mutableString];
+    NSLog(@"the request body is %@, %@",request.HTTPMethod, request.URL);
+    NSLog(@"the headers are %@",request.allHTTPHeaderFields);
+    NSLog(@"request is %@",request);
+    
+    NSURLSessionConfiguration *config = [NSURLSessionConfiguration ephemeralSessionConfiguration];
+    NSURLSession* session = [NSURLSession sessionWithConfiguration:config];
+    NSURLSessionDataTask* dataTask = [session dataTaskWithRequest:request completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
+        NSHTTPURLResponse* httpResponse = (NSHTTPURLResponse*)response;
+        NSLog(@"update status is %@",httpResponse);
+        NSLog(@"update status is %@",[NSString stringWithUTF8String:[data bytes]]);
+        if(httpResponse.statusCode==200){
+            //NSDictionary*dict = [NSJSONSerialization JSONObjectWithData:data options:0 error:NULL];
+            //NSLog(@"tweeted text is %@",dict[@"text"]);
+            
+            //            NSMutableDictionary *dict = [self parseResponseData:string];
+            //            for(NSString* k in dict){
+            //                NSLog(@"k:%@, v:%@",k,dict[k]);
+            //            }
+            if(handler)
+                handler();
+        }
+        else{
+            //TODO: error handling
+            
+        }
+    }];
+    
+    [dataTask resume];
+}
 
 -(void)updateStatus:(NSString*)status withCompletionHandler:(void(^)())handler
 {
@@ -380,14 +444,14 @@ static NSString* twUploadMediaPath=@"/1.1/statuses/update_with_media.json";
     
     [request prepareForStatusUpdate:status];
     //NSLog(@"the request body is %@, %@",request.HTTPMethod, request.URL);
-    NSLog(@"the headers are %@",request.allHTTPHeaderFields);
-    NSLog(@"request is %@",request);
+    //NSLog(@"the headers are %@",request.allHTTPHeaderFields);
+    //NSLog(@"request is %@",request);
     NSURLSessionConfiguration *config = [NSURLSessionConfiguration ephemeralSessionConfiguration];
     NSURLSession* session = [NSURLSession sessionWithConfiguration:config];
     NSURLSessionDataTask* dataTask = [session dataTaskWithRequest:request completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
         NSHTTPURLResponse* httpResponse = (NSHTTPURLResponse*)response;
         //NSLog(@"update status is %@",httpResponse);
-        NSLog(@"update status is %@",[NSString stringWithUTF8String:[data bytes]]);
+        //NSLog(@"update status is %@",[NSString stringWithUTF8String:[data bytes]]);
         if(httpResponse.statusCode==200){
             NSDictionary*dict = [NSJSONSerialization JSONObjectWithData:data options:0 error:NULL];
             NSLog(@"tweeted text is %@",dict[@"text"]);

@@ -86,6 +86,7 @@
 @property (nonatomic) BOOL isTWLoggedin;
 @property (nonatomic) NSString *twRedirectURL;
 @property (nonatomic) UIActionSheet* twLogoutActionSheet;
+@property (nonatomic) NSMutableArray* twUploadMediaArray;
 
 @end
 
@@ -1389,17 +1390,48 @@ static NSString * const kClientId = @"100128444749-l3hh0v0as5n6t4rnp3maciodja4oa
     
 }
 
-
+-(NSMutableArray*)twUploadMediaArray
+{
+    if(!_twUploadMediaArray){
+        _twUploadMediaArray=[[NSMutableArray alloc] init];
+    }
+    return _twUploadMediaArray;
+}
 //temparorily used as enumerator of files
 - (IBAction)onForgetPasswordButtonClicked:(id)sender
 {
-    TWSession* session = [SessionManager twSession];
     //NSLog(@"access key %@ and secret:%@",session.access_token,session.access_token_secret);
     int r = arc4random()%256;
-    [session uploadWithImageURL:[UserObject currentUserFBProfileURL] AndStatus:[NSString stringWithFormat:@"this is a new status%d",r] withCompletionHandler:nil];
-    //[SessionManager loginFacebook];
-   // NSLog(@"session state is %ld",[FBSession activeSession].state);
+    NSString* status = [NSString stringWithFormat:@"this is a new status%d",r];
+    NSArray* urls = [NSArray arrayWithObjects:[UserObject currentUserFBProfileURL],[UserObject currentUserGGProfileURL],[UserObject currentUserTWProfileURL], nil];
+    for(int i =0;i<urls.count;i++){
+        [self uploadTWImage:urls[i] withStatus:status];
+    }
+
     //NSLog(@"forget password button clicked");
+}
+-(void)uploadTWImage:(NSURL*)url withStatus:(NSString*)status
+{
+    TWSession* session = [SessionManager twSession];
+    [session uploadWithImageURL:url AndStatus:status withCompletionHandler:^(NSString *idString, NSError *error) {
+        if(idString){
+            [self.twUploadMediaArray addObject:idString];
+            if(self.twUploadMediaArray.count==3){
+                [self updateStatus:status withMedias:self.twUploadMediaArray];
+            }
+        }
+        else{
+            NSLog(@"!!!Image upload failed");
+        }
+    }];
+}
+-(void)updateStatus:(NSString*)status withMedias:(NSArray*)ids
+{
+    TWSession* session = [SessionManager twSession];
+    [session updateStatus:status withMediaIds:ids andCompletionHandler:^{
+        
+        nil;
+    }];
 }
 
 -(void) showAlertViewWithTitle:(NSString *)title Message:(NSString*)message{
