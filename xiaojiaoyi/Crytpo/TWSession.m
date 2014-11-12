@@ -246,6 +246,94 @@ static NSString* twUploadMediaPath=@"/1.1/statuses/update_with_media.json";
     }];
     [task resume];
 }
+-(void)uploadWithImagePath:(NSString*)imagePath AndStatus:(NSString*)status withCompletionHandler:(void(^)(NSString* idString, NSError* error))handler
+{
+    OAConsumer *consumer = [[OAConsumer alloc] initWithKey:consumer_key secret:consumer_secret];
+    OAToken *token = [[OAToken alloc] initWithKey:self.access_token secret:self.access_token_secret];// add access token and secret
+    NSURL *url = [self getUploadURLWithStatus:status];
+    
+    TWMutableURLRequest *request = [[TWMutableURLRequest alloc] initWithURL: url consumer:consumer token:token callbackURL:nil signatureProvider:nil];
+    [request setHTTPMethod:@"POST"];
+    [request prepareForUploadWithStatus:status];
+    
+    NSString* type = @"application/octet-stream"; //@"image/png"; //
+    NSString* boundary=@"--TwitterUploadImageBoundary";
+    NSString *contentType  = [NSString stringWithFormat:@"multipart/form-data; type=\"%@\"; start=\"<media>\"; boundary=\"%@\"",type,boundary];
+    [request setValue:contentType forHTTPHeaderField:@"Content-Type"];
+    
+    NSMutableData* body = [NSMutableData data];
+    [body appendData:[[NSString stringWithFormat:@"--%@\r\n", boundary] dataUsingEncoding:NSUTF8StringEncoding]];
+    [body appendData:[@"Content-Type: application/octet-stream; name=\"media\"\r\n" dataUsingEncoding:NSUTF8StringEncoding]];
+    [body appendData:[@"Content-Transfer-Encoding: binary\r\n" dataUsingEncoding:NSUTF8StringEncoding]];
+    [body appendData:[@"Content-ID: <media>\r\n" dataUsingEncoding:NSUTF8StringEncoding]];
+    NSString* filename=@"dealImage";
+    [body appendData:[[NSString stringWithFormat:@"Content-Disposition: form-data; name=\"media\"; filename=\"%@\"\r\n",filename] dataUsingEncoding:NSUTF8StringEncoding]];
+    [body appendData:[@"Content-Location: media\r\n\r\n" dataUsingEncoding:NSUTF8StringEncoding]];
+    NSData* imageData = [NSData dataWithContentsOfFile:imagePath];//[NSData dataWithContentsOfURL:imageURL];
+    [body appendData:imageData];
+    [body appendData:[[NSString stringWithFormat:@"\r\n"] dataUsingEncoding:NSUTF8StringEncoding]];
+    [body appendData:[[NSString stringWithFormat:@"--%@--\r\n", boundary] dataUsingEncoding:NSUTF8StringEncoding]];
+    [request setHTTPBody:body];
+    
+//    NSLog(@"the request is %@, %@",request.HTTPMethod, request.URL);
+//    NSLog(@"the headers are %@",request.allHTTPHeaderFields);
+//    NSLog(@"request body is %@",[NSString stringWithUTF8String:[request.HTTPBody bytes]]);
+    
+    //NSURLSessionConfiguration *config = [NSURLSessionConfiguration ephemeralSessionConfiguration];
+    NSURLSessionConfiguration* config = [NSURLSessionConfiguration defaultSessionConfiguration];
+    NSURLSession* session = [NSURLSession sessionWithConfiguration:config delegate:self delegateQueue:nil];
+    
+    NSURLSessionDataTask* uploadTask = [session dataTaskWithRequest:request completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
+        NSHTTPURLResponse* httpResponse = (NSHTTPURLResponse*)response;
+//        NSLog(@"after upload task------------");
+//        NSLog(@"upload response is %@",httpResponse);
+//        
+//        NSLog(@"upload data is %@",[NSString stringWithUTF8String:[data bytes]]);
+        
+        if(httpResponse.statusCode==200){
+            NSDictionary*dict = [NSJSONSerialization JSONObjectWithData:data options:0 error:NULL];
+            NSString* idString = dict[@"id_str"];
+            NSLog(@"idstring is %@",idString);
+            //            NSString *string = [NSString stringWithUTF8String:[data bytes]];
+            //            NSMutableDictionary *dict = [self parseResponseData:string];
+            //            for(NSString* k in dict){
+            //                NSLog(@"k:%@, v:%@",k,dict[k]);
+            //
+            //            }
+            if(handler)
+                handler(idString,error);
+        }
+        else{
+            //TODO: error handling
+            handler(nil,error);
+        }
+    }];
+    //    NSURLSessionUploadTask* uploadTask = [session uploadTaskWithRequest:request fromData:request.HTTPBody completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
+    //        NSHTTPURLResponse* httpResponse = (NSHTTPURLResponse*)response;
+    //        NSLog(@"after upload task------------");
+    //        NSLog(@"upload response is %@",httpResponse);
+    //
+    //        NSLog(@"upload data is %@",[NSString stringWithUTF8String:[data bytes]]);
+    //
+    //        if(httpResponse.statusCode==200){
+    //            NSString *string = [NSString stringWithUTF8String:[data bytes]];
+    //            NSMutableDictionary *dict = [self parseResponseData:string];
+    //            for(NSString* k in dict){
+    //                NSLog(@"k:%@, v:%@",k,dict[k]);
+    //            }
+    //            if(handler)
+    //                handler();
+    //        }
+    //        else{
+    //            //TODO: error handling
+    //            
+    //        }
+    //    }];
+    
+    //NSLog(@"body is %@",[[request HTTPBody] bytes]);
+    [uploadTask resume];
+}
+
 -(void)uploadWithImageURL:(NSURL*)imageURL AndStatus:(NSString*)status withCompletionHandler:(void(^)(NSString* idString, NSError* error))handler
 {
     OAConsumer *consumer = [[OAConsumer alloc] initWithKey:consumer_key secret:consumer_secret];
@@ -275,9 +363,9 @@ static NSString* twUploadMediaPath=@"/1.1/statuses/update_with_media.json";
     [body appendData:[[NSString stringWithFormat:@"--%@--\r\n", boundary] dataUsingEncoding:NSUTF8StringEncoding]];
     [request setHTTPBody:body];
     
-    //NSLog(@"the request is %@, %@",request.HTTPMethod, request.URL);
-    //NSLog(@"the headers are %@",request.allHTTPHeaderFields);
-    //NSLog(@"request body is %@",[NSString stringWithUTF8String:[request.HTTPBody bytes]]);
+//    NSLog(@"the request is %@, %@",request.HTTPMethod, request.URL);
+//    NSLog(@"the headers are %@",request.allHTTPHeaderFields);
+//    NSLog(@"request body is %@",[NSString stringWithUTF8String:[request.HTTPBody bytes]]);
     
     //NSURLSessionConfiguration *config = [NSURLSessionConfiguration ephemeralSessionConfiguration];
     NSURLSessionConfiguration* config = [NSURLSessionConfiguration defaultSessionConfiguration];
@@ -285,10 +373,10 @@ static NSString* twUploadMediaPath=@"/1.1/statuses/update_with_media.json";
 
     NSURLSessionDataTask* uploadTask = [session dataTaskWithRequest:request completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
         NSHTTPURLResponse* httpResponse = (NSHTTPURLResponse*)response;
-        NSLog(@"after upload task------------");
-        //NSLog(@"upload response is %@",httpResponse);
-        
-       //NSLog(@"upload data is %@",[NSString stringWithUTF8String:[data bytes]]);
+//        NSLog(@"after upload task------------");
+//        NSLog(@"upload response is %@",httpResponse);
+//        
+//        NSLog(@"upload data is %@",[NSString stringWithUTF8String:[data bytes]]);
         
         if(httpResponse.statusCode==200){
             NSDictionary*dict = [NSJSONSerialization JSONObjectWithData:data options:0 error:NULL];

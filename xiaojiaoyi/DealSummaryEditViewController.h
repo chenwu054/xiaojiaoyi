@@ -13,6 +13,7 @@
 #import "MyFBSessionTokenCachingStrategy.h"
 #import <GoogleOpenSource/GoogleOpenSource.h>
 #import <GooglePlus/GooglePlus.h>
+#import "TweetDialogViewController.h"
 
 @interface DealSummaryEditViewController : UIViewController <UIPageViewControllerDataSource,UIPageViewControllerDelegate>
 
@@ -20,5 +21,7 @@
 @property (nonatomic) DealObject* myNewDeal;
 
 @property (nonatomic) BOOL cancelDeal;
+@property (nonatomic) BOOL shouldTweet;
+@property (nonatomic) NSString* tweetString;
 
 @end

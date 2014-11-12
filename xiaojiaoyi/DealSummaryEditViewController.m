@@ -79,6 +79,9 @@
 @property (nonatomic) UIButton* twButton;
 @property (nonatomic) UIButton* lkButton;
 @property (nonatomic) NSMutableArray* uploadPhotoURI;
+
+//twitter tweet placeholder
+@property (nonatomic) NSMutableString* statusString;
 @end
 
 @implementation DealSummaryEditViewController
@@ -823,7 +826,7 @@
     UserObject* user = [UserObject currentUser];
     
     if(!user.fbLogin){
-        [[[UIAlertView alloc] initWithTitle:nil message:@"facebook account not logged in" delegate:self cancelButtonTitle:@"ok" otherButtonTitles: nil] show];
+        [[[UIAlertView alloc] initWithTitle:nil message:@"Facebook account not logged in" delegate:self cancelButtonTitle:@"ok" otherButtonTitles: nil] show];
     }
     else{
         [SessionManager checkFBPermissionsWithCompletionHandler:^(FBRequestConnection *connection, id result, NSError *error) {
@@ -846,9 +849,73 @@
     //NSLog(@"fb button clicked");
     
 }
+-(void)uploadTWImagePath:(NSString*)path withStatus:(NSString*)status
+{
+    TWSession* session = [SessionManager twSession];
+    NSLog(@"session is %@",session);
+    //NSLog(@"url is %@",url);
+    [session uploadWithImagePath:path AndStatus:status withCompletionHandler:^(NSString *idString, NSError *error) {
+        if(idString){
+            NSLog(@"twitter upload image and status succeeded");
+        }
+        else{
+            NSLog(@"!!!Image upload failed");
+        }
+    }];
+//    [session uploadWithImageURL:url AndStatus:status withCompletionHandler:^(NSString *idString, NSError *error) {
+//        if(idString){
+//            NSLog(@"twitter upload image and status succeeded");
+//        }
+//        else{
+//            NSLog(@"!!!Image upload failed");
+//        }
+//    }];
+}
 -(void)twButtonClicked:(UIButton*)sender
 {
+    UserObject* user = [UserObject currentUser];
+    if(!user.twLogin){
+        [[[UIAlertView alloc] initWithTitle:nil message:@"You are not logged in with Twitter" delegate:self cancelButtonTitle:@"ok" otherButtonTitles: nil] show];
+    }
+    else{
+        self.statusString = [[NSMutableString alloc] init];
+        [self.statusString appendString:[NSString stringWithFormat:@"%@\r\n",self.myNewDeal.title]];
+        [self.statusString appendString:[NSString stringWithFormat:@"%@\r\n",self.myNewDeal.describe]];
+        [self.statusString appendString:[NSString stringWithFormat:@"price:%@\r\n",self.myNewDeal.price]];
+        [self.statusString appendString:[NSString stringWithFormat:@"condition:%@\r\n",self.myNewDeal.condition]];
+        [self.statusString appendString:[NSString stringWithFormat:self.myNewDeal.exchange?@"willing to exchange":@"do not accept exchange"]];
+        NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+        //[dateFormatter setDateFormat:@" MMM/dd/yyyy 'at' HH':'mm"];
+        [dateFormatter setDateFormat:@" MMM/dd/yyyy"];
+        NSString* expireDate=[dateFormatter stringFromDate:self.myNewDeal.expire_date];
+        
+        [self.statusString appendString:[NSString stringWithFormat:@"\r\ngood until %@",expireDate]];
+        [self performSegueWithIdentifier:@"TweetDealModalSegue" sender:self];
+    }
+
     NSLog(@"tw button clicked");
+}
+-(void)tweetDealWithStatus:(NSString*)status
+{
+    
+    NSString* urlString = nil;
+    if([self.myNewDeal.photoURL[0] hasPrefix:@"file://"]){
+        urlString = self.myNewDeal.photoURL[0];
+    }
+    else{
+        urlString = [NSString stringWithFormat:@"file://%@",self.myNewDeal.photoURL[0]];
+    }
+    NSLog(@"photourl is %@",urlString);
+    NSLog(@"photo url path is %@",[NSURL URLWithString:urlString]);
+    //[self uploadTWImage:[NSURL URLWithString:self.myNewDeal.photoURL[0]] withStatus:status];
+    [self uploadTWImagePath:self.myNewDeal.photoURL[0] withStatus:status];
+}
+-(IBAction)unwindFromTweetDialog:(UIStoryboardSegue *)segue
+{
+    if(self.shouldTweet){
+        [self tweetDealWithStatus:self.tweetString];
+        self.shouldTweet=NO;
+    }
 }
 -(void)ggButtonClicked:(UIButton*)sender
 {
@@ -966,6 +1033,13 @@
             DealDescriptionViewController* dealDescriptionVC=(DealDescriptionViewController*)segue.destinationViewController;
             dealDescriptionVC.cancelDeal=self.cancelDeal;
             
+        }
+    }
+    else if([segue.identifier isEqualToString:@"TweetDealModalSegue"]){
+        if([segue.destinationViewController isKindOfClass:[TweetDialogViewController class]]){
+            TweetDialogViewController* tweetVC = (TweetDialogViewController*)segue.destinationViewController;
+            tweetVC.placeholder=self.statusString;
+            tweetVC.image=self.myNewDeal.photos[0];
         }
     }
 }

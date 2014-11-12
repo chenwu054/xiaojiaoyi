@@ -166,7 +166,7 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="XAw-dn-Zrt" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <exit id="jEB-Gr-n3E" userLabel="Exit" sceneMemberID="exit"/>
             </objects>
-            <point key="canvasLocation" x="49" y="-962"/>
+            <point key="canvasLocation" x="193" y="-962"/>
         </scene>
         <!--Deal Intro Controller-->
         <scene sceneID="vI4-XG-i0k">
@@ -266,7 +266,7 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Lrh-g9-RPj" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <exit id="69C-2I-n8f" userLabel="Exit" sceneMemberID="exit"/>
             </objects>
-            <point key="canvasLocation" x="805" y="-273"/>
+            <point key="canvasLocation" x="652" y="-291"/>
         </scene>
         <!--Login View Controller-->
         <scene sceneID="oef-u6-tbJ">
@@ -789,10 +789,35 @@
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                     </view>
                     <navigationItem key="navigationItem" id="s3t-1D-y3v"/>
+                    <connections>
+                        <segue destination="Sn5-wc-blc" kind="modal" identifier="TweetDealModalSegue" id="whi-77-uDe"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="FYi-jH-OdU" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="19" y="383"/>
+            <point key="canvasLocation" x="-109" y="383"/>
+        </scene>
+        <!--Tweet Dialog View Controller-->
+        <scene sceneID="dFA-pl-G7I">
+            <objects>
+                <viewController id="Sn5-wc-blc" customClass="TweetDialogViewController" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="PuV-pm-gfI"/>
+                        <viewControllerLayoutGuide type="bottom" id="6VP-8F-YKM"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="PGb-fV-xRG">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                    </view>
+                    <connections>
+                        <segue destination="swc-WU-c2P" kind="unwind" identifier="TweetDialogUnwindSegue" unwindAction="unwindFromTweetDialog:" id="p9X-OW-81g"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="IOu-gk-uEf" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <exit id="swc-WU-c2P" userLabel="Exit" sceneMemberID="exit"/>
+            </objects>
+            <point key="canvasLocation" x="301" y="386"/>
         </scene>
         <!--Main View Controller-->
         <scene sceneID="Vh5-Nw-Egc">
