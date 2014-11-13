@@ -27,6 +27,15 @@
 @property (nonatomic) UIImageView *pullDownImageView;
 @property (nonatomic) UILabel *pullDownInfoLabel;
 @property (nonatomic) UILabel *pullDownTimeLabel;
+@property (nonatomic) YelpDataSource* dataSource;
+@property (nonatomic) NSMutableArray* businesses;
+@property (nonatomic) NSMutableDictionary* cells;
+
+@property (nonatomic) NSMutableArray* names;
+@property (nonatomic) NSMutableArray* urls;
+@property (nonatomic) NSMutableDictionary* images;
+
+@property (nonatomic) UIImage* defaultImage;
 
 @end
 
@@ -240,41 +249,121 @@
 }
 
 //collection view data source methods
--collectionView:(UICollectionView*)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath
+-(UICollectionViewCell*) collectionView:(UICollectionView*)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath
 {
-    UICollectionViewCell *cell;
-    cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"hotDealCollectionViewCell" forIndexPath:indexPath];
+    //NSLog(@"calling cell for collection view");
+//    cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"hotDealCollectionViewCell" forIndexPath:indexPath];
     //NSLog(@"at index path: section = %ld row = %ld",indexPath.section,indexPath.row);
-    if(!cell){
-        cell = [[UICollectionViewCell alloc] init];
-    }
-    cell.backgroundColor = [UIColor grayColor];
-    cell.layer.cornerRadius = 5.0;
-    return cell;
-//    NSArray *gestures = cell.gestureRecognizers;
-//    for(int i=0;i<gestures.count;i++){
-//        UIGestureRecognizer* g= (UIGestureRecognizer*)gestures[i];
-//        //NSLog(@"gesture%d is %@",i,g);
-//
-//        [g setCancelsTouchesInView: NO];
+    
+    //NSLog(@"calling the collection view cell method and indexPath is %ld", indexPath.row);
+    CollectionViewCell * cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"hotDealCollectionViewCell" forIndexPath:indexPath];
+//    NSArray *subviews = cell.contentView.subviews;
+//    for(int i=0;i<subviews.count;i++){
+//        NSLog(@"subview [i] is %@",subviews[i]);
 //    }
+    if(!cell){
+        cell=[[CollectionViewCell alloc] init];
+    }
+    if(!cell.imageView){
+        cell.imageView=[[UIImageView alloc] initWithFrame:CGRectMake(0, 0, cell.frame.size.width, cell.frame.size.width)];
+    }
+    if(!cell.label){
+        cell.label=[[UILabel alloc] initWithFrame:CGRectMake(2, cell.frame.size.width, cell.frame.size.width, cell.frame.size.height-cell.frame.size.width)];
+    }
+//    UIImageView *imageView;
+//    UILabel *label;
+//    if(subviews.count>0){
+//        for(int i=0;i<subviews.count;i++){
+//            if([subviews[i] isKindOfClass:[UIImageView class]]){
+//                imageView = (UIImageView *)subviews[i];
+//                imageView.frame = CGRectMake(0, 0, cell.bounds.size.width, cell.bounds.size.width);
+//                //imageView.image = [UIImage imageNamed:@"apple image.jpg"];
+//                //sleep(1);
+//            }
+//            else if([subviews[i] isKindOfClass:[UILabel class]]){
+//                label = (UILabel*)subviews[i];
+//                label.frame = CGRectMake(2, cell.bounds.size.width, cell.bounds.size.width, cell.bounds.size.height - cell.bounds.size.width);
+//                //labelView.text = [NSString stringWithFormat:@"this is %ld",indexPath.row];
+//            }
+//        }
+//    }
+//    else{
+//        imageView=[[UIImageView alloc] initWithFrame:CGRectMake(0, 0, cell.frame.size.width, cell.frame.size.width)];
+//        label=[[UILabel alloc] initWithFrame:CGRectMake(0, cell.frame.size.width, cell.frame.size.width, cell.frame.size.height-cell.frame.size.width)];
+//        [cell addSubview:imageView];
+//        [cell addSubview:label];
+//    }
+    
+    [cell.layer setBorderWidth:2.0f];
+    [cell.layer setBorderColor:[[UIColor blueColor] CGColor]];
+    [cell.layer setShadowRadius:5];
+    [cell.layer setShadowColor:[[UIColor blackColor] CGColor]];
+    [cell.layer setCornerRadius:5.0f];
+    NSInteger idx = indexPath.row;
+    cell.imageView.layer.cornerRadius=5.0;
+    
+    if(cell.imageView.superview != cell){
+        [cell addSubview:cell.imageView];
+    }
+    if(cell.label.superview !=cell){
+        [cell addSubview:cell.label];
+    }
+    
+    if(![self.images objectForKey:@(idx)]){
+        cell.imageView.image = self.defaultImage;
+        cell.label.text = [NSString stringWithFormat:@""];
+        
+        if([self.urls objectAtIndex:idx]){
+//            cell.imageView.image = [UIImage imageNamed:@"apple image.jpg"];
+//            cell.label.text = [NSString stringWithFormat:@""];
+            NSURLSession* session = [NSURLSession sharedSession];
+            NSURLRequest* request = [[NSURLRequest alloc] initWithURL:self.urls[idx]];
+            NSURLSessionDownloadTask* downloadTask = [session downloadTaskWithRequest:request completionHandler:^(NSURL *location, NSURLResponse *response, NSError *error){
+                NSHTTPURLResponse* r = (NSHTTPURLResponse*)response;
+                if(r.statusCode==200){
+                    //dispatch_async(dispatch_get_main_queue(), ^{
+                        //[self.collectionView reloadItemsAtIndexPaths:[NSArray arrayWithObject:indexPath]];
+                        NSData* data = [NSData dataWithContentsOfURL:location];
+                        UIImage* newImage = [UIImage imageWithData:data];
+                        //UIImage* newImage = [UIImage imageWithContentsOfFile:location.path];
+                    
+                        if(newImage){
+                            //NSLog(@"file is %@",location.lastPathComponent);
+                            [self.images setObject:[newImage copy] forKey:@(idx)];
+                            //cell.image=[newImage copy];
+                            cell.imageView.image=[self.images objectForKey:@(idx)];
+                            cell.label.text=self.names[idx];
+                            cell.hasImage=YES;
+                        }
+                        dispatch_async(dispatch_get_main_queue(), ^{
+                            [self.collectionVC.collectionView reloadItemsAtIndexPaths:[NSArray arrayWithObject:indexPath]];
+                        });
+                    
+                    //});
+                }
+                
+            }];
+            [downloadTask resume];
+        }
+    }
+    else{
+        cell.imageView.image = [self.images objectForKey:@(idx)];
+        cell.label.text =self.names[idx];
+        cell.label.attributedText=[[NSAttributedString alloc] initWithString:self.names[idx] attributes:@{NSFontAttributeName:[UIFont fontWithName:@"Georgia" size:14],NSForegroundColorAttributeName:[UIColor blackColor]}];
+    }
+    
+    return cell;
 
 }
 
 -(NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section
 {
-//    if(section == 0){
-//        return 3;
-//    }
-//    else
-//        return 6;
-    return 6;
+    return self.urls.count;
 }
 
 -(NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView
 {
     return 1;
-    //return 2;
 }
 -(void)collectionView:(UICollectionView *)collectionView didHighlightItemAtIndexPath:(NSIndexPath *)indexPath
 {
@@ -285,7 +374,6 @@
 {
     NSLog(@"!!selected item at section:%ld and row: %ld",indexPath.section,indexPath.row);
 }
-
 
 //============================================
 #pragma mark - commercial button methods
@@ -310,9 +398,7 @@
     if(self.mainVC.mainContainerView.frame.origin.x!=0){
         [self.mainVC reset];
     }
-    
 }
-
 
 //=================================================
 #pragma mark - search bar methods
@@ -449,9 +535,51 @@
 }
 
 #pragma mark - overall setup
+-(YelpDataSource*)dataSource
+{
+    if(!_dataSource){
+        _dataSource=[[YelpDataSource alloc] initWithQuery:@"food" andRegion:@"San Francisco"];
+    }
+    return _dataSource;
+}
+
 -(void)setup
 {
     [self setupSearchBar];
+    [self.dataSource fetchDataWithCompletionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
+        NSHTTPURLResponse * r = (NSHTTPURLResponse*)response;
+        if(r.statusCode == 200){
+            //NSLog(@"is successful");
+            NSError * error;
+            NSDictionary *json = [NSJSONSerialization JSONObjectWithData:data options:0 error: &error];
+            //NSLog(@"%@",json);
+            self.businesses = [json valueForKey:@"businesses"];
+            self.cells = [[NSMutableDictionary alloc] init];
+            self.names=[[NSMutableArray alloc] init];
+            self.urls=[[NSMutableArray alloc] init];
+            self.images=[[NSMutableDictionary alloc] init];
+            for(NSInteger i=0;i<[self.businesses count];i++){
+                //NSLog(@"name is: %@",[self.businesses[i] valueForKey:@"name"]);
+                NSString *name = [self.businesses[i] valueForKey:@"name"];
+                NSString *urlStr = [self.businesses[i] valueForKey:@"image_url"];
+                //CollectionViewCell * aCell=[[CollectionViewCell alloc] initWithName:name andURL:[NSURL URLWithString:urlStr]];
+                //[self.cells setObject:aCell forKey:@(i)];
+                
+                [self.names addObject:name];
+                [self.urls addObject:[NSURL URLWithString:urlStr]];
+                
+                //NSLog(@"the cells are %@, %@, %@",@(i),((CollectionViewCell*)[_cells objectForKey:@(i)]).name,((CollectionViewCell *)[_cells objectForKey:@(i)]).imageURL);
+            }
+            //call it on the main queue to refresh the screen immediately!!
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [self.collectionVC.collectionView reloadData];
+                //[self.collectionView reloadData];
+            });
+        }
+
+        
+    }];
+    
     
 }
 -(NSString *)getCurrentDateTime
@@ -466,6 +594,7 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    self.defaultImage=[UIImage imageNamed:@"apple image.jpg"];
     //self.view = [[GestureView alloc] init];
     //NSLog(@"default GR count is %ld",self.view.gestureRecognizers.count);
     self.view.frame = [UIScreen mainScreen].bounds;

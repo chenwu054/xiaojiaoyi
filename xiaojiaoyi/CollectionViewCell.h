@@ -16,6 +16,8 @@
 @property (nonatomic) BOOL hasImage;
 @property (nonatomic) BOOL hasURL;
 @property (nonatomic) BOOL isFailed;
+@property (strong, nonatomic) IBOutlet UIImageView *imageView;
+@property (strong, nonatomic) IBOutlet UILabel *label;
 
 
 -(CollectionViewCell *)initWithName:(NSString *)name andURL:(NSURL*)url;

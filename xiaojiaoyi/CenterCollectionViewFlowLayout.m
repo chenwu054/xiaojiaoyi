@@ -24,7 +24,7 @@
 -(UICollectionViewLayoutAttributes *)layoutAttributesForItemAtIndexPath:(NSIndexPath *)indexPath
 {
 
-    return [self layoutAttributesForItemAtIndexPath:indexPath];
+    return [super layoutAttributesForItemAtIndexPath:indexPath];
 }
 
 //NOT CALLED: H.3 add header and footer to the collectionview

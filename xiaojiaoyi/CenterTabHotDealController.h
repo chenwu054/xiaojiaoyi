@@ -15,6 +15,7 @@
 #import "CenterCollectionViewFlowLayout.h"
 #import "GestureCollectionReusableView.h"
 #import "GestureButton.h"
+#import "YelpDataSource.h"
 
 @class  MainViewController;
 

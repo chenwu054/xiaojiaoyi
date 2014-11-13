@@ -36,10 +36,8 @@
 @property (nonatomic) TWSession *twSession;
 @property (nonatomic) NSInteger twLoginRetryLimit;
 
-//facebook properties
 
-
-//- (void)setOAuthToken:(NSString *)token oauthVerifier:(NSString *)verifier;
+-(void)setup;
 
 
 @end

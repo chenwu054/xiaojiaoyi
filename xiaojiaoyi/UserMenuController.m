@@ -15,8 +15,6 @@
 
 @interface UserMenuController ()
 
-
-
 @property (nonatomic) NSArray *userMenuList;
 
 @end

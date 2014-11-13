@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		7402D4921A145A31002AF7B3 /* YelpDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 7402D4911A145A31002AF7B3 /* YelpDataSource.m */; };
 		74065ADF19C747D30033DA71 /* DetailPageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 74065ADE19C747D30033DA71 /* DetailPageViewController.m */; };
 		74065AE219C748210033DA71 /* DetailPageContentViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 74065AE119C748210033DA71 /* DetailPageContentViewController.m */; };
 		74065AE719C7E2DD0033DA71 /* apple image.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 74065AE419C7E2DD0033DA71 /* apple image.jpg */; };
@@ -175,6 +176,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		7402D4901A145A31002AF7B3 /* YelpDataSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YelpDataSource.h; sourceTree = "<group>"; };
+		7402D4911A145A31002AF7B3 /* YelpDataSource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YelpDataSource.m; sourceTree = "<group>"; };
 		74065ADD19C747D30033DA71 /* DetailPageViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DetailPageViewController.h; sourceTree = "<group>"; };
 		74065ADE19C747D30033DA71 /* DetailPageViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DetailPageViewController.m; sourceTree = "<group>"; };
 		74065AE019C748210033DA71 /* DetailPageContentViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DetailPageContentViewController.h; sourceTree = "<group>"; };
@@ -544,8 +547,6 @@
 		741FB5FE19E0BE2E00EA6D5B /* CenterVC */ = {
 			isa = PBXGroup;
 			children = (
-				741FB5F519E06F4600EA6D5B /* CenterTabHotDealController.h */,
-				741FB5F619E06F4600EA6D5B /* CenterTabHotDealController.m */,
 				741FB5F819E0897100EA6D5B /* CenterTabBuddyDealController.h */,
 				741FB5F919E0897100EA6D5B /* CenterTabBuddyDealController.m */,
 				741FB5FB19E0899800EA6D5B /* CenterTabNearbyDealController.h */,
@@ -554,6 +555,10 @@
 				74B7218819E83845000B3892 /* CenterCollectionViewFlowLayout.m */,
 				74B7219419EC1F91000B3892 /* MyTapGestureRecognizer.h */,
 				74B7219519EC1F91000B3892 /* MyTapGestureRecognizer.m */,
+				741FB5F519E06F4600EA6D5B /* CenterTabHotDealController.h */,
+				741FB5F619E06F4600EA6D5B /* CenterTabHotDealController.m */,
+				7402D4901A145A31002AF7B3 /* YelpDataSource.h */,
+				7402D4911A145A31002AF7B3 /* YelpDataSource.m */,
 			);
 			name = CenterVC;
 			sourceTree = "<group>";
@@ -697,6 +702,8 @@
 				74B721AB19F0C5D6000B3892 /* MakeDeal */,
 				749366FB19CE75F1003B3108 /* Login */,
 				74B721AC19F0C5FE000B3892 /* MainPage */,
+				74CB851B19C0193C00579432 /* YelpViewController.h */,
+				74CB851C19C0193C00579432 /* YelpViewController.m */,
 				740C855719F959F200D3A178 /* TestCoreDataViewController.h */,
 				740C855819F959F200D3A178 /* TestCoreDataViewController.m */,
 				74B7219A19EE0F3A000B3892 /* CategoryCollectionViewController.h */,
@@ -707,8 +714,6 @@
 				74FE265919CA72A300801CA1 /* MapViewController.m */,
 				749366F019CA7D9B003B3108 /* Location.h */,
 				749366F119CA7D9B003B3108 /* Location.m */,
-				74CB851B19C0193C00579432 /* YelpViewController.h */,
-				74CB851C19C0193C00579432 /* YelpViewController.m */,
 				74B9327E19AAEB4E003B6594 /* Main_iPhone.storyboard */,
 				74B9327B19AAEB4E003B6594 /* xjyAppDelegate.h */,
 				74B9327C19AAEB4E003B6594 /* xjyAppDelegate.m */,
@@ -1061,6 +1066,7 @@
 				74A88CA519FC0DB700872C26 /* BoughtDealListViewController.m in Sources */,
 				74CB84D419B588F700579432 /* OAuthViewController.m in Sources */,
 				74B9330919AD8695003B6594 /* NSError+STTwitter.m in Sources */,
+				7402D4921A145A31002AF7B3 /* YelpDataSource.m in Sources */,
 				74CB850A19BBDED800579432 /* OACall.m in Sources */,
 				74CB851919BEB80900579432 /* YPAPISample.m in Sources */,
 				74B7219319EAF1CB000B3892 /* GestureButton.m in Sources */,
