@@ -19,6 +19,9 @@
 @property (nonatomic) BOOL inUserMenuView;
 @property (nonatomic) UIView* currentView;
 @property (nonatomic) UIPageViewController* pageVC;
+//@property (nonatomic) UIView* categoryView;
+
+
 @property (nonatomic) NSArray *pages;
 @property (nonatomic) NSMutableArray *viewStack;
 @property (nonatomic) BOOL allowBeforePageView;
@@ -42,21 +45,40 @@ static MainViewController* instance;
     
     //NSArray *subviews = [self.view subviews];
 
-    if(tableView == _menuViewController.tableView){
+    if(tableView == self.menuViewController.tableView){
         
         [self resetWithCenterView:self.mainContainerView];
         [self.centerViewController.view removeFromSuperview];
         [self.myDealViewController.view removeFromSuperview];
-        [self.centerContainerView addSubview:self.pageVC.view];
+        //[self.centerContainerView addSubview:self.pageVC.view];
+        
+//        while(self.categoryViewControllerOne.view.superview !=self.centerContainerView){
+//            [self.centerContainerView addSubview:self.categoryViewControllerOne.view];
+//        }
+        //must add view first and then
+        if([self peekViewStack]!=self.categoryViewControllerOne.view){
+            [self pushViewStack:self.categoryViewControllerOne.view];
+        }
+        
+        [self.centerContainerView addSubview:self.categoryViewControllerOne.view];
+        if(self.categoryViewControllerOne.view.superview == self.centerContainerView){
+            NSLog(@"! is center container view");
+        }
+        if([self peekViewStack]==self.categoryViewControllerOne.view){
+            NSLog(@"top is category view");
+        }
+        //NSLog(@"category super view is %@",self.categoryViewControllerOne.view.superview);
         
         _allowBeforePageView = YES;
        
-        [self.pageVC setViewControllers:_pages direction:UIPageViewControllerNavigationDirectionForward animated:YES completion:nil];
+        //[self.pageVC setViewControllers:_pages direction:UIPageViewControllerNavigationDirectionForward animated:YES completion:nil];
         
-        if([self peekViewStack]!=self.pageVC.view){
-            [self pushViewStack:self.pageVC.view];
-        }
+//        if([self peekViewStack]!=self.pageVC.view){
+//            [self pushViewStack:self.pageVC.view];
+//        }
         
+        
+
     }
     else if(tableView == _userMenuController.userMenuTableView){
         if(indexPath.row==0){
@@ -92,7 +114,8 @@ static MainViewController* instance;
                 else if(lastView == self.myDealViewController.view){
                     nil;
                 }
-                else if(lastView == self.pageVC.view){
+                //else if(lastView == self.pageVC.view){
+                else if(lastView == self.categoryViewControllerOne.view){
                     [lastView removeFromSuperview];
                     [self popViewStack];
                     lastView = [self peekViewStack];
@@ -280,6 +303,10 @@ static MainViewController* instance;
     [self.mainContainerView addSubview:self.centerContainerView];
     [self.mainContainerView addSubview:self.toolBar];
     
+    [self categoryViewControllerOne];
+    //[self categoryViewControllerTwo];
+    
+    
     //add to center container view;
     [self centerViewController];
     [self.centerContainerView addSubview:_centerViewController.view];
@@ -293,15 +320,16 @@ static MainViewController* instance;
     //[self setupUserMenuViewController];
     [self myDealViewController];
     //[self setupMyDealViewController];
-    [self categoryViewControllerOne];
-    [self categoryViewControllerTwo];
+    
+    [self.centerContainerView addSubview:self.categoryViewControllerOne.view];
+    
     //[self pageVC];
     //[self setupPageView];
     
     //[self setupCategoryViewController];
     
     
-    [self.pageVC setViewControllers:_pages direction:UIPageViewControllerNavigationDirectionReverse animated:YES completion:nil];
+    //[self.pageVC setViewControllers:_pages direction:UIPageViewControllerNavigationDirectionReverse animated:YES completion:nil];
     
 }
 -(SettingsViewController*)settingsViewController
@@ -457,6 +485,8 @@ static MainViewController* instance;
     return _pageVC;
 }
 
+
+
 -(void)showPostActionSheet
 {
     UIActionSheet *actionSheet= [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:@"cancel" destructiveButtonTitle:nil otherButtonTitles:@"Sell deal",@"Buy deal", nil];
@@ -517,6 +547,10 @@ static MainViewController* instance;
     
     
 }
+-(void)pageViewController:(UIPageViewController *)pageViewController didFinishAnimating:(BOOL)finished previousViewControllers:(NSArray *)previousViewControllers transitionCompleted:(BOOL)completed
+{
+    NSLog(@"calling did finish animating page view controller");
+}
 -(UIViewController *)pageViewController:(UIPageViewController *)pageViewController viewControllerAfterViewController:(UIViewController *)viewController
 {
     NSLog(@"!calling after view controller");
@@ -570,7 +604,8 @@ static MainViewController* instance;
     if([self peekViewStack] == self.myDealViewController.view){
         [self popViewStack];
     }
-    [self.pageVC.view removeFromSuperview];
+    //[self.pageVC.view removeFromSuperview];
+    [self.categoryViewControllerOne.view removeFromSuperview];
     [self.myDealViewController.view removeFromSuperview];
     
     if(self.centerViewController.view.superview != self.centerContainerView){
@@ -583,7 +618,8 @@ static MainViewController* instance;
 }
 -(void)backToCenterViewFromCategoryView
 {
-    [self.pageVC.view removeFromSuperview];
+    //[self.pageVC.view removeFromSuperview];
+    [self.categoryViewControllerOne.view removeFromSuperview];
     [self popViewStack];
     UIView *lastView = [self peekViewStack];
     if(lastView == self.centerViewController.view){

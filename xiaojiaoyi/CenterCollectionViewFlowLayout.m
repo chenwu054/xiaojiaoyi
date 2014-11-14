@@ -50,11 +50,11 @@
 //NOT CALLED
 - (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout referenceSizeForHeaderInSection:(NSInteger)section {
 
-    NSLog(@"!!! calling haeader size");
-    CGSize size = CGSizeMake(320, 250);
-    return size;
+        NSLog(@"!!! calling haeader size");
+        CGSize size = CGSizeMake(320, 250);
+        return size;
+    
 }
-
 - (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout referenceSizeForFooterInSection:(NSInteger)section {
     
     NSLog(@"!!! calling footer size");

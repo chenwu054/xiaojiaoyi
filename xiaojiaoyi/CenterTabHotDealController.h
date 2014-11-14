@@ -22,7 +22,7 @@
 @interface CenterTabHotDealController : UIViewController <UISearchBarDelegate,UISearchBarDelegate,UICollectionViewDataSource,UICollectionViewDelegate,UICollectionViewDelegateFlowLayout,UIGestureRecognizerDelegate>
 @property (nonatomic) UISearchBar *searchBar;
 
-@property (nonatomic) UICollectionView *collectionView;
+//@property (nonatomic) UICollectionView *collectionView;
 @property (nonatomic) UICollectionViewController *collectionVC;
 @property (nonatomic) UICollectionViewFlowLayout *flowLayout;
 

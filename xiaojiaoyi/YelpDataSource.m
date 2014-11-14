@@ -11,7 +11,8 @@
 
 @property (nonatomic)NSString* query;
 @property (nonatomic)NSString* locationString;
-
+@property (nonatomic)NSString* category;
+@property (nonatomic)NSString* offset;
 
 @end
 
@@ -30,11 +31,28 @@ static NSString *searchPath =@"/v2/search";
     return self;
 }
 
+-(void)setQuery:(NSString*)query category:(NSString*)category andLocation:(NSString*)location
+{
+    [self setQuery:query category:category location:location offset:@"0"];
+}
+-(void)setQuery:(NSString*)query category:(NSString*)category location:(NSString*)location offset:(NSString*)offset
+{
+    self.query=query;
+    self.category=category;
+    self.locationString=location;
+    self.offset=offset;
+}
 -(void)fetchDataWithCompletionHandler:(void(^)(NSData *data, NSURLResponse *response, NSError *error))handler
 {
     NSMutableDictionary * params = [[NSMutableDictionary alloc] init];
-    [params setValue:self.query forKey:@"term"];
+
+    [params setValue:self.query?self.query:@"" forKey:@"term"];
     [params setValue:self.locationString forKey:@"location"];
+    if(self.category){
+        [params setValue:self.category forKey:@"category_filter"];
+    }
+    [params setValue:self.offset?self.offset:@"0" forKey:@"offset"];
+    
     //[params setValue:@"10" forKey:@"limit"];
     NSURLRequest * request = [NSURLRequest requestWithHost:hostname path:searchPath params:params];
     NSURLSession * session = [NSURLSession sharedSession];
@@ -44,5 +62,6 @@ static NSString *searchPath =@"/v2/search";
     }];
     [task resume];
 }
+
 
 @end

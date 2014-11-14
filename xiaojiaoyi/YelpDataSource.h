@@ -13,6 +13,7 @@
 
 -(instancetype)initWithQuery:(NSString*)query andRegion:(NSString*)region;
 -(void)fetchDataWithCompletionHandler:(void(^)(NSData *data, NSURLResponse *response, NSError *error))handler;
-
+-(void)setQuery:(NSString*)query category:(NSString*)category andLocation:(NSString*)location;
+-(void)setQuery:(NSString*)query category:(NSString*)category location:(NSString*)location offset:(NSString*)offset;
 
 @end

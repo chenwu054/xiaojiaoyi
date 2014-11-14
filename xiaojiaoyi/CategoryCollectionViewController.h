@@ -8,12 +8,16 @@
 
 #import <UIKit/UIKit.h>
 #import "MainViewController.h"
+#import "YelpDataSource.h"
+#import "GestureCollectionView.h"
 
-@interface CategoryCollectionViewController : UIViewController
+@interface CategoryCollectionViewController : UIViewController <UICollectionViewDataSource,UICollectionViewDelegate>
+@property (nonatomic) NSString* category;
+@property (nonatomic) NSString* query;
+@property (nonatomic) NSString* location;
 
 @property (nonatomic) UINavigationBar* navigationBar;
 @property (nonatomic) MainViewController* mainVC;
+//@property (nonatomic) UICollectionViewController* collectionVC;
 
--(void)setBackgroundColor:(UIColor*)color;
--(CategoryCollectionViewController*)initWithBackgroundColor:(UIColor*)color;
 @end

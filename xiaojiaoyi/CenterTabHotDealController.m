@@ -30,7 +30,6 @@
 @property (nonatomic) YelpDataSource* dataSource;
 @property (nonatomic) NSMutableArray* businesses;
 @property (nonatomic) NSMutableDictionary* cells;
-
 @property (nonatomic) NSMutableArray* names;
 @property (nonatomic) NSMutableArray* urls;
 @property (nonatomic) NSMutableDictionary* images;
@@ -163,42 +162,6 @@
     [_collectionVC.collectionView addSubview:view];
     
     return view;
-}
-
-//pull down view
--(UIView*)pullDownView{
-    if(!_pullDownView){
-        CGRect frame = CGRectMake(0, -0, self.view.frame.size.width,PULLDOWN_VIEW_HEIGHT);
-        _pullDownView = [[UIView alloc] initWithFrame:frame];
-        _pullDownView.backgroundColor = [UIColor lightGrayColor];
-        
-        UIImage *image = [UIImage imageNamed:@"pull_down_arrow.jpg"];
-        if(!_pullDownImageView){
-            _pullDownImageView = [[UIImageView alloc] initWithImage:image];
-        }
-        _pullDownImageView.backgroundColor = [UIColor clearColor];
-        _pullDownImageView.frame = CGRectMake(20, 0, 20, PULLDOWN_VIEW_HEIGHT);
-        
-        [_pullDownView addSubview:_pullDownImageView];
-        
-        if(!_pullDownInfoLabel){
-            _pullDownInfoLabel = [[UILabel alloc] initWithFrame:CGRectMake(50, 0, 250, PULLDOWN_VIEW_HEIGHT/2)];
-        }
-        _pullDownInfoLabel.text = @"pull down to refresh";
-        _pullDownInfoLabel.font = [UIFont fontWithName:@"Arial" size:14.0f];
-        [_pullDownView addSubview:_pullDownInfoLabel];
-        
-        if(!_pullDownTimeLabel){
-            _pullDownTimeLabel = [[UILabel alloc] initWithFrame:CGRectMake(50, PULLDOWN_VIEW_HEIGHT/2, 250, PULLDOWN_VIEW_HEIGHT/2)];
-        }
-        _pullDownTimeLabel.text = [NSString stringWithFormat:@"last refreshed on %@",[self getCurrentDateTime]];
-        _pullDownTimeLabel.font = [UIFont fontWithName:@"Arial" size:12.0f];
-        
-        [_pullDownView addSubview:_pullDownTimeLabel];
-        
-        
-    }
-    return _pullDownView;
 }
 
 //collecion view controller setup
@@ -535,6 +498,43 @@
 }
 
 #pragma mark - overall setup
+
+//pull down view
+-(UIView*)pullDownView{
+    if(!_pullDownView){
+        CGRect frame = CGRectMake(0, -0, self.view.frame.size.width,PULLDOWN_VIEW_HEIGHT);
+        _pullDownView = [[UIView alloc] initWithFrame:frame];
+        _pullDownView.backgroundColor = [UIColor lightGrayColor];
+        
+        UIImage *image = [UIImage imageNamed:@"pull_down_arrow.jpg"];
+        if(!_pullDownImageView){
+            _pullDownImageView = [[UIImageView alloc] initWithImage:image];
+        }
+        _pullDownImageView.backgroundColor = [UIColor clearColor];
+        _pullDownImageView.frame = CGRectMake(20, 0, 20, PULLDOWN_VIEW_HEIGHT);
+        
+        [_pullDownView addSubview:_pullDownImageView];
+        
+        if(!_pullDownInfoLabel){
+            _pullDownInfoLabel = [[UILabel alloc] initWithFrame:CGRectMake(50, 0, 250, PULLDOWN_VIEW_HEIGHT/2)];
+        }
+        _pullDownInfoLabel.text = @"pull down to refresh";
+        _pullDownInfoLabel.font = [UIFont fontWithName:@"Arial" size:14.0f];
+        [_pullDownView addSubview:_pullDownInfoLabel];
+        
+        if(!_pullDownTimeLabel){
+            _pullDownTimeLabel = [[UILabel alloc] initWithFrame:CGRectMake(50, PULLDOWN_VIEW_HEIGHT/2, 250, PULLDOWN_VIEW_HEIGHT/2)];
+        }
+        _pullDownTimeLabel.text = [NSString stringWithFormat:@"last refreshed on %@",[self getCurrentDateTime]];
+        _pullDownTimeLabel.font = [UIFont fontWithName:@"Arial" size:12.0f];
+        
+        [_pullDownView addSubview:_pullDownTimeLabel];
+        
+        
+    }
+    return _pullDownView;
+}
+
 -(YelpDataSource*)dataSource
 {
     if(!_dataSource){
@@ -580,7 +580,6 @@
         
     }];
     
-    
 }
 -(NSString *)getCurrentDateTime
 {
@@ -603,7 +602,7 @@
     //[self setupGestureRecognizer];
     [self collectionVC];
     //[UIView recursivePrintViewTree:self.view];
-    _spinner = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+    self.spinner = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
     
     //[UIView recursivePrintViewTree:_collectionVC.collectionView];
     

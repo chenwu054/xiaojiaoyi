@@ -465,6 +465,23 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		7402D4931A159D86002AF7B3 /* miscellaneous */ = {
+			isa = PBXGroup;
+			children = (
+				740C855719F959F200D3A178 /* TestCoreDataViewController.h */,
+				740C855819F959F200D3A178 /* TestCoreDataViewController.m */,
+				74CB851B19C0193C00579432 /* YelpViewController.h */,
+				74CB851C19C0193C00579432 /* YelpViewController.m */,
+				74065AE019C748210033DA71 /* DetailPageContentViewController.h */,
+				74065AE119C748210033DA71 /* DetailPageContentViewController.m */,
+				74FE265819CA72A300801CA1 /* MapViewController.h */,
+				74FE265919CA72A300801CA1 /* MapViewController.m */,
+				749366F019CA7D9B003B3108 /* Location.h */,
+				749366F119CA7D9B003B3108 /* Location.m */,
+			);
+			name = miscellaneous;
+			sourceTree = "<group>";
+		};
 		74065AE319C7E2DD0033DA71 /* images */ = {
 			isa = PBXGroup;
 			children = (
@@ -555,10 +572,10 @@
 				74B7218819E83845000B3892 /* CenterCollectionViewFlowLayout.m */,
 				74B7219419EC1F91000B3892 /* MyTapGestureRecognizer.h */,
 				74B7219519EC1F91000B3892 /* MyTapGestureRecognizer.m */,
-				741FB5F519E06F4600EA6D5B /* CenterTabHotDealController.h */,
-				741FB5F619E06F4600EA6D5B /* CenterTabHotDealController.m */,
 				7402D4901A145A31002AF7B3 /* YelpDataSource.h */,
 				7402D4911A145A31002AF7B3 /* YelpDataSource.m */,
+				741FB5F519E06F4600EA6D5B /* CenterTabHotDealController.h */,
+				741FB5F619E06F4600EA6D5B /* CenterTabHotDealController.m */,
 			);
 			name = CenterVC;
 			sourceTree = "<group>";
@@ -695,6 +712,7 @@
 		74B9327219AAEB4E003B6594 /* xiaojiaoyi */ = {
 			isa = PBXGroup;
 			children = (
+				7402D4931A159D86002AF7B3 /* miscellaneous */,
 				74CB84D919BA15FA00579432 /* OAuth */,
 				740A2E6E19C299D200D87965 /* CollectionView */,
 				740C855119F886E300D3A178 /* DataModel */,
@@ -702,26 +720,14 @@
 				74B721AB19F0C5D6000B3892 /* MakeDeal */,
 				749366FB19CE75F1003B3108 /* Login */,
 				74B721AC19F0C5FE000B3892 /* MainPage */,
-				74CB851B19C0193C00579432 /* YelpViewController.h */,
-				74CB851C19C0193C00579432 /* YelpViewController.m */,
-				740C855719F959F200D3A178 /* TestCoreDataViewController.h */,
-				740C855819F959F200D3A178 /* TestCoreDataViewController.m */,
 				74B7219A19EE0F3A000B3892 /* CategoryCollectionViewController.h */,
 				74B7219B19EE0F3A000B3892 /* CategoryCollectionViewController.m */,
-				74065AE019C748210033DA71 /* DetailPageContentViewController.h */,
-				74065AE119C748210033DA71 /* DetailPageContentViewController.m */,
-				74FE265819CA72A300801CA1 /* MapViewController.h */,
-				74FE265919CA72A300801CA1 /* MapViewController.m */,
-				749366F019CA7D9B003B3108 /* Location.h */,
-				749366F119CA7D9B003B3108 /* Location.m */,
 				74B9327E19AAEB4E003B6594 /* Main_iPhone.storyboard */,
-				74B9327B19AAEB4E003B6594 /* xjyAppDelegate.h */,
-				74B9327C19AAEB4E003B6594 /* xjyAppDelegate.m */,
 				740C850F19F87CAC00D3A178 /* DataModel.xcdatamodeld */,
 				74B9328719AAEB4E003B6594 /* Images.xcassets */,
+				74B9327319AAEB4E003B6594 /* Supporting Files */,
 				74065AE319C7E2DD0033DA71 /* images */,
 				74B932EA19AD8695003B6594 /* STTwitter */,
-				74B9327319AAEB4E003B6594 /* Supporting Files */,
 			);
 			path = xiaojiaoyi;
 			sourceTree = "<group>";
@@ -729,6 +735,8 @@
 		74B9327319AAEB4E003B6594 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				74B9327B19AAEB4E003B6594 /* xjyAppDelegate.h */,
+				74B9327C19AAEB4E003B6594 /* xjyAppDelegate.m */,
 				741FB5F119DF567700EA6D5B /* UserMenuCategory.plist */,
 				74B9328119AAEB4E003B6594 /* Main_iPad.storyboard */,
 				74B9327419AAEB4E003B6594 /* xiaojiaoyi-Info.plist */,

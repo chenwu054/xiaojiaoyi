@@ -125,13 +125,8 @@
     [_bkg addGestureRecognizer:tapGR];
     //_tableView.delegate = self;
     _tableView.dataSource = self;
-    
     [self buttonSetup];
-    
-    
 }
-
-
 
 - (void)didReceiveMemoryWarning
 {
