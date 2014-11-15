@@ -7,10 +7,10 @@
 //
 
 #import "MainViewController.h"
+#import "YelpDataSource.h"
 
 #define PANEL_WIDTH 40
 #define TOOL_BAR_HEIGHT 50
-
 
 @interface MainViewController ()
 
@@ -21,21 +21,26 @@
 @property (nonatomic) UIPageViewController* pageVC;
 //@property (nonatomic) UIView* categoryView;
 
-
 @property (nonatomic) NSArray *pages;
 @property (nonatomic) NSMutableArray *viewStack;
 @property (nonatomic) BOOL allowBeforePageView;
 
 @property (nonatomic) UIView* centerContainerView;
+@property (nonatomic) CLLocationManager* locationMgr;
 
 //@property (nonatomic) MainViewController* instance;
 @property (nonatomic) DataModalUtils* utils;
+@property (nonatomic) NSString* latitude;
+@property (nonatomic) NSString* longtitude;
+@property (nonatomic) BOOL shouldFetchAfterLocationReceived;
 
+typedef void (^LocationHandler)(NSString* latitude,NSString*longitude);
 
 @end
 
 @implementation MainViewController
 static MainViewController* instance;
+static LocationHandler locationHandler;
 
 #pragma mark - table view delegate methods
 
@@ -62,18 +67,31 @@ static MainViewController* instance;
         
         if(self.categoryViewControllerOne.view.superview != self.centerContainerView){
             [self.centerContainerView addSubview:self.categoryViewControllerOne.view];
-            NSLog(@"! is center container view");
+            //NSLog(@"! is center container view");
         }
         if([self peekViewStack]==self.categoryViewControllerOne.view){
-            NSLog(@"top is category view");
+            nil;
+            //NSLog(@"top is category view");
         }
         _allowBeforePageView = YES;
+        
         [self.categoryViewControllerOne clear];
         self.categoryViewControllerOne.freshStart = YES;
         //[self.categoryViewControllerOne.collectionVC.collectionView scrollToItemAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0] atScrollPosition:UICollectionViewScrollPositionTop animated:YES];
         
         NSString* category = indexPath.section==0?self.menuViewController.quickDealSymbol[indexPath.row]:self.menuViewController.yelpSymbol[indexPath.row];
-        [self.categoryViewControllerOne refreshDataWithQuery:@"" category:category andLocation:@"San Francisco" offset:@"0"];
+        
+        [self fetchLocationWithCompletionHandler:^(NSString *latitude, NSString *longtitude) {
+            if(self.latitude && self.longtitude){
+                [self.categoryViewControllerOne setLatitude:self.latitude andLongtitude:self.longtitude];
+                [self.categoryViewControllerOne refreshDataWithLocationAndQuery:@"" category:category offset:@"0"];
+            }
+        }];
+        
+        //this works when the location is specified by NSString;
+        //[self.categoryViewControllerOne ]
+        //[self.categoryViewControllerOne refreshDataWithQuery:@"" category:category andLocation:@"San Francisco" offset:@"0"];
+        
         
         
         //[self.pageVC setViewControllers:_pages direction:UIPageViewControllerNavigationDirectionForward animated:YES completion:nil];
@@ -81,8 +99,6 @@ static MainViewController* instance;
 //        if([self peekViewStack]!=self.pageVC.view){
 //            [self pushViewStack:self.pageVC.view];
 //        }
-        
-        
 
     }
     else if(tableView == _userMenuController.userMenuTableView){
@@ -227,6 +243,45 @@ static MainViewController* instance;
     
 }
 
+#pragma mark - location methods
+-(void)fetchLocationWithCompletionHandler:(void(^)(NSString* latitude, NSString* longtitude))handler
+{
+    if(!self.latitude || !self.longtitude){
+        [self.locationMgr startUpdatingLocation];
+        self.shouldFetchAfterLocationReceived=YES;
+        if(handler){
+            locationHandler=handler;
+        }
+    }
+    else {
+        self.shouldFetchAfterLocationReceived=NO;
+        handler(self.latitude,self.longtitude);
+    }
+    
+}
+- (void)locationManager:(CLLocationManager *)manager didUpdateLocations:(NSArray *)locations
+{
+    CLLocation *curLocation = (CLLocation *)locations.lastObject;
+    NSDate* eventDate = curLocation.timestamp;
+    NSTimeInterval howRecent = [eventDate timeIntervalSinceNow];
+    //NSLog(@"calling location manager");
+    
+    if (abs(howRecent) < 100.0) {
+        // If the event is recent, do something with it.
+        NSLog(@"latitude %.6f, longitude %.6f\n",
+              curLocation.coordinate.latitude,
+              curLocation.coordinate.longitude);
+        _latitude = [NSString stringWithFormat:@"%.6f",curLocation.coordinate.latitude];
+        _longtitude = [NSString stringWithFormat:@"%.6f", curLocation.coordinate.longitude];
+        [_locationMgr stopUpdatingLocation];
+        if(self.shouldFetchAfterLocationReceived){
+            self.shouldFetchAfterLocationReceived=NO;
+            locationHandler(_latitude,_longtitude);
+        }
+    }
+}
+
+
 #pragma mark - gesture recognizer setup
 -(UIPanGestureRecognizer*)getPanGestureRecognizer
 {
@@ -299,6 +354,21 @@ static MainViewController* instance;
     }
     return _mainContainerView;
 }
+-(CLLocationManager*)locationMgr
+{
+    if(!_locationMgr){
+        _locationMgr = [[CLLocationManager alloc] init];
+        _locationMgr.delegate = self;
+        _locationMgr.desiredAccuracy = kCLLocationAccuracyBest;
+        _locationMgr.distanceFilter = 500; //in meters
+        [_locationMgr startUpdatingLocation];
+        self.shouldFetchAfterLocationReceived=NO;
+    }
+    return _locationMgr;
+}
+
+
+
 //NOTE: One gesture recognizer can be only added to ONE view
 //Adding one recognizer to multiple views will invalidate the recognizer and no view will response to the gesture.
 -(void)setup
@@ -308,7 +378,7 @@ static MainViewController* instance;
     [self.mainContainerView addSubview:self.centerContainerView];
     [self.mainContainerView addSubview:self.toolBar];
     
-    [self categoryViewControllerOne];
+    self.categoryViewControllerOne.mainVC=self;
     [self.centerContainerView addSubview:self.categoryViewControllerOne.view];
     [self.categoryViewControllerOne.view removeFromSuperview];
     
@@ -319,6 +389,8 @@ static MainViewController* instance;
     [self centerViewController];
     [self.centerContainerView addSubview:_centerViewController.view];
     
+    //[self.centerContainerView addSubview:self.categoryViewControllerOne.view];
+    
     //[self setupCenterViewController];
     [self menuViewController];
     [self.view addSubview:_menuViewController.view];
@@ -327,16 +399,14 @@ static MainViewController* instance;
     [self.view addSubview:_userMenuController.view];
     //[self setupUserMenuViewController];
     [self myDealViewController];
-    //[self setupMyDealViewController];
     
-    //[self.centerContainerView addSubview:self.categoryViewControllerOne.view];
+    //set up location manager
+    [self locationMgr];
+    
     
     //[self pageVC];
     //[self setupPageView];
-    
     //[self setupCategoryViewController];
-    
-    
     //[self.pageVC setViewControllers:_pages direction:UIPageViewControllerNavigationDirectionReverse animated:YES completion:nil];
     
 }
@@ -855,6 +925,7 @@ static MainViewController* instance;
     
     //NSLog(@"pushed new view now stack size is %ld",_viewStack.count);
 }
+
 
 #pragma mark - life cycle methods
 

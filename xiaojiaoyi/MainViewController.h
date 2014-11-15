@@ -7,6 +7,8 @@
 //
 
 #import <UIKit/UIKit.h>
+#import <CoreLocation/CoreLocation.h>
+#import "Location.h"
 #import "MenuTableController.h"
 #import "YelpViewController.h"
 #import "UserMenuController.h"
@@ -23,7 +25,7 @@
 @class CategoryCollectionViewController;
 @class SettingsViewController;
 
-@protocol MenuNavigationDelegate <NSObject,UIPageViewControllerDataSource,UIPageViewControllerDelegate,UIToolbarDelegate,UIActionSheetDelegate,UINavigationControllerDelegate>
+@protocol MenuNavigationDelegate <NSObject,UIPageViewControllerDataSource,UIPageViewControllerDelegate,UIToolbarDelegate,UIActionSheetDelegate,UINavigationControllerDelegate,CLLocationManagerDelegate>
 
 -(void) slideLeftAll;
 -(void) slideRightAll;
@@ -52,6 +54,8 @@
 
 @property (nonatomic) UIView* mainContainerView;
 @property (nonatomic) UIToolbar* toolBar;
+
+@property (nonatomic) CLLocationCoordinate2D myLocation;
 
 //+(MainViewController*)sharedInstance;
 

@@ -888,6 +888,7 @@
     }
     return _spinner;
 }
+
 //-(UINavigationController*)navigationVC
 //{
 //    if(!_navigationVC){

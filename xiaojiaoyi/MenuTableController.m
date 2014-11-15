@@ -83,7 +83,6 @@
     [_searchBar resignFirstResponder];
 }
 
-
 #pragma mark - gesture recognizer methods
 -(void) tap:(UITapGestureRecognizer *)gesture
 {

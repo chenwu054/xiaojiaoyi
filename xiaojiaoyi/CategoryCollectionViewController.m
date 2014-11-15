@@ -21,7 +21,6 @@
 @property (nonatomic) UILabel *pullDownInfoLabel;
 @property (nonatomic) UILabel *pullDownTimeLabel;
 
-
 @property (nonatomic) UICollectionViewFlowLayout* flowLayout;
 @property (nonatomic) YelpDataSource* dataSource;
 @property (nonatomic) NSMutableArray* businesses;
@@ -38,6 +37,9 @@
 @property (nonatomic) NSString* locationString;
 @property (nonatomic) BOOL needToRefresh;
 
+@property (nonatomic) NSString* latitude;
+@property (nonatomic) NSString* longitude;
+
 @end
 
 @implementation CategoryCollectionViewController
@@ -47,7 +49,7 @@
 {
     [super touchesBegan:touches withEvent:event];
     [self.nextResponder touchesBegan:touches withEvent:event];
-    //NSLog(@"hot deal view touches began");
+    //NSLog(@"category view touches began");
     //UITouch *touch = [touches anyObject];
     //CGPoint curLoc = [touch locationInView:self.view];
     //CGPoint prevLoc = [touch previousLocationInView:self.view];
@@ -65,7 +67,7 @@
 }
 -(void)touchesCancelled:(NSSet *)touches withEvent:(UIEvent *)event
 {
-    //NSLog(@"HDC gesture cancelled");
+    //NSLog(@"category view gesture cancelled");
     //[self tap:nil];
     [super touchesCancelled:touches withEvent:event];
     [self.nextResponder touchesCancelled:touches withEvent:event];
@@ -73,14 +75,14 @@
 }
 -(void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event
 {
-    //NSLog(@"gesture ended");
+    //NSLog(@"category view gesture ended");
     //[self tap:nil];
     [super touchesEnded:touches withEvent:event];
     [self.nextResponder touchesEnded:touches withEvent:event];
     if(self.mainVC){
         //NSLog(@"main view is reset: %d",self.mainVC.isReset);
         //if(!self.mainVC.isReset){
-        [self.mainVC resetWithCenterView:self.mainVC.centerViewController.view];//???
+        [self.mainVC resetWithCenterView:self.mainVC.mainContainerView];//???
         //}
     }
     [self.view.superview touchesEnded:touches withEvent:event];
@@ -89,7 +91,7 @@
 #pragma mark - collection view layout methods
 -(UICollectionViewFlowLayout*) flowLayout
 {
-    NSLog(@"calling flow layout");
+    //NSLog(@"calling flow layout");
     if(!_flowLayout){
         _flowLayout = [[CenterCollectionViewFlowLayout alloc] init];
         //        _flowLayout = [[UICollectionViewFlowLayout alloc] init];
@@ -119,7 +121,7 @@
 //set Header and Footer
 -(UICollectionReusableView *)collectionView:(UICollectionView *)collectionView viewForSupplementaryElementOfKind:(NSString *)kind atIndexPath:(NSIndexPath *)indexPath
 {
-    NSLog(@"! calling viewForSupplymentary elements at index path");
+    //NSLog(@"! calling viewForSupplymentary elements at index path");
     //Header2. calling the supplementary view
     UICollectionReusableView*view = nil;
     
@@ -140,7 +142,7 @@
 #pragma mark - collection view controller methods
 -(UICollectionViewController*)collectionVC
 {
-    NSLog(@"! calling collectionVC");
+    //NSLog(@"! calling collectionVC");
     if(!_collectionVC){
         _collectionVC = [[UICollectionViewController alloc] init]; //initWithCollectionViewLayout:self.flowLayout];
         CGRect collectionViewFrame = CGRectMake(COLLECTION_VIEW_MARGIN, NAVIGATION_BAR_HEIGHT, self.view.frame.size.width -2*COLLECTION_VIEW_MARGIN, self.view.frame.size.height - NAVIGATION_BAR_HEIGHT - 0);
@@ -257,13 +259,13 @@
 
 -(NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section
 {
-    NSLog(@"! calling number of items in section: %ld",self.urls.count);
+    //NSLog(@"! calling number of items in section: %ld",self.urls.count);
     return self.urls.count;
 }
 
 -(NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView
 {
-    NSLog(@"! calling number of sections");
+    //NSLog(@"! calling number of sections");
     return 1;
 }
 -(void)collectionView:(UICollectionView *)collectionView didHighlightItemAtIndexPath:(NSIndexPath *)indexPath
@@ -285,7 +287,8 @@
     if( self.batchNumber <= REFRESH_LIMIT && offset > (self.names.count/2 - 2)*175 + REFRESH_OFFSET){
         if(self.needToRefresh){
             NSLog(@"call to refresh");
-            [self refreshDataWithQuery:self.query category:self.category andLocation:self.location offset:[NSString stringWithFormat:@"%ld",self.offset]];
+           // [self refreshDataWithQuery:self.query category:self.category andLocation:self.location offset:[NSString stringWithFormat:@"%ld",self.offset]];
+            [self refreshDataWithLocationAndQuery:self.query category:self.category offset:[NSString stringWithFormat:@"%ld",self.offset]];
             self.needToRefresh=NO;
         }
     }
@@ -293,8 +296,14 @@
 }
 
 //=============
-#pragma mark -
-
+#pragma mark - property setup methods
+-(void)setLatitude:(NSString*)latitude andLongtitude:(NSString*)longitude
+{
+    self.latitude=latitude;
+    self.longitude=longitude;
+    [self.dataSource setLocationLatitude:latitude andLongitude:longitude];
+    
+}
 -(UINavigationBar *)navigationBar
 {
     if(!_navigationBar){
@@ -341,26 +350,31 @@
     }
     return _images;
 }
+
+
 -(void)clear
 {
     NSLog(@"! calling clear");
-    //delete all the current cells
+    //delete all the current cells, need to reset the arrays first before deleting all the indexPaths,
+    //because iOS will call to check how many cells in the section. If delete first, then reset array, before the arrays are reset, iOS checks the number
+    //it will still be nonzero. This will cause mismatch and iOS will through exception about this mismatch: number before update(insert and delete) +/- number inserted/deleted should be equal to the number after the update!
+    NSInteger count = self.urls.count;
     [self.names removeAllObjects];
     [self.urls removeAllObjects];
     [self.images removeAllObjects];
     self.offset=0;
     self.batchNumber=0;
     self.needToRefresh=true;
-    
-    NSIndexPath* idx=[NSIndexPath indexPathForRow:self.urls.count-1 inSection:0];
+    NSIndexPath* idx=nil;//[NSIndexPath indexPathForRow:self.urls.count-1 inSection:0];
     NSMutableArray* indices = [[NSMutableArray alloc] init];
-    for(int i=0;i<self.urls.count;i++){
+    for(int i=0;i<count;i++){
         idx=[NSIndexPath indexPathForRow:i inSection:0];
         [indices addObject:idx];
     }
     if(indices.count>0){
         [self.collectionVC.collectionView deleteItemsAtIndexPaths:indices];
     }
+    
     
 }
 
@@ -386,12 +400,9 @@
                 //NSLog(@"name is: %@",[self.businesses[i] valueForKey:@"name"]);
                 NSString *name = [self.businesses[i] valueForKey:@"name"];
                 NSString *urlStr = [self.businesses[i] valueForKey:@"image_url"];
-                
                 //!! NSMutableArray cannot add nil object.
-                if(name){
+                if(name && urlStr && ![urlStr isEqualToString:@""]){
                     [self.names addObject:name];
-                }
-                if(urlStr){
                     [self.urls addObject:[NSURL URLWithString:urlStr]];
                 }
             }
@@ -422,6 +433,62 @@
         }
     }];
 }
+-(void)refreshDataWithLocationAndQuery:(NSString*)query category:(NSString*)category offset:(NSString*)offset
+{
+    NSLog(@"!calling refresh with location");
+    self.query=query;
+    self.category=category;
+    [self.dataSource setQuery:query category:category location:nil offset:offset];
+    [self.dataSource fetchDataWithLocationAndOffset:offset andCompletionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
+        NSHTTPURLResponse * r = (NSHTTPURLResponse*)response;
+        //NSLog(@"response is %@",response);
+        //NSLog(@"error is %@",error);
+        if(r.statusCode == 200){
+            //NSLog(@"is successful");
+            NSError * error;
+            NSDictionary *json = [NSJSONSerialization JSONObjectWithData:data options:0 error: &error];
+            //NSLog(@"%@",json);
+            self.businesses = [json valueForKey:@"businesses"];
+            for(NSInteger i=0;i<[self.businesses count];i++){
+                //NSLog(@"name is: %@",[self.businesses[i] valueForKey:@"name"]);
+                NSString *name = [self.businesses[i] valueForKey:@"name"];
+                NSString *urlStr = [self.businesses[i] valueForKey:@"image_url"];
+                //!! NSMutableArray cannot add nil object.
+                if(name && urlStr && ![urlStr isEqualToString:@""]){
+                    [self.names addObject:name];
+                    [self.urls addObject:[NSURL URLWithString:urlStr]];
+                }
+            }
+            self.batchNumber=self.batchNumber+1;
+            //NSLog(@"batch is %ld",self.batchNumber);
+            self.offset=self.offset+self.businesses.count+1; //self.batchNumber*20-1;
+            self.needToRefresh=YES;
+            //NSLog(@"busnesses count is %ld",self.businesses.count);
+            
+            //            NSMutableArray* arr =[[NSMutableArray alloc] init];
+            //            for(int i=0;i<self.businesses.count;i++){
+            //                [arr addObject:[NSIndexPath indexPathForRow:i+self.offset inSection:0]];
+            //            }
+            //            [self.collectionVC.collectionView insertItemsAtIndexPaths:arr];
+            //call it on the main queue to refresh the screen immediately!!
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [self.collectionVC.collectionView reloadData];
+                if(self.freshStart){
+                    
+                    //need to scroll back to the top every time a new request is sent.
+                    if(self.urls.count>0){
+                        [self.collectionVC.collectionView scrollToItemAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0] atScrollPosition:UICollectionViewScrollPositionTop animated:YES];
+                        self.freshStart=NO;
+                    }
+                }
+                //[self.collectionView reloadData];
+            });
+        }
+    }];
+    
+}
+
+
 -(void)setup
 {
     [self navigationBar];
@@ -430,6 +497,8 @@
     self.defaultImage=[UIImage imageNamed:@"apple image.jpg"];
     self.spinner = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
     [self clear];
+    
+    
 }
 
 - (void)viewDidLoad

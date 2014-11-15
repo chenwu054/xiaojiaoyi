@@ -23,6 +23,9 @@
 @property (nonatomic) BOOL freshStart;
 
 -(void)clear;
+-(void)setLatitude:(NSString*)latitude andLongtitude:(NSString*)longitude;
 -(void)refreshDataWithQuery:(NSString*)query category:(NSString*)category andLocation:(NSString*)location offset:(NSString*)offset;
+
+-(void)refreshDataWithLocationAndQuery:(NSString*)query category:(NSString*)category offset:(NSString*)offset;
 
 @end
