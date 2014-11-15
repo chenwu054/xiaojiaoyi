@@ -60,17 +60,22 @@ static MainViewController* instance;
             [self pushViewStack:self.categoryViewControllerOne.view];
         }
         
-        [self.centerContainerView addSubview:self.categoryViewControllerOne.view];
-        if(self.categoryViewControllerOne.view.superview == self.centerContainerView){
+        if(self.categoryViewControllerOne.view.superview != self.centerContainerView){
+            [self.centerContainerView addSubview:self.categoryViewControllerOne.view];
             NSLog(@"! is center container view");
         }
         if([self peekViewStack]==self.categoryViewControllerOne.view){
             NSLog(@"top is category view");
         }
-        //NSLog(@"category super view is %@",self.categoryViewControllerOne.view.superview);
-        
         _allowBeforePageView = YES;
-       
+        [self.categoryViewControllerOne clear];
+        self.categoryViewControllerOne.freshStart = YES;
+        //[self.categoryViewControllerOne.collectionVC.collectionView scrollToItemAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0] atScrollPosition:UICollectionViewScrollPositionTop animated:YES];
+        
+        NSString* category = indexPath.section==0?self.menuViewController.quickDealSymbol[indexPath.row]:self.menuViewController.yelpSymbol[indexPath.row];
+        [self.categoryViewControllerOne refreshDataWithQuery:@"" category:category andLocation:@"San Francisco" offset:@"0"];
+        
+        
         //[self.pageVC setViewControllers:_pages direction:UIPageViewControllerNavigationDirectionForward animated:YES completion:nil];
         
 //        if([self peekViewStack]!=self.pageVC.view){
@@ -304,6 +309,9 @@ static MainViewController* instance;
     [self.mainContainerView addSubview:self.toolBar];
     
     [self categoryViewControllerOne];
+    [self.centerContainerView addSubview:self.categoryViewControllerOne.view];
+    [self.categoryViewControllerOne.view removeFromSuperview];
+    
     //[self categoryViewControllerTwo];
     
     
@@ -321,7 +329,7 @@ static MainViewController* instance;
     [self myDealViewController];
     //[self setupMyDealViewController];
     
-    [self.centerContainerView addSubview:self.categoryViewControllerOne.view];
+    //[self.centerContainerView addSubview:self.categoryViewControllerOne.view];
     
     //[self pageVC];
     //[self setupPageView];

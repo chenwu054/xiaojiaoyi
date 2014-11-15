@@ -19,6 +19,8 @@
 @property (nonatomic) BOOL isBuy;
 @property (nonatomic) NSString *searchStr;
 
+@property (nonatomic) NSArray* quickDealSymbol;
+@property (nonatomic) NSArray* yelpSymbol;
 
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath;
 

@@ -14,6 +14,12 @@
 @property (nonatomic) NSArray *category;
 @property (nonatomic) NSArray *subtitles;
 @property (nonatomic) NSArray *imageURLs;
+@property (nonatomic) NSDictionary* categoryMapping;
+@property (nonatomic) NSArray* quickDealCategory;
+@property (nonatomic) NSArray* quickDealSubtitles;
+
+@property (nonatomic) NSArray* yelpCategory;
+@property (nonatomic) NSArray* yelpSubtitles;
 
 @end
 
@@ -22,17 +28,37 @@
 #pragma mark - table view methods
 -(NSInteger) tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    return _category.count;
+    
+    return section==0?self.quickDealCategory.count:self.yelpCategory.count;
 }
-
+-(NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
+{
+    return 2;
+}
+-(NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section
+{
+    if(section==0){
+        return @"QuickDeal";
+    }
+    else{
+        return @"Yelp";
+    }
+}
 -(UITableViewCell*) tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     
-    UITableViewCell *cell = [_tableView dequeueReusableCellWithIdentifier:@"tableViewCell" forIndexPath:indexPath];
-    NSInteger row = indexPath.row;
-    cell.textLabel.text=_category[row];
+    UITableViewCell *cell = [_tableView dequeueReusableCellWithIdentifier:@"MenuTableViewCell" forIndexPath:indexPath];
+    //cell.textLabel.text=_category[row];
     
-    
+    if(indexPath.section==0){
+        cell.textLabel.text=self.quickDealCategory[indexPath.row];
+        cell.detailTextLabel.text=self.quickDealSubtitles[indexPath.row];
+    }
+    else{
+        cell.textLabel.text=self.yelpCategory[indexPath.row];
+        cell.detailTextLabel.text=self.yelpSubtitles[indexPath.row];
+    }
+
     return cell;
 }
 
@@ -105,9 +131,34 @@
 #pragma mark - controller lifecycle 
 
 -(void)categorySetup{
-    _category=@[@"digital products", @"baby", @"life service"];
-    _subtitles=@[@"cell phone laptop camera...",@"stroller milk_powder baby_cloths",@"tutor carpool cleaning hiring"];
-    _imageURLs=@[@"twitter small icon.jpg", @"twitter small icon.jpg", @"twitter small icon.jpg" ];
+    
+    self.quickDealCategory =[[NSArray alloc] initWithObjects:@"Arts & Crafts",@"Books, Mags, Music & Video",@"Electronics",@"Accessories and Jewelry",@"Clothing & Shoes",@"Home & Garden",@"Sporting Goods", nil];
+    
+    self.quickDealSymbol = [[NSArray alloc] initWithObjects:@"artsandcrafts",@"media",@"electronics",@"accessories,jewelry",@"menscloth,womenscloth",@"homeandgarden",@"sportgoods", nil];
+    
+    self.quickDealSubtitles=[[NSArray alloc] initWithObjects:@"costumes,embroidery,framing...",
+                             @"bookstores,music,video game stores...",
+                             @"computers,iPhones,laptops,tablets...",
+                             @"bracelets,ear rings,necklaces,rings...",
+                             @"kids,men,women,shoes,sports...",
+                             @"appliances,home decor,mattresses,rugs...",
+                             @"bikes,outdoor gear,sports wear...",nil];
+    
+    self.yelpCategory=[[NSArray alloc] initWithObjects:@"Active Life",@"Arts & Entertainment",@"Automotive",@"Beauty & Spas",@"Health & Medical",@"Services",@"Hotels & Travel",@"Nightlife",@"Pets",@"Restaurants", nil];
+    
+    self.yelpSymbol=[[NSArray alloc] initWithObjects:@"active",@"arts",@"auto",@"beautysvc",@"health",@"eventservices",@"hotelstravel",@"nightlife",@"pets",@"restaurants", nil];
+    self.yelpSubtitles=[[NSArray alloc] initWithObjects:@"amusement parks,beaches,fishing,hiking...",
+                        @"casinos,cinema,museums,opera & ballet...",
+                        @"auto repair,car dealers,car wash,gas & service...",
+                        @"cosmetics,hair salons,piercing,tanning...",
+                        @"dentists,hospitals,massage therapy...",
+                        @"bartenders,caterers,wedding planning...",
+                        @"airports,hotels,resorts,tours,transportation...",
+                        @"bars,comedy clubs,piano bars...",
+                        @"pet adoption,pet services,veterinarians...",
+                        @"American,Chinese,Mexican,sushi,vegetarian...",
+                        nil];
+    
     
 }
 - (void)viewDidLoad
@@ -116,12 +167,12 @@
     [self categorySetup];
     
     // Do any additional setup after loading the view.
-    _searchBar.delegate = self;
-    _searchBar.showsCancelButton =YES;
+    self.searchBar.delegate = self;
+    self.searchBar.showsCancelButton =YES;
 
     UITapGestureRecognizer *tapGR = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tap:)];
     [self.view addGestureRecognizer:tapGR];
-    [_tableView addGestureRecognizer:tapGR];
+    [self.tableView addGestureRecognizer:tapGR];
     [_bkg addGestureRecognizer:tapGR];
     //_tableView.delegate = self;
     _tableView.dataSource = self;

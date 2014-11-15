@@ -19,5 +19,10 @@
 @property (nonatomic) UINavigationBar* navigationBar;
 @property (nonatomic) MainViewController* mainVC;
 //@property (nonatomic) UICollectionViewController* collectionVC;
+@property(nonatomic)UICollectionViewController* collectionVC;
+@property (nonatomic) BOOL freshStart;
+
+-(void)clear;
+-(void)refreshDataWithQuery:(NSString*)query category:(NSString*)category andLocation:(NSString*)location offset:(NSString*)offset;
 
 @end

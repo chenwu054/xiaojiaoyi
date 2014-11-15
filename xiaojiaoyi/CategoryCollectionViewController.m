@@ -10,8 +10,8 @@
 #define NAVIGATION_BAR_HEIGHT 60 
 #define COLLECTION_VIEW_MARGIN 0
 #define PULLDOWN_VIEW_THRESHOLD 50
-#define REFRESH_OFFSET 50
-
+#define REFRESH_OFFSET 20
+#define REFRESH_LIMIT 5
 
 @interface CategoryCollectionViewController ()
 
@@ -21,7 +21,7 @@
 @property (nonatomic) UILabel *pullDownInfoLabel;
 @property (nonatomic) UILabel *pullDownTimeLabel;
 
-@property(nonatomic)UICollectionViewController* collectionVC;
+
 @property (nonatomic) UICollectionViewFlowLayout* flowLayout;
 @property (nonatomic) YelpDataSource* dataSource;
 @property (nonatomic) NSMutableArray* businesses;
@@ -31,8 +31,8 @@
 @property (nonatomic) NSMutableDictionary* images;
 @property (nonatomic) UIImage* defaultImage;
 
-@property (nonatomic) int offset;
-@property (nonatomic) int batchNumber;
+@property (nonatomic) NSInteger offset;
+@property (nonatomic) NSInteger batchNumber;
 @property (nonatomic) NSString* queryString;
 @property (nonatomic) NSString* categoryString;
 @property (nonatomic) NSString* locationString;
@@ -89,6 +89,7 @@
 #pragma mark - collection view layout methods
 -(UICollectionViewFlowLayout*) flowLayout
 {
+    NSLog(@"calling flow layout");
     if(!_flowLayout){
         _flowLayout = [[CenterCollectionViewFlowLayout alloc] init];
         //        _flowLayout = [[UICollectionViewFlowLayout alloc] init];
@@ -98,7 +99,7 @@
         _flowLayout.itemSize = CGSizeMake(150, 170);
         
         //H3.need to set header referenceSize to nonZeroSize to show the header!
-        _flowLayout.footerReferenceSize = CGSizeMake(self.view.frame.size.width,100);
+        _flowLayout.footerReferenceSize = CGSizeMake(self.view.frame.size.width,50);
     }
     return _flowLayout;
 }
@@ -110,13 +111,15 @@
 //the collection view regular cell size
 -(CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath
 {
-    
+    //this method determines the cell size
+    //NSLog(@"! calling layout for item at index path");
     CGSize size = CGSizeMake(145, 170);
     return size;
 }
 //set Header and Footer
 -(UICollectionReusableView *)collectionView:(UICollectionView *)collectionView viewForSupplementaryElementOfKind:(NSString *)kind atIndexPath:(NSIndexPath *)indexPath
 {
+    NSLog(@"! calling viewForSupplymentary elements at index path");
     //Header2. calling the supplementary view
     UICollectionReusableView*view = nil;
     
@@ -137,9 +140,10 @@
 #pragma mark - collection view controller methods
 -(UICollectionViewController*)collectionVC
 {
+    NSLog(@"! calling collectionVC");
     if(!_collectionVC){
         _collectionVC = [[UICollectionViewController alloc] init]; //initWithCollectionViewLayout:self.flowLayout];
-        CGRect collectionViewFrame = CGRectMake(COLLECTION_VIEW_MARGIN, NAVIGATION_BAR_HEIGHT, self.view.frame.size.width -2*COLLECTION_VIEW_MARGIN, self.view.frame.size.height - NAVIGATION_BAR_HEIGHT + 40);
+        CGRect collectionViewFrame = CGRectMake(COLLECTION_VIEW_MARGIN, NAVIGATION_BAR_HEIGHT, self.view.frame.size.width -2*COLLECTION_VIEW_MARGIN, self.view.frame.size.height - NAVIGATION_BAR_HEIGHT - 0);
         //NSLog(@"frame y is %f",collectionViewFrame.origin.y);
         _collectionVC.collectionView = [[GestureCollectionView alloc] initWithFrame:collectionViewFrame collectionViewLayout:self.flowLayout];
         
@@ -181,7 +185,8 @@
 //collection view data source methods
 -(UICollectionViewCell*) collectionView:(UICollectionView*)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath
 {
-    CollectionViewCell * cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"CategoryCollectionCell" forIndexPath:indexPath];
+    //NSLog(@"! calling cell in collection view");
+    CollectionViewCell* cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"CategoryCollectionCell" forIndexPath:indexPath];
     if(!cell){
         cell=[[CollectionViewCell alloc] init];
     }
@@ -246,17 +251,19 @@
         cell.label.text =self.names[idx];
         cell.label.attributedText=[[NSAttributedString alloc] initWithString:self.names[idx] attributes:@{NSFontAttributeName:[UIFont fontWithName:@"Georgia" size:14],NSForegroundColorAttributeName:[UIColor blackColor]}];
     }
-    
+    //NSLog(@"cell height is %f, cell width is %f",cell.frame.size.height,cell.frame.size.width);
     return cell;
 }
 
 -(NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section
 {
+    NSLog(@"! calling number of items in section: %ld",self.urls.count);
     return self.urls.count;
 }
 
 -(NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView
 {
+    NSLog(@"! calling number of sections");
     return 1;
 }
 -(void)collectionView:(UICollectionView *)collectionView didHighlightItemAtIndexPath:(NSIndexPath *)indexPath
@@ -272,12 +279,13 @@
 #pragma mark - scroll view methods
 -(void)scrollViewDidScroll:(UIScrollView *)scrollView
 {
+    //NSLog(@"!calling scroll");
     CGFloat offset = [_collectionVC.collectionView contentOffset].y;
     //NSLog(@"content off set is %f",offset);
-    if(offset > (self.batchNumber)*1300 + REFRESH_OFFSET){
+    if( self.batchNumber <= REFRESH_LIMIT && offset > (self.names.count/2 - 2)*175 + REFRESH_OFFSET){
         if(self.needToRefresh){
             NSLog(@"call to refresh");
-            [self refreshDataWithQuery:self.query category:self.category andLocation:self.location offset:[NSString stringWithFormat:@"%d",self.offset]];
+            [self refreshDataWithQuery:self.query category:self.category andLocation:self.location offset:[NSString stringWithFormat:@"%ld",self.offset]];
             self.needToRefresh=NO;
         }
     }
@@ -335,17 +343,35 @@
 }
 -(void)clear
 {
+    NSLog(@"! calling clear");
+    //delete all the current cells
     [self.names removeAllObjects];
     [self.urls removeAllObjects];
     [self.images removeAllObjects];
     self.offset=0;
     self.batchNumber=0;
     self.needToRefresh=true;
+    
+    NSIndexPath* idx=[NSIndexPath indexPathForRow:self.urls.count-1 inSection:0];
+    NSMutableArray* indices = [[NSMutableArray alloc] init];
+    for(int i=0;i<self.urls.count;i++){
+        idx=[NSIndexPath indexPathForRow:i inSection:0];
+        [indices addObject:idx];
+    }
+    if(indices.count>0){
+        [self.collectionVC.collectionView deleteItemsAtIndexPaths:indices];
+    }
+    
 }
 
 -(void)refreshDataWithQuery:(NSString*)query category:(NSString*)category andLocation:(NSString*)location offset:(NSString*)offset
 {
-    [self.dataSource setQuery:query category:category location:location offset:offset];
+    NSLog(@"!calling refresh");
+    self.query=query;
+    self.category=category;
+    self.location=location;
+    
+    [self.dataSource setQuery:query category:category location:location offset:offset?offset:@"0"];
     [self.dataSource fetchDataWithCompletionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
         NSHTTPURLResponse * r = (NSHTTPURLResponse*)response;
         //NSLog(@"response is %@",response);
@@ -361,17 +387,36 @@
                 NSString *name = [self.businesses[i] valueForKey:@"name"];
                 NSString *urlStr = [self.businesses[i] valueForKey:@"image_url"];
                 
-                [self.names addObject:name];
-                [self.urls addObject:[NSURL URLWithString:urlStr]];
+                //!! NSMutableArray cannot add nil object.
+                if(name){
+                    [self.names addObject:name];
+                }
+                if(urlStr){
+                    [self.urls addObject:[NSURL URLWithString:urlStr]];
+                }
             }
             self.batchNumber=self.batchNumber+1;
-            NSLog(@"batch is %d",self.batchNumber);
-            self.offset=self.batchNumber*20-1;
+            NSLog(@"batch is %ld",self.batchNumber);
+            self.offset=self.offset+self.businesses.count+1; //self.batchNumber*20-1;
             self.needToRefresh=YES;
+            NSLog(@"busnesses count is %ld",self.businesses.count);
             
+//            NSMutableArray* arr =[[NSMutableArray alloc] init];
+//            for(int i=0;i<self.businesses.count;i++){
+//                [arr addObject:[NSIndexPath indexPathForRow:i+self.offset inSection:0]];
+//            }
+//            [self.collectionVC.collectionView insertItemsAtIndexPaths:arr];
             //call it on the main queue to refresh the screen immediately!!
             dispatch_async(dispatch_get_main_queue(), ^{
                 [self.collectionVC.collectionView reloadData];
+                if(self.freshStart){
+                    
+                    //need to scroll back to the top every time a new request is sent.
+                    if(self.urls.count>0){
+                        [self.collectionVC.collectionView scrollToItemAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0] atScrollPosition:UICollectionViewScrollPositionTop animated:YES];
+                        self.freshStart=NO;
+                    }
+                }
                 //[self.collectionView reloadData];
             });
         }
@@ -384,14 +429,7 @@
     [self collectionVC];
     self.defaultImage=[UIImage imageNamed:@"apple image.jpg"];
     self.spinner = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
-    
     [self clear];
-    self.query=@"";
-    self.category=@"coffee";
-    self.location=@"San Francisco";
-    
-    [self refreshDataWithQuery:@"" category:@"coffee" andLocation:@"San Francisco" offset:@"0"];//offset is set to the last one -1, starting from zero. 18 is the the last one
-    
 }
 
 - (void)viewDidLoad
