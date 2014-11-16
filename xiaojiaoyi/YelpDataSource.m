@@ -43,10 +43,14 @@ static NSString * const kSearchLimit       = @"3";
 }
 -(void)setQuery:(NSString*)query category:(NSString*)category location:(NSString*)location offset:(NSString*)offset
 {
-    self.query=query;
-    self.category=category;
-    self.locationString=location;
-    self.offset=offset;
+    if(query)
+        self.query=query;
+    if(category)
+        self.category=category;
+    if(location)
+        self.locationString=location;
+    if(offset)
+        self.offset=offset;
 }
 -(void)setLocationLatitude:(NSString*)latitude andLongitude:(NSString*)longitude
 {

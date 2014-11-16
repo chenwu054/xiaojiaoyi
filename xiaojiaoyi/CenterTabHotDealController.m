@@ -19,6 +19,8 @@
 
 #define PULLDOWN_VIEW_THRESHOLD 50
 #define PULLDOWN_VIEW_HEIGHT 50
+#define REFRESH_OFFSET 30
+#define REFRESH_LIMIT 5
 
 @interface CenterTabHotDealController ()
 
@@ -27,14 +29,22 @@
 @property (nonatomic) UIImageView *pullDownImageView;
 @property (nonatomic) UILabel *pullDownInfoLabel;
 @property (nonatomic) UILabel *pullDownTimeLabel;
-@property (nonatomic) YelpDataSource* dataSource;
+
 @property (nonatomic) NSMutableArray* businesses;
-@property (nonatomic) NSMutableDictionary* cells;
+//@property (nonatomic) NSMutableDictionary* cells;
 @property (nonatomic) NSMutableArray* names;
 @property (nonatomic) NSMutableArray* urls;
 @property (nonatomic) NSMutableDictionary* images;
-
 @property (nonatomic) UIImage* defaultImage;
+
+@property (nonatomic) YelpDataSource* dataSource;
+@property (nonatomic) NSInteger offset;
+@property (nonatomic) NSInteger batchNumber;
+@property (nonatomic) NSString* queryString;
+@property (nonatomic) NSString* categoryString;
+@property (nonatomic) NSString* locationString;
+@property (nonatomic) BOOL needToRefresh;
+
 
 @end
 
@@ -450,6 +460,7 @@
     static BOOL userLetGo = NO;
     static NSString *timeStr = nil;
     CGFloat offset = [_collectionVC.collectionView contentOffset].y;
+    NSLog(@"scroll view at offset %f",offset);
     //NSArray* subviews = [self.pullDownView subviews];
     NSArray *gestures = _collectionVC.collectionView.gestureRecognizers;
 
@@ -475,7 +486,7 @@
         userLetGo = YES;
     }
     if(!userLetGo){
-        if(offset>-PULLDOWN_VIEW_THRESHOLD){
+        if(offset>-PULLDOWN_VIEW_THRESHOLD-20){
             if(_pullDownImageView.image != [UIImage imageNamed:@"pull_down_arrow.jpg"]){
                 _pullDownImageView.image = [UIImage imageNamed:@"pull_down_arrow.jpg"];
             }
@@ -495,14 +506,97 @@
         [_spinner startAnimating];
         _pullDownImageView.hidden = YES;
     }
+    //refresh and fetch more data
+    if( self.batchNumber <= REFRESH_LIMIT && offset > (self.names.count/2 - 2)*175 + 5 + REFRESH_OFFSET + COLLECTION_VIEW_HEADER_HEIGHT){
+        if(self.needToRefresh){
+            NSLog(@"call to refresh");
+            //[self refreshDataWithQuery:self.query category:self.category andLocation:self.location offset:[NSString stringWithFormat:@"%ld",self.offset]];
+            
+            [self refreshDataWithoffset:[NSString stringWithFormat:@"%ld",self.offset+1]];
+            //[self refreshDataWithLocationAndQuery:self.queryString category:self.categoryString offset:[NSString stringWithFormat:@"%ld",self.offset]];
+            self.needToRefresh=NO;
+        }
+    }
 }
 
 #pragma mark - overall setup
+-(YelpDataSource*)dataSource
+{
+    if(!_dataSource){
+        //_dataSource=[[YelpDataSource alloc] initWithQuery:@"food" andRegion:@"San Francisco"];
+        _dataSource=[[YelpDataSource alloc] init];
+        [_dataSource setQuery:self.queryString category:self.categoryString location:self.locationString offset:@"0"];
+    }
+    return _dataSource;
+}
+
+-(void)setup
+{
+    [self setupSearchBar];
+    //initialize the query settings
+    self.queryString=@"";
+    self.categoryString=@"restaurants";
+    self.locationString=@"San Francisco";
+    //self.cells = [[NSMutableDictionary alloc] init];
+    self.names=[[NSMutableArray alloc] init];
+    self.urls=[[NSMutableArray alloc] init];
+    self.images=[[NSMutableDictionary alloc] init];
+    self.needToRefresh=NO;
+    self.offset=0;
+    [self refreshDataWithoffset:@"0"];
+    
+}
+-(void)clear
+{
+    NSInteger count = self.urls.count;
+    [self.names removeAllObjects];
+    [self.urls removeAllObjects];
+    [self.images removeAllObjects];
+    self.offset=0;
+    NSMutableArray* arr = [[NSMutableArray alloc] init];
+    for(int i =0;i<count;i++){
+        [arr addObject:[NSIndexPath indexPathForRow:i inSection:0]];
+    }
+    
+    [self.collectionVC.collectionView deleteItemsAtIndexPaths:arr];
+}
+-(void)refreshDataWithoffset:(NSString*)offset
+{
+    [self.dataSource setQuery:nil category:nil location:nil offset:offset];
+    [self.dataSource fetchDataWithCompletionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
+        NSHTTPURLResponse * r = (NSHTTPURLResponse*)response;
+        if(r.statusCode == 200){
+            //NSLog(@"is successful");
+            NSDictionary *json = [NSJSONSerialization JSONObjectWithData:data options:0 error: &error];
+            //NSLog(@"%@",json);
+            self.businesses = [json valueForKey:@"businesses"];
+            for(NSInteger i=0;i<[self.businesses count];i++){
+                NSString *name = [self.businesses[i] valueForKey:@"name"];
+                NSString *urlStr = [self.businesses[i] valueForKey:@"image_url"];
+                if(name && urlStr){
+                    [self.names addObject:name];
+                    [self.urls addObject:[NSURL URLWithString:urlStr]];
+
+                }
+            }
+            self.batchNumber=self.batchNumber+1;
+            //NSLog(@"batch is %ld",self.batchNumber);
+            self.offset=self.offset+self.businesses.count;
+            self.needToRefresh=YES;
+            //call it on the main queue to refresh the screen immediately!!
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [self.collectionVC.collectionView reloadData];
+                //[self.collectionView reloadData];
+            });
+            
+        }
+    }];
+}
 
 //pull down view
 -(UIView*)pullDownView{
     if(!_pullDownView){
-        CGRect frame = CGRectMake(0, -0, self.view.frame.size.width,PULLDOWN_VIEW_HEIGHT);
+        CGRect frame = CGRectMake(0, -PULLDOWN_VIEW_HEIGHT, self.view.frame.size.width,PULLDOWN_VIEW_HEIGHT);
         _pullDownView = [[UIView alloc] initWithFrame:frame];
         _pullDownView.backgroundColor = [UIColor lightGrayColor];
         
@@ -535,52 +629,6 @@
     return _pullDownView;
 }
 
--(YelpDataSource*)dataSource
-{
-    if(!_dataSource){
-        _dataSource=[[YelpDataSource alloc] initWithQuery:@"food" andRegion:@"San Francisco"];
-    }
-    return _dataSource;
-}
-
--(void)setup
-{
-    [self setupSearchBar];
-    [self.dataSource fetchDataWithCompletionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
-        NSHTTPURLResponse * r = (NSHTTPURLResponse*)response;
-        if(r.statusCode == 200){
-            //NSLog(@"is successful");
-            NSError * error;
-            NSDictionary *json = [NSJSONSerialization JSONObjectWithData:data options:0 error: &error];
-            //NSLog(@"%@",json);
-            self.businesses = [json valueForKey:@"businesses"];
-            self.cells = [[NSMutableDictionary alloc] init];
-            self.names=[[NSMutableArray alloc] init];
-            self.urls=[[NSMutableArray alloc] init];
-            self.images=[[NSMutableDictionary alloc] init];
-            for(NSInteger i=0;i<[self.businesses count];i++){
-                //NSLog(@"name is: %@",[self.businesses[i] valueForKey:@"name"]);
-                NSString *name = [self.businesses[i] valueForKey:@"name"];
-                NSString *urlStr = [self.businesses[i] valueForKey:@"image_url"];
-                //CollectionViewCell * aCell=[[CollectionViewCell alloc] initWithName:name andURL:[NSURL URLWithString:urlStr]];
-                //[self.cells setObject:aCell forKey:@(i)];
-                
-                [self.names addObject:name];
-                [self.urls addObject:[NSURL URLWithString:urlStr]];
-                
-                //NSLog(@"the cells are %@, %@, %@",@(i),((CollectionViewCell*)[_cells objectForKey:@(i)]).name,((CollectionViewCell *)[_cells objectForKey:@(i)]).imageURL);
-            }
-            //call it on the main queue to refresh the screen immediately!!
-            dispatch_async(dispatch_get_main_queue(), ^{
-                [self.collectionVC.collectionView reloadData];
-                //[self.collectionView reloadData];
-            });
-        }
-
-        
-    }];
-    
-}
 -(NSString *)getCurrentDateTime
 {
     NSDate *date = [[NSDate alloc] init];

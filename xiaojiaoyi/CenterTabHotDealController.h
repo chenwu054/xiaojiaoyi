@@ -28,7 +28,7 @@
 
 @property (nonatomic) MainViewController *mainVC;
 @property (nonatomic) GestureView *mainDelegateView;
-
+@property (nonatomic) BOOL freshStart;
 
 -(void)hideSearchBar;
 @end

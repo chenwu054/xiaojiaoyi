@@ -288,7 +288,8 @@
         if(self.needToRefresh){
             NSLog(@"call to refresh");
            // [self refreshDataWithQuery:self.query category:self.category andLocation:self.location offset:[NSString stringWithFormat:@"%ld",self.offset]];
-            [self refreshDataWithLocationAndQuery:self.query category:self.category offset:[NSString stringWithFormat:@"%ld",self.offset]];
+            //note: offset + 1 is the new offset
+            [self refreshDataWithLocationAndQuery:self.query category:self.category offset:[NSString stringWithFormat:@"%ld",self.offset+1]];
             self.needToRefresh=NO;
         }
     }
@@ -404,19 +405,14 @@
                 if(name && urlStr && ![urlStr isEqualToString:@""]){
                     [self.names addObject:name];
                     [self.urls addObject:[NSURL URLWithString:urlStr]];
+                    self.offset=self.offset+1;//self.businesses.count; //self.batchNumber*20-1;
                 }
             }
             self.batchNumber=self.batchNumber+1;
             NSLog(@"batch is %ld",self.batchNumber);
-            self.offset=self.offset+self.businesses.count+1; //self.batchNumber*20-1;
+
             self.needToRefresh=YES;
             NSLog(@"busnesses count is %ld",self.businesses.count);
-            
-//            NSMutableArray* arr =[[NSMutableArray alloc] init];
-//            for(int i=0;i<self.businesses.count;i++){
-//                [arr addObject:[NSIndexPath indexPathForRow:i+self.offset inSection:0]];
-//            }
-//            [self.collectionVC.collectionView insertItemsAtIndexPaths:arr];
             //call it on the main queue to refresh the screen immediately!!
             dispatch_async(dispatch_get_main_queue(), ^{
                 [self.collectionVC.collectionView reloadData];
@@ -457,24 +453,16 @@
                 if(name && urlStr && ![urlStr isEqualToString:@""]){
                     [self.names addObject:name];
                     [self.urls addObject:[NSURL URLWithString:urlStr]];
+                    self.offset=self.offset+1;
                 }
             }
             self.batchNumber=self.batchNumber+1;
             //NSLog(@"batch is %ld",self.batchNumber);
-            self.offset=self.offset+self.businesses.count+1; //self.batchNumber*20-1;
             self.needToRefresh=YES;
-            //NSLog(@"busnesses count is %ld",self.businesses.count);
-            
-            //            NSMutableArray* arr =[[NSMutableArray alloc] init];
-            //            for(int i=0;i<self.businesses.count;i++){
-            //                [arr addObject:[NSIndexPath indexPathForRow:i+self.offset inSection:0]];
-            //            }
-            //            [self.collectionVC.collectionView insertItemsAtIndexPaths:arr];
             //call it on the main queue to refresh the screen immediately!!
             dispatch_async(dispatch_get_main_queue(), ^{
                 [self.collectionVC.collectionView reloadData];
                 if(self.freshStart){
-                    
                     //need to scroll back to the top every time a new request is sent.
                     if(self.urls.count>0){
                         [self.collectionVC.collectionView scrollToItemAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0] atScrollPosition:UICollectionViewScrollPositionTop animated:YES];
