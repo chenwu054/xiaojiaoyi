@@ -485,6 +485,17 @@
 			name = miscellaneous;
 			sourceTree = "<group>";
 		};
+		7402D4991A1A4B9D002AF7B3 /* test */ = {
+			isa = PBXGroup;
+			children = (
+				74FE265819CA72A300801CA1 /* MapViewController.h */,
+				74FE265919CA72A300801CA1 /* MapViewController.m */,
+				74065ADD19C747D30033DA71 /* DetailPageViewController.h */,
+				74065ADE19C747D30033DA71 /* DetailPageViewController.m */,
+			);
+			name = test;
+			sourceTree = "<group>";
+		};
 		74065AE319C7E2DD0033DA71 /* images */ = {
 			isa = PBXGroup;
 			children = (
@@ -576,6 +587,10 @@
 				74B7218819E83845000B3892 /* CenterCollectionViewFlowLayout.m */,
 				74B7219419EC1F91000B3892 /* MyTapGestureRecognizer.h */,
 				74B7219519EC1F91000B3892 /* MyTapGestureRecognizer.m */,
+				741FB5F519E06F4600EA6D5B /* CenterTabHotDealController.h */,
+				741FB5F619E06F4600EA6D5B /* CenterTabHotDealController.m */,
+				7402D4941A19122C002AF7B3 /* YelpDetailViewController.h */,
+				7402D4951A19122C002AF7B3 /* YelpDetailViewController.m */,
 			);
 			name = CenterVC;
 			sourceTree = "<group>";
@@ -722,17 +737,10 @@
 				749366FB19CE75F1003B3108 /* Login */,
 				741FB5FE19E0BE2E00EA6D5B /* CenterVC */,
 				74B721AC19F0C5FE000B3892 /* MainPage */,
-				741FB5F519E06F4600EA6D5B /* CenterTabHotDealController.h */,
-				741FB5F619E06F4600EA6D5B /* CenterTabHotDealController.m */,
-				7402D4941A19122C002AF7B3 /* YelpDetailViewController.h */,
-				7402D4951A19122C002AF7B3 /* YelpDetailViewController.m */,
-				74FE265819CA72A300801CA1 /* MapViewController.h */,
-				74FE265919CA72A300801CA1 /* MapViewController.m */,
-				74065ADD19C747D30033DA71 /* DetailPageViewController.h */,
-				74065ADE19C747D30033DA71 /* DetailPageViewController.m */,
 				74B9327E19AAEB4E003B6594 /* Main_iPhone.storyboard */,
 				740C850F19F87CAC00D3A178 /* DataModel.xcdatamodeld */,
 				74B9328719AAEB4E003B6594 /* Images.xcassets */,
+				7402D4991A1A4B9D002AF7B3 /* test */,
 				74B9327319AAEB4E003B6594 /* Supporting Files */,
 				74065AE319C7E2DD0033DA71 /* images */,
 				74B932EA19AD8695003B6594 /* STTwitter */,

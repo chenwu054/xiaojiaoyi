@@ -23,7 +23,7 @@
 #define SWITCH_WIDTH 80
 #define KEYBOARD_HEIGHT 165
 #define DELETE_BUTTON_WIDTH 50
-#define MAX_RECORD_TIME 5
+#define MAX_RECORD_TIME 20
 
 #define NAME_LABEL_TEXT @"Deal Name"
 #define PRICE_LABEL_TEXT @"Asking Price"
@@ -90,6 +90,10 @@
 @property (nonatomic) BOOL soundRecorded;
 @property (nonatomic) NSTimer* timer;
 @property (nonatomic) NSURL* soundURL;
+
+@property (nonatomic) UIView* recordIndicatorView;
+@property (nonatomic) UILabel* recordTimeIndicatorLabel;
+@property (nonatomic) UIAlertView* deleteSoundAlertView;
 
 @property (nonatomic) DataModalUtils* utils;
 @end
@@ -482,6 +486,8 @@ static NSInteger t =0.0;
             NSLog(@"start recording");
             self.timer=[NSTimer scheduledTimerWithTimeInterval:1.0 target:self selector:@selector(timerFired:) userInfo:nil repeats:YES];
             [self.timer fire];
+            self.recordIndicatorView.hidden=NO;
+            self.recordTimeIndicatorLabel.text=[NSString stringWithFormat:@"recording: 0\"/%d\"",MAX_RECORD_TIME];
         }
     }
     else if(gesture.state==UIGestureRecognizerStateChanged){
@@ -526,10 +532,12 @@ static NSInteger t =0.0;
     [self.recordView addSubview:self.deleteSoundButton];
     [self.playButton setImage:[UIImage imageNamed:@"play.png"] forState:UIControlStateNormal];
     [self.timer invalidate];
+
+    self.recordIndicatorView.hidden=YES;
     t=0;
 }
 
--(void)deleteSound:(UIButton*)sender
+-(void)afterDeleteSound
 {
     //sound is not deleted.
     
@@ -537,6 +545,10 @@ static NSInteger t =0.0;
     [self.deleteSoundButton removeFromSuperview];
     [self.recordView addSubview:self.recordButton];
     self.soundRecorded=NO;
+}
+-(void)deleteSoundButtonClicked:(UIButton*)sender
+{
+    [self.deleteSoundAlertView show];
 }
 -(void)soundRecordingReachedMaxTime
 {
@@ -547,8 +559,10 @@ static NSInteger t =0.0;
 }
 -(void)timerFired:(NSTimer *)sender
 {
+    self.recordTimeIndicatorLabel.text=[NSString stringWithFormat:@"recording: %ld\"/%d\"",(long)t,MAX_RECORD_TIME];
     t=t+1;
     NSLog(@"timer fired: %ld",t);
+    
     if(t==MAX_RECORD_TIME+1){
         [self.timer invalidate];
         [self soundRecordingReachedMaxTime];
@@ -560,14 +574,27 @@ static NSInteger t =0.0;
 #pragma mark - delegate methods
 -(void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
 {
-    if(buttonIndex==0){
-        NSLog(@"No clicked");
+    if(alertView == self.deleteSoundAlertView){
+        if(buttonIndex == 0){
+            //NSLog(@"button 0 clicked");
+            
+        }
+        else if(buttonIndex == 1){
+            //NSLog(@"button 1 clicked");
+            [self afterDeleteSound];
+        }
     }
-    else if(buttonIndex==1){
-        
-        self.cancelDeal=YES;
-        
-        [self performSegueWithIdentifier:@"DealDescriptionUnwindSegue" sender:self];
+    else if(alertView == self.cancelAlert){
+        if(buttonIndex==0){
+            NSLog(@"No clicked");
+        }
+        else if(buttonIndex==1){
+            
+            self.cancelDeal=YES;
+            
+            [self performSegueWithIdentifier:@"DealDescriptionUnwindSegue" sender:self];
+        }
+
     }
 }
 
@@ -700,6 +727,31 @@ static NSInteger t =0.0;
         _utils=[DataModalUtils sharedInstance];
     }
     return _utils;
+}
+-(UILabel*)recordTimeIndicatorLabel
+{
+    if(!_recordTimeIndicatorLabel){
+        _recordTimeIndicatorLabel=[[UILabel alloc] initWithFrame:CGRectMake(100, 150, 200, 20)];
+        [_recordTimeIndicatorLabel setTextColor:[UIColor whiteColor]];
+    }
+    return _recordTimeIndicatorLabel;
+}
+-(UIView*)recordIndicatorView
+{
+    if(!_recordIndicatorView){
+        _recordIndicatorView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height - DESCRIPTION_HEIGHT - BUTTON_HEIGHT)];
+        _recordIndicatorView.backgroundColor = [UIColor colorWithWhite:0.30 alpha:0.6];
+        [_recordIndicatorView addSubview:self.recordTimeIndicatorLabel];
+        _recordIndicatorView.hidden=YES;
+    }
+    return _recordIndicatorView;
+}
+-(UIAlertView*)deleteSoundAlertView
+{
+    if(!_deleteSoundAlertView){
+        _deleteSoundAlertView = [[UIAlertView alloc] initWithTitle:nil message:@"Are you sure to delete the record?" delegate:self cancelButtonTitle:@"NO" otherButtonTitles:@"YES", nil];
+    }
+    return _deleteSoundAlertView;
 }
 -(UIAlertView*)cancelAlert
 {
@@ -1153,7 +1205,7 @@ static NSInteger t =0.0;
 {
     if(!_recordButton){
         _recordButton=[[UIButton alloc] initWithFrame:CGRectMake(0,0, self.descriptionTextField.frame.size.width, DESCRIPTION_HEIGHT/6*4)];
-        NSAttributedString* attributedString = [[NSAttributedString alloc] initWithString:@"press down to record (max 60\")" attributes:@{NSFontAttributeName:[UIFont fontWithName:@"Arial" size:15],NSForegroundColorAttributeName:[UIColor whiteColor]}];
+        NSAttributedString* attributedString = [[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"press down to record (max %d\")",MAX_RECORD_TIME] attributes:@{NSFontAttributeName:[UIFont fontWithName:@"Arial" size:15],NSForegroundColorAttributeName:[UIColor whiteColor]}];
         [_recordButton setAttributedTitle:attributedString forState:UIControlStateNormal];
         [_recordButton setTitleColor:[UIColor whiteColor]  forState:UIControlStateNormal];
         _recordButton.contentHorizontalAlignment=UIControlContentHorizontalAlignmentCenter;
@@ -1199,7 +1251,7 @@ static NSInteger t =0.0;
         _deleteSoundButton=[[UIButton alloc] initWithFrame:CGRectMake(self.playButton.frame.size.width + VIEW_WIDTH_MARGIN, 0, DELETE_BUTTON_WIDTH, self.playButton.frame.size.height)];
         [_deleteSoundButton setImage:[UIImage imageNamed:@"cross.png"] forState:UIControlStateNormal];
         [_deleteSoundButton setTintColor:[UIColor blueColor]];
-        [_deleteSoundButton addTarget:self action:@selector(deleteSound:) forControlEvents:UIControlEventTouchUpInside];
+        [_deleteSoundButton addTarget:self action:@selector(deleteSoundButtonClicked:) forControlEvents:UIControlEventTouchUpInside];
         _deleteSoundButton.imageView.contentMode=UIViewContentModeScaleAspectFit;
     }
     return _deleteSoundButton;
@@ -1252,6 +1304,8 @@ static NSInteger t =0.0;
     [self initiateRecording];
     
     self.cancelDeal = NO;
+    
+    [self.view addSubview:self.recordIndicatorView];
     
 }
 
