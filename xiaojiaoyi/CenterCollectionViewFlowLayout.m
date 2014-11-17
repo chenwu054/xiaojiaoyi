@@ -30,7 +30,7 @@
 //NOT CALLED: H.3 add header and footer to the collectionview
 -(UICollectionViewLayoutAttributes *)layoutAttributesForSupplementaryViewOfKind:(NSString *)kind atIndexPath:(NSIndexPath *)indexPath
 {
-    NSLog(@"!!calling layout for supplementary view");
+    //NSLog(@"!!calling layout for supplementary view");
     
     UICollectionViewLayoutAttributes *attribute = [super layoutAttributesForSupplementaryViewOfKind:kind atIndexPath:indexPath];
     if(kind == UICollectionElementKindSectionHeader){

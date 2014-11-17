@@ -103,9 +103,13 @@
 -(CenterTabHotDealController*)centerTabHotDealController
 {
     if(!_centerTabHotDealController){
-        _centerTabHotDealController=[[CenterTabHotDealController alloc] init];
-        _centerTabHotDealController.title = @"Hot Deals";
+        //_centerTabHotDealController=[[CenterTabHotDealController alloc] init];
+        UIStoryboard* storyboard = [UIStoryboard storyboardWithName:@"Main_iPhone" bundle:nil];
+        NSLog(@"storyboard is %@",storyboard);
+        _centerTabHotDealController = [storyboard instantiateViewControllerWithIdentifier:@"CenterTabHotDealController"];
         _centerTabHotDealController.mainVC = _superVC;
+        [_centerTabHotDealController setup];
+        _centerTabHotDealController.title = @"Hot Deals";
     }
     return _centerTabHotDealController;
 }

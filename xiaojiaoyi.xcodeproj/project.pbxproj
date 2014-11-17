@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		7402D4921A145A31002AF7B3 /* YelpDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 7402D4911A145A31002AF7B3 /* YelpDataSource.m */; };
+		7402D4961A19122C002AF7B3 /* YelpDetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7402D4951A19122C002AF7B3 /* YelpDetailViewController.m */; };
+		7402D4981A198A05002AF7B3 /* call.png in Resources */ = {isa = PBXBuildFile; fileRef = 7402D4971A198A05002AF7B3 /* call.png */; };
 		74065ADF19C747D30033DA71 /* DetailPageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 74065ADE19C747D30033DA71 /* DetailPageViewController.m */; };
 		74065AE219C748210033DA71 /* DetailPageContentViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 74065AE119C748210033DA71 /* DetailPageContentViewController.m */; };
 		74065AE719C7E2DD0033DA71 /* apple image.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 74065AE419C7E2DD0033DA71 /* apple image.jpg */; };
@@ -178,6 +180,9 @@
 /* Begin PBXFileReference section */
 		7402D4901A145A31002AF7B3 /* YelpDataSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YelpDataSource.h; sourceTree = "<group>"; };
 		7402D4911A145A31002AF7B3 /* YelpDataSource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YelpDataSource.m; sourceTree = "<group>"; };
+		7402D4941A19122C002AF7B3 /* YelpDetailViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YelpDetailViewController.h; sourceTree = "<group>"; };
+		7402D4951A19122C002AF7B3 /* YelpDetailViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YelpDetailViewController.m; sourceTree = "<group>"; };
+		7402D4971A198A05002AF7B3 /* call.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = call.png; sourceTree = "<group>"; };
 		74065ADD19C747D30033DA71 /* DetailPageViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DetailPageViewController.h; sourceTree = "<group>"; };
 		74065ADE19C747D30033DA71 /* DetailPageViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DetailPageViewController.m; sourceTree = "<group>"; };
 		74065AE019C748210033DA71 /* DetailPageContentViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DetailPageContentViewController.h; sourceTree = "<group>"; };
@@ -474,8 +479,6 @@
 				74CB851C19C0193C00579432 /* YelpViewController.m */,
 				74065AE019C748210033DA71 /* DetailPageContentViewController.h */,
 				74065AE119C748210033DA71 /* DetailPageContentViewController.m */,
-				74FE265819CA72A300801CA1 /* MapViewController.h */,
-				74FE265919CA72A300801CA1 /* MapViewController.m */,
 				749366F019CA7D9B003B3108 /* Location.h */,
 				749366F119CA7D9B003B3108 /* Location.m */,
 			);
@@ -488,6 +491,7 @@
 				74DADB621A07467200E2BA0F /* social */,
 				745256A11A01AB2300A12020 /* upArrow.png */,
 				745256A21A01AB2300A12020 /* downArrow.png */,
+				7402D4971A198A05002AF7B3 /* call.png */,
 				740C850D19F81A4A00D3A178 /* delivery.png */,
 				740C850B19F818A500D3A178 /* exchange.png */,
 				74CBCF0D19F6FA8C00049AA0 /* play.png */,
@@ -572,8 +576,6 @@
 				74B7218819E83845000B3892 /* CenterCollectionViewFlowLayout.m */,
 				74B7219419EC1F91000B3892 /* MyTapGestureRecognizer.h */,
 				74B7219519EC1F91000B3892 /* MyTapGestureRecognizer.m */,
-				741FB5F519E06F4600EA6D5B /* CenterTabHotDealController.h */,
-				741FB5F619E06F4600EA6D5B /* CenterTabHotDealController.m */,
 			);
 			name = CenterVC;
 			sourceTree = "<group>";
@@ -647,14 +649,14 @@
 				740A2E7D19C53E4600D87965 /* MainViewController.m */,
 				7402D4901A145A31002AF7B3 /* YelpDataSource.h */,
 				7402D4911A145A31002AF7B3 /* YelpDataSource.m */,
-				74B7219A19EE0F3A000B3892 /* CategoryCollectionViewController.h */,
-				74B7219B19EE0F3A000B3892 /* CategoryCollectionViewController.m */,
 				74B9328419AAEB4E003B6594 /* CenterViewController.h */,
 				74B9328519AAEB4E003B6594 /* CenterViewController.m */,
 				74A88CB819FD63FB00872C26 /* EditTableCellView.h */,
 				74A88CB919FD63FB00872C26 /* EditTableCellView.m */,
 				74B7219719EC857B000B3892 /* MyDealViewController.h */,
 				74B7219819EC857B000B3892 /* MyDealViewController.m */,
+				74B7219A19EE0F3A000B3892 /* CategoryCollectionViewController.h */,
+				74B7219B19EE0F3A000B3892 /* CategoryCollectionViewController.m */,
 			);
 			name = MainPage;
 			sourceTree = "<group>";
@@ -716,10 +718,16 @@
 				74CB84D919BA15FA00579432 /* OAuth */,
 				740A2E6E19C299D200D87965 /* CollectionView */,
 				740C855119F886E300D3A178 /* DataModel */,
-				741FB5FE19E0BE2E00EA6D5B /* CenterVC */,
 				74B721AB19F0C5D6000B3892 /* MakeDeal */,
 				749366FB19CE75F1003B3108 /* Login */,
+				741FB5FE19E0BE2E00EA6D5B /* CenterVC */,
 				74B721AC19F0C5FE000B3892 /* MainPage */,
+				741FB5F519E06F4600EA6D5B /* CenterTabHotDealController.h */,
+				741FB5F619E06F4600EA6D5B /* CenterTabHotDealController.m */,
+				7402D4941A19122C002AF7B3 /* YelpDetailViewController.h */,
+				7402D4951A19122C002AF7B3 /* YelpDetailViewController.m */,
+				74FE265819CA72A300801CA1 /* MapViewController.h */,
+				74FE265919CA72A300801CA1 /* MapViewController.m */,
 				74065ADD19C747D30033DA71 /* DetailPageViewController.h */,
 				74065ADE19C747D30033DA71 /* DetailPageViewController.m */,
 				74B9327E19AAEB4E003B6594 /* Main_iPhone.storyboard */,
@@ -1012,6 +1020,7 @@
 				74B721BD19F22B60000B3892 /* rotate.png in Resources */,
 				74B9327719AAEB4E003B6594 /* InfoPlist.strings in Resources */,
 				74DADB661A0748F400E2BA0F /* facebook.png in Resources */,
+				7402D4981A198A05002AF7B3 /* call.png in Resources */,
 				74FD277C1A130C5A008D0063 /* twitterCancel.jpg in Resources */,
 				741FB60619E11AF800EA6D5B /* zoom22.png in Resources */,
 				741FB60A19E11B0200EA6D5B /* web11.png in Resources */,
@@ -1105,6 +1114,7 @@
 				74CB851319BC072D00579432 /* OAHMAC_SHA1SignatureProvider.m in Sources */,
 				74B9327919AAEB4E003B6594 /* main.m in Sources */,
 				74CB84FB19BBD14200579432 /* OARequestParameter.m in Sources */,
+				7402D4961A19122C002AF7B3 /* YelpDetailViewController.m in Sources */,
 				74FD27761A12FC17008D0063 /* TweetDialogViewController.m in Sources */,
 				74A88CBA19FD63FB00872C26 /* EditTableCellView.m in Sources */,
 				749366FA19CDE688003B3108 /* TWSession.m in Sources */,

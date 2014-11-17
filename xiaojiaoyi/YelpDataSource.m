@@ -85,7 +85,7 @@ static NSString * const kSearchLimit       = @"3";
         self.offset=offset;
     }
     [params setValue:self.query?self.query:@"" forKey:@"term"];
-    NSLog(@"in data source: %@, %@",self.latitude,self.longitude);
+   // NSLog(@"in data source: %@, %@",self.latitude,self.longitude);
     [params setValue:[NSString stringWithFormat:@"%@,%@",self.latitude,self.longitude] forKey:@"ll"];
     if(self.category){
         [params setValue:self.category forKey:@"category_filter"];

@@ -77,7 +77,6 @@
 {
     NSLog(@"map view clicked");
     [self performSegueWithIdentifier:@"MapViewSegue" sender:self];
-    
 }
 -(void) prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
 {

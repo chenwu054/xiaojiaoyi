@@ -240,6 +240,18 @@ static LocationHandler locationHandler;
             
         }
     }
+    else if([segue.identifier isEqualToString:@"YelpDetailPushSegue"]){
+        //NSLog(@"in main view, YelpDetailPushSegue");
+        //NSLog(@"sender is %@",sender);
+        if([sender isKindOfClass:[CenterTabHotDealController class]]){
+            CenterTabHotDealController* centerHotDealVC = (CenterTabHotDealController*)sender;
+            if([segue.destinationViewController isKindOfClass:[YelpDetailViewController class]]){
+                YelpDetailViewController* yelpDetailVC = (YelpDetailViewController*)segue.destinationViewController;
+                [centerHotDealVC pushToYelpDetailViewController:yelpDetailVC];
+                
+            }
+        }
+    }
     
 }
 

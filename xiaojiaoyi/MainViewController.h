@@ -19,6 +19,8 @@
 #import "DataModalUtils.h"
 #import "SettingsViewController.h"
 #import "DealSummaryEditViewController.h"
+#import "CenterTabHotDealController.h"
+#import "YelpDetailViewController.h"
 
 @class CenterViewController;
 @class MyDealViewController;

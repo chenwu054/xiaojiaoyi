@@ -276,6 +276,8 @@
 -(void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath
 {
     NSLog(@"!!selected item at section:%ld and row: %ld",indexPath.section,indexPath.row);
+    
+    [self.mainVC performSegueWithIdentifier:@"YelpDetailPushSegue" sender:self];
 }
 
 #pragma mark - scroll view methods
@@ -296,6 +298,14 @@
     
 }
 
+#pragma mark - segue preparation
+-(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
+{
+    if([segue.identifier isEqualToString:@"YelpDetailPushSegue"]){
+        
+        NSLog(@"is YelpDetailPushSegue");
+    }
+}
 //=============
 #pragma mark - property setup methods
 -(void)setLatitude:(NSString*)latitude andLongtitude:(NSString*)longitude

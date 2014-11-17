@@ -16,6 +16,7 @@
 #import "GestureCollectionReusableView.h"
 #import "GestureButton.h"
 #import "YelpDataSource.h"
+#import "YelpDetailViewController.h"
 
 @class  MainViewController;
 
@@ -31,5 +32,7 @@
 @property (nonatomic) BOOL freshStart;
 
 -(void)hideSearchBar;
+-(void)setup;
+-(void)pushToYelpDetailViewController:(YelpDetailViewController*)yelpDetailVC;
 @end
 

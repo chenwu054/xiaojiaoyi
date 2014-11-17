@@ -327,12 +327,15 @@ static NSInteger t =0.0;
 //    NSLog(@"-----------------");
     if([self.nameTextField.text isEqualToString:@""]){
         NSLog(@"name is required");
+        [[[UIAlertView alloc] initWithTitle:nil message:@"deal name is required" delegate:self cancelButtonTitle:@"OK" otherButtonTitles: nil] show];
     }
     else if([self.priceTextField.text isEqualToString:@""]){
         NSLog(@"price is required");
+        [[[UIAlertView alloc] initWithTitle:nil message:@"deal price is required" delegate:self cancelButtonTitle:@"OK" otherButtonTitles: nil] show];
     }
     else if([self.descriptionTextField.text isEqualToString:@""] && !self.soundRecorded){
         NSLog(@"please either write a description or talk about it");
+        [[[UIAlertView alloc] initWithTitle:nil message:@"deal decription is required. You can talk about it" delegate:self cancelButtonTitle:@"OK" otherButtonTitles: nil] show];
     }
     else{
         
@@ -412,7 +415,7 @@ static NSInteger t =0.0;
             [[NSFileManager defaultManager] createDirectoryAtURL:myDealIdURL withIntermediateDirectories:YES attributes:nil error:NULL];
         }
         _soundURL=[myDealIdURL URLByAppendingPathComponent:[NSString stringWithFormat:@"%@.m4a",self.myNewDeal.deal_id]];
-        NSLog(@"set sound url is %@",_soundURL);
+        //NSLog(@"set sound url is %@",_soundURL);
     }
     return _soundURL;
 }
@@ -665,7 +668,7 @@ static NSInteger t =0.0;
 }
 -(void)deleteSoundTrack
 {
-    NSLog(@"sound track url is %@",self.soundURL);
+    //NSLog(@"sound track url is %@",self.soundURL);
     NSURL* baseURL=[self.utils myDealsDataURL];
     BOOL isDir = NO;
     NSURL* myDealIdURL=[baseURL URLByAppendingPathComponent:self.myNewDeal.deal_id];
@@ -720,7 +723,8 @@ static NSInteger t =0.0;
 -(UIImage*)backgroundImage
 {
     if(!_backgroundImage){
-        _backgroundImage=[UIImage imageNamed:@"linkedin.jpg"];
+        _backgroundImage=self.myNewDeal.photos[0]; //[UIImage imageNamed:@"linkedin.jpg"];
+        
     }
     return _backgroundImage;
 }
@@ -1216,6 +1220,7 @@ static NSInteger t =0.0;
     UIImageView* imageView=[[UIImageView alloc] initWithImage:self.backgroundImage];
     imageView.frame=CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height);
     imageView.image=self.backgroundImage;
+    imageView.contentMode = UIViewContentModeScaleToFill|UIViewContentModeTop;
     [self.view addSubview:imageView];
     [self.view addSubview:self.controlView];
     [self.view addSubview:self.crossButton];
