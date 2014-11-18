@@ -62,6 +62,8 @@
 
 @property (nonatomic) UIButton* reliabilityButton;
 @property (nonatomic) UIButton* mapButton;
+@property (nonatomic) UIImageView* mapSnapshotImageView;
+@property (nonatomic) UIImage* mapSnapshotImage;
 @property (nonatomic) UIColor* infoButtonFrameColor;
 
 @property (nonatomic) UIButton* cancelButton;
@@ -69,6 +71,9 @@
 @property (nonatomic) UIAlertView* alertView;
 
 @property (nonatomic) UIView* titleView;
+@property (nonatomic) NSNumber* latitude;
+@property (nonatomic) NSNumber* longitude;
+@property (nonatomic) CLLocationManager* locationMgr;
 
 @property (nonatomic) DataModalUtils* utils;
 @end
@@ -404,6 +409,32 @@
     }
     return _alertView;
 }
+-(CLLocationManager*)locationMgr
+{
+    if(!_locationMgr){
+        _locationMgr = [[CLLocationManager alloc] init];
+        _locationMgr.delegate = self;
+        _locationMgr.desiredAccuracy = kCLLocationAccuracyBest;
+        _locationMgr.distanceFilter = 500; //in meters
+        [_locationMgr startUpdatingLocation];
+    }
+    return _locationMgr;
+}
+-(UIImageView*)mapSnapshotImageView
+{
+    if(!_mapSnapshotImageView){
+        _mapSnapshotImageView=[[UIImageView alloc] init];
+    }
+    return _mapSnapshotImageView;
+}
+-(UIImage*)mapSnapshotImage
+{
+    if(!_mapSnapshotImage){
+        _mapSnapshotImage=[[UIImage alloc] init];
+    }
+    return _mapSnapshotImage;
+}
+
 -(void)setup
 {
     if(self.myNewDeal){
@@ -417,9 +448,55 @@
 
     [self.view addSubview:self.cancelButton];
     [self.view addSubview:self.confirmButton];
+    
+    [self locationMgr];
 }
+#pragma mark - location manager delegate method
+- (void)locationManager:(CLLocationManager *)manager didUpdateLocations:(NSArray *)locations
+{
+    CLLocation *curLocation = (CLLocation *)locations.lastObject;
+    NSDate* eventDate = curLocation.timestamp;
+    NSTimeInterval howRecent = [eventDate timeIntervalSinceNow];
+    //NSLog(@"calling location manager");
+    
+    if (abs(howRecent) < 100.0) {
+        // If the event is recent, do something with it.
+        NSLog(@"latitude %.6f, longitude %.6f\n",
+              curLocation.coordinate.latitude,
+              curLocation.coordinate.longitude);
+        self.latitude = [NSNumber numberWithDouble:curLocation.coordinate.latitude];//[NSString stringWithFormat:@"%.6f",curLocation.coordinate.latitude];
+        self.longitude = [NSNumber numberWithDouble:curLocation.coordinate.longitude];//[NSString stringWithFormat:@"%.6f", curLocation.coordinate.longitude];
+        [_locationMgr stopUpdatingLocation];
+        
+        [self createMapSnapshotImage];
+    }
+}
+-(void)createMapSnapshotImage
+{
+    MKMapSnapshotOptions *options = [[MKMapSnapshotOptions alloc] init];
+    CLLocationCoordinate2D center = CLLocationCoordinate2DMake(self.latitude.doubleValue, self.longitude.doubleValue);
+    double span = 0.02;
+    MKCoordinateSpan mapSpan = MKCoordinateSpanMake(span, span * self.mapButton.frame.size.width/self.mapButton.frame.size.height);
 
-
+    options.region = MKCoordinateRegionMake(center, mapSpan);
+    options.size = self.mapButton.frame.size;
+    options.scale = [[UIScreen mainScreen] scale];
+    
+    MKMapSnapshotter *snapshotter = [[MKMapSnapshotter alloc] initWithOptions:options];
+    [snapshotter startWithCompletionHandler:^(MKMapSnapshot *snapshot, NSError *error) {
+        if (error) {
+            NSLog(@"[Error] %@", error);
+            return;
+        }
+        
+        UIImage *image = snapshot.image;
+        //NSData *data = UIImagePNGRepresentation(image);
+        //[data writeToURL:fileURL atomically:YES];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self.mapButton setBackgroundImage:image forState:UIControlStateNormal];
+        });
+    }];
+}
 #pragma mark - button clicked methods
 -(void)userProfileButtonClicked:(UIButton*)sender
 {
@@ -454,6 +531,10 @@
     deal.exchange=self.myNewDeal.exchange;
     deal.create_date=self.myNewDeal.create_date;
     deal.expire_date=self.myNewDeal.expire_date;
+    if(self.latitude)
+        deal.latitude=self.latitude;
+    if(self.longitude)
+        deal.longitude=self.longitude;
     deal.sound_url=self.myNewDeal.sound_url?self.myNewDeal.sound_url:nil;
     deal.photoURL=self.myNewDeal.photoURL;
     if(![context save:NULL]){

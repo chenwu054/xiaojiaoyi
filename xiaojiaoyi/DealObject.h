@@ -23,6 +23,9 @@
 @property (nonatomic) NSString *user_id_created;//9.user id created
 @property (nonatomic) NSArray* photoURL;//10. photoURL
 
+@property (nonatomic) NSNumber* latitude; //11. latitude
+@property (nonatomic) NSNumber* longitude; //12. longitude
+
 @property (nonatomic) NSArray* photos; //array of NSData* 
 @property (nonatomic) NSNumber * insured;
 @property (nonatomic) NSString * user_id_bought;

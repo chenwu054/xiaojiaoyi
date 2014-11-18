@@ -38,6 +38,7 @@
 
 @implementation DataModalUtils
 static DataModalUtils* singleton;
+static NSString* defaultUserId=@"user123";
 @synthesize userId=_userId;
 
 
@@ -67,7 +68,7 @@ static DataModalUtils* singleton;
 -(NSString*)userId
 {
     if(!_userId){
-        _userId=@"user123";//default userID;
+        _userId=defaultUserId;//default userID;
     }
     return _userId;
 }
@@ -79,10 +80,14 @@ static DataModalUtils* singleton;
 
 -(NSManagedObjectContext*)getMyDealsContextWithUserId:(NSString*)userId
 {
-    NSManagedObjectContext * context= self.managedContextDictionary[userId];
+    NSString*newUserId = userId;
+    if(!newUserId){
+        newUserId=defaultUserId;
+    }
+    NSManagedObjectContext * context= self.managedContextDictionary[newUserId];
     if(!context){
-        context=[self getMyDealsDocumentWithUserId:userId].managedObjectContext;
-        [self.managedContextDictionary setObject:context forKey:userId];
+        context=[self getMyDealsDocumentWithUserId:newUserId].managedObjectContext;
+        [self.managedContextDictionary setObject:context forKey:newUserId];
     }
     return context;
 }
@@ -114,6 +119,8 @@ static DataModalUtils* singleton;
     [deal setValue:newDeal.sound_url forKey:@"sound_url"];
     [deal setValue:newDeal.condition forKey:@"condition"];
     [deal setValue:newDeal.insured forKey:@"insured"];
+    [deal setValue:newDeal.latitude forKey:@"latitude"];
+    [deal setValue:newDeal.longitude forKey:@"longitude"];
     [deal setValue:newDeal.user_id_bought forKey:@"user_id_bought"];
     [deal setValue:newDeal.user_id_created forKey:@"user_id_created"];
     
@@ -146,6 +153,8 @@ static DataModalUtils* singleton;
     newDeal.condition=deal.condition;
     newDeal.sound_url=deal.sound_url;
     newDeal.describe=deal.describe;
+    newDeal.latitude=deal.latitude;
+    newDeal.longitude=deal.longitude;
     newDeal.user_id_created=deal.user_id_created;
     newDeal.user_id_bought=deal.user_id_bought;
     
@@ -193,7 +202,8 @@ static DataModalUtils* singleton;
         //add to the dictionary
         [self.managedDocumentDictionary setObject:doc forKey:userId];
     }
-    if(![[NSFileManager defaultManager] fileExistsAtPath:filePath.path isDirectory:NO]){
+    NSURL* storageContentURL=[filePath URLByAppendingPathComponent:@"StoreContent"];
+    if(![[NSFileManager defaultManager] fileExistsAtPath:filePath.path isDirectory:NO] || ![[NSFileManager defaultManager] fileExistsAtPath:storageContentURL.path]){
         //first time creation
         [[NSFileManager defaultManager] createDirectoryAtPath:self.myDealsURL.path withIntermediateDirectories:YES attributes:nil error:NULL];
         [doc saveToURL:filePath forSaveOperation:UIDocumentSaveForCreating completionHandler:^(BOOL success) {
@@ -206,6 +216,7 @@ static DataModalUtils* singleton;
             
         }];
     }
+    
     //if not opened, should add error handling for other states!
     if(doc.documentState==UIDocumentStateClosed){
         [doc openWithCompletionHandler:^(BOOL success) {

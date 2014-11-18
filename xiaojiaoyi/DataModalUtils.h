@@ -13,6 +13,7 @@
 
 @property (nonatomic) NSString* userId;
 
++(DataModalUtils*)sharedInstance;
 
 -(UIManagedDocument*)getMyDealsDocumentWithUserId:(NSString*)userId;
 -(NSManagedObjectContext*)getMyDealsContextWithUserId:(NSString*)userId;
@@ -23,7 +24,7 @@
 
 -(void)addNotificationForUserId:(NSString*)userId;
 -(void)deleteNotificationForUserId:(NSString*)userId;
-+(DataModalUtils*)sharedInstance;
+
 -(void)insertMyDeal:(Deal*)deal;
 
 -(void)updateUserId:(NSString*)userId;

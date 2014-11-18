@@ -7,12 +7,14 @@
 //
 
 #import <UIKit/UIKit.h>
+#import <CoreLocation/CoreLocation.h>
+#import "Location.h"
 #import "DetailPageContentViewController.h"
 #import "DataModalUtils.h"
 #import "DealObject.h"
 #import "DealDescriptionViewController.h"
 
-@interface DealSummaryViewController : UIViewController <UIPageViewControllerDataSource,UIPageViewControllerDelegate,UIAlertViewDelegate>
+@interface DealSummaryViewController : UIViewController <UIPageViewControllerDataSource,UIPageViewControllerDelegate,UIAlertViewDelegate,CLLocationManagerDelegate>
 
 //@property (nonatomic) NSString* conditionStr;
 //@property (nonatomic) NSString* descriptionStr;

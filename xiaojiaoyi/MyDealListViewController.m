@@ -561,6 +561,10 @@
     dealObject.sound_url = deal.sound_url;
     //10. photoURL
     dealObject.photoURL = deal.photoURL;
+    //11. latitude
+    dealObject.latitude=deal.latitude;
+    //12. longitude
+    dealObject.longitude=deal.longitude;
     
     for (int i=0; i<dealObject.photoURL.count; i++) {
         nil;
