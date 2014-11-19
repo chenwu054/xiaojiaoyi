@@ -654,13 +654,19 @@ static NSString * const kClientId = @"100128444749-l3hh0v0as5n6t4rnp3maciodja4oa
             self.lkExpiresIn =[result valueForKeyPath:@"expires_in"];
             self.lkAccessToken =[result valueForKeyPath:@"access_token"];
             //NSLog(@"expires_in is %@, access_token is %@",_lkExpiresIn,_lkAccessToken);
-            [self.lkParams setObject:self.lkAccessToken forKey:LK_ACCESS_TOKEN];
-            NSDate* today = [NSDate date];
-            NSDate* expireDate = [today dateByAddingTimeInterval:[self.lkExpiresIn doubleValue]];
-            [self.lkParams setObject:expireDate forKey:LK_EXPIRES_IN];
-            
-            [self getLKUserProfile];
-            [self getLKUserProfilePicture];
+            if(self.lkExpiresIn && self.lkAccessToken){
+                [self.lkParams setObject:self.lkAccessToken forKey:LK_ACCESS_TOKEN];
+                NSDate* today = [NSDate date];
+                NSDate* expireDate = [today dateByAddingTimeInterval:[self.lkExpiresIn doubleValue]];
+                [self.lkParams setObject:expireDate forKey:LK_EXPIRES_IN];
+                //1. get LK user profile
+                [self getLKUserProfile];
+                //2. get LK user profile picture
+                [self getLKUserProfilePicture];
+            }
+            else{
+                NSLog(@"!!! ERROR: after LK user logged in, NO access token or expiration is fetched!");
+            }
         }
     }];
     [task resume];
@@ -680,6 +686,7 @@ static NSString * const kClientId = @"100128444749-l3hh0v0as5n6t4rnp3maciodja4oa
             
             if([self.lkParams valueForKey:LK_PROFILE_URL]){
                 //NSLog(@"calling update UserObject linkedin from profile");
+                //1.1 update LK user info
                 [self updateCurrentUserLKInfo];
             }
         }
@@ -687,7 +694,7 @@ static NSString * const kClientId = @"100128444749-l3hh0v0as5n6t4rnp3maciodja4oa
     }];
     [task resume];
 }
-
+//2. get LK user profile picture URL
 -(void)getLKUserProfilePicture
 {
     dispatch_async(dispatch_get_main_queue(), ^{
@@ -703,6 +710,7 @@ static NSString * const kClientId = @"100128444749-l3hh0v0as5n6t4rnp3maciodja4oa
             [self.lkParams addEntriesFromDictionary:result];
             
             NSString *userPicURL = [result valueForKey:@"pictureUrl"];
+            //2.2 download user's picture
             [self downloadUserProfilePicture:userPicURL];
             //NSLog(@"result is %@",result);
         }
@@ -724,16 +732,15 @@ static NSString * const kClientId = @"100128444749-l3hh0v0as5n6t4rnp3maciodja4oa
             dispatch_async(dispatch_get_main_queue(), ^{
                 UIImage *image = [UIImage imageWithData:data];
                 [self addLinkedinProfileWithImage:image];
-                
+                NSLog(@"calling update UserObject linkedin from profile picture");
+                [UserObject currentUser].lkLogin=YES;
+                [self updateCurrentUserLKInfo];
                 [_spinner stopAnimating];
             });
             //write to local lkProfile file
             NSURL* lkProfileURL= [UserObject currentUserLKProfileURL];
             [data writeToURL:lkProfileURL atomically:YES];
-            if([self.lkParams objectForKey:@"firstname"]){
-               // NSLog(@"calling update UserObject linkedin from profile picture");
-                [self updateCurrentUserLKInfo];
-            }
+           
 //            for(NSString* k in self.lkParams){
 //                NSLog(@"k:%@ and v:%@",k,_lkParams[k]);
 //            }
@@ -777,7 +784,7 @@ static NSString * const kClientId = @"100128444749-l3hh0v0as5n6t4rnp3maciodja4oa
     user.lkProfileURL=self.lkParams[LK_PROFILE_URL];
     user.lkUsername=[NSString stringWithFormat:@"%@ %@",self.lkParams[@"firstName"],self.lkParams[@"lastName"]];
     [UserObject updateUserObjectToFile:nil];
-    
+    [self updateLKButton];
 }
 -(void)trySilentLoginLinkedin
 {
@@ -797,6 +804,7 @@ static NSString * const kClientId = @"100128444749-l3hh0v0as5n6t4rnp3maciodja4oa
 }
 -(void)updateLKButton
 {
+    NSLog(@"updating LK button");
     UserObject* user = [UserObject currentUser];
     if(user.lkLogin){
         [self.loginLinkedinButton setTitle:@"Logout Linkedin" forState:UIControlStateNormal];
@@ -808,6 +816,7 @@ static NSString * const kClientId = @"100128444749-l3hh0v0as5n6t4rnp3maciodja4oa
 }
 - (IBAction)linkedinButtonClicked:(id)sender
 {
+    
     UserObject* user = [UserObject currentUser];
     if(user.lkLogin){
         [self.lkLogoutActionSheet showInView:self.view];

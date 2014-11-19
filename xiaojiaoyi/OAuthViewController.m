@@ -33,8 +33,11 @@
 }
 - (IBAction)cancelButtonClicked:(id)sender
 {
+    self.superVC.lkCallbackCode = nil;
+    self.superVC.lkCallbackState = nil;
+    self.superVC.twSession.oauth_verifier_token=nil;
+    self.superVC.twSession.oauth_verifier=nil;
     [self performSegueWithIdentifier:@"LoginUnwindSegue" sender:self];
-    
 }
 
 #pragma mark - UIWebView delegate methods
@@ -83,13 +86,13 @@
         NSArray *arr = [url componentsSeparatedByString:@"?"];
         NSMutableDictionary *dict = nil;
         if([requestStr rangeOfString:@"logout"].location!=NSNotFound){
-            NSLog(@"found logout!");
+            //NSLog(@"found logout!");
             request=[[NSURLRequest alloc] initWithURL:[NSURL URLWithString:@"https://mobile.twitter.com/session/new"]];
             
             return YES;
         }
         else if([requestStr rangeOfString:@"authenticate"].location!=NSNotFound){
-            NSLog(@"found authenticate key word!!");
+            //NSLog(@"found authenticate key word!!");
             return  YES;
         }
         else if(arr.count>1){
@@ -114,9 +117,9 @@
                 //});
                 //[self.superVC dismissViewControllerAnimated:YES completion:nil];
                 
-                //[self performSegueWithIdentifier:@"LoginUnwindSegue" sender:self];
+                [self performSegueWithIdentifier:@"LoginUnwindSegue" sender:self];
                 
-                NSLog(@"performed after alert view");
+                //NSLog(@"performed after alert view");
                 return NO;
             }
         }
@@ -129,7 +132,7 @@
      This url is intercepted and replaced by a new url requesting for access token.
      */
     else if(self.isLinkedin){
-        NSLog(@"the request str is %@",requestStr);
+        //NSLog(@"the request str is %@",requestStr);
         
         NSRange xjyRange = [requestStr rangeOfString:@"https://www.linkedin.com"];
         //NSRange xjyRange = [requestStr rangeOfString:@"http://xiaojiaoyi_linkedin_redirecturl"];
