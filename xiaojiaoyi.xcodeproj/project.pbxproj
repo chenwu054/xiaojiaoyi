@@ -10,7 +10,7 @@
 		7402D4921A145A31002AF7B3 /* YelpDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 7402D4911A145A31002AF7B3 /* YelpDataSource.m */; };
 		7402D4961A19122C002AF7B3 /* YelpDetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7402D4951A19122C002AF7B3 /* YelpDetailViewController.m */; };
 		7402D4981A198A05002AF7B3 /* call.png in Resources */ = {isa = PBXBuildFile; fileRef = 7402D4971A198A05002AF7B3 /* call.png */; };
-		7402D4A21A1B1341002AF7B3 /* Deal.m in Sources */ = {isa = PBXBuildFile; fileRef = 7402D4A11A1B1341002AF7B3 /* Deal.m */; };
+		7402D4A81A1C3778002AF7B3 /* Deal.m in Sources */ = {isa = PBXBuildFile; fileRef = 7402D4A71A1C3778002AF7B3 /* Deal.m */; };
 		74065ADF19C747D30033DA71 /* DetailPageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 74065ADE19C747D30033DA71 /* DetailPageViewController.m */; };
 		74065AE219C748210033DA71 /* DetailPageContentViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 74065AE119C748210033DA71 /* DetailPageContentViewController.m */; };
 		74065AE719C7E2DD0033DA71 /* apple image.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 74065AE419C7E2DD0033DA71 /* apple image.jpg */; };
@@ -183,8 +183,8 @@
 		7402D4941A19122C002AF7B3 /* YelpDetailViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YelpDetailViewController.h; sourceTree = "<group>"; };
 		7402D4951A19122C002AF7B3 /* YelpDetailViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YelpDetailViewController.m; sourceTree = "<group>"; };
 		7402D4971A198A05002AF7B3 /* call.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = call.png; sourceTree = "<group>"; };
-		7402D4A01A1B1341002AF7B3 /* Deal.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Deal.h; path = ../Deal.h; sourceTree = "<group>"; };
-		7402D4A11A1B1341002AF7B3 /* Deal.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Deal.m; path = ../Deal.m; sourceTree = "<group>"; };
+		7402D4A61A1C3778002AF7B3 /* Deal.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Deal.h; sourceTree = SOURCE_ROOT; };
+		7402D4A71A1C3778002AF7B3 /* Deal.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Deal.m; sourceTree = SOURCE_ROOT; };
 		74065ADD19C747D30033DA71 /* DetailPageViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DetailPageViewController.h; sourceTree = "<group>"; };
 		74065ADE19C747D30033DA71 /* DetailPageViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DetailPageViewController.m; sourceTree = "<group>"; };
 		74065AE019C748210033DA71 /* DetailPageContentViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DetailPageContentViewController.h; sourceTree = "<group>"; };
@@ -566,10 +566,10 @@
 				740C854919F886B200D3A178 /* OAuthToken.m */,
 				740C854B19F886B300D3A178 /* User.h */,
 				740C854C19F886B300D3A178 /* User.m */,
+				7402D4A61A1C3778002AF7B3 /* Deal.h */,
+				7402D4A71A1C3778002AF7B3 /* Deal.m */,
 				7452569819FDE08E00A12020 /* DealObject.h */,
 				7452569919FDE08E00A12020 /* DealObject.m */,
-				7402D4A01A1B1341002AF7B3 /* Deal.h */,
-				7402D4A11A1B1341002AF7B3 /* Deal.m */,
 				74DADB6D1A07DDAC00E2BA0F /* UserObject.h */,
 				74DADB6E1A07DDAC00E2BA0F /* UserObject.m */,
 				740C855219F8874E00D3A178 /* DataModalUtils.h */,
@@ -1104,7 +1104,7 @@
 				741FB5F019DF541400EA6D5B /* UserMenuController.m in Sources */,
 				740C854D19F886B300D3A178 /* User.m in Sources */,
 				74B7219919EC857B000B3892 /* MyDealViewController.m in Sources */,
-				7402D4A21A1B1341002AF7B3 /* Deal.m in Sources */,
+				7402D4A81A1C3778002AF7B3 /* Deal.m in Sources */,
 				74CB84FE19BBD43A00579432 /* NSURL+Base.m in Sources */,
 				74B9330D19AD8695003B6594 /* STTwitterAppOnly.m in Sources */,
 				749366F219CA7D9B003B3108 /* Location.m in Sources */,

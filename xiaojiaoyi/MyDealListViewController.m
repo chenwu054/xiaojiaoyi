@@ -565,11 +565,13 @@
     dealObject.latitude=deal.latitude;
     //12. longitude
     dealObject.longitude=deal.longitude;
+    //13. map image url
+    dealObject.map_image_url = deal.map_image_url;
     
-    for (int i=0; i<dealObject.photoURL.count; i++) {
-        nil;
-        //NSLog(@"photo is %@",dealObject.photoURL[i]);
-    }
+//    for (int i=0; i<dealObject.photoURL.count; i++) {
+//        nil;
+//        //NSLog(@"photo is %@",dealObject.photoURL[i]);
+//    }
     self.transferDealObject = dealObject;
     
     

@@ -153,17 +153,19 @@
         }
         UIButton *leftButton = [[GestureButton alloc] initWithFrame:CGRectMake(COLLECTION_VIEW_HEADER_MARGIN, 0, COLLECTION_VIEW_HEADER_LEFT_WIDTH, COLLECTION_VIEW_HEADER_HEIGHT)];
         leftButton.backgroundColor = [UIColor colorWithRed:0 green:255 blue:0 alpha:0.5];
-        
         [leftButton addTarget:self action:@selector(leftButtonClicked:) forControlEvents:UIControlEventTouchUpInside];
+        [leftButton setTitle:@"Promo_1" forState:UIControlStateNormal];
         
         UIButton *upperButton = [[GestureButton alloc] initWithFrame:CGRectMake(COLLECTION_VIEW_HEADER_LEFT_WIDTH + COLLECTION_VIEW_HEADER_MARGIN*2  ,0 , self.view.frame.size.width-(COLLECTION_VIEW_HEADER_LEFT_WIDTH + COLLECTION_VIEW_HEADER_MARGIN*3), COLLECTION_VIEW_HEADER_UPPER_HEIGHT)];
         upperButton.backgroundColor = [UIColor colorWithRed:255 green:0 blue:0 alpha:0.5];
         [upperButton addTarget:self action:@selector(topButtonClicked:) forControlEvents:UIControlEventTouchUpInside];
+        [upperButton setTitle:@"Commercial_1" forState:UIControlStateNormal];
         
         UIButton *lowerButton = [[GestureButton alloc] initWithFrame:CGRectMake(COLLECTION_VIEW_HEADER_LEFT_WIDTH + COLLECTION_VIEW_HEADER_MARGIN*2, COLLECTION_VIEW_HEADER_UPPER_HEIGHT+COLLECTION_VIEW_HEADER_MARGIN, self.view.frame.size.width-(COLLECTION_VIEW_HEADER_LEFT_WIDTH + COLLECTION_VIEW_HEADER_MARGIN*3) , COLLECTION_VIEW_HEADER_HEIGHT - COLLECTION_VIEW_HEADER_UPPER_HEIGHT - COLLECTION_VIEW_HEADER_MARGIN)];
         [lowerButton addTarget:self action:@selector(bottomButtonClicked:) forControlEvents:UIControlEventTouchUpInside];
-        
         lowerButton.backgroundColor = [UIColor blueColor];
+        [lowerButton setTitle:@"Commercial_2" forState:UIControlStateNormal];
+        
         view.frame = CGRectMake(0, 0,self.view.frame.size.width - 2*COLLECTION_VIEW_MARGIN, 250);
         [view addSubview:leftButton];
         [view addSubview:upperButton];

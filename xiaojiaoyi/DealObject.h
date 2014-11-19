@@ -25,7 +25,7 @@
 
 @property (nonatomic) NSNumber* latitude; //11. latitude
 @property (nonatomic) NSNumber* longitude; //12. longitude
-
+@property (nonatomic) NSString* map_image_url; //13. map image url
 @property (nonatomic) NSArray* photos; //array of NSData* 
 @property (nonatomic) NSNumber * insured;
 @property (nonatomic) NSString * user_id_bought;

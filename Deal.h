@@ -2,7 +2,7 @@
 //  Deal.h
 //  xiaojiaoyi
 //
-//  Created by chen on 11/17/14.
+//  Created by chen on 11/18/14.
 //  Copyright (c) 2014 com.practice. All rights reserved.
 //
 
@@ -20,13 +20,14 @@
 @property (nonatomic, retain) NSNumber * exchange;
 @property (nonatomic, retain) NSDate * expire_date;
 @property (nonatomic, retain) NSNumber * insured;
+@property (nonatomic, retain) NSNumber * latitude;
+@property (nonatomic, retain) NSNumber * longitude;
 @property (nonatomic, retain) id photoURL;
 @property (nonatomic, retain) NSNumber * price;
 @property (nonatomic, retain) NSNumber * shipping;
 @property (nonatomic, retain) NSString * sound_url;
 @property (nonatomic, retain) NSString * title;
-@property (nonatomic, retain) NSNumber * latitude;
-@property (nonatomic, retain) NSNumber * longitude;
+@property (nonatomic, retain) NSString * map_image_url;
 @property (nonatomic, retain) User *user_id_bought;
 @property (nonatomic, retain) User *user_id_created;
 

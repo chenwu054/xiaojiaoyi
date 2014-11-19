@@ -452,6 +452,11 @@
         _mapButton.layer.borderColor=[[UIColor whiteColor] CGColor];
         _mapButton.layer.borderWidth=2.0;
         _mapButton.backgroundColor=[UIColor lightGrayColor];
+        if(self.myNewDeal.map_image_url){
+            NSString* urlPath = self.myNewDeal.map_image_url;
+            UIImage* image = [UIImage imageWithData:[NSData dataWithContentsOfFile:urlPath]];
+            [_mapButton setBackgroundImage:image forState:UIControlStateNormal];
+        }
     }
     return _mapButton;
 }

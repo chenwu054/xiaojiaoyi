@@ -363,6 +363,8 @@
         _mapButton.layer.borderColor=[[UIColor whiteColor] CGColor];
         _mapButton.layer.borderWidth=2.0;
         _mapButton.backgroundColor=[UIColor lightGrayColor];
+        [_mapButton addTarget:self action:@selector(mapButtonClicked:) forControlEvents:UIControlEventTouchUpInside];
+        [_mapButton setTitle:@"click me for map snapshot!" forState:UIControlStateNormal];
     }
     return _mapButton;
 }
@@ -494,10 +496,30 @@
         //[data writeToURL:fileURL atomically:YES];
         dispatch_async(dispatch_get_main_queue(), ^{
             [self.mapButton setBackgroundImage:image forState:UIControlStateNormal];
+            [self.mapButton setTitle:@"" forState:UIControlStateNormal];
+            
         });
+        //save the map image to file
+        NSData* mapData = UIImagePNGRepresentation(image);
+        NSURL* url = [[self.utils myDealsDataURL] URLByAppendingPathComponent:self.myNewDeal.deal_id];
+        if(![[NSFileManager defaultManager] fileExistsAtPath:url.path]){
+            [[NSFileManager defaultManager] createDirectoryAtURL:url withIntermediateDirectories:YES attributes:nil error:NULL];
+        }
+        NSURL* mapImageURL =[url URLByAppendingPathComponent:@"mapImage"];
+        [mapData writeToURL:mapImageURL atomically:YES];
+        self.myNewDeal.map_image_url=mapImageURL.path;
+        
     }];
 }
 #pragma mark - button clicked methods
+-(void)mapButtonClicked:(UIButton*)sender
+{
+    if(self.myNewDeal.map_image_url)
+        return;
+    
+    [self.locationMgr startUpdatingLocation];
+    
+}
 -(void)userProfileButtonClicked:(UIButton*)sender
 {
     
@@ -520,6 +542,11 @@
 }
 -(void)confirmButtonClicked:(UIButton*)sender
 {
+    if(!self.myNewDeal.map_image_url){
+        [[[UIAlertView alloc] initWithTitle:nil message:@"deal location unknown!" delegate:self cancelButtonTitle:@"OK" otherButtonTitles: nil] show];
+        
+        return;
+    }
     NSManagedObjectContext* context = [self.utils getMyDealsContextWithUserId:self.utils.userId];
     Deal* deal = [NSEntityDescription insertNewObjectForEntityForName:@"Deal" inManagedObjectContext:context];
     deal.deal_id=self.myNewDeal.deal_id;
@@ -535,6 +562,7 @@
         deal.latitude=self.latitude;
     if(self.longitude)
         deal.longitude=self.longitude;
+    deal.map_image_url=self.myNewDeal.map_image_url;
     deal.sound_url=self.myNewDeal.sound_url?self.myNewDeal.sound_url:nil;
     deal.photoURL=self.myNewDeal.photoURL;
     if(![context save:NULL]){
