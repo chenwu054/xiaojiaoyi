@@ -619,6 +619,8 @@
 				7493294C19D27622003A2388 /* MyFBSessionTokenCachingStrategy.m */,
 				7493296119D74382003A2388 /* SessionManager.h */,
 				7493296219D74382003A2388 /* SessionManager.m */,
+				745257011A05ACD700A12020 /* DealSummaryEditViewController.h */,
+				745257021A05ACD700A12020 /* DealSummaryEditViewController.m */,
 				749366F819CDE688003B3108 /* TWSession.h */,
 				749366F919CDE688003B3108 /* TWSession.m */,
 				74CB84D219B588F700579432 /* OAuthViewController.h */,
@@ -650,8 +652,6 @@
 			isa = PBXGroup;
 			children = (
 				745257041A06AE2700A12020 /* unimplemented */,
-				745257011A05ACD700A12020 /* DealSummaryEditViewController.h */,
-				745257021A05ACD700A12020 /* DealSummaryEditViewController.m */,
 				74FD27741A12FC17008D0063 /* TweetDialogViewController.h */,
 				74FD27751A12FC17008D0063 /* TweetDialogViewController.m */,
 				74A88CA019FC0D8F00872C26 /* MyDealListViewController.h */,

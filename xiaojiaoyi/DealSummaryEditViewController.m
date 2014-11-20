@@ -539,6 +539,7 @@
 
 
 #pragma mark - share methods
+//===================Facebook methods===================
 -(void)createFBGraphObject
 {
 
@@ -754,6 +755,7 @@
         
     }
 }
+
 // A function for parsing URL parameters.
 - (NSDictionary*)parseURLParams:(NSString *)query {
     NSArray *pairs = [query componentsSeparatedByString:@"&"];
@@ -767,7 +769,50 @@
     return params;
 }
 
+-(void)postFBOpenGraphObject
+{
+    NSMutableArray* images= [[NSMutableArray alloc] init];
+    for(int i=0;i<self.uploadPhotoURI.count;i++){
+        [images addObject:@{@"url": self.uploadPhotoURI[i], @"user_generated" : @"true" }];
+    }
+    
+    // Create an object
+    NSMutableDictionary<FBOpenGraphObject> *restaurant = [FBGraphObject openGraphObjectForPost];
+    
+    // specify that this Open Graph object will be posted to Facebook
+    restaurant.provisionedForPost = YES;
+    
+    // Add the standard object properties
+    restaurant[@"og"] = @{ @"title":self.myNewDeal.title, @"type":@"restaurant.restaurant", @"description":self.myNewDeal.describe, @"image":images};
+    
+    // Add the properties restaurant inherits from place
+    restaurant[@"place"] = @{ @"location" : @{ @"longitude": @"-58.381667", @"latitude":@"-34.603333"} };
+    
+    // Add the properties particular to the type restaurant.restaurant
+    restaurant[@"restaurant"] = @{@"category": @[@"Mexican"],
+                                  @"contact_info": @{@"street_address": @"123 Some st",
+                                                     @"locality": @"Menlo Park",
+                                                     @"region": @"CA",
+                                                     @"phone_number": @"555-555-5555",
+                                                     @"website": @"http://www.example.com"}};
+    
+    // Make the Graph API request to post the object
+    FBRequest *request = [FBRequest requestForPostWithGraphPath:@"me/objects/restaurant.restaurant"
+                                                    graphObject:@{@"object":restaurant}];
+    [request startWithCompletionHandler:^(FBRequestConnection *connection, id result, NSError *error) {
+        if (!error) {
+            // Success! Include your code to handle the results here
+            NSLog(@"result: %@", result);
+            NSString* idString = [result objectForKey:@"id"];
+            NSLog(@"object is uploaded: %@",idString);
+        } else {
+            // An error occurred, we need to handle the error
+            // Check out our error handling guide: https://developers.facebook.com/docs/ios/errors/
+            NSLog(@"error %@", error.description);
+        }
+    }];
 
+}
 -(void)uploadPhotos
 {
     if(self.uploadPhotoURI.count>0){
@@ -788,7 +833,9 @@
             }
             if(self.uploadPhotoURI.count==self.photos.count){
                 //[self createFBGraphObject];
-                [self shareFBWithShareDialog];
+                [self postFBOpenGraphObject];
+                
+                //[self shareFBWithShareDialog];
             }
         }];
     }
@@ -829,7 +876,7 @@
 {
     
     UserObject* user = [UserObject currentUser];
-    
+    [self.uploadPhotoURI removeAllObjects];
     if(!user.fbLogin){
         [[[UIAlertView alloc] initWithTitle:nil message:@"Facebook account not logged in" delegate:self cancelButtonTitle:@"ok" otherButtonTitles: nil] show];
     }
@@ -854,6 +901,9 @@
     //NSLog(@"fb button clicked");
     
 }
+
+
+//============Twitter methods================
 -(void)uploadTWImagePath:(NSString*)path withStatus:(NSString*)status
 {
     TWSession* session = [SessionManager twSession];
