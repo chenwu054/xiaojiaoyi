@@ -15,7 +15,7 @@
 #import <GooglePlus/GooglePlus.h>
 #import "TweetDialogViewController.h"
 
-@interface DealSummaryEditViewController : UIViewController <UIPageViewControllerDataSource,UIPageViewControllerDelegate>
+@interface DealSummaryEditViewController : UIViewController <UIPageViewControllerDataSource,UIPageViewControllerDelegate,UIActionSheetDelegate>
 
 
 @property (nonatomic) DealObject* myNewDeal;

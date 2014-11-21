@@ -79,6 +79,8 @@
 @property (nonatomic) UIButton* twButton;
 @property (nonatomic) UIButton* lkButton;
 @property (nonatomic) NSMutableArray* uploadPhotoURI;
+@property (nonatomic) UIActionSheet* fbShareActionSheet;
+@property (nonatomic) UIActivityIndicatorView* spinner;
 
 //twitter tweet placeholder
 @property (nonatomic) NSMutableString* statusString;
@@ -503,6 +505,30 @@
     }
     return _deleteAlertView;
 }
+-(UIActionSheet*)fbShareActionSheet
+{
+    if(!_fbShareActionSheet){
+        _fbShareActionSheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:@"cancel" destructiveButtonTitle:nil otherButtonTitles:@"share in status",@"share in album", nil];
+        
+    }
+    return  _fbShareActionSheet;
+}
+-(UIActivityIndicatorView*)spinner
+{
+    if(!_spinner){
+        _spinner = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
+        [_spinner setCenter:CGPointMake(self.view.frame.size.width/2.0, self.view.frame.size.height/2.0)];
+        _spinner.frame = self.view.frame;
+        _spinner.backgroundColor = [UIColor colorWithWhite:0.5 alpha:0.4];
+        [_spinner addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(spinnerTapped)]];
+        [self.view addSubview:_spinner];
+    }
+    return _spinner;
+}
+-(void)spinnerTapped
+{
+    nil;
+}
 -(void)setup
 {
     if(self.myNewDeal){
@@ -746,11 +772,14 @@
                                                                   
                                                               } else {
                                                                   // User clicked the Share button
+                                                                  [[[UIAlertView alloc] initWithTitle:nil message:@"Your deal is posted in your status" delegate:self cancelButtonTitle:@"OK" otherButtonTitles: nil] show];
+                                                                  
                                                                   NSString *result = [NSString stringWithFormat: @"Posted story, id: %@", [urlParams valueForKey:@"post_id"]];
                                                                   NSLog(@"result %@", result);
                                                               }
                                                           }
                                                       }
+                                                      [self.spinner stopAnimating];
                                                   }];
         
     }
@@ -804,16 +833,19 @@
             // Success! Include your code to handle the results here
             NSLog(@"result: %@", result);
             NSString* idString = [result objectForKey:@"id"];
+            [[[UIAlertView alloc] initWithTitle:nil message:@"Your deal is posted in your album" delegate:self cancelButtonTitle:@"OK" otherButtonTitles: nil] show];
+            
             NSLog(@"object is uploaded: %@",idString);
         } else {
             // An error occurred, we need to handle the error
             // Check out our error handling guide: https://developers.facebook.com/docs/ios/errors/
             NSLog(@"error %@", error.description);
         }
+        [self.spinner stopAnimating];
     }];
 
 }
--(void)uploadPhotos
+-(void)uploadPhotosAndShowShareDialog
 {
     if(self.uploadPhotoURI.count>0){
         [self.uploadPhotoURI removeAllObjects];
@@ -830,6 +862,42 @@
             } else {
                 // An error occurred
                 NSLog(@"Error staging an image: %@", error);
+                if([error.description rangeOfString:@"(#200) Requires extended permission: publish_actions"].location!=NSNotFound){
+                    [self getFBPermissionAndShowShareDialog];
+                    
+                }
+            }
+            if(self.uploadPhotoURI.count==self.photos.count){
+                //[self createFBGraphObject];
+                //[self postFBOpenGraphObject];
+                [self shareFBWithShareDialog];
+            }
+        }];
+    }
+    
+}
+
+-(void)uploadPhotosAndSetOpenGraphObject
+{
+    if(self.uploadPhotoURI.count>0){
+        [self.uploadPhotoURI removeAllObjects];
+    }
+    for(int i=0;i<self.photos.count;i++){
+        UIImage* image = self.photos[i];
+        [SessionManager uploadImage:image withCompletionHandler:^(FBRequestConnection *connection, id result, NSError *error) {
+            if(!error) {
+                // Log the uri of the staged image
+                NSString* uri =[result objectForKey:@"uri"];
+                NSLog(@"Successfuly staged image with staged URI: %@", uri);
+                [self.uploadPhotoURI addObject:uri];
+                // Further code to post the OG story goes here
+            } else {
+                // An error occurred
+                NSLog(@"Error staging an image: %@", error);
+                if([error.description rangeOfString:@"(#200) Requires extended permission: publish_actions"].location!=NSNotFound){
+                    [self getFBPermissionAndShareOpenGraphObject];
+                    
+                }
             }
             if(self.uploadPhotoURI.count==self.photos.count){
                 //[self createFBGraphObject];
@@ -841,7 +909,40 @@
     }
     
 }
--(void)getFBPermission
+-(void)getFBPermissionAndShowShareDialog
+{
+    [SessionManager requestPublicActionPermissionWithCompletionHandler:^(FBSession *session, NSError *error) {
+        __block NSString *alertText;
+        __block NSString *alertTitle;
+        if (!error) {
+            if ([FBSession.activeSession.permissions indexOfObject:@"publish_actions"] == NSNotFound){
+                // Permission not granted, tell the user we will not publish
+                alertTitle = @"Permission not granted";
+                alertText = @"Your action will not be published to Facebook.";
+                [[[UIAlertView alloc] initWithTitle:alertTitle
+                                            message:alertText
+                                           delegate:self
+                                  cancelButtonTitle:@"OK!"
+                                  otherButtonTitles:nil] show];
+                [self.spinner stopAnimating];
+            } else {
+                // Permission granted, publish the OG story
+                NSLog(@"granted publish permission");
+                [self uploadPhotosAndShowShareDialog];
+                // start publish using open graph
+                
+            }
+            
+        } else {
+            NSLog(@"request publish_actions permission with error:%@",error);
+            [self.spinner stopAnimating];
+            // There was an error, handle it
+            // See https://developers.facebook.com/docs/ios/errors/
+        }
+        
+    }];
+}
+-(void)getFBPermissionAndShareOpenGraphObject
 {
     [SessionManager requestPublicActionPermissionWithCompletionHandler:^(FBSession *session, NSError *error) {
         __block NSString *alertText;
@@ -859,7 +960,7 @@
             } else {
                 // Permission granted, publish the OG story
                 NSLog(@"granted publish permission");
-                [self uploadPhotos];
+                [self uploadPhotosAndSetOpenGraphObject];
                 // start publish using open graph
                 
             }
@@ -872,36 +973,73 @@
         
     }];
 }
+
 -(void)fbButtonClicked:(UIButton*)sender
 {
-    
-    UserObject* user = [UserObject currentUser];
-    [self.uploadPhotoURI removeAllObjects];
-    if(!user.fbLogin){
-        [[[UIAlertView alloc] initWithTitle:nil message:@"Facebook account not logged in" delegate:self cancelButtonTitle:@"ok" otherButtonTitles: nil] show];
-    }
-    else{
-        [SessionManager checkFBPermissionsWithCompletionHandler:^(FBRequestConnection *connection, id result, NSError *error) {
-            if(!error){
-                NSDictionary *permissions= [(NSArray *)[result data] objectAtIndex:0];
-                if(!permissions[@"publish_actions"]){
-                    [self getFBPermission];
-                }
-                else{
-                    [self uploadPhotos];
-                }
-//                for(NSString* k in permissions){
-//                    NSLog(@"k:%@ value:%@",k,permissions[k]);
-//                }
-            }
-            NSLog(@"done checking permissions!");
-        }];
-        nil;
-    }
-    //NSLog(@"fb button clicked");
-    
+    [self.fbShareActionSheet showInView:self.view];
 }
-
+-(void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex
+{
+    if(actionSheet == self.fbShareActionSheet){
+        if(buttonIndex == 0){
+            UserObject* user = [UserObject currentUser];
+            [self.uploadPhotoURI removeAllObjects];
+            
+            if(!user.fbLogin){
+                [[[UIAlertView alloc] initWithTitle:nil message:@"Facebook account not logged in" delegate:self cancelButtonTitle:@"ok" otherButtonTitles: nil] show];
+            }
+            else{
+                [self.spinner startAnimating];
+                [self tapped:nil];
+//                [SessionManager checkFBPermissionsWithCompletionHandler:^(FBRequestConnection *connection, id result, NSError *error) {
+//                    if(!error){
+//                        NSDictionary *permissions= [(NSArray *)[result data] objectAtIndex:0];
+//                        if(!permissions[@"publish_actions"]){
+//                            [self getFBPermissionAndShowShareDialog];
+//                        }
+//                        else{
+//                            [self uploadPhotosAndShowShareDialog];
+//                        }
+//                        //                for(NSString* k in permissions){
+//                        //                    NSLog(@"k:%@ value:%@",k,permissions[k]);
+//                        //                }
+//                    }
+//                    NSLog(@"done checking permissions!");
+//                }];
+                
+                [self uploadPhotosAndShowShareDialog];
+            }
+            //NSLog(@"fb button clicked");
+        }
+        else if(buttonIndex == 1){
+            UserObject* user = [UserObject currentUser];
+            [self.uploadPhotoURI removeAllObjects];
+            if(!user.fbLogin){
+                [[[UIAlertView alloc] initWithTitle:nil message:@"Facebook account not logged in" delegate:self cancelButtonTitle:@"ok" otherButtonTitles: nil] show];
+            }
+            else{
+                [self.spinner startAnimating];
+                [self tapped:nil];
+//                [SessionManager checkFBPermissionsWithCompletionHandler:^(FBRequestConnection *connection, id result, NSError *error) {
+//                    if(!error){
+//                        NSDictionary *permissions= [(NSArray *)[result data] objectAtIndex:0];
+//                        if(!permissions[@"publish_actions"]){
+//                            [self getFBPermissionAndShareOpenGraphObject];
+//                        }
+//                        else{
+//                            [self uploadPhotosAndSetOpenGraphObject];
+//                        }
+//                    }
+//                    NSLog(@"done checking permissions!");
+//                }];
+                //try upload first and if it needs publish_actions permissions, it will send back error and
+                //then ask for additional permissions.
+                [self uploadPhotosAndSetOpenGraphObject];
+            }
+            //NSLog(@"fb button clicked");
+        }
+    }
+}
 
 //============Twitter methods================
 -(void)uploadTWImagePath:(NSString*)path withStatus:(NSString*)status
@@ -1068,14 +1206,16 @@
 
 -(void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
 {
-    if(buttonIndex==0){
-        NSLog(@"0 clicked");
-    }
-    else if(buttonIndex==1){
-        NSLog(@"1 clicked");
-        self.cancelDeal=YES;
-        [self performSegueWithIdentifier:@"DealSummaryUnwindSegue" sender:self];
-        
+    if(alertView==self.deleteAlertView){
+        if(buttonIndex==0){
+            NSLog(@"0 clicked");
+        }
+        else if(buttonIndex==1){
+            NSLog(@"1 clicked");
+            self.cancelDeal=YES;
+            [self performSegueWithIdentifier:@"DealSummaryUnwindSegue" sender:self];
+            
+        }
     }
 }
 
