@@ -591,6 +591,8 @@
 				74B7219519EC1F91000B3892 /* MyTapGestureRecognizer.m */,
 				741FB5F519E06F4600EA6D5B /* CenterTabHotDealController.h */,
 				741FB5F619E06F4600EA6D5B /* CenterTabHotDealController.m */,
+				74B7219A19EE0F3A000B3892 /* CategoryCollectionViewController.h */,
+				74B7219B19EE0F3A000B3892 /* CategoryCollectionViewController.m */,
 				7402D4941A19122C002AF7B3 /* YelpDetailViewController.h */,
 				7402D4951A19122C002AF7B3 /* YelpDetailViewController.m */,
 			);
@@ -670,8 +672,6 @@
 				74A88CB919FD63FB00872C26 /* EditTableCellView.m */,
 				74B7219719EC857B000B3892 /* MyDealViewController.h */,
 				74B7219819EC857B000B3892 /* MyDealViewController.m */,
-				74B7219A19EE0F3A000B3892 /* CategoryCollectionViewController.h */,
-				74B7219B19EE0F3A000B3892 /* CategoryCollectionViewController.m */,
 			);
 			name = MainPage;
 			sourceTree = "<group>";

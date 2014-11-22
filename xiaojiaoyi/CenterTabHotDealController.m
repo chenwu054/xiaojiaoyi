@@ -34,8 +34,8 @@
 //@property (nonatomic) NSMutableDictionary* cells;
 @property (nonatomic) NSMutableArray* names;
 @property (nonatomic) NSMutableArray* urls;
-@property (nonatomic) NSMutableArray* images;
 @property (nonatomic) UIImage* defaultImage;
+@property (nonatomic) NSMutableArray* images;
 @property (nonatomic) NSMutableArray* locationLatitude;
 @property (nonatomic) NSMutableArray* locationLongitude;
 @property (nonatomic) NSMutableArray* locationAddress;
@@ -525,7 +525,7 @@
         _pullDownImageView.hidden = YES;
     }
     //refresh and fetch more data
-    if( self.batchNumber <= REFRESH_LIMIT && offset > (self.names.count/2 - 2)*175 + 5 + REFRESH_OFFSET + COLLECTION_VIEW_HEADER_HEIGHT){
+    if( self.batchNumber <= REFRESH_LIMIT && offset > ((self.names.count%2==1?self.names.count+1:self.names.count)/2 - 2)*175 + 5 + REFRESH_OFFSET + COLLECTION_VIEW_HEADER_HEIGHT){
         if(self.needToRefresh){
             NSLog(@"call to refresh");
             //[self refreshDataWithQuery:self.query category:self.category andLocation:self.location offset:[NSString stringWithFormat:@"%ld",self.offset]];
@@ -709,12 +709,13 @@
                         [self.isClosed addObject:isClosed];
                     if(category)
                         [self.categories addObject:category];
+                    self.offset=self.offset+1;
                 }
                 //NSLog(@"-------");
             }
             self.batchNumber=self.batchNumber+1;
             //NSLog(@"batch is %ld",self.batchNumber);
-            self.offset=self.offset+self.businesses.count;
+            //self.offset=self.offset+self.businesses.count;
             self.needToRefresh=YES;
             //call it on the main queue to refresh the screen immediately!!
             dispatch_async(dispatch_get_main_queue(), ^{

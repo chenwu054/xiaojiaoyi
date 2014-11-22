@@ -36,15 +36,11 @@
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
                             <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" fixedFrame="YES" mapType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="Yac-Kr-Obk">
-                                <rect key="frame" x="0.0" y="64" width="320" height="347"/>
+                                <rect key="frame" x="0.0" y="64" width="320" height="350"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                             </mapView>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="siV-7w-mCg">
-                                <rect key="frame" x="0.0" y="413" width="140" height="155"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                            </imageView>
-                            <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="f5O-P6-N2M">
-                                <rect key="frame" x="140" y="413" width="180" height="155"/>
+                            <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" fixedFrame="YES" bounces="NO" alwaysBounceVertical="YES" translatesAutoresizingMaskIntoConstraints="NO" id="f5O-P6-N2M">
+                                <rect key="frame" x="0.0" y="413" width="320" height="155"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                             </scrollView>
                         </subviews>
@@ -52,7 +48,6 @@
                     </view>
                     <navigationItem key="navigationItem" id="oOo-2f-Mo3"/>
                     <connections>
-                        <outlet property="imageView" destination="siV-7w-mCg" id="BH1-V9-d5l"/>
                         <outlet property="mapView" destination="Yac-Kr-Obk" id="n7w-bO-byk"/>
                         <outlet property="scrollView" destination="f5O-P6-N2M" id="khZ-Qx-Dzs"/>
                     </connections>

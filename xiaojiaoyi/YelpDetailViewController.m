@@ -11,10 +11,11 @@
 #define LABEL_WIDTH 25
 #define LEFT_MARGIN 10
 #define PHONE_LABEL_HEIGHT 25
+#define REVIEWER_IMAGE_WIDTH 50
 
 @interface YelpDetailViewController ()
 @property (strong, nonatomic) IBOutlet MKMapView *mapView;
-@property (strong, nonatomic) IBOutlet UIImageView *imageView;
+//@property (strong, nonatomic) IBOutlet UIImageView *imageView;
 @property (strong, nonatomic) IBOutlet UIScrollView *scrollView;
 @property (nonatomic) UILabel* titleLabel;
 @property (nonatomic) UIButton* isClosedButton;
@@ -26,6 +27,9 @@
 @property (nonatomic) UIView* phoneView;
 @property (nonatomic) UIImageView* phoneImageView;
 @property (nonatomic) UILabel* reviewCountLabel;
+@property (nonatomic) UIView* reviewView;
+@property (nonatomic) UIImageView* reviewerImageView;
+
 @property (nonatomic) UILabel* reviewLabel;
 @property (nonatomic) UILabel* addressLabel;
 
@@ -81,7 +85,7 @@
     if(!_titleLabel){
         CGFloat width =  [self.titleString sizeWithAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"TrebuchetMS-Bold" size:15.0f]}].width;
         _titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(LEFT_MARGIN + 0, 0, width, 20)];
-        _titleLabel.attributedText=[[NSAttributedString alloc] initWithString:self.titleString attributes:@{NSFontAttributeName:[UIFont fontWithName:@"TrebuchetMS-Bold" size:15.0f]}];
+        _titleLabel.attributedText=[[NSAttributedString alloc] initWithString:self.titleString==nil?@"no title":self.titleString attributes:@{NSFontAttributeName:[UIFont fontWithName:@"TrebuchetMS-Bold" size:15.0f]}];
         //_titleLabel.backgroundColor=[UIColor cyanColor];
     }
     return _titleLabel;
@@ -174,21 +178,38 @@
     }
     return _reviewCountLabel;
 }
+-(UIView*)reviewView
+{
+    if(!_reviewView){
+        _reviewView = [[UIView alloc] initWithFrame:CGRectMake(0, self.reviewCountLabel.frame.origin.y+self.reviewCountLabel.frame.size.height, self.scrollView.frame.size.width, self.reviewLabel.frame.size.height+20)];
+        [_reviewView addSubview:self.reviewerImageView];
+        [_reviewView addSubview:self.reviewLabel];
+    }
+    return _reviewView;
+}
+-(UIImageView*)reviewerImageView
+{
+    if(!_reviewerImageView){
+        _reviewerImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, REVIEWER_IMAGE_WIDTH, 70)];
+        
+    }
+    return _reviewerImageView;
+}
 -(UILabel*)reviewLabel
 {
     if(!_reviewLabel){
         NSLog(@"review is %@",self.review);
         NSString* newReview = [NSString stringWithFormat:@"review: \r\n%@",self.review];
-        CGFloat maxWidth = MAX(self.isClosedButton.frame.origin.x + self.isClosedButton.frame.size.width, self.categoryLabel.frame.size.width);
-        maxWidth=MAX(maxWidth,self.phoneView.frame.size.width);
-        maxWidth=MAX(maxWidth,self.addressLabel.frame.size.width);
-        CGSize maximumLabelSize = CGSizeMake(maxWidth,9999);
+//        CGFloat maxWidth = MAX(self.isClosedButton.frame.origin.x + self.isClosedButton.frame.size.width, self.categoryLabel.frame.size.width);
+//        maxWidth=MAX(maxWidth,self.phoneView.frame.size.width);
+//        maxWidth=MAX(maxWidth,self.addressLabel.frame.size.width);
+        CGSize maximumLabelSize = CGSizeMake(self.scrollView.frame.size.width-REVIEWER_IMAGE_WIDTH-10,9999);
         CGSize expectedLabelSize = [newReview sizeWithFont:[UIFont fontWithName:@"Georgia" size:14.0f]
                                            constrainedToSize:maximumLabelSize
                                                lineBreakMode:NSLineBreakByWordWrapping];
 //        CGRect rect = [newReview boundingRectWithSize:maximumLabelSize options:0 attributes:@{NSFontAttributeName:[UIFont fontWithName:@"Georgia" size:14.0f]} context:nil];
         
-        _reviewLabel = [[UILabel alloc] initWithFrame:CGRectMake(0 + LEFT_MARGIN, self.reviewCountLabel.frame.origin.y + self.reviewCountLabel.frame.size.height, expectedLabelSize.width, expectedLabelSize.height)];
+        _reviewLabel = [[UILabel alloc] initWithFrame:CGRectMake(REVIEWER_IMAGE_WIDTH + LEFT_MARGIN, self.reviewCountLabel.frame.origin.y + self.reviewCountLabel.frame.size.height, expectedLabelSize.width, expectedLabelSize.height)];
         _reviewLabel.numberOfLines=0;
         [_reviewLabel setLineBreakMode:NSLineBreakByWordWrapping];
         _reviewLabel.attributedText=[[NSAttributedString alloc] initWithString:newReview attributes: @{NSFontAttributeName:[UIFont fontWithName:@"Georgia" size:14.0f]}];
@@ -226,7 +247,22 @@
         }];
         [downloadTask resume];
     }
-    self.imageView.image=self.image;
+    if(self.reviewImageURLString && self.reviewImageURLString.length>0){
+        NSURL* url =[NSURL URLWithString:self.reviewImageURLString];
+        NSURLRequest* request = [[NSURLRequest alloc] initWithURL:url];
+        NSURLSession* session = [NSURLSession sharedSession];
+        NSURLSessionDownloadTask* task = [session downloadTaskWithRequest:request completionHandler:^(NSURL *location, NSURLResponse *response, NSError *error) {
+            NSHTTPURLResponse* r = (NSHTTPURLResponse*)response;
+            
+            if(r.statusCode==200){
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    self.reviewerImageView.image=[[UIImage imageWithContentsOfFile:location.path] copy];
+                });
+            }
+        }];
+        [task resume];
+    }
+//    self.imageView.image=self.image;
     [self.scrollView addSubview:self.titleLabel];
     [self.scrollView addSubview:self.isClosedButton];
     [self.scrollView addSubview:self.categoryLabel];
@@ -235,10 +271,12 @@
     [self.scrollView addSubview:self.phoneView];
     [self.scrollView addSubview:self.reviewCountLabel];
     [self.scrollView addSubview:self.reviewLabel];
-    CGFloat maxWidth = MAX(self.isClosedButton.frame.origin.x + self.isClosedButton.frame.size.width, self.categoryLabel.frame.size.width);
-    maxWidth=MAX(maxWidth,self.phoneView.frame.origin.x+self.phoneView.frame.size.width);
-    maxWidth=MAX(maxWidth,self.addressLabel.frame.origin.x +self.addressLabel.frame.size.width);
+    [self.scrollView addSubview:self.reviewView];
     
+//    CGFloat maxWidth = MAX(self.isClosedButton.frame.origin.x + self.isClosedButton.frame.size.width, self.categoryLabel.frame.size.width);
+//    maxWidth=MAX(maxWidth,self.phoneView.frame.origin.x+self.phoneView.frame.size.width);
+//    maxWidth=MAX(maxWidth,self.addressLabel.frame.origin.x +self.addressLabel.frame.size.width);
+//    
     //maxWidth=MAX(maxWidth,self.reviewLabel.frame.size.width);
     CGFloat maxHeight = self.titleLabel.frame.size.height
                     + self.categoryLabel.frame.size.height
@@ -248,7 +286,7 @@
                     + self.reviewCountLabel.frame.size.height
                     + self.reviewLabel.frame.size.height + 20;
     
-    self.scrollView.contentSize = CGSizeMake(maxWidth+ 10,maxHeight);
+    self.scrollView.contentSize = CGSizeMake(self.scrollView.frame.size.width,maxHeight);
 }
 -(void)clear
 {

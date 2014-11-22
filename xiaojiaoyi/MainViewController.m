@@ -78,6 +78,7 @@ static LocationHandler locationHandler;
         [self.categoryViewControllerOne clear];
         self.categoryViewControllerOne.freshStart = YES;
         //[self.categoryViewControllerOne.collectionVC.collectionView scrollToItemAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0] atScrollPosition:UICollectionViewScrollPositionTop animated:YES];
+        self.categoryViewControllerOne.offset=0;
         
         NSString* category = indexPath.section==0?self.menuViewController.quickDealSymbol[indexPath.row]:self.menuViewController.yelpSymbol[indexPath.row];
         
@@ -248,6 +249,14 @@ static LocationHandler locationHandler;
             if([segue.destinationViewController isKindOfClass:[YelpDetailViewController class]]){
                 YelpDetailViewController* yelpDetailVC = (YelpDetailViewController*)segue.destinationViewController;
                 [centerHotDealVC pushToYelpDetailViewController:yelpDetailVC];
+                
+            }
+        }
+        else if([sender isKindOfClass:[CategoryCollectionViewController class]]){
+            CategoryCollectionViewController* categoryVC = (CategoryCollectionViewController*)sender;
+            if([segue.destinationViewController isKindOfClass:[YelpDetailViewController class]]){
+                YelpDetailViewController* yelpDetailVC = (YelpDetailViewController*)segue.destinationViewController;
+                [categoryVC pushToYelpDetailViewController:yelpDetailVC];
                 
             }
         }

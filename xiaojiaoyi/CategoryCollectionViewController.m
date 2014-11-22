@@ -25,12 +25,10 @@
 @property (nonatomic) YelpDataSource* dataSource;
 @property (nonatomic) NSMutableArray* businesses;
 @property (nonatomic) NSMutableDictionary* cells;
-@property (nonatomic) NSMutableArray* names;
-@property (nonatomic) NSMutableArray* urls;
-@property (nonatomic) NSMutableDictionary* images;
+
 @property (nonatomic) UIImage* defaultImage;
 
-@property (nonatomic) NSInteger offset;
+
 @property (nonatomic) NSInteger batchNumber;
 @property (nonatomic) NSString* queryString;
 @property (nonatomic) NSString* categoryString;
@@ -39,6 +37,24 @@
 
 @property (nonatomic) NSString* latitude;
 @property (nonatomic) NSString* longitude;
+@property (nonatomic) NSIndexPath* selectedItem;
+//@property (nonatomic) NSMutableArray* images;
+@property (nonatomic) NSMutableDictionary* names;
+@property (nonatomic) NSMutableDictionary* urls;
+@property (nonatomic) NSMutableDictionary* images;
+@property (nonatomic) NSMutableDictionary* locationLatitude;
+@property (nonatomic) NSMutableDictionary* locationLongitude;
+@property (nonatomic) NSMutableDictionary* locationAddress;
+@property (nonatomic) NSMutableDictionary* phoneNumber;
+@property (nonatomic) NSMutableDictionary* reviewCount;
+@property (nonatomic) NSMutableDictionary* review;
+@property (nonatomic) NSMutableDictionary* ratingImages;
+@property (nonatomic) NSMutableDictionary* ratingImagesURL;
+@property (nonatomic) NSMutableDictionary* categories;
+@property (nonatomic) NSMutableDictionary* isClosed;
+@property (nonatomic) NSMutableDictionary* reviewerImageURL;
+//@property (nonatomic) NSMutableDictionary* reviewerImage;
+@property (nonatomic) NSMutableSet* namesLoaded;
 
 @end
 
@@ -206,7 +222,6 @@
     [cell.layer setCornerRadius:5.0f];
     cell.backgroundColor=[UIColor lightGrayColor];
     
-    NSInteger idx = indexPath.row;
     cell.imageView.layer.cornerRadius=5.0;
     
     if(cell.imageView.superview != cell){
@@ -215,12 +230,12 @@
     if(cell.label.superview !=cell){
         [cell addSubview:cell.label];
     }
-    
-    if(![self.images objectForKey:@(idx)]){
+    NSString*idx = [NSString stringWithFormat:@"%ld",indexPath.row];
+    if(self.images[idx] && self.images[idx]==self.defaultImage){
         cell.imageView.image = self.defaultImage;
         cell.label.text = [NSString stringWithFormat:@""];
         
-        if([self.urls objectAtIndex:idx]){
+        if(self.urls[idx]){
             NSURLSession* session = [NSURLSession sharedSession];
             NSURLRequest* request = [[NSURLRequest alloc] initWithURL:self.urls[idx]];
             NSURLSessionDownloadTask* downloadTask = [session downloadTaskWithRequest:request completionHandler:^(NSURL *location, NSURLResponse *response, NSError *error){
@@ -234,9 +249,9 @@
                     
                     if(newImage){
                         //NSLog(@"file is %@",location.lastPathComponent);
-                        [self.images setObject:[newImage copy] forKey:@(idx)];
+                        self.images[idx]=[newImage copy];
                         //cell.image=[newImage copy];
-                        cell.imageView.image=[self.images objectForKey:@(idx)];
+                        cell.imageView.image=self.images[idx];
                         cell.label.text=self.names[idx];
                         cell.hasImage=YES;
                     }
@@ -249,7 +264,7 @@
         }
     }
     else{
-        cell.imageView.image = [self.images objectForKey:@(idx)];
+        cell.imageView.image = self.images[idx];
         cell.label.text =self.names[idx];
         cell.label.attributedText=[[NSAttributedString alloc] initWithString:self.names[idx] attributes:@{NSFontAttributeName:[UIFont fontWithName:@"Georgia" size:14],NSForegroundColorAttributeName:[UIColor blackColor]}];
     }
@@ -276,7 +291,7 @@
 -(void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath
 {
     NSLog(@"!!selected item at section:%ld and row: %ld",indexPath.section,indexPath.row);
-    
+    self.selectedItem=indexPath;
     [self.mainVC performSegueWithIdentifier:@"YelpDetailPushSegue" sender:self];
 }
 
@@ -286,23 +301,54 @@
     //NSLog(@"!calling scroll");
     CGFloat offset = [_collectionVC.collectionView contentOffset].y;
     //NSLog(@"content off set is %f",offset);
-    if( self.batchNumber <= REFRESH_LIMIT && offset > (self.names.count/2 - 2)*175 + REFRESH_OFFSET){
+    if( self.batchNumber <= REFRESH_LIMIT && offset > ((self.names.count%2==1?self.names.count+1:self.names.count)/2 - 2)*175 + REFRESH_OFFSET){
         if(self.needToRefresh){
-            NSLog(@"call to refresh");
+            //NSLog(@"call to refresh");
            // [self refreshDataWithQuery:self.query category:self.category andLocation:self.location offset:[NSString stringWithFormat:@"%ld",self.offset]];
             //note: offset + 1 is the new offset
             [self refreshDataWithLocationAndQuery:self.query category:self.category offset:[NSString stringWithFormat:@"%ld",self.offset+1]];
+            
+            //NSLog(@"calling to refresh with offset: %ld",self.offset+1);
+            
             self.needToRefresh=NO;
         }
     }
     
 }
 
+-(void)pushToYelpDetailViewController:(YelpDetailViewController*)yelpDetailVC
+{
+    CLLocationCoordinate2D coordinate;
+    NSString* offsetString= [NSString stringWithFormat:@"%ld",self.selectedItem.row];
+    NSNumber* latitude = self.locationLatitude[offsetString];
+    NSNumber* longitude = self.locationLongitude[offsetString];
+    coordinate.latitude = latitude.doubleValue;
+    coordinate.longitude = longitude.doubleValue;
+    
+    Location *annotation = [[Location alloc] initWithName:self.names[offsetString] Location:coordinate];
+    yelpDetailVC.pins=[[NSMutableArray alloc] init];
+    [yelpDetailVC.pins addObject:annotation];
+    //NSLog(@"latitude is %@,longitude is %@",self.locationLatitude[idx],self.locationLongitude[idx]);
+    //[yelpDetailVC clear];
+    yelpDetailVC.image=self.images[offsetString];
+    yelpDetailVC.titleString = self.names[offsetString];
+    yelpDetailVC.address = self.locationAddress[offsetString];
+    yelpDetailVC.photoNumber = self.phoneNumber[offsetString];
+    yelpDetailVC.reviewCount = self.reviewCount[offsetString];
+    yelpDetailVC.review = self.review[offsetString];
+    yelpDetailVC.ratingImageURL=self.ratingImagesURL[offsetString];
+    yelpDetailVC.isClosed = self.isClosed[offsetString];
+    yelpDetailVC.category = self.categories[offsetString];
+    yelpDetailVC.title=self.names[offsetString];
+    yelpDetailVC.reviewImageURLString = self.reviewerImageURL[offsetString];
+    
+    NSLog(@"push to Yelp Detail View Controller");
+}
 #pragma mark - segue preparation
 -(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
 {
     if([segue.identifier isEqualToString:@"YelpDetailPushSegue"]){
-        
+
         NSLog(@"is YelpDetailPushSegue");
     }
 }
@@ -340,17 +386,17 @@
     }
     return _dataSource;
 }
--(NSMutableArray*)names
+-(NSMutableDictionary*)names
 {
     if(!_names){
-        _names=[[NSMutableArray alloc] init];
+        _names=[[NSMutableDictionary alloc] init];
     }
     return _names;
 }
--(NSMutableArray*)urls
+-(NSMutableDictionary*)urls
 {
     if(!_urls){
-        _urls=[[NSMutableArray alloc] init];
+        _urls=[[NSMutableDictionary alloc] init];
     }
     return _urls;
 }
@@ -362,7 +408,6 @@
     return _images;
 }
 
-
 -(void)clear
 {
     NSLog(@"! calling clear");
@@ -373,6 +418,20 @@
     [self.names removeAllObjects];
     [self.urls removeAllObjects];
     [self.images removeAllObjects];
+    [self.locationLongitude removeAllObjects];
+    [self.locationLatitude removeAllObjects];
+    [self.locationAddress removeAllObjects];
+    [self.phoneNumber removeAllObjects];
+    [self.review removeAllObjects];
+    [self.reviewCount removeAllObjects];
+    [self.ratingImages removeAllObjects];
+    [self.ratingImagesURL removeAllObjects];
+    [self.categories removeAllObjects];
+    [self.isClosed removeAllObjects];
+//    [self.reviewerImage removeAllObjects];
+    [self.reviewerImageURL removeAllObjects];
+    [self.namesLoaded removeAllObjects];
+    
     self.offset=0;
     self.batchNumber=0;
     self.needToRefresh=true;
@@ -389,59 +448,66 @@
     
 }
 
--(void)refreshDataWithQuery:(NSString*)query category:(NSString*)category andLocation:(NSString*)location offset:(NSString*)offset
-{
-    NSLog(@"!calling refresh");
-    self.query=query;
-    self.category=category;
-    self.location=location;
-    
-    [self.dataSource setQuery:query category:category location:location offset:offset?offset:@"0"];
-    [self.dataSource fetchDataWithCompletionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
-        NSHTTPURLResponse * r = (NSHTTPURLResponse*)response;
-        //NSLog(@"response is %@",response);
-        //NSLog(@"error is %@",error);
-        if(r.statusCode == 200){
-            //NSLog(@"is successful");
-            NSError * error;
-            NSDictionary *json = [NSJSONSerialization JSONObjectWithData:data options:0 error: &error];
-            //NSLog(@"%@",json);
-            self.businesses = [json valueForKey:@"businesses"];
-            for(NSInteger i=0;i<[self.businesses count];i++){
-                //NSLog(@"name is: %@",[self.businesses[i] valueForKey:@"name"]);
-                NSString *name = [self.businesses[i] valueForKey:@"name"];
-                NSString *urlStr = [self.businesses[i] valueForKey:@"image_url"];
-                //!! NSMutableArray cannot add nil object.
-                if(name && urlStr && ![urlStr isEqualToString:@""]){
-                    [self.names addObject:name];
-                    [self.urls addObject:[NSURL URLWithString:urlStr]];
-                    self.offset=self.offset+1;//self.businesses.count; //self.batchNumber*20-1;
-                }
-            }
-            self.batchNumber=self.batchNumber+1;
-            NSLog(@"batch is %ld",self.batchNumber);
+//not used!!
+//-(void)refreshDataWithQuery:(NSString*)query category:(NSString*)category andLocation:(NSString*)location offset:(NSString*)offset
+//{
+//    NSLog(@"!calling refresh");
+//    self.query=query;
+//    self.category=category;
+//    self.location=location;
+//    
+//    [self.dataSource setQuery:query category:category location:location offset:offset?offset:@"0"];
+//    [self.dataSource fetchDataWithCompletionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
+//        NSHTTPURLResponse * r = (NSHTTPURLResponse*)response;
+//        //NSLog(@"response is %@",response);
+//        //NSLog(@"error is %@",error);
+//        if(r.statusCode == 200){
+//            //NSLog(@"is successful");
+//            NSError * error;
+//            NSDictionary *json = [NSJSONSerialization JSONObjectWithData:data options:0 error: &error];
+//            //NSLog(@"%@",json);
+//            self.businesses = [json valueForKey:@"businesses"];
+//            NSInteger itemAddedNum = 0;
+//            for(NSInteger i=0;i<[self.businesses count];i++){
+//                //NSLog(@"name is: %@",[self.businesses[i] valueForKey:@"name"]);
+//                NSString *name = [self.businesses[i] valueForKey:@"name"];
+//                NSString *urlStr = [self.businesses[i] valueForKey:@"image_url"];
+//                //!! NSMutableArray cannot add nil object.
+//                if(name && urlStr && ![urlStr isEqualToString:@""]){
+//                    [self.names addObject:name];
+//                    [self.urls addObject:[NSURL URLWithString:urlStr]];
+//                    itemAddedNum=itemAddedNum+1;//self.businesses.count; //self.batchNumber*20-1;
+//                }
+//            }
+//            self.batchNumber=self.batchNumber+1;
+//            itemAddedNum = self.offset + itemAddedNum;
+//            self.offset=itemAddedNum;
+//            
+//            NSLog(@"batch is %ld and offset is %ld",self.batchNumber,self.offset);
+//
+//            self.needToRefresh=YES;
+//            NSLog(@"busnesses count is %ld",self.businesses.count);
+//            //call it on the main queue to refresh the screen immediately!!
+//            dispatch_async(dispatch_get_main_queue(), ^{
+//                [self.collectionVC.collectionView reloadData];
+//                if(self.freshStart){
+//                    
+//                    //need to scroll back to the top every time a new request is sent.
+//                    if(self.urls.count>0){
+//                        [self.collectionVC.collectionView scrollToItemAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0] atScrollPosition:UICollectionViewScrollPositionTop animated:YES];
+//                        self.freshStart=NO;
+//                    }
+//                }
+//                //[self.collectionView reloadData];
+//            });
+//        }
+//    }];
+//}
 
-            self.needToRefresh=YES;
-            NSLog(@"busnesses count is %ld",self.businesses.count);
-            //call it on the main queue to refresh the screen immediately!!
-            dispatch_async(dispatch_get_main_queue(), ^{
-                [self.collectionVC.collectionView reloadData];
-                if(self.freshStart){
-                    
-                    //need to scroll back to the top every time a new request is sent.
-                    if(self.urls.count>0){
-                        [self.collectionVC.collectionView scrollToItemAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0] atScrollPosition:UICollectionViewScrollPositionTop animated:YES];
-                        self.freshStart=NO;
-                    }
-                }
-                //[self.collectionView reloadData];
-            });
-        }
-    }];
-}
+//use this method
 -(void)refreshDataWithLocationAndQuery:(NSString*)query category:(NSString*)category offset:(NSString*)offset
 {
-    NSLog(@"!calling refresh with location");
+    //NSLog(@"!calling refresh with location");
     self.query=query;
     self.category=category;
     [self.dataSource setQuery:query category:category location:nil offset:offset];
@@ -459,13 +525,91 @@
                 //NSLog(@"name is: %@",[self.businesses[i] valueForKey:@"name"]);
                 NSString *name = [self.businesses[i] valueForKey:@"name"];
                 NSString *urlStr = [self.businesses[i] valueForKey:@"image_url"];
+                NSDictionary* location = [[self.businesses[i] valueForKey:@"location"] valueForKey:@"coordinate"];
+                NSNumber* latitude=(NSNumber*)[location valueForKey:@"latitude"];
+                NSNumber* longitude=(NSNumber*)[location valueForKey:@"longitude"];
+                NSArray* displayAddr = [[self.businesses[i] valueForKey:@"location"] valueForKey:@"display_address"];
+                NSMutableString* address = [[NSMutableString alloc] init];
+                for(int i =0;i< displayAddr.count-1;i++){
+                    [address appendString:[NSString stringWithFormat:@"%@\r\n",displayAddr[i]]];
+                }
+                [address appendString:displayAddr[displayAddr.count-1]];
+                NSString* phoneNumber = [self.businesses[i] valueForKey:@"display_phone"];
+                NSNumber* reviewNumber = [self.businesses[i] valueForKey:@"review_count"];
+                NSString* review = [self.businesses[i] valueForKey:@"snippet_text"];
+                NSString* ratingImageURL = [self.businesses[i] valueForKey:@"rating_img_url_large"];
+                NSNumber* isClosed = [self.businesses[i] valueForKey:@"is_closed"];
+                NSArray* categories = [self.businesses[i] valueForKey:@"categories"];
+                NSString* reviewerImageURL = [self.businesses[i] valueForKey:@"snippet_image_url"];
+                
+                NSMutableString* categoryString = [[NSMutableString alloc] init];
+                NSArray* subCategoryArr=nil;
+                for(int i=0;i<categories.count-1;i++){
+                    subCategoryArr = categories[i];
+                    [categoryString appendString:[NSString stringWithFormat:@"%@, ",subCategoryArr[0]]];
+                }
+                subCategoryArr = categories[categories.count-1];
+                [categoryString appendString:[NSString stringWithFormat:@"%@",subCategoryArr[0]]];
+                
                 //!! NSMutableArray cannot add nil object.
-                if(name && urlStr && ![urlStr isEqualToString:@""]){
-                    [self.names addObject:name];
-                    [self.urls addObject:[NSURL URLWithString:urlStr]];
+                if(name && ![self.namesLoaded containsObject:name] && urlStr && latitude && longitude && address &&address.length>0){
+//                    [self.names addObject:name];
+                    NSString* offsetString = [NSString stringWithFormat:@"%ld",self.offset];
+                    self.names[offsetString]=name;
+                    [self.namesLoaded addObject:name];
+//                    [self.urls addObject:[NSURL URLWithString:urlStr]];
+                    self.urls[offsetString]=[NSURL URLWithString:urlStr];
+//                    [self.locationLatitude addObject:latitude];
+                    self.locationLatitude[offsetString]=latitude;
+//                    [self.locationLongitude addObject:longitude];
+                    self.locationLongitude[offsetString]=longitude;
+//                    [self.locationAddress addObject:address];
+                    self.locationAddress[offsetString]=address;
+                    //NSLog(@"address is %@",address);
+//                    [self.images addObject:self.defaultImage];
+                    self.images[offsetString]=self.defaultImage;
+                    self.reviewerImageURL[offsetString] = reviewerImageURL;
+                    if(phoneNumber)
+                        self.phoneNumber[offsetString]=phoneNumber;
+//                        [self.phoneNumber addObject:phoneNumber];
+                    if(reviewNumber)
+                        self.reviewCount[offsetString]=reviewNumber;
+//                        [self.reviewCount addObject:reviewNumber];
+                    if(review)
+                        self.review[offsetString]=review;
+//                        [self.review addObject:review];
+                    if(ratingImageURL)
+                        self.ratingImagesURL[offsetString]=ratingImageURL;
+//                        [self.ratingImagesURL addObject:ratingImageURL];
+                    self.ratingImages[offsetString]=self.defaultImage;
+//                    [self.ratingImages addObject:self.defaultImage];
+                    if(isClosed)
+                        self.isClosed[offsetString]=isClosed;
+//                        [self.isClosed addObject:isClosed];
+                    if(categoryString)
+                        self.categories[offsetString]=categoryString;
+//                        [self.categories addObject:categoryString];
                     self.offset=self.offset+1;
                 }
+                else{
+                    nil;
+//                    if(name==nil)
+//                        NSLog(@"ooops! an item is NOT added due to lack of name");
+//                    
+//                    //mostly urlStr is missing, so these items are neglected
+//                    if(urlStr==nil)
+//                        NSLog(@"ooops! an item is NOT added due to lack of url string");
+//                    if(latitude==nil)
+//                        NSLog(@"ooops! an item is NOT added due to lack of latitude");
+//                    if(longitude==nil)
+//                        NSLog(@"ooops! an item is NOT added due to lack of longitude");
+//                    if(address==nil)
+//                        NSLog(@"ooops! an item is NOT added due to lack of address");
+//                    if(address.length==0)
+//                        NSLog(@"ooops! an item is NOT added due to lack of address length == 0");
+                }
             }
+            //NSLog(@"url count is %ld",self.urls.count);
             self.batchNumber=self.batchNumber+1;
             //NSLog(@"batch is %ld",self.batchNumber);
             self.needToRefresh=YES;
@@ -494,9 +638,41 @@
     [self collectionVC];
     self.defaultImage=[UIImage imageNamed:@"apple image.jpg"];
     self.spinner = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
-    [self clear];
+    self.queryString=@"";
     
+//    self.names=[[NSMutableArray alloc] init];
+//    self.urls=[[NSMutableArray alloc] init];
+//    self.images=[[NSMutableArray alloc] init];
+//    self.locationAddress=[[NSMutableArray alloc] init];
+//    self.locationLatitude=[[NSMutableArray alloc] init];
+//    self.locationLongitude = [[NSMutableArray alloc] init];
+//    self.categories = [[NSMutableArray alloc] init];
+//    self.phoneNumber = [[NSMutableArray alloc] init];
+//    self.review = [[NSMutableArray alloc] init];
+//    self.reviewCount = [[NSMutableArray alloc] init];
+//    self.ratingImagesURL = [[NSMutableArray alloc] init];
+//    self.ratingImages = [[NSMutableArray alloc] init];
+//    self.isClosed= [[NSMutableArray alloc] init];
     
+    self.names=[[NSMutableDictionary alloc] init];
+    self.urls=[[NSMutableDictionary alloc] init];
+    self.images=[[NSMutableDictionary alloc] init];
+    self.locationAddress=[[NSMutableDictionary alloc] init];
+    self.locationLatitude=[[NSMutableDictionary alloc] init];
+    self.locationLongitude = [[NSMutableDictionary alloc] init];
+    self.categories = [[NSMutableDictionary alloc] init];
+    self.phoneNumber = [[NSMutableDictionary alloc] init];
+    self.review = [[NSMutableDictionary alloc] init];
+    self.reviewCount = [[NSMutableDictionary alloc] init];
+    self.ratingImagesURL = [[NSMutableDictionary alloc] init];
+    self.ratingImages = [[NSMutableDictionary alloc] init];
+    self.isClosed= [[NSMutableDictionary alloc] init];
+    self.reviewerImageURL=[[NSMutableDictionary alloc] init];
+//    self.reviewerImage=[[NSMutableDictionary alloc] init];
+    self.namesLoaded=[[NSMutableSet alloc] init];
+    
+    self.offset=0;
+    //[self clear];
 }
 
 - (void)viewDidLoad

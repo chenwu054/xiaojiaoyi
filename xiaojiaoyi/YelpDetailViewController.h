@@ -22,6 +22,7 @@
 @property (nonatomic) NSString* ratingImageURL;
 @property (nonatomic) NSNumber* isClosed;
 @property (nonatomic) NSString* category;
+@property (nonatomic) NSString* reviewImageURLString;
 
 
 -(void)clear;
