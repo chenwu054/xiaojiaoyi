@@ -591,10 +591,6 @@
 				74B7219519EC1F91000B3892 /* MyTapGestureRecognizer.m */,
 				741FB5F519E06F4600EA6D5B /* CenterTabHotDealController.h */,
 				741FB5F619E06F4600EA6D5B /* CenterTabHotDealController.m */,
-				74B7219A19EE0F3A000B3892 /* CategoryCollectionViewController.h */,
-				74B7219B19EE0F3A000B3892 /* CategoryCollectionViewController.m */,
-				7402D4941A19122C002AF7B3 /* YelpDetailViewController.h */,
-				7402D4951A19122C002AF7B3 /* YelpDetailViewController.m */,
 			);
 			name = CenterVC;
 			sourceTree = "<group>";
@@ -664,6 +660,10 @@
 				741FB5EF19DF541400EA6D5B /* UserMenuController.m */,
 				740A2E7C19C53E4600D87965 /* MainViewController.h */,
 				740A2E7D19C53E4600D87965 /* MainViewController.m */,
+				74B7219A19EE0F3A000B3892 /* CategoryCollectionViewController.h */,
+				74B7219B19EE0F3A000B3892 /* CategoryCollectionViewController.m */,
+				7402D4941A19122C002AF7B3 /* YelpDetailViewController.h */,
+				7402D4951A19122C002AF7B3 /* YelpDetailViewController.m */,
 				7402D4901A145A31002AF7B3 /* YelpDataSource.h */,
 				7402D4911A145A31002AF7B3 /* YelpDataSource.m */,
 				74B9328419AAEB4E003B6594 /* CenterViewController.h */,

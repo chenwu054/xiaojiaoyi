@@ -1270,9 +1270,12 @@ static NSInteger t =0.0;
     UITapGestureRecognizer* tapMainView=[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(backgroundTap:)];
     [self.view addGestureRecognizer:tapMainView];
     UIImageView* imageView=[[UIImageView alloc] initWithImage:self.backgroundImage];
-    imageView.frame=CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height);
+    imageView.frame=CGRectMake(0, 0, self.view.frame.size.width,self.backgroundImage.size.height/self.backgroundImage.size.width*self.view.frame.size.width);
+    //imageView.frame=CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height);
     imageView.image=self.backgroundImage;
-    imageView.contentMode = UIViewContentModeScaleToFill|UIViewContentModeTop;
+    imageView.contentMode =UIViewContentModeScaleAspectFit;// UIViewContentModeScaleToFill|UIViewContentModeTop;
+    [imageView setClipsToBounds:YES];
+    
     [self.view addSubview:imageView];
     [self.view addSubview:self.controlView];
     [self.view addSubview:self.crossButton];

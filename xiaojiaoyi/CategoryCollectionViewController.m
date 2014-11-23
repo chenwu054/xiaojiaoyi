@@ -290,9 +290,14 @@
 }
 -(void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath
 {
-    NSLog(@"!!selected item at section:%ld and row: %ld",indexPath.section,indexPath.row);
-    self.selectedItem=indexPath;
-    [self.mainVC performSegueWithIdentifier:@"YelpDetailPushSegue" sender:self];
+    if(![self.mainVC isReset]){
+        [self.mainVC reset];
+    }
+    else{
+        NSLog(@"!!selected item at section:%ld and row: %ld",indexPath.section,indexPath.row);
+        self.selectedItem=indexPath;
+        [self.mainVC performSegueWithIdentifier:@"YelpDetailPushSegue" sender:self];
+    }
 }
 
 #pragma mark - scroll view methods
@@ -305,9 +310,10 @@
         if(self.needToRefresh){
             //NSLog(@"call to refresh");
            // [self refreshDataWithQuery:self.query category:self.category andLocation:self.location offset:[NSString stringWithFormat:@"%ld",self.offset]];
-            //note: offset + 1 is the new offset
-            [self refreshDataWithLocationAndQuery:self.query category:self.category offset:[NSString stringWithFormat:@"%ld",self.offset+1]];
             
+            //note: offset + 1 is the new offset
+            //[self refreshDataWithLocationAndQuery:self.query category:self.category offset:[NSString stringWithFormat:@"%ld",self.offset+1]];
+            [self refreshDataWithLocationAndQuery:self.query category:self.category offset:[NSString stringWithFormat:@"%ld",self.batchNumber*20]];
             //NSLog(@"calling to refresh with offset: %ld",self.offset+1);
             
             self.needToRefresh=NO;
@@ -415,6 +421,11 @@
     //because iOS will call to check how many cells in the section. If delete first, then reset array, before the arrays are reset, iOS checks the number
     //it will still be nonzero. This will cause mismatch and iOS will through exception about this mismatch: number before update(insert and delete) +/- number inserted/deleted should be equal to the number after the update!
     NSInteger count = self.urls.count;
+    NSInteger collectionViewCellNumber = [self collectionView:self.collectionVC.collectionView numberOfItemsInSection:0];
+    if(count!=collectionViewCellNumber){
+        NSLog(@"count != collectionViewCellNumber: %ld,%ld",count,collectionViewCellNumber);
+        count = MIN(count,collectionViewCellNumber);
+    }
     [self.names removeAllObjects];
     [self.urls removeAllObjects];
     [self.images removeAllObjects];
@@ -568,26 +579,27 @@
                     //NSLog(@"address is %@",address);
 //                    [self.images addObject:self.defaultImage];
                     self.images[offsetString]=self.defaultImage;
-                    self.reviewerImageURL[offsetString] = reviewerImageURL?reviewerImageURL:@"";
+                    if(reviewerImageURL)
+                        self.reviewerImageURL[offsetString] = reviewerImageURL;//?reviewerImageURL:@"";
                     if(phoneNumber)
-                        self.phoneNumber[offsetString]=phoneNumber?phoneNumber:@"";
+                        self.phoneNumber[offsetString]=phoneNumber;//?phoneNumber:@"";
 //                        [self.phoneNumber addObject:phoneNumber];
                     if(reviewNumber)
-                        self.reviewCount[offsetString]=reviewNumber?reviewNumber:0;
+                        self.reviewCount[offsetString]=reviewNumber;//?reviewNumber:0;
 //                        [self.reviewCount addObject:reviewNumber];
                     if(review)
-                        self.review[offsetString]=review?review:@"";
+                        self.review[offsetString]=review;//?review:@"";
 //                        [self.review addObject:review];
                     if(ratingImageURL)
-                        self.ratingImagesURL[offsetString]=ratingImageURL?ratingImageURL:@"";
+                        self.ratingImagesURL[offsetString]=ratingImageURL;//?ratingImageURL:@"";
 //                        [self.ratingImagesURL addObject:ratingImageURL];
                     self.ratingImages[offsetString]=self.defaultImage;
 //                    [self.ratingImages addObject:self.defaultImage];
                     if(isClosed)
-                        self.isClosed[offsetString]=isClosed?isClosed:@1;
+                        self.isClosed[offsetString]=isClosed;//?isClosed:@1;
 //                        [self.isClosed addObject:isClosed];
                     if(categoryString)
-                        self.categories[offsetString]=categoryString?categoryString:@"";
+                        self.categories[offsetString]=categoryString;//?categoryString:@"";
 //                        [self.categories addObject:categoryString];
                     self.offset=self.offset+1;
                 }

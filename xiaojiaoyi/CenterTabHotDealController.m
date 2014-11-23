@@ -31,21 +31,22 @@
 @property (nonatomic) UILabel *pullDownTimeLabel;
 
 @property (nonatomic) NSMutableArray* businesses;
-//@property (nonatomic) NSMutableDictionary* cells;
-@property (nonatomic) NSMutableArray* names;
-@property (nonatomic) NSMutableArray* urls;
 @property (nonatomic) UIImage* defaultImage;
-@property (nonatomic) NSMutableArray* images;
-@property (nonatomic) NSMutableArray* locationLatitude;
-@property (nonatomic) NSMutableArray* locationLongitude;
-@property (nonatomic) NSMutableArray* locationAddress;
-@property (nonatomic) NSMutableArray* phoneNumber;
-@property (nonatomic) NSMutableArray* reviewCount;
-@property (nonatomic) NSMutableArray* review;
-@property (nonatomic) NSMutableArray* ratingImages;
-@property (nonatomic) NSMutableArray* ratingImagesURL;
-@property (nonatomic) NSMutableArray* categories;
-@property (nonatomic) NSMutableArray* isClosed;
+//@property (nonatomic) NSMutableDictionary* cells;
+@property (nonatomic) NSMutableDictionary* names;
+@property (nonatomic) NSMutableDictionary* urls;
+@property (nonatomic) NSMutableDictionary* images;
+@property (nonatomic) NSMutableDictionary* locationLatitude;
+@property (nonatomic) NSMutableDictionary* locationLongitude;
+@property (nonatomic) NSMutableDictionary* locationAddress;
+@property (nonatomic) NSMutableDictionary* phoneNumber;
+@property (nonatomic) NSMutableDictionary* reviewCount;
+@property (nonatomic) NSMutableDictionary* review;
+@property (nonatomic) NSMutableDictionary* ratingImages;
+@property (nonatomic) NSMutableDictionary* ratingImagesURL;
+@property (nonatomic) NSMutableDictionary* categories;
+@property (nonatomic) NSMutableDictionary* isClosed;
+@property (nonatomic) NSMutableDictionary* reviewerImageURL;
 
 @property (nonatomic) YelpDataSource* dataSource;
 @property (nonatomic) NSInteger offset;
@@ -284,7 +285,7 @@
     [cell.layer setShadowRadius:5];
     [cell.layer setShadowColor:[[UIColor blackColor] CGColor]];
     [cell.layer setCornerRadius:5.0f];
-    NSInteger idx = indexPath.row;
+    
     cell.imageView.layer.cornerRadius=5.0;
     
     if(cell.imageView.superview != cell){
@@ -294,11 +295,12 @@
         [cell addSubview:cell.label];
     }
     
-    if(self.images.count>idx && self.images[idx] == self.defaultImage){
+    NSString*idx = [NSString stringWithFormat:@"%ld",indexPath.row];
+    if(self.images[idx] && self.images[idx] == self.defaultImage){
         cell.imageView.image = self.defaultImage;
         cell.label.text = [NSString stringWithFormat:@""];
         
-        if([self.urls objectAtIndex:idx]){
+        if(self.urls[idx]){
 //            cell.imageView.image = [UIImage imageNamed:@"apple image.jpg"];
 //            cell.label.text = [NSString stringWithFormat:@""];
             NSURLSession* session = [NSURLSession sharedSession];
@@ -578,27 +580,27 @@
 {
     //NSLog(@"selected item is %@",self.selectedItem);
     CLLocationCoordinate2D coordinate;
-    NSInteger idx= self.selectedItem.row;
-    NSNumber* latitude = self.locationLatitude[idx];
-    NSNumber* longitude = self.locationLongitude[idx];
+    NSString* offsetString= [NSString stringWithFormat:@"%ld",self.selectedItem.row];
+    
+    NSNumber* latitude = self.locationLatitude[offsetString];
+    NSNumber* longitude = self.locationLongitude[offsetString];
     coordinate.latitude = latitude.doubleValue;
     coordinate.longitude = longitude.doubleValue;
-    
-    Location *annotation = [[Location alloc] initWithName:self.names[self.selectedItem.row] Location:coordinate];
+    Location *annotation = [[Location alloc] initWithName:self.names[offsetString] Location:coordinate];
     yelpDetailVC.pins=[[NSMutableArray alloc] init];
     [yelpDetailVC.pins addObject:annotation];
     //NSLog(@"latitude is %@,longitude is %@",self.locationLatitude[idx],self.locationLongitude[idx]);
     //[yelpDetailVC clear];
-    yelpDetailVC.image=self.images[idx];
-    yelpDetailVC.titleString = self.names[idx];
-    yelpDetailVC.address = self.locationAddress[idx];
-    yelpDetailVC.photoNumber = self.phoneNumber[idx];
-    yelpDetailVC.reviewCount = self.reviewCount[idx];
-    yelpDetailVC.review = self.review[idx];
-    yelpDetailVC.ratingImageURL=self.ratingImagesURL[idx];
-    yelpDetailVC.isClosed = self.isClosed[idx];
-    yelpDetailVC.category = self.categories[idx];
-    
+    yelpDetailVC.image=self.images[offsetString];
+    yelpDetailVC.titleString = self.names[offsetString];
+    yelpDetailVC.address = self.locationAddress[offsetString];
+    yelpDetailVC.photoNumber = self.phoneNumber[offsetString];
+    yelpDetailVC.reviewCount = self.reviewCount[offsetString];
+    yelpDetailVC.review = self.review[offsetString];
+    yelpDetailVC.ratingImageURL=self.ratingImagesURL[offsetString];
+    yelpDetailVC.isClosed = self.isClosed[offsetString];
+    yelpDetailVC.category = self.categories[offsetString];
+    yelpDetailVC.reviewImageURLString=self.reviewerImageURL[offsetString];
     NSLog(@"push to Yelp Detail View Controller");
     
 }
@@ -687,29 +689,58 @@
                 subCategoryArr = categories[categories.count-1];
                 [category appendString:[NSString stringWithFormat:@"%@",subCategoryArr[0]]];
                 
+                NSString* reviewerImageURL = [self.businesses[i] valueForKey:@"snippet_image_url"];
+                
                 if(name && urlStr && latitude && longitude && address &&address.length>0){
-                    [self.names addObject:name];
-                    [self.urls addObject:[NSURL URLWithString:urlStr]];
-                    [self.locationLatitude addObject:latitude];
-                    [self.locationLongitude addObject:longitude];
-                    [self.locationAddress addObject:address];
-                    //NSLog(@"address is %@",address);
-                    [self.images addObject:self.defaultImage];
-                    if(phoneNumber)
-                        [self.phoneNumber addObject:phoneNumber];
-                    if(reviewNumber)
-                        [self.reviewCount addObject:reviewNumber];
-                    if(review)
-                        [self.review addObject:review];
-                    if(ratingImageURL)
-                        [self.ratingImagesURL addObject:ratingImageURL];
+                    NSString* offsetString = [NSString stringWithFormat:@"%ld",self.offset];
+                    self.names[offsetString]=name;
+                    self.urls[offsetString]=[NSURL URLWithString:urlStr];
+                    self.locationLatitude[offsetString]=latitude;
+                    self.locationLongitude[offsetString]=longitude;
+                    self.locationAddress[offsetString]=address;
                     
-                    [self.ratingImages addObject:self.defaultImage];
+                    //NSLog(@"address is %@",address);
+                    self.images[offsetString]=self.defaultImage;
+                    if(phoneNumber)
+                        self.phoneNumber[offsetString]=phoneNumber;
+//                        [self.phoneNumber addObject:phoneNumber];
+                    if(reviewNumber)
+                        self.reviewCount[offsetString]=reviewNumber;
+//                        [self.reviewCount addObject:reviewNumber];
+                    if(review)
+                        self.review[offsetString]=review;
+//                        [self.review addObject:review];
+                    if(ratingImageURL)
+                        self.ratingImagesURL[offsetString]=ratingImageURL;
+//                        [self.ratingImagesURL addObject:ratingImageURL];
+                    
+                    self.ratingImages[offsetString]=self.defaultImage;
                     if(isClosed)
-                        [self.isClosed addObject:isClosed];
+                        self.isClosed[offsetString]=isClosed;
+//                        [self.isClosed addObject:isClosed];
                     if(category)
-                        [self.categories addObject:category];
+                        self.categories[offsetString]=category;
+//                        [self.categories addObject:category];
+                    if(reviewerImageURL)
+                        self.reviewerImageURL[offsetString] = reviewerImageURL;//?reviewerImageURL:@"";
                     self.offset=self.offset+1;
+                }
+                else{
+                    
+                    if(name==nil)
+                        NSLog(@"ooops! an item is NOT added due to lack of name");
+                    
+                    //mostly urlStr is missing, so these items are neglected
+                    if(urlStr==nil)
+                        NSLog(@"ooops! an item is NOT added due to lack of url string");
+                    if(latitude==nil)
+                        NSLog(@"ooops! an item is NOT added due to lack of latitude");
+                    if(longitude==nil)
+                        NSLog(@"ooops! an item is NOT added due to lack of longitude");
+                    if(address==nil)
+                        NSLog(@"ooops! an item is NOT added due to lack of address");
+                    if(address.length==0)
+                        NSLog(@"ooops! an item is NOT added due to lack of address length == 0");
                 }
                 //NSLog(@"-------");
             }
@@ -739,19 +770,35 @@
     self.categoryString=@"restaurants";
     self.locationString=@"San Francisco";
     //self.cells = [[NSMutableDictionary alloc] init];
-    self.names=[[NSMutableArray alloc] init];
-    self.urls=[[NSMutableArray alloc] init];
-    self.images=[[NSMutableArray alloc] init];
-    self.locationAddress=[[NSMutableArray alloc] init];
-    self.locationLatitude=[[NSMutableArray alloc] init];
-    self.locationLongitude = [[NSMutableArray alloc] init];
-    self.categories = [[NSMutableArray alloc] init];
-    self.phoneNumber = [[NSMutableArray alloc] init];
-    self.review = [[NSMutableArray alloc] init];
-    self.reviewCount = [[NSMutableArray alloc] init];
-    self.ratingImagesURL = [[NSMutableArray alloc] init];
-    self.ratingImages = [[NSMutableArray alloc] init];
-    self.isClosed= [[NSMutableArray alloc] init];
+//    self.names=[[NSMutableArray alloc] init];
+//    self.urls=[[NSMutableArray alloc] init];
+//    self.images=[[NSMutableArray alloc] init];
+//    self.locationAddress=[[NSMutableArray alloc] init];
+//    self.locationLatitude=[[NSMutableArray alloc] init];
+//    self.locationLongitude = [[NSMutableArray alloc] init];
+//    self.categories = [[NSMutableArray alloc] init];
+//    self.phoneNumber = [[NSMutableArray alloc] init];
+//    self.review = [[NSMutableArray alloc] init];
+//    self.reviewCount = [[NSMutableArray alloc] init];
+//    self.ratingImagesURL = [[NSMutableArray alloc] init];
+//    self.ratingImages = [[NSMutableArray alloc] init];
+//    self.isClosed= [[NSMutableArray alloc] init];
+//    self.reviewerImageURL=[[NSMutableArray alloc] init];
+    
+    self.names=[[NSMutableDictionary alloc] init];
+    self.urls=[[NSMutableDictionary alloc] init];
+    self.images=[[NSMutableDictionary alloc] init];
+    self.locationAddress=[[NSMutableDictionary alloc] init];
+    self.locationLatitude=[[NSMutableDictionary alloc] init];
+    self.locationLongitude = [[NSMutableDictionary alloc] init];
+    self.categories = [[NSMutableDictionary alloc] init];
+    self.phoneNumber = [[NSMutableDictionary alloc] init];
+    self.review = [[NSMutableDictionary alloc] init];
+    self.reviewCount = [[NSMutableDictionary alloc] init];
+    self.ratingImagesURL = [[NSMutableDictionary alloc] init];
+    self.ratingImages = [[NSMutableDictionary alloc] init];
+    self.isClosed= [[NSMutableDictionary alloc] init];
+    self.reviewerImageURL=[[NSMutableDictionary alloc] init];
     
     self.needToRefresh=NO;
     self.offset=0;

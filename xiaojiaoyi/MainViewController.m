@@ -57,9 +57,9 @@ static LocationHandler locationHandler;
         [self.myDealViewController.view removeFromSuperview];
         //[self.centerContainerView addSubview:self.pageVC.view];
         
-//        while(self.categoryViewControllerOne.view.superview !=self.centerContainerView){
-//            [self.centerContainerView addSubview:self.categoryViewControllerOne.view];
-//        }
+        //        while(self.categoryViewControllerOne.view.superview !=self.centerContainerView){
+        //            [self.centerContainerView addSubview:self.categoryViewControllerOne.view];
+        //        }
         //must add view first and then
         if([self peekViewStack]!=self.categoryViewControllerOne.view){
             [self pushViewStack:self.categoryViewControllerOne.view];
@@ -93,14 +93,12 @@ static LocationHandler locationHandler;
         //[self.categoryViewControllerOne ]
         //[self.categoryViewControllerOne refreshDataWithQuery:@"" category:category andLocation:@"San Francisco" offset:@"0"];
         
-        
-        
         //[self.pageVC setViewControllers:_pages direction:UIPageViewControllerNavigationDirectionForward animated:YES completion:nil];
         
-//        if([self peekViewStack]!=self.pageVC.view){
-//            [self pushViewStack:self.pageVC.view];
-//        }
-
+        //        if([self peekViewStack]!=self.pageVC.view){
+        //            [self pushViewStack:self.pageVC.view];
+        //        }
+        
     }
     else if(tableView == _userMenuController.userMenuTableView){
         if(indexPath.row==0){
