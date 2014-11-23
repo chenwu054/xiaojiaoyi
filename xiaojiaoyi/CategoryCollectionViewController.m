@@ -510,7 +510,7 @@
     //NSLog(@"!calling refresh with location");
     self.query=query;
     self.category=category;
-    [self.dataSource setQuery:query category:category location:nil offset:offset];
+    [self.dataSource setQuery:query category:category location:nil offset:offset?offset:[NSString stringWithFormat:@"%ld",self.offset]];
     [self.dataSource fetchDataWithLocationAndOffset:offset andCompletionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
         NSHTTPURLResponse * r = (NSHTTPURLResponse*)response;
         //NSLog(@"response is %@",response);
@@ -568,26 +568,26 @@
                     //NSLog(@"address is %@",address);
 //                    [self.images addObject:self.defaultImage];
                     self.images[offsetString]=self.defaultImage;
-                    self.reviewerImageURL[offsetString] = reviewerImageURL;
+                    self.reviewerImageURL[offsetString] = reviewerImageURL?reviewerImageURL:@"";
                     if(phoneNumber)
-                        self.phoneNumber[offsetString]=phoneNumber;
+                        self.phoneNumber[offsetString]=phoneNumber?phoneNumber:@"";
 //                        [self.phoneNumber addObject:phoneNumber];
                     if(reviewNumber)
-                        self.reviewCount[offsetString]=reviewNumber;
+                        self.reviewCount[offsetString]=reviewNumber?reviewNumber:0;
 //                        [self.reviewCount addObject:reviewNumber];
                     if(review)
-                        self.review[offsetString]=review;
+                        self.review[offsetString]=review?review:@"";
 //                        [self.review addObject:review];
                     if(ratingImageURL)
-                        self.ratingImagesURL[offsetString]=ratingImageURL;
+                        self.ratingImagesURL[offsetString]=ratingImageURL?ratingImageURL:@"";
 //                        [self.ratingImagesURL addObject:ratingImageURL];
                     self.ratingImages[offsetString]=self.defaultImage;
 //                    [self.ratingImages addObject:self.defaultImage];
                     if(isClosed)
-                        self.isClosed[offsetString]=isClosed;
+                        self.isClosed[offsetString]=isClosed?isClosed:@1;
 //                        [self.isClosed addObject:isClosed];
                     if(categoryString)
-                        self.categories[offsetString]=categoryString;
+                        self.categories[offsetString]=categoryString?categoryString:@"";
 //                        [self.categories addObject:categoryString];
                     self.offset=self.offset+1;
                 }
@@ -610,6 +610,8 @@
                 }
             }
             //NSLog(@"url count is %ld",self.urls.count);
+            //TODO: fetch offset is different from current offset, otherwise the following batch would have few distinct items to list,use self.batchNumber * 20 as the fetch offset and use self.offset as the number;
+            //
             self.batchNumber=self.batchNumber+1;
             //NSLog(@"batch is %ld",self.batchNumber);
             self.needToRefresh=YES;

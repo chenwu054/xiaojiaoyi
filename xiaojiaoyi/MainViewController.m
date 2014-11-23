@@ -85,7 +85,7 @@ static LocationHandler locationHandler;
         [self fetchLocationWithCompletionHandler:^(NSString *latitude, NSString *longtitude) {
             if(self.latitude && self.longtitude){
                 [self.categoryViewControllerOne setLatitude:self.latitude andLongtitude:self.longtitude];
-                [self.categoryViewControllerOne refreshDataWithLocationAndQuery:@"" category:category offset:@"0"];
+                [self.categoryViewControllerOne refreshDataWithLocationAndQuery:@"" category:category offset:nil];
             }
         }];
         

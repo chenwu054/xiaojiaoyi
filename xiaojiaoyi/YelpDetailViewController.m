@@ -121,7 +121,7 @@
 -(UIImageView*)ratingImageView
 {
     if(!_ratingImageView){
-        _ratingImageView = [[UIImageView alloc] initWithFrame:CGRectMake(-35, self.categoryLabel.frame.origin.y + self.categoryLabel.frame.size.height, self.scrollView.frame.size.width, 15)];
+        _ratingImageView = [[UIImageView alloc] initWithFrame:CGRectMake(-105, self.categoryLabel.frame.origin.y + self.categoryLabel.frame.size.height, self.scrollView.frame.size.width, 15)];
         _ratingImageView.contentMode=UIViewContentModeLeft;
         _ratingImageView.contentMode=UIViewContentModeScaleAspectFit;
     }
@@ -163,7 +163,7 @@
     if(!_phoneLabel){
         CGSize size = [self.photoNumber sizeWithAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Courier-Bold" size:14.0f]}];
         _phoneLabel = [[UILabel alloc] initWithFrame:CGRectMake(self.phoneImageView.frame.size.width, 0, size.width, PHONE_LABEL_HEIGHT)];
-        _phoneLabel.attributedText=[[NSAttributedString alloc] initWithString:self.photoNumber attributes:@{NSFontAttributeName:[UIFont fontWithName:@"Courier-Bold" size:14.0f]}];
+        _phoneLabel.attributedText=[[NSAttributedString alloc] initWithString:self.photoNumber?self.photoNumber:@"" attributes:@{NSFontAttributeName:[UIFont fontWithName:@"Courier-Bold" size:14.0f]}];
         //_phoneLabel.backgroundColor = [UIColor purpleColor];
     }
     return _phoneLabel;
@@ -190,7 +190,9 @@
 -(UIImageView*)reviewerImageView
 {
     if(!_reviewerImageView){
-        _reviewerImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, REVIEWER_IMAGE_WIDTH, 70)];
+        _reviewerImageView = [[UIImageView alloc] initWithFrame:CGRectMake(1*LEFT_MARGIN, 0, REVIEWER_IMAGE_WIDTH, 70)];
+        [_reviewerImageView setContentMode:UIViewContentModeScaleAspectFit];
+        //_reviewerImageView.backgroundColor=[UIColor redColor];
         
     }
     return _reviewerImageView;
@@ -209,11 +211,12 @@
                                                lineBreakMode:NSLineBreakByWordWrapping];
 //        CGRect rect = [newReview boundingRectWithSize:maximumLabelSize options:0 attributes:@{NSFontAttributeName:[UIFont fontWithName:@"Georgia" size:14.0f]} context:nil];
         
-        _reviewLabel = [[UILabel alloc] initWithFrame:CGRectMake(REVIEWER_IMAGE_WIDTH + LEFT_MARGIN, self.reviewCountLabel.frame.origin.y + self.reviewCountLabel.frame.size.height, expectedLabelSize.width, expectedLabelSize.height)];
+        _reviewLabel = [[UILabel alloc] initWithFrame:CGRectMake(REVIEWER_IMAGE_WIDTH + 1*LEFT_MARGIN, 0, expectedLabelSize.width, expectedLabelSize.height+20)];
         _reviewLabel.numberOfLines=0;
         [_reviewLabel setLineBreakMode:NSLineBreakByWordWrapping];
         _reviewLabel.attributedText=[[NSAttributedString alloc] initWithString:newReview attributes: @{NSFontAttributeName:[UIFont fontWithName:@"Georgia" size:14.0f]}];
-        //_reviewLabel.backgroundColor=[UIColor lightGrayColor];
+        
+        //_reviewLabel.backgroundColor=[UIColor greenColor];
     }
     return _reviewLabel;
 }
@@ -228,7 +231,7 @@
     CLLocationDistance width = 2000;
     CLLocationDistance height = 2000;
     MKCoordinateRegion region = MKCoordinateRegionMakeWithDistance(center, width, height);
-    [_mapView setRegion:region animated:YES];
+    [self.mapView setRegion:region animated:YES];
     
     if(self.ratingImageURL){
         NSURLSession* session = [NSURLSession sharedSession];
@@ -248,15 +251,22 @@
         [downloadTask resume];
     }
     if(self.reviewImageURLString && self.reviewImageURLString.length>0){
+        NSLog(@"url is %@",self.reviewImageURLString);
         NSURL* url =[NSURL URLWithString:self.reviewImageURLString];
         NSURLRequest* request = [[NSURLRequest alloc] initWithURL:url];
         NSURLSession* session = [NSURLSession sharedSession];
         NSURLSessionDownloadTask* task = [session downloadTaskWithRequest:request completionHandler:^(NSURL *location, NSURLResponse *response, NSError *error) {
             NSHTTPURLResponse* r = (NSHTTPURLResponse*)response;
-            
+            //NSLog(@"response is %@",r);
             if(r.statusCode==200){
+                NSData* data = [NSData dataWithContentsOfURL:location];
+                __block UIImage* image = [UIImage imageWithData:data];
                 dispatch_async(dispatch_get_main_queue(), ^{
-                    self.reviewerImageView.image=[[UIImage imageWithContentsOfFile:location.path] copy];
+                    
+                    self.reviewerImageView.image=[image copy]; //[[UIImage imageWithContentsOfFile:location.path] copy];
+                    NSLog(@"location is %@",image);
+                    //NSLog(@"self label frame %f,%f,%f,%f",self.reviewLabel.frame.origin.x,self.reviewLabel.frame.origin.y,self.reviewLabel.frame.size.width,self.reviewLabel.frame.size.height);
+                    //NSLog(@"self image frame %f,%f,%f,%f",self.reviewerImageView.frame.origin.x,self.reviewerImageView.frame.origin.y,self.reviewerImageView.frame.size.width,self.reviewerImageView.frame.size.height);
                 });
             }
         }];
@@ -270,7 +280,7 @@
     [self.scrollView addSubview:self.addressLabel];
     [self.scrollView addSubview:self.phoneView];
     [self.scrollView addSubview:self.reviewCountLabel];
-    [self.scrollView addSubview:self.reviewLabel];
+    //[self.scrollView addSubview:self.reviewLabel];
     [self.scrollView addSubview:self.reviewView];
     
 //    CGFloat maxWidth = MAX(self.isClosedButton.frame.origin.x + self.isClosedButton.frame.size.width, self.categoryLabel.frame.size.width);
