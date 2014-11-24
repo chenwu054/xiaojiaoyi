@@ -283,10 +283,11 @@
 {
     if(!_userProfileButton){
         _userProfileButton=[[UIButton alloc] initWithFrame:CGRectMake(5, 0, PROFILE_HEIGHT, PROFILE_HEIGHT)];
-        [_userProfileButton setImage:[UIImage imageNamed:@"twitter small icon.jpg"] forState:UIControlStateNormal];
+        [_userProfileButton setImage:[UIImage imageNamed:@"user.jpg"] forState:UIControlStateNormal];
         _userProfileButton.imageView.contentMode=UIViewContentModeScaleAspectFit;
         [_userProfileButton addTarget:self action:@selector(userProfileButtonClicked:) forControlEvents:UIControlEventTouchUpInside];
         _userProfileButton.layer.cornerRadius= 10.0;
+        [_userProfileButton setImageEdgeInsets:UIEdgeInsetsMake(5, 5, 5, 5)];
         _userProfileButton.layer.borderColor=[[UIColor whiteColor] CGColor];
         _userProfileButton.layer.borderWidth=2.0f;
     }
@@ -296,7 +297,7 @@
 {
     if(!_userProfileLabel){
         _userProfileLabel=[[UILabel alloc] initWithFrame:CGRectMake(self.userProfileButton.frame.origin.x+self.userProfileButton.frame.size.width+5, 0, USER_PROFILE_LABEL_WIDTH, PROFILE_HEIGHT)];
-        _userProfileLabel.attributedText=[[NSAttributedString alloc] initWithString:self.myNewDeal.user_id_created?self.myNewDeal.user_id_created:@"" attributes:@{NSFontAttributeName:[UIFont fontWithName:@"Arial" size:14.0],NSForegroundColorAttributeName:[UIColor blackColor]}];
+        _userProfileLabel.attributedText=[[NSAttributedString alloc] initWithString:self.myNewDeal.user_id_created?self.myNewDeal.user_id_created:@"user123" attributes:@{NSFontAttributeName:[UIFont fontWithName:@"Arial" size:14.0],NSForegroundColorAttributeName:[UIColor blackColor]}];
         
         _userProfileLabel.numberOfLines=1;
         [_userProfileLabel adjustsFontSizeToFitWidth];

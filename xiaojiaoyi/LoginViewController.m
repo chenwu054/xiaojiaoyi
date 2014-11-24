@@ -1568,7 +1568,9 @@ static NSString * const kClientId = @"100128444749-l3hh0v0as5n6t4rnp3maciodja4oa
      login button setup
      */
     //self.view.backgroundColor = [UIColor grayColor];
-    self.loginLoginButton.backgroundColor = [UIColor blueColor];
+    self.loginLoginButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+    self.loginLoginButton.backgroundColor = [UIColor lightGrayColor];
+    self.loginLoginButton.tintColor=[UIColor blueColor];
     self.loginLoginButton.titleLabel.textColor = [UIColor whiteColor];
     self.loginLoginButton.titleLabel.text = LOGIN_LABEL;
     

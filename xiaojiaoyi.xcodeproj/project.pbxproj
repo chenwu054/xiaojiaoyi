@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		74022E371A23901A0071994B /* user.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 74022E361A23901A0071994B /* user.jpg */; };
 		7402D4921A145A31002AF7B3 /* YelpDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 7402D4911A145A31002AF7B3 /* YelpDataSource.m */; };
 		7402D4961A19122C002AF7B3 /* YelpDetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7402D4951A19122C002AF7B3 /* YelpDetailViewController.m */; };
 		7402D4981A198A05002AF7B3 /* call.png in Resources */ = {isa = PBXBuildFile; fileRef = 7402D4971A198A05002AF7B3 /* call.png */; };
@@ -178,6 +179,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		74022E361A23901A0071994B /* user.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = user.jpg; sourceTree = "<group>"; };
 		7402D4901A145A31002AF7B3 /* YelpDataSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YelpDataSource.h; sourceTree = "<group>"; };
 		7402D4911A145A31002AF7B3 /* YelpDataSource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YelpDataSource.m; sourceTree = "<group>"; };
 		7402D4941A19122C002AF7B3 /* YelpDetailViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YelpDetailViewController.h; sourceTree = "<group>"; };
@@ -617,8 +619,6 @@
 				7493294C19D27622003A2388 /* MyFBSessionTokenCachingStrategy.m */,
 				7493296119D74382003A2388 /* SessionManager.h */,
 				7493296219D74382003A2388 /* SessionManager.m */,
-				745257011A05ACD700A12020 /* DealSummaryEditViewController.h */,
-				745257021A05ACD700A12020 /* DealSummaryEditViewController.m */,
 				749366F819CDE688003B3108 /* TWSession.h */,
 				749366F919CDE688003B3108 /* TWSession.m */,
 				74CB84D219B588F700579432 /* OAuthViewController.h */,
@@ -654,6 +654,8 @@
 				74FD27751A12FC17008D0063 /* TweetDialogViewController.m */,
 				74A88CA019FC0D8F00872C26 /* MyDealListViewController.h */,
 				74A88CA119FC0D8F00872C26 /* MyDealListViewController.m */,
+				745257011A05ACD700A12020 /* DealSummaryEditViewController.h */,
+				745257021A05ACD700A12020 /* DealSummaryEditViewController.m */,
 				740A2E7619C49B4F00D87965 /* MenuTableController.h */,
 				740A2E7719C49B4F00D87965 /* MenuTableController.m */,
 				741FB5EE19DF541400EA6D5B /* UserMenuController.h */,
@@ -913,6 +915,7 @@
 				74DADB691A07492100E2BA0F /* linkedin.png */,
 				74DADB671A07490600E2BA0F /* twitter.png */,
 				74DADB651A0748F400E2BA0F /* facebook.png */,
+				74022E361A23901A0071994B /* user.jpg */,
 			);
 			name = social;
 			sourceTree = "<group>";
@@ -1016,6 +1019,7 @@
 				74CBCF0319F5716200049AA0 /* backArrow.png in Resources */,
 				74065AE819C7E2DD0033DA71 /* facebook.jpg in Resources */,
 				74FD277A1A130B2D008D0063 /* twitterShare.jpg in Resources */,
+				74022E371A23901A0071994B /* user.jpg in Resources */,
 				74065AE919C7E2DD0033DA71 /* google.jpg in Resources */,
 				74B721B119F20180000B3892 /* trash.png in Resources */,
 				74DADB641A07467D00E2BA0F /* share.png in Resources */,

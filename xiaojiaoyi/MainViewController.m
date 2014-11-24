@@ -860,7 +860,7 @@ static LocationHandler locationHandler;
 }
 -(void)resetWithCenterView:(UIView*)centerView
 {
-    [self resetWithCenterView:centerView inDuration:0.2];
+    [self resetWithCenterView:centerView inDuration:0.5];
 }
 -(void)resetWithCenterView:(UIView*)centerView inDuration:(CGFloat)duration
 {

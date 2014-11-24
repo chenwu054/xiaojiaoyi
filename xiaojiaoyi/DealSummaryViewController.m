@@ -192,10 +192,12 @@
 {
     if(!_userProfileButton){
         _userProfileButton=[[UIButton alloc] initWithFrame:CGRectMake(5, 0, PROFILE_HEIGHT, PROFILE_HEIGHT)];
-        [_userProfileButton setImage:[UIImage imageNamed:@"twitter small icon.jpg"] forState:UIControlStateNormal];
+        [_userProfileButton setImage:[UIImage imageNamed:@"user.jpg"] forState:UIControlStateNormal];
         _userProfileButton.imageView.contentMode=UIViewContentModeScaleAspectFit;
         [_userProfileButton addTarget:self action:@selector(userProfileButtonClicked:) forControlEvents:UIControlEventTouchUpInside];
         _userProfileButton.layer.cornerRadius= 10.0;
+        [_userProfileButton setImageEdgeInsets:UIEdgeInsetsMake(5, 5, 5, 5)];
+        
         _userProfileButton.layer.borderColor=[[UIColor whiteColor] CGColor];
         _userProfileButton.layer.borderWidth=2.0f;
     }
