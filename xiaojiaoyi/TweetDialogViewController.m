@@ -99,7 +99,7 @@
     if(!_imageView){
        // UIImage* image = [UIImage imageNamed:@"linkedin.jpg"];
         _imageView=[[UIImageView alloc] initWithFrame:CGRectMake(TEXTVIEW_WIDTH+5, self.cancelButton.frame.origin.y + self.cancelButton.frame.size.height + 10, self.view.frame.size.width-TEXTVIEW_WIDTH-10, CONTAINER_VIEW_HEIGHT - 2* BUTTON_HEIGHT - 20)];
-        _imageView.image=[UIImage imageNamed:@"linkedin.jpg"];
+        _imageView.image=self.image?self.image:nil;//[UIImage imageNamed:@"linkedin.jpg"];
         _imageView.layer.borderColor=[[UIColor brownColor] CGColor];
         _imageView.layer.borderWidth=2.0;
         _imageView.layer.cornerRadius=5.0;

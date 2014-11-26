@@ -1072,15 +1072,30 @@
         [[[UIAlertView alloc] initWithTitle:nil message:@"You are not logged in with Twitter" delegate:self cancelButtonTitle:@"ok" otherButtonTitles: nil] show];
     }
     else{
+        /*
+         NOTE: twitter does not allow these chars: :!%:
+         */
         self.statusString = [[NSMutableString alloc] init];
         [self.statusString appendString:[NSString stringWithFormat:@"%@\r\n",self.myNewDeal.title]];
         [self.statusString appendString:[NSString stringWithFormat:@"%@\r\n",self.myNewDeal.describe]];
-        [self.statusString appendString:[NSString stringWithFormat:@"price:%@\r\n",self.myNewDeal.price]];
-        [self.statusString appendString:[NSString stringWithFormat:@"condition:%@\r\n",self.myNewDeal.condition]];
+        [self.statusString appendString:[NSString stringWithFormat:@"price is %@\r\n",self.myNewDeal.price]];
+        if([self.myNewDeal.condition isEqualToString:@"90%"]){
+            [self.statusString appendString:@"almost new\r\n"];
+        }
+        else if([self.myNewDeal.condition isEqualToString:@"80%"]){
+            [self.statusString appendString:@"fairly new\r\n"];
+        }
+        else if([self.myNewDeal.condition isEqualToString:@"<80%"]){
+            [self.statusString appendString:@"fairly good\r\n"];
+        }
+        else{
+            [self.statusString appendString:@"brand new\r\n"];
+        }
+        //[self.statusString appendString:[NSString stringWithFormat:@"condition is %@\r\n",self.myNewDeal.condition]];
         [self.statusString appendString:[NSString stringWithFormat:self.myNewDeal.exchange?@"willing to exchange":@"do not accept exchange"]];
         NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
         //[dateFormatter setDateFormat:@" MMM/dd/yyyy 'at' HH':'mm"];
-        [dateFormatter setDateFormat:@" MMM/dd/yyyy"];
+        [dateFormatter setDateFormat:@" MMM-dd-yyyy"];
         NSString* expireDate=[dateFormatter stringFromDate:self.myNewDeal.expire_date];
         
         [self.statusString appendString:[NSString stringWithFormat:@"\r\ngood until %@",expireDate]];
@@ -1235,7 +1250,8 @@
         if([segue.destinationViewController isKindOfClass:[TweetDialogViewController class]]){
             TweetDialogViewController* tweetVC = (TweetDialogViewController*)segue.destinationViewController;
             tweetVC.placeholder=self.statusString;
-            tweetVC.image=self.myNewDeal.photos[0];
+            tweetVC.image=[UIImage imageWithContentsOfFile:self.myNewDeal.photoURL[0]];
+            //tweetVC.image=self.myNewDeal.photos[0];
         }
     }
 }
