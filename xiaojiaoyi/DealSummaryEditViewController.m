@@ -884,6 +884,7 @@
         [self.uploadPhotoURI removeAllObjects];
     }
     for(int i=0;i<self.photos.count;i++){
+    //int i=0;
         UIImage* image = self.photos[i];
         [SessionManager uploadImage:image withCompletionHandler:^(FBRequestConnection *connection, id result, NSError *error) {
             if(!error) {

@@ -2698,11 +2698,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "xiaojiaoyi/DealSummaryEditViewController.m"
-            timestampString = "438665897.483656"
+            timestampString = "438837876.802083"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1270"
-            endingLineNumber = "1270"
+            startingLineNumber = "1271"
+            endingLineNumber = "1271"
             landmarkName = "-pageViewController:viewControllerBeforeViewController:"
             landmarkType = "5">
          </BreakpointContent>
@@ -3430,11 +3430,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "xiaojiaoyi/DealSummaryEditViewController.m"
-            timestampString = "438665897.483656"
+            timestampString = "438837876.802083"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1116"
-            endingLineNumber = "1116"
+            startingLineNumber = "1117"
+            endingLineNumber = "1117"
             landmarkName = "-tweetDealWithStatus:"
             landmarkType = "5">
          </BreakpointContent>
@@ -3446,11 +3446,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "xiaojiaoyi/DealSummaryEditViewController.m"
-            timestampString = "438538825.56954"
+            timestampString = "438837876.802083"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1046"
-            endingLineNumber = "1046"
+            startingLineNumber = "1047"
+            endingLineNumber = "1047"
             landmarkName = "-uploadTWImagePath:withStatus:"
             landmarkType = "5">
          </BreakpointContent>
@@ -3462,11 +3462,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "xiaojiaoyi/DealSummaryEditViewController.m"
-            timestampString = "438538825.56954"
+            timestampString = "438837876.802083"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1048"
-            endingLineNumber = "1048"
+            startingLineNumber = "1049"
+            endingLineNumber = "1049"
             landmarkName = "-uploadTWImagePath:withStatus:"
             landmarkType = "5">
          </BreakpointContent>
@@ -4054,11 +4054,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "xiaojiaoyi/DealSummaryEditViewController.m"
-            timestampString = "438538825.56954"
+            timestampString = "438837876.802083"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "932"
-            endingLineNumber = "932"
+            startingLineNumber = "933"
+            endingLineNumber = "933"
             landmarkName = "-getFBPermissionAndShowShareDialog"
             landmarkType = "5">
          </BreakpointContent>
@@ -4070,11 +4070,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "xiaojiaoyi/DealSummaryEditViewController.m"
-            timestampString = "438538825.56954"
+            timestampString = "438837876.802083"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "891"
-            endingLineNumber = "891"
+            startingLineNumber = "892"
+            endingLineNumber = "892"
             landmarkName = "-uploadPhotosAndSetOpenGraphObject"
             landmarkType = "5">
          </BreakpointContent>
@@ -4532,11 +4532,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "xiaojiaoyi/DealSummaryEditViewController.m"
-            timestampString = "438665897.483656"
+            timestampString = "438837876.802083"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1254"
-            endingLineNumber = "1254"
+            startingLineNumber = "1255"
+            endingLineNumber = "1255"
             landmarkName = "-prepareForSegue:sender:"
             landmarkType = "5">
          </BreakpointContent>
