@@ -650,6 +650,8 @@
 			isa = PBXGroup;
 			children = (
 				745257041A06AE2700A12020 /* unimplemented */,
+				740A2E7C19C53E4600D87965 /* MainViewController.h */,
+				740A2E7D19C53E4600D87965 /* MainViewController.m */,
 				74FD27741A12FC17008D0063 /* TweetDialogViewController.h */,
 				74FD27751A12FC17008D0063 /* TweetDialogViewController.m */,
 				745257011A05ACD700A12020 /* DealSummaryEditViewController.h */,
@@ -660,8 +662,6 @@
 				740A2E7719C49B4F00D87965 /* MenuTableController.m */,
 				741FB5EE19DF541400EA6D5B /* UserMenuController.h */,
 				741FB5EF19DF541400EA6D5B /* UserMenuController.m */,
-				740A2E7C19C53E4600D87965 /* MainViewController.h */,
-				740A2E7D19C53E4600D87965 /* MainViewController.m */,
 				74B7219A19EE0F3A000B3892 /* CategoryCollectionViewController.h */,
 				74B7219B19EE0F3A000B3892 /* CategoryCollectionViewController.m */,
 				7402D4941A19122C002AF7B3 /* YelpDetailViewController.h */,

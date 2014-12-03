@@ -24,7 +24,8 @@
 @property (nonatomic) DataModalUtils* utils;
 @property (nonatomic) NSURL* dealBaseFolder;
 @property (nonatomic) NSMutableArray* photosURL;
-
+@property (nonatomic) BOOL imagePickerDismissed;
+@property (nonatomic) DealDescriptionViewController* dealDescriptionVC;
 @end
 
 @implementation SellDealViewController
@@ -170,6 +171,8 @@
 -(void)setupImagePicker
 {
     [self imagePickerController];
+    self.imagePickerDismissed=YES;
+    
     //[self presentViewController:self.imagePickerController animated:YES completion:nil];
     
 }
@@ -210,10 +213,24 @@
 {
     _checkButton.enabled=YES;
 }
+-(DealDescriptionViewController*)dealDescriptionVC
+{
+    if(!_dealDescriptionVC){
+        _dealDescriptionVC=[[DealDescriptionViewController alloc] init];
+        
+    }
+    return _dealDescriptionVC;
+}
 -(void)checkButtonClicked
 {
     //NSLog(@"check button clicked");
-    [self performSegueWithIdentifier:@"DealDescriptionSegue" sender:self];
+    //self.dealDescriptionVC.modalPresentationStyle = UIModalPresentationFormSheet;
+    //self.dealDescriptionVC.modalTransitionStyle = UIModalTransitionStyleCoverVertical;
+    //[self presentViewController:self.dealDescriptionVC animated:YES completion:nil];
+    
+    //DO NOT CALL this method, there is already segue in the storyboard.
+    //Calling this twice, will cause view not in the windows hierarchy warning!
+    //[self performSegueWithIdentifier:@"DealDescriptionSegue" sender:self];
     
 }
 -(void)photoButtonClicked:(UIButton*)sender
@@ -227,6 +244,7 @@
     }
     if(sender.imageView.image==self.defaultImage){
         [self presentViewController:_imagePickerController animated:YES completion:nil];
+        self.imagePickerDismissed=NO;
     }
     else{
         [self performSegueWithIdentifier:@"EditImageSegue" sender:self];
@@ -303,7 +321,9 @@
 //        NSLog(@" %@ is %@",k, [info objectForKey:k]);
 //    }
     //NSLog(@"=--------------------");
-    [_imagePickerController dismissViewControllerAnimated:YES completion:nil];
+    [_imagePickerController dismissViewControllerAnimated:YES completion:^{
+        self.imagePickerDismissed=YES;
+    }];
 }
 
 -(void) imagePickerControllerDidCancel:(UIImagePickerController *)picker
@@ -328,11 +348,16 @@
         }
     }
     else if([segue.identifier isEqualToString:@"DealDescriptionSegue"]){
+        //NSLog(@"deal description segue");
         if([segue.destinationViewController isKindOfClass:[DealDescriptionViewController class]]){
             DealDescriptionViewController* dealDescribeVC = (DealDescriptionViewController*)segue.destinationViewController;
             [self savePhotosToDisk];
             self.myNewDeal.photoURL= self.photosURL;
             dealDescribeVC.myNewDeal = self.myNewDeal;
+        }
+        NSLog(@"deal description segue");
+        if(!self.imagePickerDismissed){
+            NSLog(@"image picker is NOT dismissed!");
         }
     }
     else if([segue.identifier isEqualToString:@"SellDealUnwindSegue"]){
@@ -402,6 +427,11 @@
     [self.presentingViewController dismissViewControllerAnimated:YES completion:nil];
     //[self performSegueWithIdentifier:@"SellDealUnwindSegue" sender:self];
     
+}
+-(void)viewDidAppear:(BOOL)animated
+{
+//    [self setup];
+//    self.dealBaseFolder=nil;
 }
 - (void)viewDidLoad
 {

@@ -410,6 +410,7 @@ static MyFBSessionTokenCachingStrategy* myFBTokenCachingStrategy;
     if(!documentsDir){
         NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
         documentsDir = [paths firstObject];
+        //NSLog(@"doc dir is %@",documentsDir);
     }
     return documentsDir;
 }

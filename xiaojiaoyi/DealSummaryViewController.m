@@ -16,7 +16,7 @@
 #define USER_PROFILE_LABEL_WIDTH 180
 #define SECURED_BUTTON_CORNER_RADIUS 10.0
 #define TITLE_VIEW_HEIGHT 40
-#define TITLE_WIDTH 280
+#define TITLE_WIDTH 260
 
 #define INFO_VIEW_HEIGHT 80
 #define INFO_BUTTON_LEFT_MARGIN 20
@@ -420,6 +420,11 @@
         _locationMgr.delegate = self;
         _locationMgr.desiredAccuracy = kCLLocationAccuracyBest;
         _locationMgr.distanceFilter = 500; //in meters
+        
+        //iOS8
+        if ([_locationMgr respondsToSelector:@selector(requestWhenInUseAuthorization)]) {
+            [_locationMgr requestWhenInUseAuthorization];
+        }
         [_locationMgr startUpdatingLocation];
     }
     return _locationMgr;
@@ -516,9 +521,12 @@
 #pragma mark - button clicked methods
 -(void)mapButtonClicked:(UIButton*)sender
 {
-    if(self.myNewDeal.map_image_url)
+    if(self.myNewDeal.map_image_url){
+        if(self.mapButton.currentBackgroundImage == nil){
+            [self createMapSnapshotImage];
+        }
         return;
-    
+    }
     [self.locationMgr startUpdatingLocation];
     
 }

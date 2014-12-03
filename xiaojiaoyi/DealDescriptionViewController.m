@@ -21,7 +21,7 @@
 #define PICKER_BUTTON_WIDTH 60
 #define PICKER_BUTTON_MARGIN 12
 #define SWITCH_WIDTH 80
-#define KEYBOARD_HEIGHT 165
+#define KEYBOARD_HEIGHT 200
 #define DELETE_BUTTON_WIDTH 50
 #define MAX_RECORD_TIME 20
 
@@ -33,6 +33,7 @@
 
 @interface DealDescriptionViewController ()
 @property (nonatomic) UIView* controlView;
+@property (nonatomic) UIImageView* backgroundImageView;
 @property (nonatomic) UIImage* backgroundImage;
 @property (nonatomic) UIView* titleView;
 @property (nonatomic) UIView* priceView;
@@ -296,9 +297,11 @@ static NSInteger t =0.0;
         [UIView animateWithDuration:0 animations:^{
             [self.descriptionTextField becomeFirstResponder];
         } completion:^(BOOL finished) {
-            [UIView animateWithDuration:0.2f delay:0.2 options:UIViewAnimationOptionBeginFromCurrentState animations:^{
-                self.controlView.frame=CGRectMake(0, self.view.frame.size.height - height - KEYBOARD_HEIGHT, self.view.frame.size.width,  6*VIEW_HEIGHT+7*VIEW_HEIGHT_MARGIN +BUTTON_HEIGHT);
-            } completion:nil];
+            if(finished){
+                [UIView animateWithDuration:0.2f delay:0.2 options:UIViewAnimationOptionBeginFromCurrentState animations:^{
+                    self.controlView.frame=CGRectMake(0, self.view.frame.size.height - height - KEYBOARD_HEIGHT, self.view.frame.size.width,  6*VIEW_HEIGHT+7*VIEW_HEIGHT_MARGIN +BUTTON_HEIGHT);
+                } completion:nil];
+            }
         }];
         
     }
@@ -760,6 +763,17 @@ static NSInteger t =0.0;
     }
     return _cancelAlert;
 }
+-(UIImageView*)backgroundImageView
+{
+    if(!_backgroundImageView){
+        _backgroundImageView=[[UIImageView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width,self.backgroundImage.size.height/self.backgroundImage.size.width*self.view.frame.size.width)];
+        NSLog(@"%f,%f",_backgroundImageView.frame.size.height,_backgroundImageView.frame.size.width);
+        _backgroundImageView.image=self.backgroundImage;
+        _backgroundImageView.contentMode =UIViewContentModeScaleAspectFit;// UIViewContentModeScaleToFill|UIViewContentModeTop;
+        [_backgroundImageView setClipsToBounds:YES];
+    }
+    return _backgroundImageView;
+}
 -(UIView*)controlView
 {
     if(!_controlView){
@@ -1195,6 +1209,7 @@ static NSInteger t =0.0;
     if(!_descriptionTextField){
         CGFloat originX =self.speakButton.frame.origin.x+self.speakButton.frame.size.width+VIEW_WIDTH_MARGIN;
         _descriptionTextField=[[UITextField alloc] initWithFrame:CGRectMake(originX, DESCRIPTION_HEIGHT/6, self.view.frame.size.width-originX-VIEW_WIDTH_MARGIN*1, DESCRIPTION_HEIGHT/6*4)];
+        _descriptionTextField.userInteractionEnabled=YES;
         _descriptionTextField.backgroundColor=[UIColor whiteColor];
         _descriptionTextField.layer.cornerRadius=VIEW_CORNER_RADIUS;
         _descriptionTextField.delegate=self;
@@ -1269,14 +1284,14 @@ static NSInteger t =0.0;
     [self.view addGestureRecognizer:panMainView];
     UITapGestureRecognizer* tapMainView=[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(backgroundTap:)];
     [self.view addGestureRecognizer:tapMainView];
-    UIImageView* imageView=[[UIImageView alloc] initWithImage:self.backgroundImage];
-    imageView.frame=CGRectMake(0, 0, self.view.frame.size.width,self.backgroundImage.size.height/self.backgroundImage.size.width*self.view.frame.size.width);
+    //UIImageView* imageView=[[UIImageView alloc] initWithFrame: CGRectMake(0, 0, self.view.frame.size.width,self.backgroundImage.size.height/self.backgroundImage.size.width*self.view.frame.size.width)];
+    //NSLog(@"height is %f",imageView.frame.size.height);
     //imageView.frame=CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height);
-    imageView.image=self.backgroundImage;
-    imageView.contentMode =UIViewContentModeScaleAspectFit;// UIViewContentModeScaleToFill|UIViewContentModeTop;
-    [imageView setClipsToBounds:YES];
+    //imageView.image=self.backgroundImage;
+//    imageView.contentMode =UIViewContentModeScaleAspectFit;// UIViewContentModeScaleToFill|UIViewContentModeTop;
+//    [imageView setClipsToBounds:YES];
     
-    [self.view addSubview:imageView];
+    [self.view addSubview:self.backgroundImageView];
     [self.view addSubview:self.controlView];
     [self.view addSubview:self.crossButton];
     [self.view addSubview:self.checkButton];
@@ -1312,6 +1327,10 @@ static NSInteger t =0.0;
     
 }
 
+-(void)viewDidAppear:(BOOL)animated
+{
+    //[self setup];
+}
 - (void)viewDidLoad
 {
     [super viewDidLoad];

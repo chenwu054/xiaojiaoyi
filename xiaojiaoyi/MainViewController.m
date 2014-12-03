@@ -81,6 +81,16 @@ static LocationHandler locationHandler;
         self.categoryViewControllerOne.offset=0;
         
         NSString* category = indexPath.section==0?self.menuViewController.quickDealSymbol[indexPath.row]:self.menuViewController.yelpSymbol[indexPath.row];
+        CLAuthorizationStatus status = [CLLocationManager authorizationStatus];
+        NSLog(@"status is %d",status);
+        if(status==kCLAuthorizationStatusNotDetermined || status==kCLAuthorizationStatusDenied){
+            NSLog(@"location authorization not determined");
+            [self.locationMgr requestWhenInUseAuthorization];
+        }
+        
+        if(status == kCLAuthorizationStatusAuthorized || status==kCLAuthorizationStatusAuthorizedWhenInUse){
+            NSLog(@"location authorized");
+        }
         
         [self fetchLocationWithCompletionHandler:^(NSString *latitude, NSString *longtitude) {
             if(self.latitude && self.longtitude){
@@ -267,6 +277,9 @@ static LocationHandler locationHandler;
 {
     if(!self.latitude || !self.longtitude){
         [self.locationMgr startUpdatingLocation];
+        if(self.locationMgr==nil)
+            NSLog(@"location manager is null");
+        
         self.shouldFetchAfterLocationReceived=YES;
         if(handler){
             locationHandler=handler;
@@ -380,8 +393,14 @@ static LocationHandler locationHandler;
         _locationMgr.delegate = self;
         _locationMgr.desiredAccuracy = kCLLocationAccuracyBest;
         _locationMgr.distanceFilter = 500; //in meters
-        [_locationMgr startUpdatingLocation];
         self.shouldFetchAfterLocationReceived=NO;
+        
+        //required in iOS8.0
+        if ([_locationMgr respondsToSelector:@selector(requestWhenInUseAuthorization)]) {
+            [_locationMgr requestWhenInUseAuthorization];
+            [_locationMgr requestAlwaysAuthorization];
+        }
+        [_locationMgr startUpdatingLocation];
     }
     return _locationMgr;
 }
@@ -603,6 +622,7 @@ static LocationHandler locationHandler;
         [self performSegueWithIdentifier:@"SellDealSegue" sender:self];
     }
     else if(buttonIndex == 1){
+        NSLog(@"buy deal is selected!");
         
     }
 }

@@ -226,7 +226,7 @@
 -(UIScrollView*)mainView
 {
     if(!_mainView){
-        _mainView =[[UIScrollView alloc] initWithFrame:CGRectMake(0, NAVIGATION_BAR_HEIGHT, self.view.frame.size.width, self.view.frame.size.height-NAVIGATION_BAR_HEIGHT)];
+        _mainView =[[UIScrollView alloc] initWithFrame:CGRectMake(0, 0/*NAVIGATION_BAR_HEIGHT*/, self.view.frame.size.width, self.view.frame.size.height-NAVIGATION_BAR_HEIGHT)];
         //_mainView.contentSize=CGSizeMake(self.view.frame.size.width, PAGE_VIEW_HEIGHT+600);
         _mainView.contentSize=CGSizeMake(self.view.frame.size.width, self.containerView.frame.origin.y+self.containerView.frame.size.height+CONTROL_BUTTON_HEIGHT);
         _mainView.backgroundColor=[UIColor lightGrayColor];
@@ -541,9 +541,14 @@
     else if(self.myNewDeal.photoURL){
         NSMutableArray* photos = [[NSMutableArray alloc] init];
         for(NSString* url in self.myNewDeal.photoURL){
-            NSData* imageData = [NSData dataWithContentsOfFile:url];
-            UIImage* image = [UIImage imageWithData:imageData];
-            [photos addObject:image];
+            //NSData* imageData = [NSData dataWithContentsOfFile:url];
+            NSLog(@"url is %@",url);
+            //UIImage* image = [UIImage imageWithData:imageData];
+            NSURL * fileURL = [NSURL URLWithString:url];
+            UIImage* image=[UIImage imageWithData:[NSData dataWithContentsOfURL:fileURL]];
+            
+            if(image)
+                [photos addObject:image];
         }
         self.photos = photos;
     }
@@ -1262,9 +1267,12 @@
 {
     DetailPageContentViewController *contentVC=[self.storyboard instantiateViewControllerWithIdentifier:@"DetailPageContentController"];
     //contentVC.contentImage = self.photoNames[index];
-    contentVC.image=self.photos[index];
-    //contentVC.contentTitle = self.myNewDeal.photoURL[index]; //self.photoTitles[index];
-    contentVC.index = index;
+    if(index<self.photos.count){
+        contentVC.image=self.photos[index];
+        //contentVC.contentTitle = self.myNewDeal.photoURL[index]; //self.photoTitles[index];
+        contentVC.index = index;
+
+    }
     return contentVC;
 }
 -(UIViewController*) pageViewController:(UIPageViewController *)pageViewController viewControllerBeforeViewController:(UIViewController *)viewController
