@@ -593,6 +593,8 @@
 				74B7219519EC1F91000B3892 /* MyTapGestureRecognizer.m */,
 				741FB5F519E06F4600EA6D5B /* CenterTabHotDealController.h */,
 				741FB5F619E06F4600EA6D5B /* CenterTabHotDealController.m */,
+				74B9328419AAEB4E003B6594 /* CenterViewController.h */,
+				74B9328519AAEB4E003B6594 /* CenterViewController.m */,
 			);
 			name = CenterVC;
 			sourceTree = "<group>";
@@ -668,8 +670,6 @@
 				7402D4951A19122C002AF7B3 /* YelpDetailViewController.m */,
 				7402D4901A145A31002AF7B3 /* YelpDataSource.h */,
 				7402D4911A145A31002AF7B3 /* YelpDataSource.m */,
-				74B9328419AAEB4E003B6594 /* CenterViewController.h */,
-				74B9328519AAEB4E003B6594 /* CenterViewController.m */,
 				74A88CB819FD63FB00872C26 /* EditTableCellView.h */,
 				74A88CB919FD63FB00872C26 /* EditTableCellView.m */,
 				74B7219719EC857B000B3892 /* MyDealViewController.h */,

@@ -139,8 +139,9 @@
         //imageView.layer.borderColor=[[UIColor darkGrayColor] CGColor];
         //imageView.layer.borderWidth=1;
         
-        NSURL* dealURL = [[[self.utils myDealsDataURL] URLByAppendingPathComponent:deal.deal_id] URLByAppendingPathComponent:@"photo0"];
-        if([[NSFileManager defaultManager] fileExistsAtPath:dealURL.path isDirectory:NO]){
+        NSURL* dealURL = [[[[self.utils documentsURL] URLByAppendingPathComponent:[self.utils myDealsDataRelativeURL]] URLByAppendingPathComponent:deal.deal_id] URLByAppendingPathComponent:@"photo0"];
+        BOOL isDir = NO;
+        if([[NSFileManager defaultManager] fileExistsAtPath:dealURL.path isDirectory:&isDir]){
             imageView.image = [UIImage imageWithData:[NSData dataWithContentsOfURL:dealURL]];
         }
         else{

@@ -14,22 +14,25 @@
 @interface DataModalUtils ()
 @property (nonatomic) NSURL* documentsURL;
 @property (nonatomic) NSURL* myDealsURL;
-@property (nonatomic) NSURL* boughtDealsURL;
-@property (nonatomic) NSURL* soundTrackMyDealsURL;
-@property (nonatomic) NSURL* soundTrackBoughtDealsURL;
-
-
-@property (nonatomic) NSPersistentStoreCoordinator* persistentStoreCoordinator;
-@property (nonatomic) NSManagedObjectModel* managedObjectModel;
-
-//@property (nonatomic) UIManagedDocument* myDealsManagedDocument;
-@property (nonatomic) UIManagedDocument* boughtDealsManagedDocument;
+@property (nonatomic) NSString* myDealsRelativeURL;
+//@property (nonatomic) NSURL* boughtDealsURL;
+//@property (nonatomic) NSURL* soundTrackMyDealsURL;
+//@property (nonatomic) NSURL* soundTrackBoughtDealsURL;
+//@property (nonatomic) NSString* soundTrackMyDealsRelativeURL;
+//@property (nonatomic) NSString* soundTrackBoughtDealsRelativeURL;
+//
+//
+//@property (nonatomic) NSPersistentStoreCoordinator* persistentStoreCoordinator;
+//@property (nonatomic) NSManagedObjectModel* managedObjectModel;
+//
+////@property (nonatomic) UIManagedDocument* myDealsManagedDocument;
+//@property (nonatomic) UIManagedDocument* boughtDealsManagedDocument;
 
 @property (nonatomic) NSManagedObjectContext*  myDealsContext;
-@property (nonatomic) NSManagedObjectContext* boughtDealsContext;
-@property (nonatomic) NSString* filename;
-
-
+//@property (nonatomic) NSManagedObjectContext* boughtDealsContext;
+//@property (nonatomic) NSString* filename;
+//
+//
 @property (nonatomic) NSMutableDictionary* managedDocumentDictionary;
 @property (nonatomic) NSMutableDictionary* managedContextDictionary;
 
@@ -203,12 +206,13 @@ static NSString* defaultUserId=@"user123";
         [self.managedDocumentDictionary setObject:doc forKey:userId];
     }
     NSURL* storageContentURL=[filePath URLByAppendingPathComponent:@"StoreContent"];
-    if(![[NSFileManager defaultManager] fileExistsAtPath:filePath.path isDirectory:NO] || ![[NSFileManager defaultManager] fileExistsAtPath:storageContentURL.path]){
+    BOOL isDir = NO;
+    if(![[NSFileManager defaultManager] fileExistsAtPath:filePath.path isDirectory:&isDir] || ![[NSFileManager defaultManager] fileExistsAtPath:storageContentURL.path]){
         //first time creation
         [[NSFileManager defaultManager] createDirectoryAtPath:self.myDealsURL.path withIntermediateDirectories:YES attributes:nil error:NULL];
         [doc saveToURL:filePath forSaveOperation:UIDocumentSaveForCreating completionHandler:^(BOOL success) {
             if(success){
-                NSLog(@"document at path %@ is created",filePath);
+                NSLog(@"new CoreData document at path %@ is created",filePath);
             }
             else{
                 NSLog(@"!!!ERROR: couldnot save to path %@",filePath);
@@ -221,7 +225,7 @@ static NSString* defaultUserId=@"user123";
     if(doc.documentState==UIDocumentStateClosed){
         [doc openWithCompletionHandler:^(BOOL success) {
             if(!success){
-                NSLog(@"documents file not opened successful");
+                NSLog(@"!!!ERROR: documents file open failed");
             }
             //NSLog(@"document at path %@ is opened",doc);
         }];
@@ -239,7 +243,8 @@ static NSString* defaultUserId=@"user123";
 
 -(BOOL)deleteMyDealStoredDataWithDealId:(NSString*)dealId
 {
-    NSURL* url = [self.myDealsDataURL URLByAppendingPathComponent:dealId];
+    NSURL* url =[[self.documentsURL URLByAppendingPathComponent:[self myDealsDataRelativeURL]] URLByAppendingPathComponent:dealId];
+    
     BOOL isDir = YES;
     if([[NSFileManager defaultManager] fileExistsAtPath:url.path isDirectory:&isDir]){
         return [[NSFileManager defaultManager] removeItemAtURL:url error:NULL];
@@ -258,55 +263,70 @@ static NSString* defaultUserId=@"user123";
     NSLog(@"context saved");
     
 }
--(void)addNotificationForUserId:(NSString*)userId
-{
-    NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
-    [center addObserver:self selector:@selector(contextChanged:) name:NSManagedObjectContextObjectsDidChangeNotification object:self.myDealsContext];
-    
-    [center addObserver:self selector:@selector(contextSaved:) name:NSManagedObjectContextDidSaveNotification object:self.myDealsContext];
-}
--(void)deleteNotificationForUserId:(NSString*)userId
-{
-    NSNotificationCenter* center=[NSNotificationCenter defaultCenter];
-    [center removeObserver:self];
-}
+//-(void)addNotificationForUserId:(NSString*)userId
+//{
+//    NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
+//    [center addObserver:self selector:@selector(contextChanged:) name:NSManagedObjectContextObjectsDidChangeNotification object:self.myDealsContext];
+//    
+//    [center addObserver:self selector:@selector(contextSaved:) name:NSManagedObjectContextDidSaveNotification object:self.myDealsContext];
+//}
+//-(void)deleteNotificationForUserId:(NSString*)userId
+//{
+//    NSNotificationCenter* center=[NSNotificationCenter defaultCenter];
+//    [center removeObserver:self];
+//}
 
 #pragma mark - sound track methods
--(void)writeMyDealsSoundTrack:(NSData*)data forFilename:(NSString*)filename
-{
-    NSURL* myDealSoundTrackURL = [self.soundTrackMyDealsURL URLByAppendingPathComponent:filename];
-    BOOL success = [data writeToURL:myDealSoundTrackURL atomically:YES];
-    if(!success){
-        NSLog(@"sound track write to url failed");
-    }
-}
--(NSData*)readMyDealsSoundTrack:(NSData*)date forFilename:(NSString*)filename
-{
-    NSURL* myDealSoundTrackURL=[self.soundTrackMyDealsURL URLByAppendingPathComponent:filename];
-    NSData* data=[NSData dataWithContentsOfFile:myDealSoundTrackURL.path];
-    return  data;
-}
+//-(void)writeMyDealsSoundTrack:(NSData*)data forFilename:(NSString*)filename
+//{
+//    NSURL* myDealSoundTrackURL = [self.soundTrackMyDealsURL URLByAppendingPathComponent:filename];
+//    BOOL success = [data writeToURL:myDealSoundTrackURL atomically:YES];
+//    if(!success){
+//        NSLog(@"sound track write to url failed");
+//    }
+//}
+//-(NSData*)readMyDealsSoundTrack:(NSData*)date forFilename:(NSString*)filename
+//{
+//    NSURL* myDealSoundTrackURL=[self.soundTrackMyDealsURL URLByAppendingPathComponent:filename];
+//    NSData* data=[NSData dataWithContentsOfFile:myDealSoundTrackURL.path];
+//    return  data;
+//}
 
 #pragma mark - url methods
--(NSURL*)myDealsDataURL
+-(NSString*)myDealsDataRelativeURL
 {
-    NSURL* dataURL = [self.myDealsURL URLByAppendingPathComponent:@"data" isDirectory:YES];
-    
+    //NSURL* dataURL = [self.myDealsRelativeURL URLByAppendingPathComponent:@"data" isDirectory:YES];
+    NSString* dataURL = [NSString stringWithFormat:@"%@/data", self.myDealsRelativeURL];
     return dataURL;
 }
 -(NSURL*)myDealsURL
 {
     if(!_myDealsURL){
-        NSString* myDealDir=@"Deals/MyDeals";
-        NSURL* docDir=self.documentsURL;
-        _myDealsURL = [docDir URLByAppendingPathComponent:myDealDir isDirectory:YES];
+        
+//        NSString* myDealDir=@"Deals/MyDeals";
+//        NSURL* docDir=self.documentsURL;
+        _myDealsURL = [[self documentsURL] URLByAppendingPathComponent:[self myDealsRelativeURL] isDirectory:YES];//[docDir URLByAppendingPathComponent:myDealDir isDirectory:YES];
     }
     return _myDealsURL;
 }
--(NSURL*)createDataURLWithFilename:(NSString*)filename
+
+-(NSString*)myDealsRelativeURL
 {
-    NSURL* url=[self myDealsDataURL];
-    return [url URLByAppendingPathComponent:filename];
+    if(!_myDealsRelativeURL){
+        _myDealsRelativeURL = @"Deals/MyDeals";
+    }
+    return _myDealsRelativeURL;
+}
+//-(NSURL*)createDataURLWithFilename:(NSString*)filename
+//{
+//    NSURL* url=[self myDealsDataURL];
+//    return [url URLByAppendingPathComponent:filename];
+//}
+-(NSString*)createRelativeDataURLWithFilename:(NSString*)filename
+{
+    NSString* url=[self myDealsRelativeURL];
+    
+    return [NSString stringWithFormat:@"%@/%@",url,filename];
 }
 -(void)deleteDirAtURL:(NSURL*)dir
 {
@@ -317,20 +337,35 @@ static NSString* defaultUserId=@"user123";
     
 }
 
--(NSURL*)soundTrackMyDealsURL
-{
-    if(!_soundTrackMyDealsURL){
-        _soundTrackMyDealsURL=[self.documentsURL URLByAppendingPathComponent:@"SoundTrack/MyDeals"];
-    }
-    return _soundTrackMyDealsURL;
-}
--(NSURL*)soundTrackBoughtDealsURL
-{
-    if(!_soundTrackBoughtDealsURL){
-        _soundTrackBoughtDealsURL=[self.documentsURL URLByAppendingPathComponent:@"SoundTrack/BoughtDeals"];
-    }
-    return _soundTrackBoughtDealsURL;
-}
+//-(NSURL*)soundTrackMyDealsURL
+//{
+//    if(!_soundTrackMyDealsURL){
+//        _soundTrackMyDealsURL=[self.documentsURL URLByAppendingPathComponent:@"SoundTrack/MyDeals"];
+//    }
+//    return _soundTrackMyDealsURL;
+//}
+//-(NSURL*)soundTrackBoughtDealsURL
+//{
+//    if(!_soundTrackBoughtDealsURL){
+//        _soundTrackBoughtDealsURL=[self.documentsURL URLByAppendingPathComponent:@"SoundTrack/BoughtDeals"];
+//    }
+//    return _soundTrackBoughtDealsURL;
+//}
+//
+//-(NSString*)soundTrackMyDealsRelativeURL
+//{
+//    if(!_soundTrackMyDealsRelativeURL){
+//        _soundTrackMyDealsRelativeURL=@"SoundTrack/MyDeals";
+//    }
+//    return _soundTrackMyDealsRelativeURL;
+//}
+//-(NSString*)soundTrackBoughtDealsRelativeURL
+//{
+//    if(!_soundTrackBoughtDealsRelativeURL){
+//        _soundTrackBoughtDealsRelativeURL=@"SoundTrack/BoughtDeals";
+//    }
+//    return _soundTrackBoughtDealsRelativeURL;
+//}
 
 -(NSURL*)documentsURL
 {
@@ -348,22 +383,22 @@ static NSString* defaultUserId=@"user123";
     return [self.myDealsURL URLByAppendingPathComponent:filename];
 }
 
--(UIManagedDocument*)boughtDealsManagedDocument
-{
-    if(!_boughtDealsManagedDocument){
-        _boughtDealsManagedDocument = [[UIManagedDocument alloc] initWithFileURL:self.boughtDealsURL];
-    }
-    return _boughtDealsManagedDocument;
-}
--(NSManagedObjectContext*)boughtDealsContext
-{
-    if(!_boughtDealsContext){
-        if(self.boughtDealsManagedDocument.documentState==UIDocumentStateNormal){
-            _boughtDealsContext=self.boughtDealsManagedDocument.managedObjectContext;
-        }
-    }
-    return _boughtDealsContext;
-}
+//-(UIManagedDocument*)boughtDealsManagedDocument
+//{
+//    if(!_boughtDealsManagedDocument){
+//        _boughtDealsManagedDocument = [[UIManagedDocument alloc] initWithFileURL:self.boughtDealsURL];
+//    }
+//    return _boughtDealsManagedDocument;
+//}
+//-(NSManagedObjectContext*)boughtDealsContext
+//{
+//    if(!_boughtDealsContext){
+//        if(self.boughtDealsManagedDocument.documentState==UIDocumentStateNormal){
+//            _boughtDealsContext=self.boughtDealsManagedDocument.managedObjectContext;
+//        }
+//    }
+//    return _boughtDealsContext;
+//}
 
 #pragma mark - setters and getters
 -(NSMutableDictionary*)managedContextDictionary

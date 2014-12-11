@@ -415,7 +415,7 @@ static NSInteger t =0.0;
 -(NSURL*)soundURL
 {
     if(!_soundURL){
-        NSURL* baseURL=[self.utils myDealsDataURL];
+        NSURL* baseURL=[[self.utils documentsURL] URLByAppendingPathComponent:[self.utils myDealsDataRelativeURL]];
         BOOL isDir = YES;
         NSURL* myDealIdURL=[baseURL URLByAppendingPathComponent:self.myNewDeal.deal_id];
         if(![[NSFileManager defaultManager] fileExistsAtPath:myDealIdURL.path isDirectory: &isDir]){
@@ -454,6 +454,7 @@ static NSInteger t =0.0;
         [recordSetting setValue:[NSNumber numberWithFloat:44100.0] forKey:AVSampleRateKey];
         [recordSetting setValue:[NSNumber numberWithInt: 2] forKey:AVNumberOfChannelsKey];
         _audioRecorder=[[AVAudioRecorder alloc] initWithURL:self.soundURL settings:recordSetting error:NULL];
+        //NSLog(@"sound url is:%@",self.soundURL);
         _audioRecorder.delegate=self;
         _audioRecorder.meteringEnabled = YES;
         [_audioRecorder prepareToRecord];
@@ -699,7 +700,7 @@ static NSInteger t =0.0;
 -(void)deleteSoundTrack
 {
     //NSLog(@"sound track url is %@",self.soundURL);
-    NSURL* baseURL=[self.utils myDealsDataURL];
+    NSURL* baseURL=[[self.utils documentsURL] URLByAppendingPathComponent:[self.utils myDealsDataRelativeURL]];
     BOOL isDir = NO;
     NSURL* myDealIdURL=[baseURL URLByAppendingPathComponent:self.myNewDeal.deal_id];
     NSURL* soundTrackURL =[myDealIdURL URLByAppendingPathComponent:[NSString stringWithFormat:@"%@.m4a",self.myNewDeal.deal_id]];

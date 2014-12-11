@@ -19,7 +19,7 @@
 
 #define PULLDOWN_VIEW_THRESHOLD 50
 #define PULLDOWN_VIEW_HEIGHT 50
-#define REFRESH_OFFSET 30
+#define REFRESH_OFFSET 20
 #define REFRESH_LIMIT 5
 
 @interface CenterTabHotDealController ()
@@ -345,7 +345,7 @@
 
 -(NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section
 {
-    return self.urls.count;
+    return MIN(self.urls.count,self.offset);
 }
 
 -(NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView
@@ -532,7 +532,7 @@
             NSLog(@"call to refresh");
             //[self refreshDataWithQuery:self.query category:self.category andLocation:self.location offset:[NSString stringWithFormat:@"%ld",self.offset]];
             
-            [self refreshDataWithoffset:[NSString stringWithFormat:@"%ld",self.offset+1]];
+            [self refreshDataWithoffset:[NSString stringWithFormat:@"%ld",self.batchNumber*20+1]];
             //[self refreshDataWithLocationAndQuery:self.queryString category:self.categoryString offset:[NSString stringWithFormat:@"%ld",self.offset]];
             self.needToRefresh=NO;
         }
@@ -660,6 +660,7 @@
             self.businesses = [json valueForKey:@"businesses"];
 
             //NSLog(@"%@",self.businesses[0]);
+            NSMutableArray* indexPaths=[[NSMutableArray alloc] init];
             for(NSInteger i=0;i<[self.businesses count];i++){
                 NSString *name = [self.businesses[i] valueForKey:@"name"];
                 NSString *urlStr = [self.businesses[i] valueForKey:@"image_url"];
@@ -723,6 +724,8 @@
 //                        [self.categories addObject:category];
                     if(reviewerImageURL)
                         self.reviewerImageURL[offsetString] = reviewerImageURL;//?reviewerImageURL:@"";
+                    
+                    [indexPaths addObject:[NSIndexPath indexPathForRow:self.offset inSection:0]];
                     self.offset=self.offset+1;
                 }
                 else{
@@ -743,13 +746,20 @@
                         NSLog(@"ooops! an item is NOT added due to lack of address length == 0");
                 }
                 //NSLog(@"-------");
+                
+                
             }
             self.batchNumber=self.batchNumber+1;
             //NSLog(@"batch is %ld",self.batchNumber);
             //self.offset=self.offset+self.businesses.count;
             self.needToRefresh=YES;
+            
             //call it on the main queue to refresh the screen immediately!!
             dispatch_async(dispatch_get_main_queue(), ^{
+                //NOTE: need to call the insertItems method to insert items into the collection view to avoid the exception
+                //where two consecutive calls to numberOfItemsInsection differs more than one!!!
+                
+                [self.collectionVC.collectionView insertItemsAtIndexPaths:indexPaths];
                 [self.collectionVC.collectionView reloadData];
                 //[self.collectionView reloadData];
             });

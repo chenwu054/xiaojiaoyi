@@ -15,20 +15,44 @@
 
 +(DataModalUtils*)sharedInstance;
 
--(UIManagedDocument*)getMyDealsDocumentWithUserId:(NSString*)userId;
+//-(UIManagedDocument*)getMyDealsDocumentWithUserId:(NSString*)userId;
+//-(NSManagedObjectContext*)getMyDealsContextWithUserId:(NSString*)userId;
+//
+//-(void)deleteMyDeal:(Deal*)deal FromUserId:(NSString*)userId;
+//-(void)insertMyDeal:(Deal*)deal withAutoDealIdToUserId:(NSString *)userId;
+//-(NSArray*)queryForDealsWithUserId:(NSString*)userId predicate:(NSPredicate*)predicate andSortDescriptors:(NSArray*)descriptors;
+//
+//-(void)addNotificationForUserId:(NSString*)userId;
+//-(void)deleteNotificationForUserId:(NSString*)userId;
+//
+//-(void)insertMyDeal:(Deal*)deal;
+//
+//-(void)updateUserId:(NSString*)userId;
+//-(NSURL*)myDealsDataURL;
+//
+//-(BOOL)deleteMyDealStoredDataWithDealId:(NSString*)dealId;
+
+//-(UIManagedDocument*)getMyDealsDocumentWithUserId:(NSString*)userId;
+//-(NSManagedObjectContext*)getMyDealsContextWithUserId:(NSString*)userId;
+//
+//-(void)deleteMyDeal:(Deal*)deal FromUserId:(NSString*)userId;
+//-(void)insertMyDeal:(Deal*)deal withAutoDealIdToUserId:(NSString *)userId;
+//-(NSArray*)queryForDealsWithUserId:(NSString*)userId predicate:(NSPredicate*)predicate andSortDescriptors:(NSArray*)descriptors;
+//
+//-(void)addNotificationForUserId:(NSString*)userId;
+//-(void)deleteNotificationForUserId:(NSString*)userId;
+//
+//-(void)insertMyDeal:(Deal*)deal;
+//
+//-(void)updateUserId:(NSString*)userId;
+//-(NSURL*)myDealsDataURL;
+//
+//-(BOOL)deleteMyDealStoredDataWithDealId:(NSString*)dealId;
 -(NSManagedObjectContext*)getMyDealsContextWithUserId:(NSString*)userId;
 
--(void)deleteMyDeal:(Deal*)deal FromUserId:(NSString*)userId;
--(void)insertMyDeal:(Deal*)deal withAutoDealIdToUserId:(NSString *)userId;
--(NSArray*)queryForDealsWithUserId:(NSString*)userId predicate:(NSPredicate*)predicate andSortDescriptors:(NSArray*)descriptors;
-
--(void)addNotificationForUserId:(NSString*)userId;
--(void)deleteNotificationForUserId:(NSString*)userId;
-
--(void)insertMyDeal:(Deal*)deal;
-
--(void)updateUserId:(NSString*)userId;
--(NSURL*)myDealsDataURL;
+-(NSURL*)documentsURL;
+-(NSString*)myDealsRelativeURL;
+-(NSString*)myDealsDataRelativeURL;
 
 -(BOOL)deleteMyDealStoredDataWithDealId:(NSString*)dealId;
 

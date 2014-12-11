@@ -570,7 +570,9 @@ static NSString* twUploadMediaPath=@"/1.1/statuses/update_with_media.json";
     for(int i=0;i<compnents.count;i++){
         NSString *subString = compnents[i];
         NSArray * keyVal = [subString componentsSeparatedByString:@"="];
-        [dict setValue:keyVal[1] forKey:keyVal[0]];
+        if(keyVal.count>1){
+            [dict setValue:keyVal[1] forKey:keyVal[0]];
+        }
     }
     return dict;
 }

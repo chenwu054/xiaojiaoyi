@@ -371,7 +371,9 @@
 //---------------------------------------
 -(void)savePhotosToDisk
 {
-    self.dealBaseFolder = [[self.utils myDealsDataURL] URLByAppendingPathComponent:self.myNewDeal.deal_id];
+    NSURL* docURL = [self.utils documentsURL];
+    //self.dealBaseFolder = [[self.utils myDealsDataURL] URLByAppendingPathComponent:self.myNewDeal.deal_id];
+    self.dealBaseFolder = [[docURL URLByAppendingPathComponent:[self.utils myDealsDataRelativeURL]] URLByAppendingPathComponent:self.myNewDeal.deal_id];
     NSMutableArray* photoArr= [[NSMutableArray alloc] init];
     self.photosURL=[[NSMutableArray alloc] init];
     BOOL isDir = YES;
@@ -411,11 +413,13 @@
     if(!self.myNewDeal.deal_id){
         NSLog(@"!!!ERROR: deal id is missing in sell deal delete deal archive");
     }
-    if(!self.dealBaseFolder){
-        self.dealBaseFolder = [[self.utils myDealsDataURL] URLByAppendingPathComponent:self.myNewDeal.deal_id];
-    }
-    [[NSFileManager defaultManager] removeItemAtURL:self.dealBaseFolder error:NULL];
+//    if(!self.dealBaseFolder){
+//        self.dealBaseFolder = [[[self.utils documentsURL] URLByAppendingPathComponent:[self.utils myDealsDataRelativeURL]] URLByAppendingPathComponent:self.myNewDeal.deal_id];
+//    }
     
+    //[[NSFileManager defaultManager] removeItemAtURL:self.dealBaseFolder error:NULL];
+    
+    [self.utils deleteMyDealStoredDataWithDealId:self.myNewDeal.deal_id];
     
 }
 -(IBAction)unwindFromDealDescriptionView:(UIStoryboardSegue*)sender

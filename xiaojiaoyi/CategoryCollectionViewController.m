@@ -348,7 +348,7 @@
     yelpDetailVC.title=self.names[offsetString];
     yelpDetailVC.reviewImageURLString = self.reviewerImageURL[offsetString];
     
-    NSLog(@"push to Yelp Detail View Controller");
+    //NSLog(@"push to Yelp Detail View Controller");
 }
 #pragma mark - segue preparation
 -(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender

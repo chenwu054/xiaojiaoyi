@@ -508,7 +508,7 @@
         });
         //save the map image to file
         NSData* mapData = UIImagePNGRepresentation(image);
-        NSURL* url = [[self.utils myDealsDataURL] URLByAppendingPathComponent:self.myNewDeal.deal_id];
+        NSURL* url = [[[self.utils documentsURL] URLByAppendingPathComponent:[self.utils myDealsDataRelativeURL]] URLByAppendingPathComponent:self.myNewDeal.deal_id];
         if(![[NSFileManager defaultManager] fileExistsAtPath:url.path]){
             [[NSFileManager defaultManager] createDirectoryAtURL:url withIntermediateDirectories:YES attributes:nil error:NULL];
         }

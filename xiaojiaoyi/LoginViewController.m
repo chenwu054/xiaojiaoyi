@@ -38,6 +38,9 @@
 #define PROFILE_VIEW_WIDTH 130
 #define PROFILE_SEPARATION (PROFILE_VIEW_WIDTH-4*PROFILE_VIEW_HEIGHT)/5
 
+#define LOGIN_FB_TEXT @"Login Facebook"
+#define LOGOUT_FB_TEXT @"Logout Facebook"
+
 @interface LoginViewController () <UITextFieldDelegate>
 @property (weak, nonatomic) IBOutlet UITextField *loginUsernameTextField;
 @property (weak, nonatomic) IBOutlet UITextField *loginPasswordTextField;
@@ -170,7 +173,7 @@ static NSString * const kClientId = @"100128444749-l3hh0v0as5n6t4rnp3maciodja4oa
 }
 - (IBAction)ggLoginButtonClicked:(id)sender
 {
-    NSLog(@"google button clicked");
+    //NSLog(@"google button clicked");
     [self.spinner startAnimating];
     if(self.ggSignIn.authentication || [UserObject currentUser].ggLogin){
         NSLog(@"authenticated");
@@ -352,6 +355,7 @@ static NSString * const kClientId = @"100128444749-l3hh0v0as5n6t4rnp3maciodja4oa
 }
 -(void)twitterLoginButtonClicked:(UIButton*)sender
 {
+    //user has not logged in
     if(![UserObject currentUser].twLogin)
     {
         //1. load local cache
@@ -804,7 +808,7 @@ static NSString * const kClientId = @"100128444749-l3hh0v0as5n6t4rnp3maciodja4oa
 }
 -(void)updateLKButton
 {
-    NSLog(@"updating LK button");
+    //NSLog(@"updating LK button");
     UserObject* user = [UserObject currentUser];
     if(user.lkLogin){
         [self.loginLinkedinButton setTitle:@"Logout Linkedin" forState:UIControlStateNormal];
@@ -1317,7 +1321,7 @@ static NSString * const kClientId = @"100128444749-l3hh0v0as5n6t4rnp3maciodja4oa
 {
     if([SessionManager fbSession].state & FB_SESSIONSTATEOPENBIT){
         ////NSLog(@"update FB login Button to logoug");
-        [_fbButton setTitle:@"Logout Facebook" forState:UIControlStateNormal];
+        [_fbButton setTitle:LOGOUT_FB_TEXT forState:UIControlStateNormal];
         [_fbButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
         [UserObject currentUser].fbLogin=YES;
         NSArray* subview = [self.profileView subviews];
@@ -1337,7 +1341,7 @@ static NSString * const kClientId = @"100128444749-l3hh0v0as5n6t4rnp3maciodja4oa
     }
     else{
         ////NSLog(@"update FB login Button to Login");
-        [_fbButton setTitle:@"login" forState:UIControlStateNormal];
+        [_fbButton setTitle:LOGIN_FB_TEXT forState:UIControlStateNormal];
         [_fbButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
         [UserObject currentUser].fbLogin=NO;
         [self removeFBProfile];
